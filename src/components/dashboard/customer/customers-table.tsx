@@ -1,6 +1,8 @@
 'use client';
 
 import * as React from 'react';
+import { MoreVert } from '@mui/icons-material';
+import { IconButton, MenuItem, MenuList, Popover } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -78,11 +80,16 @@ export function CustomersTable({
               <TableCell>Location</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Signed Up</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row) => {
               const isSelected = selected?.has(row.id);
+
+              // State for menu anchor and selected row id
+              const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+              const [menuRowId, setMenuRowId] = React.useState<string | null>(null);
 
               return (
                 <TableRow hover key={row.id} selected={isSelected}>
@@ -110,6 +117,64 @@ export function CustomersTable({
                   </TableCell>
                   <TableCell>{row.phone}</TableCell>
                   <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
+                  {/* <Box sx={{ display: 'flex', alignItems: 'center' }}></Box> */}
+
+                  <TableCell align="center">
+                    <IconButton
+                      aria-label="more"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setAnchorEl(event.currentTarget);
+                        setMenuRowId(row.id);
+                      }}
+                    >
+                      <span>
+                        <svg width="0" height="0" style={{ position: 'absolute' }} />
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                          <span>
+                            <MoreVert />
+                          </span>
+                        </span>
+                      </span>
+                    </IconButton>
+                    {menuRowId === row.id && (
+                      <Popover
+                        open={Boolean(anchorEl)}
+                        anchorEl={anchorEl}
+                        onClose={() => {
+                          setAnchorEl(null);
+                          setMenuRowId(null);
+                        }}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                      >
+                        <MenuList>
+                          <MenuItem
+                            onClick={() => {
+                              setAnchorEl(null);
+                              setMenuRowId(null);
+                            }}
+                          >
+                            Action 1
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              setAnchorEl(null);
+                              setMenuRowId(null);
+                            }}
+                          >
+                            Action 2
+                          </MenuItem>
+                        </MenuList>
+                      </Popover>
+                    )}
+                  </TableCell>
                 </TableRow>
               );
             })}

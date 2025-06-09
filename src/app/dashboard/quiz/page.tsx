@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Box, useMediaQuery, useTheme } from '@mui/system';
 import { Copy, CopySimple } from '@phosphor-icons/react/dist/ssr';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
@@ -12,6 +13,7 @@ import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
+import { CategoryMultiCheckForm } from '@/components/dashboard/class/category-multickeck-form';
 import { AddCustomerDialog } from '@/components/dashboard/customer/add-customer';
 import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
 import { CustomersTable } from '@/components/dashboard/customer/customers-table';
@@ -118,6 +120,8 @@ export default function Page(): React.JSX.Element {
   const rowsPerPage = 5;
 
   const paginatedCustomers = applyPagination(customers, page, rowsPerPage);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [showForm, setShowForm] = React.useState(false);
 
@@ -129,7 +133,7 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ display: 'flex', flex: '1 1 auto' }}>
-          <Typography variant="h4">Customers</Typography>
+          <Typography variant="h4">Quiz</Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
               Import
@@ -153,12 +157,20 @@ export default function Page(): React.JSX.Element {
         </div>
       </Stack>
       <CustomersFilters />
-      <CustomersTable
-        count={paginatedCustomers.length}
-        page={page}
-        rows={paginatedCustomers}
-        rowsPerPage={rowsPerPage}
-      />
+      <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>
+        <Box flex={1}>
+          <CategoryMultiCheckForm onChange={handleAddClick} />
+        </Box>
+
+        <Box flex={9}>
+          <CustomersTable
+            count={paginatedCustomers.length}
+            page={page}
+            rows={paginatedCustomers}
+            rowsPerPage={rowsPerPage}
+          />
+        </Box>
+      </Stack>
 
       <AddCustomerDialog
         open={showForm}
