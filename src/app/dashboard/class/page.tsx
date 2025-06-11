@@ -2,6 +2,11 @@
 
 import * as React from 'react';
 import type { Metadata } from 'next';
+import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/category-multickeck-form';
+import { AddCustomerDialog } from '@/presentation/components/dashboard/customer/add-customer';
+import { CustomersFilters } from '@/presentation/components/dashboard/customer/customers-filters';
+import { CustomersTable } from '@/presentation/components/dashboard/customer/customers-table';
+import type { Customer } from '@/presentation/components/dashboard/customer/customers-table';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -13,11 +18,6 @@ import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import { CategoryMultiCheckForm } from '@/components/dashboard/class/category-multickeck-form';
-import { AddCustomerDialog } from '@/components/dashboard/customer/add-customer';
-import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
-import { CustomersTable } from '@/components/dashboard/customer/customers-table';
-import type { Customer } from '@/components/dashboard/customer/customers-table';
 
 // export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
 

@@ -3,9 +3,14 @@ import type { Viewport } from 'next';
 
 import '@/styles/global.css';
 
-import { UserProvider } from '@/contexts/user-context';
-import { LocalizationProvider } from '@/components/core/localization-provider';
-import { ThemeProvider } from '@/components/core/theme-provider/theme-provider';
+import { LocalizationProvider } from '@/presentation/components/core/localization-provider';
+import { CustomSnackBarProvider } from '@/presentation/components/core/snack-bar/CustomSnackBarProvider';
+import { ThemeProvider } from '@/presentation/components/core/theme-provider/theme-provider';
+import { UserProvider } from '@/presentation/contexts/user-context';
+import { DIProvider } from '@/presentation/hooks/useDependencyContainer';
+
+// import { LocalizationProvider } from '@/presentation/components/core/localization-provider';
+// import { ThemeProvider } from '@/presentation/components/core/theme-provider/theme-provider';
 
 export const viewport = { width: 'device-width', initialScale: 1 } satisfies Viewport;
 
@@ -17,11 +22,15 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
   return (
     <html lang="en">
       <body>
-        <LocalizationProvider>
-          <UserProvider>
-            <ThemeProvider>{children}</ThemeProvider>
-          </UserProvider>
-        </LocalizationProvider>
+        <DIProvider>
+          <CustomSnackBarProvider>
+            <LocalizationProvider>
+              <UserProvider>
+                <ThemeProvider>{children}</ThemeProvider>
+              </UserProvider>
+            </LocalizationProvider>
+          </CustomSnackBarProvider>
+        </DIProvider>
       </body>
     </html>
   );

@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { AddQuestionDialog } from '@/presentation/components/dashboard/question-table/add-question-dialog';
+import { Question, QuestionsTable } from '@/presentation/components/dashboard/question-table/question-table';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
-
-import { AddQuestionDialog } from '@/components/dashboard/question-table/add-question-dialog';
-import { Question, QuestionsTable } from '@/components/dashboard/question-table/question-table';
 
 export default function Page(): React.JSX.Element {
   const [questions, setQuestions] = useState<Question[]>([]);

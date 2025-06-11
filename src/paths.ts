@@ -13,6 +13,7 @@ export const paths = {
     form: '/dashboard/form',
     system: '/dashboard/system',
     email: '/dashboard/email',
+    notification: '/dashboard/notification',
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

@@ -23,7 +23,7 @@ const config = {
     '^@/actions/(.*)$',
     '^@/contexts/(.*)$',
     '^@/hooks/(.*)$',
-    '^@/components/(.*)$',
+    '^@/presentation/components/(.*)$',
     '^@/styles/(.*)$',
     '',
     '^[./]',
