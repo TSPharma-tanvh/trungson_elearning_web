@@ -3,11 +3,12 @@ import type { Viewport } from 'next';
 
 import '@/styles/global.css';
 
+import { UserProvider } from '@/presentation/contexts/user-context';
+import { DIProvider } from '@/presentation/hooks/useDependencyContainer';
+
 import { LocalizationProvider } from '@/presentation/components/core/localization-provider';
 import { CustomSnackBarProvider } from '@/presentation/components/core/snack-bar/CustomSnackBarProvider';
 import { ThemeProvider } from '@/presentation/components/core/theme-provider/theme-provider';
-import { UserProvider } from '@/presentation/contexts/user-context';
-import { DIProvider } from '@/presentation/hooks/useDependencyContainer';
 
 // import { LocalizationProvider } from '@/presentation/components/core/localization-provider';
 // import { ThemeProvider } from '@/presentation/components/core/theme-provider/theme-provider';

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { useUserInfo } from '@/presentation/hooks/user/use-user-info';
+import AppStrings from '@/utils/app-strings';
+import StoreLocalManager from '@/utils/store-manager';
 import { Box, Grid } from '@mui/material';
 
 import { AccountDetailsForm } from './account-details-form';
@@ -46,8 +48,9 @@ export function AccountForm(): React.JSX.Element {
   const handleSubmit = async () => {
     try {
       const formDataToSend = formData;
+      var userId = StoreLocalManager.getLocalData(AppStrings.USER_ID) ?? '';
 
-      const updatedUser = await userUsecase.updateUserInfo(formDataToSend);
+      const updatedUser = await userUsecase.updateUserInfo(userId, formDataToSend);
     } catch (err) {
       console.error('Update failed:', err);
     }

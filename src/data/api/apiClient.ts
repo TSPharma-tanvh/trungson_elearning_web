@@ -4,11 +4,12 @@ import path from 'path';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import qs from 'qs';
 
 import { paths } from '@/paths';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
-import { apiEndpoints } from './apiEndpoints';
+import { apiEndpoints, getApiUrl, getBaseUrl } from './apiEndpoints'; // ✅ Add getBaseUrl
 
 class ApiClient {
   private static instance: ApiClient;
@@ -16,12 +17,13 @@ class ApiClient {
 
   private constructor() {
     this.client = axios.create({
-      baseURL: apiEndpoints.baseUrl,
+      baseURL: getBaseUrl(),
       // headers: {
       //   // 'Content-Type': 'application/json',
       //   // Accept: 'application/json',
       //   'Content-Type': undefined,
       // },
+      paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
       withCredentials: true,
       timeout: 10000,
     });
@@ -117,11 +119,11 @@ class ApiClient {
   private static async handleTokenRefresh(refreshToken: string): Promise<boolean> {
     try {
       const refreshClient = axios.create({
-        baseURL: apiEndpoints.baseUrl,
+        baseURL: getBaseUrl(),
         // headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         withCredentials: true,
       });
-      const response = await refreshClient.post(apiEndpoints.token.refreshToken, {
+      const response = await refreshClient.post(getApiUrl(apiEndpoints.token.refreshToken), {
         RefreshToken: refreshToken,
       });
       const data = response.data as any;

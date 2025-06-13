@@ -3,24 +3,35 @@
 import * as React from 'react';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Logo } from '@/presentation/components/core/logo';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { ArrowSquareUpRight as ArrowSquareUpRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareUpRight';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { CaretUp as CaretUpIcon } from '@phosphor-icons/react/dist/ssr/CaretUp';
 import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
 import { isNavItemActive } from '@/lib/is-nav-item-active';
+import { Logo } from '@/presentation/components/core/logo';
 
 import { navItems } from './config';
 import { navIcons } from './nav-icons';
 
-export function SideNav(): React.JSX.Element {
+interface SideNavProps {
+  isOpen: boolean;
+}
+
+export function SideNav({ isOpen }: SideNavProps): React.JSX.Element {
   const pathname = usePathname();
+  const [expanded, setExpanded] = React.useState<string[]>([]);
+
+  const toggleExpanded = (key: string) => {
+    setExpanded((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+  };
 
   return (
     <Box
@@ -40,17 +51,16 @@ export function SideNav(): React.JSX.Element {
         display: { xs: 'none', lg: 'flex' },
         flexDirection: 'column',
         height: '100%',
-        left: 0,
+        left: isOpen ? 0 : 'calc(var(--SideNav-width) * -1)',
         maxWidth: '100%',
         position: 'fixed',
-        scrollbarWidth: 'none',
         top: 0,
         width: 'var(--SideNav-width)',
         zIndex: 'var(--SideNav-zIndex)',
-        '&::-webkit-scrollbar': { display: 'none' },
+        transition: 'left 0.3s ease-in-out',
       }}
     >
-      <Stack spacing={2} sx={{ p: 3 }}>
+      <Stack spacing={2} sx={{ p: 3, flexShrink: 0 }}>
         <Box component={RouterLink} href={paths.home} sx={{ display: 'inline-flex' }}>
           <Logo color="light" height={32} width={122} />
         </Box>
@@ -76,49 +86,102 @@ export function SideNav(): React.JSX.Element {
           <CaretUpDownIcon />
         </Box>
       </Stack>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-        {renderNavItems({ pathname, items: navItems })}
+      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)', flexShrink: 0 }} />
+      <Box
+        component="nav"
+        sx={{
+          flex: '1 1 auto',
+          p: '12px',
+          overflowY: 'auto',
+          overflowX: 'hidden', // Prevent horizontal scroll
+          scrollBehavior: 'smooth', // Smooth scrolling
+          // Custom scrollbar styling
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'var(--mui-palette-neutral-900)',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'var(--mui-palette-neutral-700)',
+            borderRadius: '4px',
+            '&:hover': {
+              backgroundColor: 'var(--mui-palette-neutral-600)',
+            },
+          },
+          // Firefox scrollbar styling
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'var(--mui-palette-neutral-700) var(--mui-palette-neutral-900)',
+        }}
+      >
+        {renderNavItems({ pathname, items: navItems, expanded, toggleExpanded })}
       </Box>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      <Stack spacing={2} sx={{ p: '12px' }}>
-        <div>
-          <Typography color="var(--mui-palette-neutral-100)" variant="subtitle2">
-            Need more features?
-          </Typography>
-          <Typography color="var(--mui-palette-neutral-400)" variant="body2">
-            Check out our Pro solution template.
-          </Typography>
-        </div>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box
-            component="img"
-            alt="Pro version"
-            src="/assets/devias-kit-pro.png"
-            sx={{ height: 'auto', width: '160px' }}
-          />
-        </Box>
-        <Button
-          component="a"
-          endIcon={<ArrowSquareUpRightIcon fontSize="var(--icon-fontSize-md)" />}
-          fullWidth
-          href="https://material-kit-pro-react.devias.io/"
-          sx={{ mt: 2 }}
-          target="_blank"
-          variant="contained"
-        >
-          Pro version
-        </Button>
-      </Stack>
     </Box>
   );
 }
 
-function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pathname: string }): React.JSX.Element {
+function renderNavItems({
+  items = [],
+  pathname,
+  expanded,
+  toggleExpanded,
+}: {
+  items?: NavItemConfig[];
+  pathname: string;
+  expanded: string[];
+  toggleExpanded: (key: string) => void;
+}): React.JSX.Element {
   const children = items.reduce((acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
-    const { key, ...item } = curr;
+    const { key, items: subItems, title } = curr;
 
-    acc.push(<NavItem key={key} pathname={pathname} {...item} />);
+    if (subItems) {
+      // Parent menu
+      acc.push(
+        <Box key={key} sx={{ mb: 1 }}>
+          <Box
+            onClick={() => toggleExpanded(key)}
+            sx={{
+              alignItems: 'center',
+              borderRadius: 1,
+              color: 'var(--NavItem-color)',
+              cursor: 'pointer',
+              display: 'flex',
+              flex: '0 0 auto',
+              gap: 1,
+              p: '6px 16px',
+              userSelect: 'none',
+            }}
+          >
+            <Box sx={{ flex: '1 1 auto' }}>
+              <Typography
+                component="span"
+                sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 600, lineHeight: '28px' }}
+              >
+                {title}
+              </Typography>
+            </Box>
+            {expanded.includes(key) ? (
+              <CaretUpIcon fontSize="var(--icon-fontSize-md)" />
+            ) : (
+              <CaretDownIcon fontSize="var(--icon-fontSize-md)" />
+            )}
+          </Box>
+          {expanded.includes(key) && (
+            <Stack component="ul" spacing={0.5} sx={{ listStyle: 'none', m: 0, pl: 4 }}>
+              {subItems.map((subItem) => {
+                const { key, ...rest } = subItem;
+                return <NavItem key={subItem.key} pathname={pathname} {...rest} />;
+              })}
+            </Stack>
+          )}
+        </Box>
+      );
+    } else {
+      // Standalone item
+      const { key, ...rest } = curr;
+      acc.push(<NavItem key={key} pathname={pathname} {...rest} />);
+    }
 
     return acc;
   }, []);
@@ -130,7 +193,7 @@ function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pat
   );
 }
 
-interface NavItemProps extends Omit<NavItemConfig, 'items'> {
+interface NavItemProps extends Omit<NavItemConfig, 'items' | 'key'> {
   pathname: string;
 }
 

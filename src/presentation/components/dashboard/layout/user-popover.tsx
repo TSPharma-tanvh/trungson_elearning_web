@@ -1,7 +1,10 @@
 import * as React from 'react';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/navigation';
+import { UserResponse } from '@/domain/models/user/response/user-response';
 import { useUser } from '@/presentation/hooks/use-user';
+import AppStrings from '@/utils/app-strings';
+import StoreLocalManager from '@/utils/store-manager';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -27,6 +30,22 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
   const { checkSession } = useUser();
 
   const router = useRouter();
+
+  const [userInfo, setUserInfo] = React.useState<UserResponse>();
+
+  React.useEffect(() => {
+    if (open) {
+      const data = StoreLocalManager.getLocalData(AppStrings.USER_DATA);
+      if (data) {
+        try {
+          const parsed = JSON.parse(data) as UserResponse;
+          setUserInfo(parsed);
+        } catch (error) {
+          logger.error('Failed to parse user data:', error);
+        }
+      }
+    }
+  }, [open]);
 
   const handleSignOut = React.useCallback(async (): Promise<void> => {
     try {
@@ -57,9 +76,12 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
       slotProps={{ paper: { sx: { width: '240px' } } }}
     >
       <Box sx={{ p: '16px 20px ' }}>
-        <Typography variant="subtitle1">Sofia Rivers</Typography>
+        <Typography variant="subtitle1">
+          {' '}
+          {userInfo?.firstName}, {userInfo?.lastName}
+        </Typography>
         <Typography color="text.secondary" variant="body2">
-          sofia.rivers@devias.io
+          {userInfo?.email}
         </Typography>
       </Box>
       <Divider />

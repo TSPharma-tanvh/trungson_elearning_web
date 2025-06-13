@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { LoginRequest } from '@/domain/models/auth/request/login-request';
 import { useUser } from '@/presentation/hooks/use-user';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import AppStrings from '@/utils/app-strings';
+import StoreLocalManager from '@/utils/store-manager';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -35,7 +37,7 @@ const defaultValues = { email: 'sofia@devias.io', password: 'Secret1' } satisfie
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
-  const { signInUseCase } = useDI();
+  const { signInUseCase, userUsecase } = useDI();
 
   const { checkSession } = useUser();
 
@@ -59,7 +61,10 @@ export function SignInForm(): React.JSX.Element {
         const result = await signInUseCase.execute(loginReq);
 
         await checkSession?.();
-        router.refresh();
+
+        const user = await userUsecase.getUserInfo();
+
+        StoreLocalManager.saveLocalData(AppStrings.USER_DATA, user);
 
         if (result.token.trim().length > 0) {
           router.refresh();

@@ -7,6 +7,8 @@ export class UserResponse {
   email?: string;
   firstName!: string;
   lastName!: string;
+  isActive!: boolean;
+  employeeId!: string;
   thumbnailId?: string;
   thumbnail?: FileResourcesResponse;
   roles?: string[];
@@ -20,6 +22,8 @@ export class UserResponse {
     dto.email = json.email;
     dto.firstName = json.firstName;
     dto.lastName = json.lastName;
+    dto.isActive = json.isActive;
+    dto.employeeId = json.employeeId;
     dto.thumbnailId = json.thumbnailId;
     dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJSON(json.thumbnail) : undefined;
     dto.roles = json.roles ?? [];
@@ -35,6 +39,8 @@ export class UserResponse {
       email: this.email,
       firstName: this.firstName,
       lastName: this.lastName,
+      isActive: this.isActive,
+      employeeId: this.employeeId,
       thumbnailId: this.thumbnailId,
       thumbnail: this.thumbnail?.toJSON(),
       roles: this.roles,

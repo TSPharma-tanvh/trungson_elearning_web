@@ -1,0 +1,118 @@
+'use client';
+
+import * as React from 'react';
+import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
+import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
+import { UserResponse } from '@/domain/models/user/response/user-response';
+import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { Copy } from '@phosphor-icons/react/dist/ssr';
+import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
+
+import { AddUserDialog } from '@/presentation/components/dashboard/users/add-user';
+import { UsersFilters } from '@/presentation/components/dashboard/users/users-filters';
+import UsersTable from '@/presentation/components/dashboard/users/users-table';
+
+export default function Page(): React.JSX.Element {
+  const userUsecase = useDI().userUsecase;
+  const [users, setUsers] = React.useState<UserResponse[]>([]);
+  const [showForm, setShowForm] = React.useState(false);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [totalCount, setTotalCount] = React.useState(0);
+  const [filters, setFilters] = React.useState<GetUserRequest>({
+    pageNumber: 1,
+    pageSize: 10,
+  });
+
+  const fetchUsers = React.useCallback(async () => {
+    try {
+      const request: GetUserRequest = {
+        ...filters,
+        pageNumber: page + 1,
+        pageSize: rowsPerPage,
+      };
+
+      const { users, totalRecords, pageSize, pageNumber } = await userUsecase.getUserListInfo(request);
+
+      setUsers(users);
+      setTotalCount(totalRecords / pageNumber);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    }
+  }, [userUsecase, filters, page, rowsPerPage]);
+
+  React.useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleFilter = (newFilters: GetUserRequest) => {
+    setFilters({ ...newFilters, pageNumber: 1 });
+    setPage(0);
+  };
+
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setPage(0);
+  };
+
+  const handleDeleteUsers = async (userIds: string[]) => {
+    await Promise.all(
+      userIds.map((id) => userUsecase.updateUserInfo(id, new UpdateUserInfoRequest({ isActive: false })))
+    );
+    await fetchUsers(); // refresh
+  };
+
+  return (
+    <Stack spacing={3}>
+      <Stack direction="row" spacing={3}>
+        <Stack spacing={1} sx={{ display: 'flex', flex: '1 1 auto' }}>
+          <Typography variant="h4">Users</Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
+              Import
+            </Button>
+            <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+              Export
+            </Button>
+            <Button color="inherit" startIcon={<Copy fontSize="var(--icon-fontSize-md)" />}>
+              Copy
+            </Button>
+          </Stack>
+        </Stack>
+        <div>
+          <Button
+            startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => setShowForm(true)}
+          >
+            Add
+          </Button>
+        </div>
+      </Stack>
+
+      <UsersFilters onFilter={handleFilter} />
+
+      <UsersTable
+        count={totalCount}
+        page={page}
+        rows={users}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
+        onDeleteUsers={handleDeleteUsers}
+      />
+
+      <AddUserDialog open={showForm} onClose={() => setShowForm(false)} onSubmit={() => setShowForm(false)} />
+    </Stack>
+  );
+}

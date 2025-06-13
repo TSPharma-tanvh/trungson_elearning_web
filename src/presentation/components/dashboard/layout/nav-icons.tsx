@@ -22,4 +22,5 @@ export const navIcons = {
   system: Faders,
   email: At,
   notification: Notification,
+  
 } as Record<string, Icon>;
