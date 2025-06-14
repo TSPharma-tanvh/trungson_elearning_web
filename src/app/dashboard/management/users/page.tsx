@@ -13,7 +13,7 @@ import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Downloa
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 
-import { AddUserDialog } from '@/presentation/components/dashboard/users/add-user';
+import { AddUserDialog } from '@/presentation/components/dashboard/users/add-user-dialog';
 import { UsersFilters } from '@/presentation/components/dashboard/users/users-filters';
 import UsersTable from '@/presentation/components/dashboard/users/users-table';
 
@@ -65,11 +65,27 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
+  const handleUpdateUser = async (userId: string, data: UpdateUserInfoRequest) => {
+    try {
+      const response = await userUsecase.updateUserInfo(userId, data);
+      if (response.statusCode !== 200 || !response.result) {
+        throw new Error(response.message || 'Failed to update user');
+      }
+      await fetchUsers();
+
+      // const updatedUser: UserResponse = response.result;
+      // setUsers((prev) => prev.map((user) => (user.id === userId ? { ...user, ...updatedUser } : user)));
+    } catch (error) {
+      console.error('Error updating user:', error);
+      // Optionally, show error message to user (e.g., via Snackbar)
+    }
+  };
+
   const handleDeleteUsers = async (userIds: string[]) => {
     await Promise.all(
       userIds.map((id) => userUsecase.updateUserInfo(id, new UpdateUserInfoRequest({ isActive: false })))
     );
-    await fetchUsers(); // refresh
+    await fetchUsers();
   };
 
   return (
@@ -110,9 +126,17 @@ export default function Page(): React.JSX.Element {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteUsers={handleDeleteUsers}
+        onUpdateUser={handleUpdateUser}
       />
 
-      <AddUserDialog open={showForm} onClose={() => setShowForm(false)} onSubmit={() => setShowForm(false)} />
+      <AddUserDialog
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        onSubmit={async () => {
+          await fetchUsers();
+          setShowForm(false);
+        }}
+      />
     </Stack>
   );
 }

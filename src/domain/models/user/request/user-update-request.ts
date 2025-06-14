@@ -12,6 +12,7 @@ export class UpdateUserInfoRequest {
   thumbDocumentNo?: string;
   thumbPrefixName?: string;
   isDeleteOldThumbnail?: boolean;
+  password?: string;
 
   constructor(data?: Partial<UpdateUserInfoRequest>) {
     if (data) {
@@ -28,6 +29,7 @@ export class UpdateUserInfoRequest {
       this.thumbDocumentNo = data.thumbDocumentNo;
       this.thumbPrefixName = data.thumbPrefixName;
       this.isDeleteOldThumbnail = data.isDeleteOldThumbnail;
+      this.password = data.password;
     }
   }
 
@@ -45,6 +47,7 @@ export class UpdateUserInfoRequest {
       thumbDocumentNo: json.thumbDocumentNo,
       thumbPrefixName: json.thumbPrefixName,
       isDeleteOldThumbnail: json.isDeleteOldThumbnail,
+      password: json.password,
     });
   }
 
@@ -62,6 +65,7 @@ export class UpdateUserInfoRequest {
       thumbDocumentNo: this.thumbDocumentNo,
       thumbPrefixName: this.thumbPrefixName,
       isDeleteOldThumbnail: this.isDeleteOldThumbnail,
+      password: this.password,
     };
   }
 
@@ -82,6 +86,7 @@ export class UpdateUserInfoRequest {
     if (this.isDeleteOldThumbnail !== undefined) {
       formData.append('IsDeleteOldThumbnail', String(this.isDeleteOldThumbnail));
     }
+    if (this.password) formData.append('Password', this.password);
     return formData;
   }
 }

@@ -5,6 +5,7 @@ import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { useRoleOptions } from '@/presentation/hooks/role/use-role-options';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { Badge, CheckCircle, Email, Image, Person, Visibility, VisibilityOff, Work } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -17,6 +18,8 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
+  InputAdornment,
   InputLabel,
   ListItemText,
   MenuItem,
@@ -27,6 +30,8 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 
 interface EditUserDialogProps {
   open: boolean;
@@ -41,6 +46,9 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
   const [formData, setFormData] = useState<UpdateUserInfoRequest>(new UpdateUserInfoRequest());
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const roleUsecase = useDI().roleUseCase;
   const { roleOptions, loadMoreRoles, hasMore, loading } = useRoleOptions(roleUsecase);
@@ -59,20 +67,42 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
           employeeId: user.employeeId,
         })
       );
-
-      if (user.thumbnail?.resourceUrl) {
-        setPreviewUrl(user.thumbnail.resourceUrl);
-      }
+      setPreviewUrl(user.thumbnail?.resourceUrl || null);
+      setConfirmPassword('');
+    } else {
+      setFormData(new UpdateUserInfoRequest());
+      setPreviewUrl(null);
+      setConfirmPassword('');
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!open) {
+      setFormData(new UpdateUserInfoRequest());
+      setPreviewUrl(null);
+      setConfirmPassword('');
+    }
+  }, [open]);
 
   const handleChange = <K extends keyof UpdateUserInfoRequest>(field: K, value: UpdateUserInfoRequest[K]) => {
     setFormData((prev) => new UpdateUserInfoRequest({ ...prev, [field]: value }));
   };
 
-  const handleSave = () => {
-    onSubmit(formData);
-    onClose();
+  const handleSave = async () => {
+    if (formData.password && formData.password !== confirmPassword) {
+      CustomSnackBar.showSnackbar('Passwords do not match', 'error');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit(formData);
+      onClose();
+    } catch (error) {
+      console.error('Error updating user:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleScroll = (event: React.UIEvent<HTMLUListElement>) => {
@@ -102,14 +132,15 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 value={formData.userName || ''}
                 onChange={(e) => handleChange('userName', e.target.value)}
                 fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Email"
-                value={formData.email || ''}
-                onChange={(e) => handleChange('email', e.target.value)}
-                fullWidth
+                disabled={isSubmitting}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Person />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
 
@@ -119,14 +150,33 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 value={formData.firstName || ''}
                 onChange={(e) => handleChange('firstName', e.target.value)}
                 fullWidth
+                disabled={isSubmitting}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Badge />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Last Name"
                 value={formData.lastName || ''}
                 onChange={(e) => handleChange('lastName', e.target.value)}
                 fullWidth
+                disabled={isSubmitting}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Badge />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
 
@@ -136,11 +186,20 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 value={formData.employeeId || ''}
                 onChange={(e) => handleChange('employeeId', e.target.value)}
                 fullWidth
+                disabled={isSubmitting}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Work />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
+            <Grid item xs={12} sm={12}>
+              <FormControl fullWidth disabled={isSubmitting}>
                 <InputLabel id="edit-role-select-label">Roles</InputLabel>
                 <Select
                   multiple
@@ -157,7 +216,27 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                           .join(', ')
                   }
                   MenuProps={{
-                    PaperProps: { style: { maxHeight: 300 } },
+                    PaperProps: {
+                      sx: {
+                        maxHeight: 300,
+                        '&::-webkit-scrollbar': {
+                          width: '8px',
+                        },
+                        '&::-webkit-scrollbar-track': {
+                          backgroundColor: theme.palette.mode === 'dark' ? '#2D3748' : '#F7FAFC',
+                          borderRadius: '4px',
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                          backgroundColor: theme.palette.mode === 'dark' ? '#4A5568' : '#CBD5E0',
+                          borderRadius: '4px',
+                          '&:hover': {
+                            backgroundColor: theme.palette.mode === 'dark' ? '#718096' : '#A0AEC0',
+                          },
+                        },
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: `${theme.palette.mode === 'dark' ? '#4A5568 #2D3748' : '#CBD5E0 #F7FAFC'}`,
+                      },
+                    },
                     MenuListProps: {
                       ref: listRef,
                       onScroll: handleScroll,
@@ -179,12 +258,89 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               </FormControl>
             </Grid>
 
+            <Grid item xs={12} sm={12}>
+              <TextField
+                label="Email"
+                value={formData.email || ''}
+                onChange={(e) => handleChange('email', e.target.value)}
+                fullWidth
+                disabled={isSubmitting}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Email />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+              <TextField
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                value={formData.password || ''}
+                onChange={(e) => handleChange('password', e.target.value)}
+                fullWidth
+                disabled={isSubmitting}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <CheckCircle />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+              <TextField
+                label="Confirm Password"
+                type={showPassword ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                fullWidth
+                disabled={isSubmitting}
+                error={!!formData.password && !!confirmPassword && formData.password !== confirmPassword}
+                helperText={
+                  formData.password && confirmPassword && formData.password !== confirmPassword
+                    ? 'Passwords do not match'
+                    : ''
+                }
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <CheckCircle />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
             <Grid item xs={12}>
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={!!formData.isActive}
                     onChange={(e) => handleChange('isActive', e.target.checked)}
+                    disabled={isSubmitting}
                   />
                 }
                 label="Is Active"
@@ -192,7 +348,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <Button variant="outlined" component="label" fullWidth>
+              <Button variant="outlined" component="label" fullWidth disabled={isSubmitting} startIcon={<Image />}>
                 Upload Thumbnail
                 <input
                   type="file"
@@ -244,11 +400,21 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
             m: 2,
           }}
         >
-          <Button onClick={onClose} variant="outlined" sx={{ width: isMobile ? '100%' : '180px' }}>
+          <Button
+            onClick={onClose}
+            variant="outlined"
+            sx={{ width: isMobile ? '100%' : '180px' }}
+            disabled={isSubmitting}
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} variant="contained" sx={{ width: isMobile ? '100%' : '180px' }}>
-            Save
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            sx={{ width: isMobile ? '100%' : '180px' }}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
           </Button>
         </Box>
       </DialogActions>

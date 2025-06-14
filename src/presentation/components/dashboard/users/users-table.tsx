@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request'; // Import UpdateUserInfoRequest
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { MoreVert } from '@mui/icons-material';
 import {
@@ -29,6 +30,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import { ConfirmDeleteDialog } from './confirm-delete-dialog';
 import { EditUserDialog } from './edit-user-dialog';
 
 interface Props {
@@ -38,7 +40,8 @@ interface Props {
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteUsers: (userIds: string[]) => void; // ✅ Thêm prop callback
+  onDeleteUsers: (userIds: string[]) => void;
+  onUpdateUser: (userId: string, data: UpdateUserInfoRequest) => Promise<void>; // Add onUpdateUser
 }
 
 export default function UsersTable({
@@ -49,9 +52,15 @@ export default function UsersTable({
   onPageChange,
   onRowsPerPageChange,
   onDeleteUsers,
+  onUpdateUser,
 }: Props) {
   const rowIds = React.useMemo(() => rows.map((row) => row.id), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [selectedUser, setSelectedUser] = React.useState<UserResponse | null>(null);
+  const [editUserData, setEditUserData] = React.useState<UserResponse | null>(null);
+  const [editOpen, setEditOpen] = React.useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
 
   const isSelected = (id: string) => selected.has(id);
 
@@ -75,14 +84,6 @@ export default function UsersTable({
     });
   };
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedUser, setSelectedUser] = React.useState<UserResponse | null>(null);
-  const [editUserData, setEditUserData] = React.useState<UserResponse | null>(null);
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false); // ✅ confirm dialog
-
-  const open = Boolean(anchorEl);
-
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: UserResponse) => {
     setAnchorEl(event.currentTarget);
     setSelectedUser(row);
@@ -98,8 +99,8 @@ export default function UsersTable({
     handleMenuClose();
   };
 
-  const handleDeleteConfirm = () => {
-    onDeleteUsers(Array.from(selected));
+  const handleDeleteConfirm = async () => {
+    await onDeleteUsers(Array.from(selected));
     setSelected(new Set());
     setDeleteConfirmOpen(false);
   };
@@ -192,16 +193,14 @@ export default function UsersTable({
         />
       </Card>
 
-      {/* Menu for each row */}
       <Popover
-        open={open}
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleMenuClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem onClick={handleEditClick}>Edit</MenuItem>
-
         <MenuItem
           onClick={() => {
             handleDeleteOneUser(selectedUser?.id ?? '');
@@ -212,21 +211,12 @@ export default function UsersTable({
         </MenuItem>
       </Popover>
 
-      {/* Dialog confirm delete */}
-      <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to deactivate {selected.size} selected user{selected.size > 1 ? 's' : ''}?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleDeleteCancel()}>Cancel</Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
-            Deactivate
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDeleteDialog
+        open={deleteConfirmOpen}
+        selectedCount={selected.size}
+        onCancel={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+      />
 
       {editUserData && (
         <EditUserDialog
@@ -234,7 +224,7 @@ export default function UsersTable({
           user={editUserData}
           onClose={() => setEditOpen(false)}
           onSubmit={(updatedData) => {
-            console.log('Submit data:', updatedData);
+            onUpdateUser(editUserData.id, updatedData); // Call onUpdateUser with user ID and updated data
             setEditOpen(false);
           }}
         />

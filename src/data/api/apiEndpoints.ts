@@ -13,7 +13,7 @@ interface EndpointDefinitions {
 const endpoints: EndpointDefinitions = {
   identity: {
     signIn: 'Identity/Login',
-    signUp: 'Auth/Sign-up',
+    signUp: 'Identity/Register',
     forgotPassword: 'Auth/Forgot-password',
   },
   token: {

@@ -1,5 +1,6 @@
 import { ApiResponse } from '@/domain/models/core/api-response';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
+import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { UserListResult } from '@/domain/models/user/response/user-list-result';
 import { UserResponse } from '@/domain/models/user/response/user-response';
@@ -25,8 +26,6 @@ export class UserUsecase {
   }
 
   async updateUserInfo(id: string, request: UpdateUserInfoRequest): Promise<ApiResponse> {
-    // var userId = StoreLocalManager.getLocalData(AppStrings.USER_ID);
-
     if (id === null || id === undefined || id.trim() === '') {
       throw new Error('User ID is missing.');
     }
@@ -51,5 +50,23 @@ export class UserUsecase {
       pageSize: result.pageSize ?? request.pageSize,
       pageNumber: result.pageNumber ?? request.pageNumber,
     };
+  }
+
+  async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
+    if (!request.userName || !request.password || !request.confirmPassword) {
+      throw new Error('Username and passwords are required.');
+    }
+
+    if (request.password !== request.confirmPassword) {
+      throw new Error('Passwords do not match.');
+    }
+
+    const response = await this.userRepo.registerUser(request);
+
+    if (response.statusCode !== 200) {
+      throw new Error(response.message || 'Failed to register user.');
+    }
+
+    return response;
   }
 }

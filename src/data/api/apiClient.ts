@@ -1,6 +1,7 @@
 // src/data/api/apiClient.ts
 import path from 'path';
 
+import { ValidationErrorResponse } from '@/domain/models/core/validation-error-response';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
@@ -55,26 +56,40 @@ class ApiClient {
 
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
-        // Business-level StatusCode check, silent on 2xx:
         const data = response.data as any;
         if (data && typeof data.StatusCode === 'number' && !(data.StatusCode >= 200 && data.StatusCode < 300)) {
           CustomSnackBar.showSnackbar(data.Message || 'Warning', 'warning');
         }
         return response;
       },
+      // inside this.client.interceptors.response.use(
       async (error) => {
         if (axios.isAxiosError(error)) {
           const status = error.response?.status;
           const data = error.response?.data as any;
-          const msg = data?.Message || error.message || 'API error';
-          CustomSnackBar.showSnackbar(msg, 'error');
 
+          if (status === 400 && data?.errors) {
+            const errorMessages: string[] = [];
+
+            Object.entries(data.errors).forEach(([field, messages]) => {
+              if (Array.isArray(messages)) {
+                messages.forEach((msg) => errorMessages.push(`${field}: ${msg}`));
+              }
+            });
+
+            // Show all validation messages
+            errorMessages.forEach((msg) => CustomSnackBar.showSnackbar(msg, 'error'));
+          } else {
+            const msg = data?.message || data?.title || error.message || 'API error';
+            CustomSnackBar.showSnackbar(msg, 'error');
+          }
+
+          // Handle 401
           if (status === 401) {
             const refreshToken = StoreLocalManager.getLocalData(AppStrings.REFRESH_TOKEN);
             if (refreshToken) {
               const refreshed = await ApiClient.handleTokenRefresh(refreshToken);
               if (refreshed) {
-                // Retry original request once
                 const originalConfig = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
                 if (originalConfig && !originalConfig._retry) {
                   originalConfig._retry = true;
@@ -94,6 +109,7 @@ class ApiClient {
         } else {
           CustomSnackBar.showSnackbar('Unexpected error', 'error');
         }
+
         return Promise.reject(error);
       }
     );

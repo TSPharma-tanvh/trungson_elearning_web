@@ -1,6 +1,7 @@
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { ApiResponse } from '@/domain/models/core/api-response';
 import { GetUserRequest, getUserRequestToJSON } from '@/domain/models/user/request/get-user-request';
+import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { UserRepository } from '@/domain/repositories/user/user-repository';
 
@@ -63,6 +64,24 @@ export class UserRepositoryImpl implements UserRepository {
       return apiResponse;
     } catch (error: any) {
       throw new Error(error?.message || 'Failed to fetch user info');
+    }
+  }
+
+  async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
+    const url = getApiUrl(apiEndpoints.identity.signUp);
+
+    try {
+      const response = await apiClient.post<ApiResponse>(url, request.toJSON());
+
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to register user');
     }
   }
 }
