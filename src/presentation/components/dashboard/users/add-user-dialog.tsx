@@ -77,7 +77,7 @@ export const AddUserDialog: React.FC<Props> = ({ open, onClose, onSubmit }) => {
               value={formData.userName}
               onChange={handleChange('userName')}
               fullWidth
-              sx={{ mt: 1 }} //void hiding label
+              sx={{ mt: 1 }} //avoid hiding label
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
