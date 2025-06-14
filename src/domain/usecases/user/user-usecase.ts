@@ -8,6 +8,10 @@ import { UserRepository } from '@/domain/repositories/user/user-repository';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 
+
+
+
+
 export class UserUsecase {
   constructor(private readonly userRepo: UserRepository) {}
 
@@ -19,6 +23,19 @@ export class UserUsecase {
     }
 
     var result = await this.userRepo.getUserDetailInfo(userId);
+
+    var userResponse = UserResponse.fromJSON(result.result);
+
+    return userResponse;
+  }
+
+  async getUserInfoWithId(id: string): Promise<UserResponse> {
+
+    if (id === null || id === undefined || id.trim() === '') {
+      throw new Error('User ID is missing.');
+    }
+
+    var result = await this.userRepo.getUserDetailInfo(id);
 
     var userResponse = UserResponse.fromJSON(result.result);
 

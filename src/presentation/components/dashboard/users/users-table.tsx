@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request'; // Import UpdateUserInfoRequest
+import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { MoreVert } from '@mui/icons-material';
 import {
@@ -32,6 +32,7 @@ import {
 
 import { ConfirmDeleteDialog } from './confirm-delete-dialog';
 import { EditUserDialog } from './edit-user-dialog';
+import { ViewUserDialog } from './view-user-detail-dialog';
 
 interface Props {
   rows: UserResponse[];
@@ -41,7 +42,7 @@ interface Props {
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteUsers: (userIds: string[]) => void;
-  onUpdateUser: (userId: string, data: UpdateUserInfoRequest) => Promise<void>; // Add onUpdateUser
+  onUpdateUser: (userId: string, data: UpdateUserInfoRequest) => Promise<void>;
 }
 
 export default function UsersTable({
@@ -60,6 +61,7 @@ export default function UsersTable({
   const [selectedUser, setSelectedUser] = React.useState<UserResponse | null>(null);
   const [editUserData, setEditUserData] = React.useState<UserResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
+  const [viewOpen, setViewOpen] = React.useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
 
   const isSelected = (id: string) => selected.has(id);
@@ -193,6 +195,7 @@ export default function UsersTable({
         />
       </Card>
 
+      {/* Actions Menu */}
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
@@ -200,6 +203,14 @@ export default function UsersTable({
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
+        <MenuItem
+          onClick={() => {
+            setViewOpen(true);
+            handleMenuClose();
+          }}
+        >
+          View Details
+        </MenuItem>
         <MenuItem onClick={handleEditClick}>Edit</MenuItem>
         <MenuItem
           onClick={() => {
@@ -211,6 +222,7 @@ export default function UsersTable({
         </MenuItem>
       </Popover>
 
+      {/* Dialogs */}
       <ConfirmDeleteDialog
         open={deleteConfirmOpen}
         selectedCount={selected.size}
@@ -223,11 +235,15 @@ export default function UsersTable({
           open={editOpen}
           user={editUserData}
           onClose={() => setEditOpen(false)}
-          onSubmit={(updatedData) => {
-            onUpdateUser(editUserData.id, updatedData); // Call onUpdateUser with user ID and updated data
+          onSubmit={async (updatedData) => {
+            await onUpdateUser(editUserData.id, updatedData);
             setEditOpen(false);
           }}
         />
+      )}
+
+      {selectedUser && (
+        <ViewUserDialog open={viewOpen} userId={selectedUser?.id ?? null} onClose={() => setViewOpen(false)} />
       )}
     </>
   );
