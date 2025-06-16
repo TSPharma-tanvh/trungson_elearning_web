@@ -6,7 +6,6 @@ export function PersonalInfoForm({ onChange }: { onChange: (field: string, value
   return (
     <Grid container spacing={3}>
       {' '}
-      {/* Increased spacing */}
       <Grid item xs={12} sm={6}>
         <TextField
           label="Full Name"

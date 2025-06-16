@@ -47,6 +47,15 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
     });
   };
 
+  const handleClear = () => {
+    setSearchTerm('');
+    setRoles([]);
+    onFilter({
+      pageNumber: 1,
+      pageSize: 10,
+    });
+  };
+
   return (
     <Card sx={{ p: 2 }}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
@@ -108,6 +117,9 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
           Filter
+        </Button>
+        <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
+          Clear
         </Button>
       </Stack>
     </Card>

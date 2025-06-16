@@ -10,7 +10,7 @@ import qs from 'qs';
 import { paths } from '@/paths';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
-import { apiEndpoints, getApiUrl, getBaseUrl } from './apiEndpoints'; // ✅ Add getBaseUrl
+import { apiEndpoints, getBaseUrl } from './api-endpoints'; // ✅ Add getBaseUrl
 
 class ApiClient {
   private static instance: ApiClient;
@@ -57,8 +57,13 @@ class ApiClient {
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
         const data = response.data as any;
-        if (data && typeof data.StatusCode === 'number' && !(data.StatusCode >= 200 && data.StatusCode < 300)) {
-          CustomSnackBar.showSnackbar(data.Message || 'Warning', 'warning');
+
+        if (typeof data?.isSuccessStatusCode === 'boolean') {
+          if (!data.isSuccessStatusCode) {
+            CustomSnackBar.showSnackbar(data.message || 'Unknown error', 'error');
+
+            throw new Error(data.message || 'API logic error');
+          }
         }
         return response;
       },
@@ -139,7 +144,7 @@ class ApiClient {
         // headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         withCredentials: true,
       });
-      const response = await refreshClient.post(getApiUrl(apiEndpoints.token.refreshToken), {
+      const response = await refreshClient.post(apiEndpoints.token.refreshToken, {
         RefreshToken: refreshToken,
       });
       const data = response.data as any;

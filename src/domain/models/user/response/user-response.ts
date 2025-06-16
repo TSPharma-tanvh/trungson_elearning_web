@@ -7,6 +7,7 @@ export class UserResponse {
   email?: string;
   firstName!: string;
   lastName!: string;
+  phoneNumber!: string;
   isActive!: boolean;
   employeeId!: string;
   thumbnailId?: string;
@@ -22,6 +23,7 @@ export class UserResponse {
     dto.email = json.email;
     dto.firstName = json.firstName;
     dto.lastName = json.lastName;
+    dto.phoneNumber = json.phoneNumber;
     dto.isActive = json.isActive;
     dto.employeeId = json.employeeId;
     dto.thumbnailId = json.thumbnailId;
@@ -39,6 +41,7 @@ export class UserResponse {
       email: this.email,
       firstName: this.firstName,
       lastName: this.lastName,
+      phoneNumber: this.phoneNumber,
       isActive: this.isActive,
       employeeId: this.employeeId,
       thumbnailId: this.thumbnailId,

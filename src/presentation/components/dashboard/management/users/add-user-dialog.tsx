@@ -18,7 +18,7 @@ import {
   useTheme,
 } from '@mui/material';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
+import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
 
 type Props = {
   open: boolean;

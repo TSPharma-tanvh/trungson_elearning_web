@@ -13,9 +13,9 @@ import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Downloa
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 
-import { AddUserDialog } from '@/presentation/components/dashboard/users/add-user-dialog';
-import { UsersFilters } from '@/presentation/components/dashboard/users/users-filters';
-import UsersTable from '@/presentation/components/dashboard/users/users-table';
+import { AddUserDialog } from '@/presentation/components/dashboard/management/users/add-user-dialog';
+import { UsersFilters } from '@/presentation/components/dashboard/management/users/users-filters';
+import UsersTable from '@/presentation/components/dashboard/management/users/users-table';
 
 export default function Page(): React.JSX.Element {
   const userUsecase = useDI().userUsecase;
@@ -68,16 +68,10 @@ export default function Page(): React.JSX.Element {
   const handleUpdateUser = async (userId: string, data: UpdateUserInfoRequest) => {
     try {
       const response = await userUsecase.updateUserInfo(userId, data);
-      if (response.statusCode !== 200 || !response.result) {
-        throw new Error(response.message || 'Failed to update user');
-      }
-      await fetchUsers();
 
-      // const updatedUser: UserResponse = response.result;
-      // setUsers((prev) => prev.map((user) => (user.id === userId ? { ...user, ...updatedUser } : user)));
+      await fetchUsers();
     } catch (error) {
       console.error('Error updating user:', error);
-      // Optionally, show error message to user (e.g., via Snackbar)
     }
   };
 
@@ -94,7 +88,7 @@ export default function Page(): React.JSX.Element {
         <Stack spacing={1} sx={{ display: 'flex', flex: '1 1 auto' }}>
           <Typography variant="h4">Users</Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
+            {/* <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
               Import
             </Button>
             <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
@@ -102,7 +96,7 @@ export default function Page(): React.JSX.Element {
             </Button>
             <Button color="inherit" startIcon={<Copy fontSize="var(--icon-fontSize-md)" />}>
               Copy
-            </Button>
+            </Button> */}
           </Stack>
         </Stack>
         <div>

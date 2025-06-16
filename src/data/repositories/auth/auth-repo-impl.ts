@@ -4,13 +4,12 @@ import { ApiResponse } from '@/domain/models/core/api-response';
 import { AuthRepository } from '@/domain/repositories/auth/auth-repository';
 import axios from 'axios';
 
-import { apiClient } from '@/data/api/apiClient';
-import { apiEndpoints, getApiUrl } from '@/data/api/apiEndpoints';
+import { apiClient } from '@/data/api/api-client';
+import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class AuthRepositoryImpl implements AuthRepository {
   async login(request: LoginRequest): Promise<ApiResponse> {
-    const url = getApiUrl(apiEndpoints.identity.signIn);
-    const response = await apiClient.post<ApiResponse<LoginResponse>>(url, {
+    const response = await apiClient.post<ApiResponse<LoginResponse>>(apiEndpoints.identity.signIn, {
       userName: request.userName,
       password: request.password,
       rememberMe: true,
@@ -24,7 +23,6 @@ export class AuthRepositoryImpl implements AuthRepository {
       throw new Error(apiResponse?.message);
     }
 
-    // return LoginResponse.fromJSON(apiResponse.result);
     return apiResponse;
   }
 }

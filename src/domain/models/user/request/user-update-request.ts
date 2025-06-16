@@ -3,6 +3,7 @@ export class UpdateUserInfoRequest {
   email?: string;
   firstName?: string;
   lastName?: string;
+  phoneNumber?: string;
   isActive?: boolean;
   levelID?: string;
   roles?: string;
@@ -20,6 +21,7 @@ export class UpdateUserInfoRequest {
       this.email = data.email;
       this.firstName = data.firstName;
       this.lastName = data.lastName;
+      this.phoneNumber = data.phoneNumber;
       this.isActive = data.isActive;
       this.levelID = data.levelID;
       this.roles = data.roles;
@@ -39,6 +41,7 @@ export class UpdateUserInfoRequest {
       email: json.email,
       firstName: json.firstName,
       lastName: json.lastName,
+      phoneNumber: json.phoneNumber,
       isActive: json.isActive,
       levelID: json.levelID,
       roles: json.roles,
@@ -57,6 +60,7 @@ export class UpdateUserInfoRequest {
       email: this.email,
       firstName: this.firstName,
       lastName: this.lastName,
+      phoneNumber: this.phoneNumber,
       isActive: this.isActive,
       levelID: this.levelID,
       roles: this.roles,
@@ -75,6 +79,7 @@ export class UpdateUserInfoRequest {
     if (this.email) formData.append('Email', this.email);
     if (this.firstName) formData.append('FirstName', this.firstName);
     if (this.lastName) formData.append('LastName', this.lastName);
+    if (this.phoneNumber) formData.append('PhoneNumber', this.phoneNumber);
     if (this.isActive !== undefined) formData.append('IsActive', String(this.isActive));
     if (this.levelID) formData.append('LevelID', this.levelID);
     if (this.roles) formData.append('Roles', this.roles);

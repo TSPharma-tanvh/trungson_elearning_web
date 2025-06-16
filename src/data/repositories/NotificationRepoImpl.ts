@@ -2,8 +2,8 @@
 import { NotificationEntity } from '@/domain/models/Notification';
 
 import { NotificationRepository } from '../../domain/repositories/NotificationRepository';
-import { apiClient } from '../api/apiClient';
-import { apiEndpoints } from '../api/apiEndpoints';
+import { apiClient } from '../api/api-client';
+import { apiEndpoints } from '../api/api-endpoints';
 
 export class NotificationRepoImpl implements NotificationRepository {
   async sendToUser(notification: NotificationEntity): Promise<void> {

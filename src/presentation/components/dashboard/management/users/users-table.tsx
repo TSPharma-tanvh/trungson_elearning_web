@@ -30,7 +30,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { ConfirmDeleteDialog } from './confirm-delete-dialog';
+import { ConfirmDeleteDialog } from '../../core/dialog/confirm-delete-dialog';
 import { EditUserDialog } from './edit-user-dialog';
 import { ViewUserDialog } from './view-user-detail-dialog';
 
@@ -141,6 +141,7 @@ export default function UsersTable({
                   />
                 </TableCell>
                 <TableCell>User</TableCell>
+                <TableCell>Phone Number</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Roles</TableCell>
                 <TableCell align="right">Actions</TableCell>
@@ -167,6 +168,7 @@ export default function UsersTable({
                         </Box>
                       </Stack>
                     </TableCell>
+                    <TableCell>{row.phoneNumber}</TableCell>
                     <TableCell>{row.email}</TableCell>
                     <TableCell>{row.roles?.join(', ')}</TableCell>
                     <TableCell align="right">

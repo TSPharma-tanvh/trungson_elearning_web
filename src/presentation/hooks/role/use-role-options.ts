@@ -15,17 +15,20 @@ export function useRoleOptions(roleUsecase: RoleUsecase) {
 
   const loadMoreRoles = useCallback(async () => {
     if (loading || !hasMore || isFetchingRef.current) return;
+
     isFetchingRef.current = true;
     setLoading(true);
 
     try {
       const request = new GetRoleRequest({ pageNumber: page, pageSize: DEFAULT_PAGE_SIZE });
-      const newRoles = await roleUsecase.getAllRoles(request);
+      const result = await roleUsecase.getAllRoles(request);
 
-      if (newRoles.length === 0) {
+      if (result.roles.length === 0) {
         setHasMore(false);
       } else {
-        setRoles((prev) => [...prev, ...newRoles]);
+        setRoles((prev) => [...prev, ...result.roles]);
+        const totalPages = Math.ceil(result.totalRecords / result.pageSize);
+        setHasMore(page < totalPages);
         setPage((prev) => prev + 1);
       }
     } catch (error) {
@@ -40,10 +43,11 @@ export function useRoleOptions(roleUsecase: RoleUsecase) {
   // Initial load
   useEffect(() => {
     loadMoreRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
-    roleOptions: roles.map((r) => ({ label: r.name, value: r.name })), // ← Use `r.name`
+    roleOptions: roles.map((r) => ({ label: r.name, value: r.name })),
     loadMoreRoles,
     hasMore,
     loading,

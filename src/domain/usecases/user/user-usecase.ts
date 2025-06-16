@@ -8,10 +8,6 @@ import { UserRepository } from '@/domain/repositories/user/user-repository';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 
-
-
-
-
 export class UserUsecase {
   constructor(private readonly userRepo: UserRepository) {}
 

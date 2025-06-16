@@ -5,7 +5,6 @@ import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { useRoleOptions } from '@/presentation/hooks/role/use-role-options';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
-import { Badge, CheckCircle, Email, Image, Person, Visibility, VisibilityOff, Work } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -30,8 +29,19 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import {
+  BagSimple,
+  CheckCircle,
+  Envelope,
+  Eye,
+  EyeClosed,
+  IdentificationCard,
+  Image as ImageIcon,
+  Person,
+  Phone,
+} from '@phosphor-icons/react';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
+import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
 
 interface EditUserDialogProps {
   open: boolean;
@@ -62,6 +72,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
           isActive: user.isActive,
           roles: user.roles?.join(','),
           employeeId: user.employeeId,
@@ -116,6 +127,13 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
   const selectedRoles = formData.roles?.split(',') ?? [];
 
+  // Define icon style for bold, filled, and gray appearance
+  const iconStyle = {
+    size: 20,
+    weight: 'fill' as const,
+    color: '#616161', // Medium-dark gray color
+  };
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Edit User</DialogTitle>
@@ -137,7 +155,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Person />
+                      <Person {...iconStyle} />
                     </InputAdornment>
                   ),
                 }}
@@ -155,7 +173,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Badge />
+                      <IdentificationCard {...iconStyle} />
                     </InputAdornment>
                   ),
                 }}
@@ -173,7 +191,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Badge />
+                      <IdentificationCard {...iconStyle} />
                     </InputAdornment>
                   ),
                 }}
@@ -191,7 +209,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Work />
+                      <BagSimple {...iconStyle} />
                     </InputAdornment>
                   ),
                 }}
@@ -260,6 +278,24 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
             <Grid item xs={12} sm={12}>
               <TextField
+                label="Phone Number"
+                value={formData.phoneNumber || ''}
+                onChange={(e) => handleChange('phoneNumber', e.target.value)}
+                fullWidth
+                disabled={isSubmitting}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Phone {...iconStyle} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+              <TextField
                 label="Email"
                 value={formData.email || ''}
                 onChange={(e) => handleChange('email', e.target.value)}
@@ -269,7 +305,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Email />
+                      <Envelope {...iconStyle} />
                     </InputAdornment>
                   ),
                 }}
@@ -288,13 +324,13 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <CheckCircle />
+                      <CheckCircle {...iconStyle} />
                     </InputAdornment>
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showPassword ? <EyeClosed {...iconStyle} /> : <Eye {...iconStyle} />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -320,13 +356,13 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <CheckCircle />
+                      <CheckCircle {...iconStyle} />
                     </InputAdornment>
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showPassword ? <EyeClosed {...iconStyle} /> : <Eye {...iconStyle} />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -347,8 +383,14 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <Button variant="outlined" component="label" fullWidth disabled={isSubmitting} startIcon={<Image />}>
+            <Grid item xs={12} sm={12}>
+              <Button
+                variant="outlined"
+                component="label"
+                fullWidth
+                disabled={isSubmitting}
+                startIcon={<ImageIcon {...iconStyle} />}
+              >
                 Upload Thumbnail
                 <input
                   type="file"
@@ -363,17 +405,19 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   }}
                 />
               </Button>
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               {previewUrl && (
                 <Box
                   sx={{
-                    width: 100,
-                    height: 100,
+                    width: 150,
+                    height: 150,
                     borderRadius: 1,
                     border: '1px solid #ccc',
                     overflow: 'hidden',
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mx: 'auto', // Center horizontally
                   }}
                 >
                   <img

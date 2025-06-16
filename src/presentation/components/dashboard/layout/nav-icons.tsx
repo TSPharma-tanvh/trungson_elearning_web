@@ -1,4 +1,4 @@
-import { Faders, File, Notification, QuestionMark, SealQuestion } from '@phosphor-icons/react';
+import { AddressBook, Faders, File, Notification, QuestionMark, SealQuestion } from '@phosphor-icons/react';
 import type { Icon } from '@phosphor-icons/react/dist/lib/types';
 import { At, ChalkboardSimple, Table } from '@phosphor-icons/react/dist/ssr';
 import { ChartPie as ChartPieIcon } from '@phosphor-icons/react/dist/ssr/ChartPie';
@@ -22,5 +22,5 @@ export const navIcons = {
   system: Faders,
   email: At,
   notification: Notification,
-  
+  roles: AddressBook,
 } as Record<string, Icon>;

@@ -5,14 +5,13 @@ import { RegisterRequestModel } from '@/domain/models/user/request/register-requ
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { UserRepository } from '@/domain/repositories/user/user-repository';
 
-import { apiClient } from '@/data/api/apiClient';
-import { apiEndpoints, getApiUrl } from '@/data/api/apiEndpoints';
+import { apiClient } from '@/data/api/api-client';
+import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class UserRepositoryImpl implements UserRepository {
   async getUserDetailInfo(id: string): Promise<ApiResponse> {
-    const url = getApiUrl(apiEndpoints.user.getById, id);
     try {
-      const response = await apiClient.get<ApiResponse>(url);
+      const response = await apiClient.get<ApiResponse>(apiEndpoints.user.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse || !apiResponse.isSuccessStatusCode) {
@@ -26,11 +25,10 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async updateUserInfo(id: string, request: UpdateUserInfoRequest): Promise<ApiResponse> {
-    const url = getApiUrl(apiEndpoints.user.update, id);
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(url, formData, {
+      const response = await apiClient.put<ApiResponse>(apiEndpoints.user.update(id), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -49,9 +47,8 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async getUserListInfo(request: GetUserRequest): Promise<ApiPaginationResponse> {
-    const url = getApiUrl(apiEndpoints.user.getAll);
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(url, {
+      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.user.getAll, {
         params: getUserRequestToJSON(request),
       });
 
@@ -68,10 +65,8 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
-    const url = getApiUrl(apiEndpoints.identity.signUp);
-
     try {
-      const response = await apiClient.post<ApiResponse>(url, request.toJSON());
+      const response = await apiClient.post<ApiResponse>(apiEndpoints.identity.signUp, request.toJSON());
 
       const apiResponse = response.data;
 
