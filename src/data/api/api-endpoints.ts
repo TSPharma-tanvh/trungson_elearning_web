@@ -6,6 +6,7 @@ interface IdentityEndpoints {
   signIn: StaticEndpoint;
   signUp: StaticEndpoint;
   forgotPassword: StaticEndpoint;
+  changePassword: StaticEndpoint;
 }
 
 interface TokenEndpoints {
@@ -35,6 +36,17 @@ interface RoleEndpoints {
   deleteRole: DynamicEndpoint;
 }
 
+interface PathEnpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+}
+
+interface CategoryEndpoints {
+  getAll: StaticEndpoint;
+}
+
 // Main type containing all endpoint categories
 interface EndpointDefinitions {
   identity: IdentityEndpoints;
@@ -42,6 +54,8 @@ interface EndpointDefinitions {
   user: UserEndpoints;
   notifications: NotificationEndpoints;
   role: RoleEndpoints;
+  path: PathEnpoints;
+  category: CategoryEndpoints;
 }
 
 //endpoint values
@@ -50,6 +64,7 @@ const endpoints: EndpointDefinitions = {
     signIn: 'Identity/Login',
     signUp: 'Identity/Register',
     forgotPassword: 'Auth/Forgot-password',
+    changePassword: 'Identity/ChangePassword',
   },
   token: {
     refreshToken: 'Token/Get-Access-Token',
@@ -73,6 +88,15 @@ const endpoints: EndpointDefinitions = {
     createRole: 'Role/CreateRole',
     updateRole: (id: string) => `Role/UpdateRole/${id}`,
     deleteRole: (id: string) => `Role/DeleteRole/${id}`,
+  },
+  path: {
+    getAll: 'CoursePath/GetCoursePaths',
+    getById: (id: string) => `CoursePath/GetCoursePathById/${id}`,
+    create: '',
+    update: 'CoursePath/UpdateCoursePath',
+  },
+  category: {
+    getAll: 'Category/GetCategories',
   },
 };
 

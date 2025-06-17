@@ -1,10 +1,14 @@
 import { SignInUseCase } from '@/domain/usecases/auth/auth-usecase';
+import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
+import { PathUsecase } from '@/domain/usecases/path/path-usecase';
 import { RoleUsecase } from '@/domain/usecases/role/role-usecase';
 import { SendNotificationUseCase } from '@/domain/usecases/SendNotificationUseCase';
 import { UserUsecase } from '@/domain/usecases/user/user-usecase';
 
 import { AuthRepositoryImpl } from '@/data/repositories/auth/auth-repo-impl';
+import { CategoryRepositoryImpl } from '@/data/repositories/category/category-repo-impl';
 import { NotificationRepoImpl } from '@/data/repositories/NotificationRepoImpl';
+import { PathRepoImpl } from '@/data/repositories/path/path-repo.impl';
 import { RoleRepositoryImpl } from '@/data/repositories/role/role-repo-impl';
 import { UserRepositoryImpl } from '@/data/repositories/user/user-repo-impl';
 
@@ -22,6 +26,12 @@ export class DependencyContainer {
   //role
   public roleRepo = new RoleRepositoryImpl();
 
+  //path
+  public pathRepo = new PathRepoImpl();
+
+  //category
+  public categoryRepo = new CategoryRepositoryImpl();
+
   // Use cases
   public sendNotificationUseCase = new SendNotificationUseCase(this.notificationRepo);
 
@@ -33,6 +43,12 @@ export class DependencyContainer {
 
   //role
   public roleUseCase = new RoleUsecase(this.roleRepo);
+
+  //path
+  public pathUseCase = new PathUsecase(this.pathRepo);
+
+  //category
+  public categoryUsecase = new CategoryUsecase(this.categoryRepo);
 }
 
 // Export a singleton container

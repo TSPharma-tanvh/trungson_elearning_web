@@ -34,15 +34,28 @@ export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.J
   const [user, setUser] = React.useState<UserResponse>();
 
   React.useEffect(() => {
-    const data = StoreLocalManager.getLocalData(AppStrings.USER_DATA);
-    if (data) {
-      try {
-        const parsed = JSON.parse(data) as UserResponse;
-        setUser(parsed);
-      } catch (error) {
-        logger.error('Failed to parse user data:', error);
+    const syncUserData = () => {
+      const data = StoreLocalManager.getLocalData(AppStrings.USER_DATA);
+      if (data) {
+        try {
+          const parsed = JSON.parse(data) as UserResponse;
+          setUser(parsed);
+        } catch (error) {
+          logger.error('Failed to parse user data:', error);
+        }
       }
-    }
+    };
+
+    syncUserData();
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === AppStrings.USER_DATA) {
+        syncUserData();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   return (
@@ -99,6 +112,7 @@ export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.J
               </Badge>
             </Tooltip>
             <Avatar
+              key={user?.thumbnail?.resourceUrl}
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}
               src={user?.thumbnail?.resourceUrl}

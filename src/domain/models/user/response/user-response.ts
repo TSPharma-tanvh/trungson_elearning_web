@@ -27,7 +27,7 @@ export class UserResponse {
     dto.isActive = json.isActive;
     dto.employeeId = json.employeeId;
     dto.thumbnailId = json.thumbnailId;
-    dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJSON(json.thumbnail) : undefined;
+    dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined;
     dto.roles = json.roles ?? [];
     dto.rolePermissions = json.rolePermissions ?? {};
     dto.employee = json.employee ? EmployeeResponse.fromJSON(json.employee) : undefined;
@@ -45,7 +45,7 @@ export class UserResponse {
       isActive: this.isActive,
       employeeId: this.employeeId,
       thumbnailId: this.thumbnailId,
-      thumbnail: this.thumbnail?.toJSON(),
+      thumbnail: this.thumbnail?.toJson(),
       roles: this.roles,
       rolePermissions: this.rolePermissions,
       employee: this.employee?.toJSON(),

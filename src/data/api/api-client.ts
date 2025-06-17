@@ -61,10 +61,14 @@ class ApiClient {
         if (typeof data?.isSuccessStatusCode === 'boolean') {
           if (!data.isSuccessStatusCode) {
             CustomSnackBar.showSnackbar(data.message || 'Unknown error', 'error');
-
             throw new Error(data.message || 'API logic error');
+          } else {
+            if (data.message) {
+              CustomSnackBar.showSnackbar(data.message, 'success');
+            }
           }
         }
+
         return response;
       },
       // inside this.client.interceptors.response.use(

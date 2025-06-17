@@ -1,4 +1,5 @@
 import { ApiResponse } from '@/domain/models/core/api-response';
+import { ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
 import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
@@ -26,7 +27,6 @@ export class UserUsecase {
   }
 
   async getUserInfoWithId(id: string): Promise<UserResponse> {
-
     if (id === null || id === undefined || id.trim() === '') {
       throw new Error('User ID is missing.');
     }
@@ -65,20 +65,13 @@ export class UserUsecase {
     };
   }
 
-  async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
-    if (!request.userName || !request.password || !request.confirmPassword) {
-      throw new Error('Username and passwords are required.');
-    }
+  async changePassword(request: ChangePasswordRequest): Promise<ApiResponse> {
+    var userId = StoreLocalManager.getLocalData(AppStrings.USER_ID);
 
-    if (request.password !== request.confirmPassword) {
-      throw new Error('Passwords do not match.');
+    if (userId === null || userId === undefined || userId.trim() === '') {
+      throw new Error('User ID is missing.');
     }
-
-    const response = await this.userRepo.registerUser(request);
-
-    if (response.statusCode !== 200) {
-      throw new Error(response.message || 'Failed to register user.');
-    }
+    const response = await this.userRepo.changePassword(request);
 
     return response;
   }

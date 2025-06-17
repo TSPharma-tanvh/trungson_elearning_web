@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import CloseIcon from '@mui/icons-material/Close';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Avatar,
   Box,
@@ -18,6 +21,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 
 interface Props {
   open: boolean;
@@ -29,6 +33,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
   const { userUsecase } = useDI();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [fullScreen, setFullScreen] = useState(false);
 
   const EMPLOYEE_FIELDS: { label: string; value: (e: EmployeeResponse) => any }[] = [
     { label: 'Full Name', value: (e) => `${e.firstName ?? ''} ${e.lastName ?? ''}` },
@@ -77,8 +82,25 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
   if (!userId) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>User Details</DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          pr: 1,
+        }}
+      >
+        <Typography variant="h6">User Details</Typography>
+        <Box>
+          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+            {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>{' '}
       <DialogContent dividers sx={{ typography: 'body2' }}>
         {loading || !user ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
@@ -99,7 +121,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
             </Grid>
 
             {/* Basic Info */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
                 User ID
               </Typography>
@@ -107,7 +129,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
                 {user.id}
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
                 Username
               </Typography>
@@ -115,7 +137,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
                 {user.userName}
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
                 Phone Number
               </Typography>
@@ -123,7 +145,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
                 {user.phoneNumber}
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
                 Email
               </Typography>
@@ -131,7 +153,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
                 {user.email}
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
                 Is Active
               </Typography>
@@ -172,7 +194,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
 
                     <Grid container spacing={1} pl={2}>
                       {Object.entries(groupedPermissions).map(([group, actions]) => (
-                        <Grid item xs={12} sm={6} md={4} key={group}>
+                        <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4} key={group}>
                           <Box>
                             <Typography variant="body2" fontWeight={600} mb={0.5}>
                               {group}
@@ -205,7 +227,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
                 {EMPLOYEE_FIELDS.map(({ label, value }) => {
                   const fieldValue = value(user.employee!);
                   return (
-                    <Grid item xs={12} sm={6} md={4} key={label}>
+                    <Grid item xs={12} sm={fullScreen ? 3 : 6} md={fullScreen ? 3 : 4} key={label}>
                       <Box>
                         <Typography variant="subtitle2" fontWeight={500} fontSize="0.85rem" noWrap>
                           {label}
@@ -230,9 +252,9 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
           </Grid>
         )}
       </DialogContent>
-      <DialogActions>
+      {/* <DialogActions>
         <Button onClick={onClose}>Close</Button>
-      </DialogActions>
+      </DialogActions> */}
     </Dialog>
   );
 }

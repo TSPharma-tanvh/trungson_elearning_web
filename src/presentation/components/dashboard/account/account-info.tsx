@@ -12,13 +12,13 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 type Props = {
-  user: UserResponse;
+  user: UserResponse | null;
   onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   thumbnailPreview?: string | null;
 };
 
 export function AccountInfo({ user, onUpload, thumbnailPreview }: Props): React.JSX.Element {
-  const avatarUrl = thumbnailPreview ?? user.thumbnail?.resourceUrl ?? '/assets/avatar.png';
+  const avatarUrl = thumbnailPreview ?? user?.thumbnail?.resourceUrl ?? '/assets/avatar.png';
 
   return (
     <Card>
@@ -27,10 +27,10 @@ export function AccountInfo({ user, onUpload, thumbnailPreview }: Props): React.
           <Avatar src={avatarUrl} sx={{ height: '80px', width: '80px' }} />
           <Stack spacing={1} sx={{ textAlign: 'center' }}>
             <Typography variant="h5">
-              {user.firstName} {user.lastName}
+              {user?.firstName ?? '...'} {user?.lastName ?? ''}
             </Typography>
             <Typography color="text.secondary" variant="body2">
-              {user.employee?.city}, {user.employee?.country}
+              {user?.employee?.city ?? ''}, {user?.employee?.country ?? ''}
             </Typography>
           </Stack>
         </Stack>

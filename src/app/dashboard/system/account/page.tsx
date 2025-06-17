@@ -8,6 +8,7 @@ import { config } from '@/config';
 import { AccountDetailsForm } from '@/presentation/components/dashboard/account/account-details-form';
 import { AccountForm } from '@/presentation/components/dashboard/account/account-form';
 import { AccountInfo } from '@/presentation/components/dashboard/account/account-info';
+import { UpdatePasswordForm } from '@/presentation/components/dashboard/account/update-password-form';
 
 export const metadata = { title: `Account | Dashboard | ${config.site.name}` } satisfies Metadata;
 

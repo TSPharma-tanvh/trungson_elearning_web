@@ -13,6 +13,15 @@ export const navItems = [
     ],
   },
   {
+    key: 'courses',
+    title: 'Courses',
+    items: [
+      { key: 'path', title: 'Path', href: paths.dashboard.path, icon: 'path' },
+      { key: 'courses', title: 'Courses', href: paths.dashboard.courses, icon: 'course' },
+      { key: 'lesson', title: 'Lesson', href: paths.dashboard.lesson, icon: 'lesson' },
+    ],
+  },
+  {
     key: 'content',
     title: 'Content',
     items: [

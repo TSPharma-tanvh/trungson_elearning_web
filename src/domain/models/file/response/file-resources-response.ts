@@ -8,7 +8,7 @@ export class FileResourcesResponse {
   name?: string;
   size: number = 0;
 
-  static fromJSON(json: any): FileResourcesResponse {
+  static fromJson(json: any): FileResourcesResponse {
     const dto = new FileResourcesResponse();
     dto.id = json.id;
     dto.type = json.type;
@@ -21,7 +21,7 @@ export class FileResourcesResponse {
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       type: this.type,

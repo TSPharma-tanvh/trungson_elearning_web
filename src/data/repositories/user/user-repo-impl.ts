@@ -1,5 +1,6 @@
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { ApiResponse } from '@/domain/models/core/api-response';
+import { ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
 import { GetUserRequest, getUserRequestToJSON } from '@/domain/models/user/request/get-user-request';
 import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
@@ -67,6 +68,22 @@ export class UserRepositoryImpl implements UserRepository {
   async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
     try {
       const response = await apiClient.post<ApiResponse>(apiEndpoints.identity.signUp, request.toJSON());
+
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to register user');
+    }
+  }
+
+  async changePassword(request: ChangePasswordRequest): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.post<ApiResponse>(apiEndpoints.identity.changePassword, request.toJSON());
 
       const apiResponse = response.data;
 

@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Copy } from '@phosphor-icons/react/dist/ssr';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
-import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Plus, Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 
 import { AddUserDialog } from '@/presentation/components/dashboard/management/users/add-user-dialog';
@@ -68,7 +68,6 @@ export default function Page(): React.JSX.Element {
   const handleUpdateUser = async (userId: string, data: UpdateUserInfoRequest) => {
     try {
       const response = await userUsecase.updateUserInfo(userId, data);
-
       await fetchUsers();
     } catch (error) {
       console.error('Error updating user:', error);
@@ -101,7 +100,7 @@ export default function Page(): React.JSX.Element {
         </Stack>
         <div>
           <Button
-            startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />}
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
             onClick={() => setShowForm(true)}
           >

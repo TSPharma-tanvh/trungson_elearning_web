@@ -5,6 +5,9 @@ import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { useRoleOptions } from '@/presentation/hooks/role/use-role-options';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import CloseIcon from '@mui/icons-material/Close';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Box,
   Button,
@@ -59,6 +62,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [fullScreen, setFullScreen] = useState(false);
 
   const roleUsecase = useDI().roleUseCase;
   const { roleOptions, loadMoreRoles, hasMore, loading } = useRoleOptions(roleUsecase);
@@ -135,8 +139,25 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Edit User</DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          pr: 1,
+        }}
+      >
+        <Typography variant="h6">User Details</Typography>
+        <Box>
+          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+            {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>{' '}
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
@@ -408,8 +429,8 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               {previewUrl && (
                 <Box
                   sx={{
-                    width: 150,
-                    height: 150,
+                    width: fullScreen ? 300 : 150,
+                    height: fullScreen ? 300 : 150,
                     borderRadius: 1,
                     border: '1px solid #ccc',
                     overflow: 'hidden',
@@ -417,7 +438,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    mx: 'auto', // Center horizontally
+                    mx: 'auto',
                   }}
                 >
                   <img
@@ -431,7 +452,6 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
           </Grid>
         </Box>
       </DialogContent>
-
       <DialogActions>
         <Box
           sx={{
