@@ -1,7 +1,5 @@
 export class EnrollmentCriteriaResponse {
   id: string = '';
-  name?: string;
-  desc?: string;
   targetType: string = '';
   targetID?: string;
   targetLevelID?: string;
@@ -15,8 +13,6 @@ export class EnrollmentCriteriaResponse {
   static fromJSON(json: any): EnrollmentCriteriaResponse {
     return new EnrollmentCriteriaResponse({
       id: json.id,
-      name: json.name,
-      desc: json.desc,
       targetType: json.targetType,
       targetID: json.targetID,
       targetLevelID: json.targetLevelID,
@@ -28,8 +24,6 @@ export class EnrollmentCriteriaResponse {
   toJSON(): any {
     return {
       id: this.id,
-      name: this.name,
-      desc: this.desc,
       targetType: this.targetType,
       targetID: this.targetID,
       targetLevelID: this.targetLevelID,

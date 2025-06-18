@@ -8,7 +8,7 @@ import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import { CoursePathDetailForm } from '@/presentation/components/courses/path/course-path-detail-form';
+import CoursePathDetailForm from '@/presentation/components/courses/path/course-path-detail-form';
 import { PathFilters } from '@/presentation/components/courses/path/path-filter';
 import CoursePathTable from '@/presentation/components/courses/path/path-table';
 

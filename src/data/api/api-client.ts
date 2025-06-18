@@ -63,7 +63,7 @@ class ApiClient {
             CustomSnackBar.showSnackbar(data.message || 'Unknown error', 'error');
             throw new Error(data.message || 'API logic error');
           } else {
-            if (data.message) {
+            if (data.message && response.config.method?.toLowerCase() !== 'get') {
               CustomSnackBar.showSnackbar(data.message, 'success');
             }
           }

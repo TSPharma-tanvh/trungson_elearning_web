@@ -22,4 +22,12 @@ export class CategoryUsecase {
       pageNumber: result.pageNumber ?? request.pageNumber,
     };
   }
+
+  async getCategoryById(id: string): Promise<CategoryDetailResponse> {
+    var result = await this.categoryRepo.getCategoryById(id);
+
+    var userResponse = CategoryDetailResponse.fromJson(result.result);
+
+    return userResponse;
+  }
 }

@@ -45,6 +45,15 @@ interface PathEnpoints {
 
 interface CategoryEndpoints {
   getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+}
+
+interface EnrollmentCriteriaEndpoints {
+  getAll: StaticEndpoint;
+}
+
+interface CoursesEndpoints {
+  getAll: StaticEndpoint;
 }
 
 // Main type containing all endpoint categories
@@ -56,6 +65,8 @@ interface EndpointDefinitions {
   role: RoleEndpoints;
   path: PathEnpoints;
   category: CategoryEndpoints;
+  enrollment: EnrollmentCriteriaEndpoints;
+  courses: CoursesEndpoints;
 }
 
 //endpoint values
@@ -97,6 +108,13 @@ const endpoints: EndpointDefinitions = {
   },
   category: {
     getAll: 'Category/GetCategories',
+    getById: (id: string) => `Category/GetCategory/${id}`,
+  },
+  enrollment: {
+    getAll: 'EnrollmentCriteria/GetEnrollmentCriteria',
+  },
+  courses: {
+    getAll: 'Course/GetCourse',
   },
 };
 

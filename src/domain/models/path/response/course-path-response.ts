@@ -34,7 +34,7 @@ export class CoursePathResponse {
     dto.thumbnailID = json.thumbnailID;
     dto.enrollmentCriteriaID = json.enrollmentCriteriaID;
     dto.enrollmentCriteria = json.enrollmentCriteria
-      ? EnrollmentCriteriaResponse.fromJson(json.enrollmentCriteria)
+      ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
       : undefined;
     dto.category = json.category ? CategoryDetailResponse.fromJson(json.category) : undefined;
     dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined;
@@ -55,7 +55,7 @@ export class CoursePathResponse {
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
-      enrollmentCriteria: this.enrollmentCriteria?.toJson(),
+      enrollmentCriteria: this.enrollmentCriteria?.toJSON(),
       category: this.category?.toJson(),
       thumbnail: this.thumbnail?.toJson(),
       courses: this.courses.map((c) => c.toJson()),

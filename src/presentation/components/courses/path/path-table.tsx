@@ -26,7 +26,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { CoursePathDetailForm } from './course-path-detail-form';
+import CoursePathDetailForm from './course-path-detail-form';
 import { UpdatePathFormDialog } from './update-path-form';
 
 interface Props {

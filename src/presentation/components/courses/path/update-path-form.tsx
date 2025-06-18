@@ -1,12 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { CategoryResponse } from '@/domain/models/category/response/category-response';
-import { CategoryListResult } from '@/domain/models/category/response/category-result';
+import { useEffect, useState } from 'react';
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
-import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { CategoryEnum, CategoryEnumUtils } from '@/utils/enum/core-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
@@ -22,24 +18,20 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
   FormControlLabel,
   Grid,
   IconButton,
-  InputAdornment,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Calendar, CheckCircle, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
+import { Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
+import { CategorySelect } from '../../category/category-select';
+import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
+import { CustomTextField } from '../../core/text-field/custom-textfield';
+import { CourseSelectDialog } from '../courses/courses-select';
 
 interface EditPathDialogProps {
   open: boolean;
@@ -51,121 +43,12 @@ interface EditPathDialogProps {
 export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: EditPathDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { categoryUsecase, courseUsecase } = useDI();
 
   const [formData, setFormData] = useState<UpdateCoursePathRequest>(new UpdateCoursePathRequest());
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
-
-  // Category loading logic
-  const categoryUsecase = useDI().categoryUsecase as CategoryUsecase;
-  const [categories, setCategories] = useState<CategoryResponse[]>([]);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loadingCategories, setLoadingCategories] = useState(false);
-  const [hasOverflow, setHasOverflow] = useState(false);
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
-  const [initialRenderDone, setInitialRenderDone] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const listRef = useRef<HTMLUListElement | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  // useEffect(() => {
-  //   setIsMounted(open);
-  //   if (open) {
-  //     loadCategories(1);
-  //     if (!initialRenderDone) {
-  //       setIsSelectOpen(true);
-  //     }
-  //   }
-  //   return () => {
-  //     if (abortControllerRef.current) {
-  //       abortControllerRef.current.abort();
-  //       abortControllerRef.current = null;
-  //     }
-  //   };
-  // }, [open]);
-  useEffect(() => {
-    setIsMounted(open);
-  }, [open]);
-
-  useEffect(() => {
-    if (isMounted) {
-      loadCategories(1);
-      if (!initialRenderDone) {
-        setIsSelectOpen(false);
-      }
-    }
-  }, [isMounted]);
-
-  const loadCategories = async (page: number) => {
-    if (!categoryUsecase || loadingCategories || !isMounted) return;
-    setLoadingCategories(true);
-    abortControllerRef.current = new AbortController();
-    try {
-      const request = new GetCategoryRequest({
-        category: CategoryEnumUtils.getCategoryKeyFromValue(CategoryEnum.Path),
-        pageNumber: page,
-        pageSize: 10,
-      });
-      const result: CategoryListResult = await categoryUsecase.getCategoryList(request);
-      if (isMounted) {
-        setCategories((prev) => (page === 1 ? result.categories : [...prev, ...result.categories]));
-        setHasMore(result.categories.length > 0 && result.totalRecords > categories.length + result.categories.length);
-        setPageNumber(page);
-      }
-    } catch (error) {
-    } finally {
-      if (isMounted) {
-        setLoadingCategories(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (loadingCategories || !hasMore || hasOverflow || !isMounted) return;
-
-    const checkOverflow = () => {
-      if (!isMounted) return;
-
-      if (!initialRenderDone) {
-        setInitialRenderDone(true);
-        setIsSelectOpen(false);
-      }
-
-      if (listRef.current) {
-        const { scrollHeight, clientHeight } = listRef.current;
-        const isOverflowing = scrollHeight > clientHeight;
-        setHasOverflow(isOverflowing);
-        console.log('Overflow check:', { scrollHeight, clientHeight, isOverflowing, pageNumber });
-
-        if (!isOverflowing && hasMore) {
-          loadCategories(pageNumber + 1);
-        }
-      }
-    };
-
-    const timer = setTimeout(checkOverflow, 100);
-
-    const resizeObserver = new ResizeObserver(checkOverflow);
-    if (listRef.current) {
-      resizeObserver.observe(listRef.current);
-    }
-
-    return () => {
-      clearTimeout(timer);
-      if (listRef.current) {
-        resizeObserver.unobserve(listRef.current);
-      }
-    };
-  }, [categories, loadingCategories, hasMore, hasOverflow, initialRenderDone, isMounted]);
-
-  const handleScroll = (event: React.UIEvent<HTMLUListElement>) => {
-    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    if (scrollTop + clientHeight >= scrollHeight - 5 && hasMore && !loadingCategories && isMounted) {
-      loadCategories(pageNumber + 1);
-    }
-  };
 
   useEffect(() => {
     if (user && open) {
@@ -182,12 +65,10 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
             user.displayType !== undefined
               ? DisplayTypeEnum[user.displayType as keyof typeof DisplayTypeEnum]
               : undefined,
-          // courseIds: user.courseIds?.join(',') || undefined,
           enrollmentCriteriaID: user.enrollmentCriteriaID || undefined,
           categoryID: user.categoryID || undefined,
           thumbnailID: user.thumbnailID || undefined,
-          // thumbDocumentNo: user.thumbDocumentNo || undefined,
-          // thumbPrefixName: user.thumbPrefixName || undefined,
+          courseIds: user.courses.map((course) => course.id).join(',') || '',
           categoryEnum: CategoryEnumUtils.getCategoryKeyFromValue(CategoryEnum.Path),
           isDeleteOldThumbnail: false,
         })
@@ -202,13 +83,6 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
         new UpdateCoursePathRequest({ categoryEnum: CategoryEnumUtils.getCategoryKeyFromValue(CategoryEnum.Path) })
       );
       setPreviewUrl(null);
-      setCategories([]);
-      setPageNumber(1);
-      setHasMore(true);
-      setHasOverflow(false);
-      setIsSelectOpen(false);
-      setInitialRenderDone(false);
-      setIsMounted(false);
     }
   }, [open]);
 
@@ -235,6 +109,17 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
     color: '#616161',
   };
 
+  const statusOptions = [
+    { value: StatusEnum.Enable, label: 'Enable' },
+    { value: StatusEnum.Disable, label: 'Disable' },
+    { value: StatusEnum.Deleted, label: 'Deleted' },
+  ];
+
+  const displayTypeOptions = [
+    { value: DisplayTypeEnum.Public, label: 'Public' },
+    { value: DisplayTypeEnum.Private, label: 'Private' },
+  ];
+
   if (!user) return null;
 
   return (
@@ -256,248 +141,117 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
             ID: {user.id}
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
-              <TextField
+            <Grid item xs={12}>
+              <CustomTextField
                 label="Name"
-                value={formData.name || ''}
-                onChange={(e) => handleChange('name', e.target.value)}
-                fullWidth
+                value={formData.name}
+                onChange={(value) => handleChange('name', value)}
                 disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Tag {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                icon={<Tag {...iconStyle} />}
               />
             </Grid>
-            <Grid item xs={12} sm={12}>
-              <TextField
+            <Grid item xs={12}>
+              <CustomTextField
                 label="Detail"
-                value={formData.detail || ''}
-                onChange={(e) => handleChange('detail', e.target.value)}
-                fullWidth
+                value={formData.detail}
+                onChange={(value) => handleChange('detail', value)}
                 disabled={isSubmitting}
                 multiline
                 rows={3}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Note {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                icon={<Note {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <CustomTextField
                 label="Start Time"
-                type="datetime-local"
-                value={formData.startTime || ''}
-                onChange={(e) => handleChange('startTime', e.target.value)}
-                fullWidth
+                value={formData.startTime}
+                onChange={(value) => handleChange('startTime', value)}
                 disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Calendar {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                type="datetime-local"
+                icon={<Calendar {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <CustomTextField
                 label="End Time"
-                type="datetime-local"
-                value={formData.endTime || ''}
-                onChange={(e) => handleChange('endTime', e.target.value)}
-                fullWidth
+                value={formData.endTime}
+                onChange={(value) => handleChange('endTime', value)}
                 disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Calendar {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                type="datetime-local"
+                icon={<Calendar {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth disabled={isSubmitting}>
-                <InputLabel shrink>Status</InputLabel>
-                <Select
-                  value={formData.status ?? ''}
-                  onChange={(e) => handleChange('status', Number(e.target.value) as StatusEnum)}
-                  displayEmpty
-                >
-                  <MenuItem value={StatusEnum.Enable}>Enable</MenuItem>
-                  <MenuItem value={StatusEnum.Disable}>Disable</MenuItem>
-                  <MenuItem value={StatusEnum.Deleted}>Deleted</MenuItem>
-                </Select>
-              </FormControl>
+              <CustomSelectDropDown
+                label="Status"
+                value={formData.status ?? ''}
+                onChange={(value) => handleChange('status', value as StatusEnum)}
+                disabled={isSubmitting}
+                options={statusOptions}
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth disabled={isSubmitting}>
-                <InputLabel shrink>Display Type</InputLabel>
-                <Select
-                  value={formData.displayType ?? ''}
-                  onChange={(e) => handleChange('displayType', Number(e.target.value) as DisplayTypeEnum)}
-                  displayEmpty
-                >
-                  <MenuItem value={DisplayTypeEnum.Public}>Public</MenuItem>
-                  <MenuItem value={DisplayTypeEnum.Private}>Private</MenuItem>
-                </Select>
-              </FormControl>
+              <CustomSelectDropDown
+                label="Display Type"
+                value={formData.displayType ?? ''}
+                onChange={(value) => handleChange('displayType', value as DisplayTypeEnum)}
+                disabled={isSubmitting}
+                options={displayTypeOptions}
+              />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                label="Course IDs (comma-separated)"
-                value={formData.courseIds || ''}
-                onChange={(e) => handleChange('courseIds', e.target.value)}
-                fullWidth
+              <CourseSelectDialog
+                courseUsecase={courseUsecase}
+                value={formData.courseIds ? formData.courseIds.split(',').filter((id) => id) : []}
+                onChange={(value: string[]) => handleChange('courseIds', value.join(','))}
                 disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Tag {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                // pathID={formData.id}
+                pathID=""
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <CustomTextField
                 label="Enrollment Criteria ID"
-                value={formData.enrollmentCriteriaID || ''}
-                onChange={(e) => handleChange('enrollmentCriteriaID', e.target.value)}
-                fullWidth
+                value={formData.enrollmentCriteriaID}
+                onChange={(value) => handleChange('enrollmentCriteriaID', value)}
                 disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Tag {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                icon={<Tag {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth disabled={isSubmitting}>
-                <InputLabel id="category-select-label" shrink>
-                  Category
-                </InputLabel>
-                <Select
-                  labelId="category-select-label"
-                  value={formData.categoryID || ''}
-                  onChange={(e) => handleChange('categoryID', e.target.value as string)}
-                  open={isSelectOpen}
-                  onOpen={() => setIsSelectOpen(true)}
-                  onClose={() => setIsSelectOpen(false)}
-                  displayEmpty
-                  input={<OutlinedInput label="Category" />}
-                  renderValue={(selected) =>
-                    selected
-                      ? categories.find((cat) => cat.id === selected)?.categoryName || 'Select Category'
-                      : 'Select Category'
-                  }
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        maxHeight: 300,
-                        '&::-webkit-scrollbar': {
-                          width: '8px',
-                        },
-                        '&::-webkit-scrollbar-track': {
-                          backgroundColor: theme.palette.mode === 'dark' ? '#2D3748' : '#F7FAFC',
-                          borderRadius: '4px',
-                        },
-                        '&::-webkit-scrollbar-thumb': {
-                          backgroundColor: theme.palette.mode === 'dark' ? '#4A5568' : '#CBD5E0',
-                          borderRadius: '4px',
-                          '&:hover': {
-                            backgroundColor: theme.palette.mode === 'dark' ? '#718096' : '#A0AEC0',
-                          },
-                        },
-                        scrollbarWidth: 'thin',
-                        scrollbarColor: `${theme.palette.mode === 'dark' ? '#4A5568 #2D3748' : '#CBD5E0 #F7FAFC'}`,
-                      },
-                    },
-                    MenuListProps: {
-                      ref: listRef,
-                      onScroll: handleScroll,
-                    },
-                  }}
-                >
-                  {categories.map((category) => (
-                    <MenuItem key={category.id} value={category.id}>
-                      <ListItemText primary={category.categoryName} />
-                    </MenuItem>
-                  ))}
-                  {loadingCategories && (
-                    <Box textAlign="center" py={1}>
-                      <CircularProgress size={20} />
-                    </Box>
-                  )}
-                </Select>
-              </FormControl>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={formData.categoryID}
+                onChange={(value) => handleChange('categoryID', value)}
+                categoryEnum={CategoryEnum.Path}
+                disabled={isSubmitting}
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <CustomTextField
                 label="Thumbnail ID"
-                value={formData.thumbnailID || ''}
-                onChange={(e) => handleChange('thumbnailID', e.target.value)}
-                fullWidth
+                value={formData.thumbnailID}
+                onChange={(value) => handleChange('thumbnailID', value)}
                 disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <ImageIcon {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                icon={<ImageIcon {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <CustomTextField
                 label="Thumbnail Document No"
-                value={formData.thumbDocumentNo || ''}
-                onChange={(e) => handleChange('thumbDocumentNo', e.target.value)}
-                fullWidth
+                value={formData.thumbDocumentNo}
+                onChange={(value) => handleChange('thumbDocumentNo', value)}
                 disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <ImageIcon {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                icon={<ImageIcon {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <CustomTextField
                 label="Thumbnail Prefix Name"
-                value={formData.thumbPrefixName || ''}
-                onChange={(e) => handleChange('thumbPrefixName', e.target.value)}
-                fullWidth
+                value={formData.thumbPrefixName}
+                onChange={(value) => handleChange('thumbPrefixName', value)}
                 disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <ImageIcon {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
+                icon={<ImageIcon {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12}>
@@ -549,8 +303,8 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
               {previewUrl && (
                 <Box
                   sx={{
-                    width: fullScreen ? 300 : 150,
-                    height: fullScreen ? 300 : 150,
+                    width: fullScreen ? 400 : 200,
+                    height: fullScreen ? 400 : 200,
                     borderRadius: 1,
                     border: '1px solid #ccc',
                     overflow: 'hidden',

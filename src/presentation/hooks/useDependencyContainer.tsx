@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext } from 'react';
-import { container, DependencyContainer } from '@/container/DependencyContainer';
+import { container, DependencyContainer } from '@/container/dependency-container';
 
 const DIContext = createContext<DependencyContainer | null>(null);
 

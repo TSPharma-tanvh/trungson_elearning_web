@@ -60,3 +60,25 @@ export class CategoryEnumUtils {
     return CategoryEnum[value];
   }
 }
+
+export const LearningModeDisplayNames: Record<LearningModeEnum, string> = {
+  [LearningModeEnum.Online]: 'Online',
+  [LearningModeEnum.Offline]: 'Offline',
+};
+
+export const DisplayTypeDisplayNames: Record<DisplayTypeEnum, string> = {
+  [DisplayTypeEnum.Public]: 'Public',
+  [DisplayTypeEnum.Private]: 'Private',
+};
+
+export const ScheduleStatusDisplayNames: Record<ScheduleStatusEnum, string> = {
+  [ScheduleStatusEnum.Schedule]: 'Scheduled',
+  [ScheduleStatusEnum.Ongoing]: 'Ongoing',
+  [ScheduleStatusEnum.Cancelled]: 'Cancelled',
+};
+
+export const StatusDisplayNames: Record<StatusEnum, string> = {
+  [StatusEnum.Enable]: 'Enabled',
+  [StatusEnum.Disable]: 'Disabled',
+  [StatusEnum.Deleted]: 'Deleted',
+};
