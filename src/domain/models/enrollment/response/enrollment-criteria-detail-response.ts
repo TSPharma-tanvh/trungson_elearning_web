@@ -1,20 +1,25 @@
-export class EnrollmentCriteriaResponse {
-  id: string = '';
+import { ClassResponse } from '../../class/response/class-response';
+import { EnrollmentResponse } from '../../class/response/enrollment-response';
+
+export class EnrollmentCriteriaDetailResponse {
+  id?: string;
   name?: string;
   desc?: string;
-  targetType: string = '';
+  targetType?: string;
   disableStatus?: string;
   targetID?: string;
   targetLevelID?: string;
   maxCapacity?: number;
   targetPharmacyID?: string;
+  enrollments?: EnrollmentResponse[];
+  classes?: ClassResponse[];
 
-  constructor(init?: Partial<EnrollmentCriteriaResponse>) {
+  constructor(init?: Partial<EnrollmentCriteriaDetailResponse>) {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): EnrollmentCriteriaResponse {
-    return new EnrollmentCriteriaResponse({
+  static fromJson(json: any): EnrollmentCriteriaDetailResponse {
+    return new EnrollmentCriteriaDetailResponse({
       id: json.id,
       name: json.name,
       desc: json.desc,
@@ -24,10 +29,12 @@ export class EnrollmentCriteriaResponse {
       targetLevelID: json.targetLevelID,
       maxCapacity: json.maxCapacity,
       targetPharmacyID: json.targetPharmacyID,
+      enrollments: json.enrollments?.map((e: any) => EnrollmentResponse.fromJson(e)),
+      classes: json.classes?.map((c: any) => ClassResponse.fromJson(c)),
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       name: this.name,
@@ -38,6 +45,8 @@ export class EnrollmentCriteriaResponse {
       targetLevelID: this.targetLevelID,
       maxCapacity: this.maxCapacity,
       targetPharmacyID: this.targetPharmacyID,
+      enrollments: this.enrollments?.map((e) => e.toJson()),
+      classes: this.classes?.map((c) => c.toJson()),
     };
   }
 }

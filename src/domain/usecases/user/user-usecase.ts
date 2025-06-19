@@ -75,4 +75,10 @@ export class UserUsecase {
 
     return response;
   }
+
+  async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
+    var result = await this.userRepo.registerUser(request);
+
+    return result;
+  }
 }

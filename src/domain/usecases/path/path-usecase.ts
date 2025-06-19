@@ -1,5 +1,6 @@
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { ApiResponse } from '@/domain/models/core/api-response';
+import { CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
 import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
@@ -36,6 +37,12 @@ export class PathUsecase {
     var userResponse = CoursePathResponse.fromJson(result.result);
 
     return userResponse;
+  }
+
+  async createPath(request: CreateCoursePathRequest): Promise<ApiResponse> {
+    const response = await this.pathRepo.createPath(request);
+
+    return response;
   }
 
   async updatePathInfo(request: UpdateCoursePathRequest): Promise<ApiResponse> {

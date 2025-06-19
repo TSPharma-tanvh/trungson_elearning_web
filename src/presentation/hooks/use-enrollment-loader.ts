@@ -3,7 +3,7 @@ import { GetCategoryRequest } from '@/domain/models/category/request/get-categor
 import { CategoryResponse } from '@/domain/models/category/response/category-response';
 import { CategoryListResult } from '@/domain/models/category/response/category-result';
 import { EnrollmentCriteriaResponse } from '@/domain/models/criteria/response/enrollment-criteria-response';
-import { EnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/enrollment-criteria-request';
+import { GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/get-enrollment-criteria-request';
 import { EnrollmentCriteriaListResult } from '@/domain/models/enrollment/response/enrollment-criteria-result';
 import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
@@ -51,7 +51,7 @@ export function useEnrollmentLoader({
     setLoadingCategories(true);
     abortControllerRef.current = new AbortController();
     try {
-      const request = new EnrollmentCriteriaRequest({
+      const request = new GetEnrollmentCriteriaRequest({
         targetType: CategoryEnumUtils.getCategoryKeyFromValue(categoryEnum), // Use dynamic categoryEnum
         pageNumber: page,
         pageSize: 10,

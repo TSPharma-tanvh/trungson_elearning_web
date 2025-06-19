@@ -5,6 +5,7 @@ import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-pat
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { CategoryEnum, CategoryEnumUtils } from '@/utils/enum/core-enum';
+import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -21,6 +22,8 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useMediaQuery,
   useTheme,
@@ -29,8 +32,11 @@ import { Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
 import { CategorySelect } from '../../category/category-select';
 import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
+import { CustomDateTimePicker } from '../../core/picker/custom-date-picker';
 import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '../../core/text-field/custom-textfield';
+import { EnrollmentSelect } from '../../enrollment/enrollment-select';
+import { FileResourceSelect } from '../../file/file-resource-select';
 import { CourseSelectDialog } from '../courses/courses-select';
 
 interface EditPathDialogProps {
@@ -43,39 +49,51 @@ interface EditPathDialogProps {
 export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: EditPathDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, courseUsecase } = useDI();
+  const { categoryUsecase, courseUsecase, enrollUsecase, fileUsecase } = useDI();
 
   const [formData, setFormData] = useState<UpdateCoursePathRequest>(new UpdateCoursePathRequest());
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
+  const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
 
   useEffect(() => {
     if (user && open) {
-      setFormData(
-        new UpdateCoursePathRequest({
-          id: user.id || '',
-          name: user.name || '',
-          detail: user.detail || undefined,
-          isRequired: user.isRequired || false,
-          startTime: user.startTime || '',
-          endTime: user.endTime || '',
-          status: user.status !== undefined ? StatusEnum[user.status as keyof typeof StatusEnum] : undefined,
-          displayType:
-            user.displayType !== undefined
-              ? DisplayTypeEnum[user.displayType as keyof typeof DisplayTypeEnum]
-              : undefined,
-          enrollmentCriteriaID: user.enrollmentCriteriaID || undefined,
-          categoryID: user.categoryID || undefined,
-          thumbnailID: user.thumbnailID || undefined,
-          courseIds: user.courses.map((course) => course.id).join(',') || '',
-          categoryEnum: CategoryEnumUtils.getCategoryKeyFromValue(CategoryEnum.Path),
-          isDeleteOldThumbnail: false,
-        })
-      );
-      setPreviewUrl(user.thumbnail?.resourceUrl || null);
+      const newFormData = new UpdateCoursePathRequest({
+        id: user.id || '',
+        name: user.name || '',
+        detail: user.detail || undefined,
+        isRequired: user.isRequired || false,
+        startTime: user.startTime ? new Date(user.startTime).toISOString().slice(0, 16) : '',
+        endTime: user.endTime ? new Date(user.endTime).toISOString().slice(0, 16) : '',
+        status: user.status !== undefined ? StatusEnum[user.status as keyof typeof StatusEnum] : undefined,
+        displayType:
+          user.displayType !== undefined
+            ? DisplayTypeEnum[user.displayType as keyof typeof DisplayTypeEnum]
+            : undefined,
+        enrollmentCriteriaID: user.enrollmentCriteriaID || undefined,
+        categoryID: user.categoryID || undefined,
+        thumbnailID: user.thumbnailID || undefined,
+        courseIds: user.courses.map((course) => course.id).join(',') || '',
+        categoryEnum: CategoryEnumUtils.getCategoryKeyFromValue(CategoryEnum.Path),
+        isDeleteOldThumbnail: false,
+      });
+      setFormData(newFormData);
+
+      // Fetch preview URL for thumbnailID if it exists
+      if (user.thumbnailID) {
+        fileUsecase
+          .getFileResouceById(user.thumbnailID)
+          .then((file) => setPreviewUrl(file.resourceUrl || null))
+          .catch((error) => {
+            console.error('Error fetching thumbnail:', error);
+            setPreviewUrl(null);
+          });
+      } else {
+        setPreviewUrl(null);
+      }
     }
-  }, [user, open]);
+  }, [user, open, fileUsecase]);
 
   useEffect(() => {
     if (!open) {
@@ -83,11 +101,59 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
         new UpdateCoursePathRequest({ categoryEnum: CategoryEnumUtils.getCategoryKeyFromValue(CategoryEnum.Path) })
       );
       setPreviewUrl(null);
+      setThumbnailSource('select');
     }
   }, [open]);
 
   const handleChange = <K extends keyof UpdateCoursePathRequest>(field: K, value: UpdateCoursePathRequest[K]) => {
     setFormData((prev) => new UpdateCoursePathRequest({ ...prev, [field]: value }));
+  };
+
+  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (newSource) {
+      setThumbnailSource(newSource);
+      if (newSource === 'upload') {
+        handleChange('thumbnailID', undefined);
+        setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
+      } else {
+        handleChange('thumbnail', undefined);
+        if (formData.thumbnailID) {
+          fileUsecase
+            .getFileResouceById(formData.thumbnailID)
+            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .catch((error) => {
+              console.error('Error fetching thumbnail:', error);
+              setPreviewUrl(null);
+            });
+        } else {
+          setPreviewUrl(null);
+        }
+      }
+    }
+  };
+
+  const handleFileSelectChange = async (id: string) => {
+    handleChange('thumbnailID', id);
+    if (id) {
+      try {
+        const file = await fileUsecase.getFileResouceById(id);
+        setPreviewUrl(file.resourceUrl || null);
+      } catch (error) {
+        console.error('Error fetching file resource:', error);
+        setPreviewUrl(null);
+      }
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
+  const handleFileUpload = (file: File | null) => {
+    handleChange('thumbnail', file ?? undefined);
+    if (file) {
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setPreviewUrl(null);
+    }
   };
 
   const handleSave = async () => {
@@ -125,7 +191,9 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Update Course Path</Typography>
+        <Typography variant="h6" component="div">
+          Update Course Path
+        </Typography>
         <Box>
           <IconButton onClick={() => setFullScreen((prev) => !prev)}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
@@ -162,23 +230,19 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <CustomTextField
+              <CustomDateTimePicker
                 label="Start Time"
                 value={formData.startTime}
                 onChange={(value) => handleChange('startTime', value)}
                 disabled={isSubmitting}
-                type="datetime-local"
-                icon={<Calendar {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <CustomTextField
+              <CustomDateTimePicker
                 label="End Time"
                 value={formData.endTime}
                 onChange={(value) => handleChange('endTime', value)}
                 disabled={isSubmitting}
-                type="datetime-local"
-                icon={<Calendar {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -205,17 +269,17 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
                 value={formData.courseIds ? formData.courseIds.split(',').filter((id) => id) : []}
                 onChange={(value: string[]) => handleChange('courseIds', value.join(','))}
                 disabled={isSubmitting}
-                // pathID={formData.id}
-                pathID=""
+                pathID={formData.id}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <CustomTextField
-                label="Enrollment Criteria ID"
-                value={formData.enrollmentCriteriaID}
+              <EnrollmentSelect
+                enrollmentUsecase={enrollUsecase}
+                categoryEnum={CategoryEnum.Path}
+                value={formData.enrollmentCriteriaID ?? ''}
                 onChange={(value) => handleChange('enrollmentCriteriaID', value)}
                 disabled={isSubmitting}
-                icon={<Tag {...iconStyle} />}
+                label="Enrollment Criteria"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -227,32 +291,74 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
                 disabled={isSubmitting}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                label="Thumbnail ID"
-                value={formData.thumbnailID}
-                onChange={(value) => handleChange('thumbnailID', value)}
+            <Grid item xs={12}>
+              <ToggleButtonGroup
+                value={thumbnailSource}
+                exclusive
+                onChange={handleThumbnailSourceChange}
+                aria-label="thumbnail source"
+                fullWidth
                 disabled={isSubmitting}
-                icon={<ImageIcon {...iconStyle} />}
-              />
+                sx={{ mb: 2 }}
+              >
+                <ToggleButton value="select" aria-label="select from resources">
+                  Select from Resources
+                </ToggleButton>
+                <ToggleButton value="upload" aria-label="upload file">
+                  Upload File
+                </ToggleButton>
+              </ToggleButtonGroup>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                label="Thumbnail Document No"
-                value={formData.thumbDocumentNo}
-                onChange={(value) => handleChange('thumbDocumentNo', value)}
-                disabled={isSubmitting}
-                icon={<ImageIcon {...iconStyle} />}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                label="Thumbnail Prefix Name"
-                value={formData.thumbPrefixName}
-                onChange={(value) => handleChange('thumbPrefixName', value)}
-                disabled={isSubmitting}
-                icon={<ImageIcon {...iconStyle} />}
-              />
+            <Grid item xs={12} sm={12}>
+              {thumbnailSource === 'select' ? (
+                <FileResourceSelect
+                  fileUsecase={fileUsecase}
+                  type={FileResourceEnum.Image}
+                  status={StatusEnum.Enable}
+                  value={formData.thumbnailID}
+                  onChange={handleFileSelectChange}
+                  label="Thumbnail"
+                  disabled={isSubmitting}
+                />
+              ) : (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      label="Thumbnail Document No"
+                      value={formData.thumbDocumentNo}
+                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      disabled={isSubmitting}
+                      icon={<ImageIcon {...iconStyle} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      label="Thumbnail Prefix Name"
+                      value={formData.thumbPrefixName}
+                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      disabled={isSubmitting}
+                      icon={<ImageIcon {...iconStyle} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      fullWidth
+                      disabled={isSubmitting}
+                      startIcon={<ImageIcon {...iconStyle} />}
+                    >
+                      Upload Thumbnail
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                      />
+                    </Button>
+                  </Grid>
+                </Grid>
+              )}
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
@@ -278,29 +384,8 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
                 label="Delete Old Thumbnail"
               />
             </Grid>
-            <Grid item xs={12}>
-              <Button
-                variant="outlined"
-                component="label"
-                fullWidth
-                disabled={isSubmitting}
-                startIcon={<ImageIcon {...iconStyle} />}
-              >
-                Upload Thumbnail
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0] || null;
-                    if (file) {
-                      handleChange('thumbnail', file);
-                      setPreviewUrl(URL.createObjectURL(file));
-                    }
-                  }}
-                />
-              </Button>
-              {previewUrl && (
+            {previewUrl && (
+              <Grid item xs={12}>
                 <Box
                   sx={{
                     width: fullScreen ? 400 : 200,
@@ -321,8 +406,8 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </Box>
-              )}
-            </Grid>
+              </Grid>
+            )}
           </Grid>
         </Box>
       </DialogContent>

@@ -1,16 +1,19 @@
 'use client';
 
 import React from 'react';
+import { CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
 import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
 import CoursePathDetailForm from '@/presentation/components/courses/path/course-path-detail-form';
+import { CreateCoursePathForm } from '@/presentation/components/courses/path/create-path-form';
 import { PathFilters } from '@/presentation/components/courses/path/path-filter';
 import CoursePathTable from '@/presentation/components/courses/path/path-table';
+import { UpdatePathFormDialog } from '@/presentation/components/courses/path/update-path-form';
 
 export default function Page(): React.JSX.Element {
   const { pathUseCase } = useDI();
@@ -21,7 +24,7 @@ export default function Page(): React.JSX.Element {
   const [totalCount, setTotalCount] = React.useState(0);
   const [filters, setFilters] = React.useState<GetPathRequest>(new GetPathRequest({ pageNumber: 1, pageSize: 10 }));
   const [selectedPath, setSelectedPath] = React.useState<CoursePathResponse | null>(null);
-
+  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const fetchPaths = React.useCallback(async () => {
     try {
       const request = new GetPathRequest({
@@ -85,6 +88,29 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
+
+  const [pathToEdit, setPathToEdit] = React.useState<CoursePathResponse | null>(null);
+
+  React.useEffect(() => {
+    fetchPaths();
+  }, [fetchPaths]);
+
+  const handleOpenEditDialog = (path: CoursePathResponse) => {
+    setPathToEdit(path);
+    setShowUpdateDialog(true);
+  };
+
+  const handleCreateCoursePath = async (request: CreateCoursePathRequest) => {
+    try {
+      await pathUseCase.createPath(request); // Assuming createPath exists in pathUseCase
+      setShowCreateDialog(false);
+      await fetchPaths();
+    } catch (error) {
+      console.error('Failed to create course path:', error);
+    }
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -94,14 +120,12 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowForm(true)}
+          onClick={() => setShowCreateDialog(true)}
         >
           Add
         </Button>
       </Stack>
-
       <PathFilters onFilter={handleFilter} />
-
       <CoursePathTable
         rows={paths}
         count={totalCount}
@@ -112,7 +136,6 @@ export default function Page(): React.JSX.Element {
         onDeleteCoursePaths={handleDeletePaths}
         onEditCoursePath={handleEditCoursePath}
       />
-
       {selectedPath && (
         <CoursePathDetailForm
           open={showForm}
@@ -123,6 +146,21 @@ export default function Page(): React.JSX.Element {
           }}
         />
       )}
+      <UpdatePathFormDialog
+        open={showUpdateDialog}
+        path={pathToEdit}
+        onClose={() => {
+          setShowUpdateDialog(false);
+          setPathToEdit(null);
+        }}
+        onSubmit={handleEditCoursePath}
+      />{' '}
+      <Dialog open={showCreateDialog} onClose={() => setShowCreateDialog(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Tạo mới khóa học</DialogTitle>
+        <DialogContent>
+          <CreateCoursePathForm onSubmit={handleCreateCoursePath} disabled={false} loading={false} />
+        </DialogContent>
+      </Dialog>
     </Stack>
   );
 }

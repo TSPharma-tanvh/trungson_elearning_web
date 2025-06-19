@@ -50,10 +50,16 @@ interface CategoryEndpoints {
 
 interface EnrollmentCriteriaEndpoints {
   getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
 }
 
 interface CoursesEndpoints {
   getAll: StaticEndpoint;
+}
+
+interface FileResourcesEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
 }
 
 // Main type containing all endpoint categories
@@ -67,6 +73,7 @@ interface EndpointDefinitions {
   category: CategoryEndpoints;
   enrollment: EnrollmentCriteriaEndpoints;
   courses: CoursesEndpoints;
+  fileResources: FileResourcesEndpoints;
 }
 
 //endpoint values
@@ -103,7 +110,7 @@ const endpoints: EndpointDefinitions = {
   path: {
     getAll: 'CoursePath/GetCoursePaths',
     getById: (id: string) => `CoursePath/GetCoursePathById/${id}`,
-    create: '',
+    create: 'CoursePath/CreateCoursePath',
     update: 'CoursePath/UpdateCoursePath',
   },
   category: {
@@ -112,9 +119,14 @@ const endpoints: EndpointDefinitions = {
   },
   enrollment: {
     getAll: 'EnrollmentCriteria/GetEnrollmentCriteria',
+    getById: (id: string) => `EnrollmentCriteria/GetEnrollmentCriteriaById/${id}`,
   },
   courses: {
     getAll: 'Course/GetCourse',
+  },
+  fileResources: {
+    getAll: 'Resource/GetFileResources',
+    getById: (id: string) => `Resource/GetFileResourcesById/${id}`,
   },
 };
 

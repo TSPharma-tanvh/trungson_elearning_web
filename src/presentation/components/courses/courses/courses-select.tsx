@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { CourseUsecase } from '@/domain/usecases/courses/course-usecase';
-import { useDebounce } from '@/presentation/hooks/course/use-course-debounce';
-import { useCourseLoader } from '@/presentation/hooks/course/use-course-loader';
+import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
+import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
 import {
   DisplayTypeDisplayNames,
   DisplayTypeEnum,
@@ -16,6 +16,7 @@ import {
   StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
+import { Book, BookOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -42,6 +43,8 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
+import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 
 interface CourseSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   courseUsecase: CourseUsecase | null;
@@ -74,7 +77,7 @@ export function CourseSelectDialog({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useDebounce(localSearchText, 300);
+  const debouncedSearchText = useCourseSelectDebounce(localSearchText, 300);
   const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
 
   const {
@@ -93,10 +96,10 @@ export function CourseSelectDialog({
     setDisableStatus,
     listRef,
     loadCourses,
-  } = useCourseLoader({
+  } = useCourseSelectLoader({
     courseUsecase,
     isOpen: dialogOpen,
-    pathID,
+    pathID: '',
     searchText: debouncedSearchText,
   });
 
@@ -192,7 +195,9 @@ export function CourseSelectDialog({
           labelId="course-select-label"
           multiple
           value={value}
-          input={<OutlinedInput label={label} />}
+          input={
+            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+          }
           onClick={handleOpen}
           renderValue={(selected) =>
             selected.map((id: string) => selectedCourseMap[id]?.name || id).join(', ') || 'No Courses Selected'
@@ -215,13 +220,7 @@ export function CourseSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <TextField
-            fullWidth
-            placeholder="Search courses..."
-            value={localSearchText}
-            onChange={(e) => setLocalSearchText(e.target.value)}
-            size="small"
-          />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Course Type</InputLabel>

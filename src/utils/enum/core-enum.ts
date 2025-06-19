@@ -61,6 +61,25 @@ export class CategoryEnumUtils {
   }
 }
 
+export class StatusEnumUtils {
+  static getStatusKeys(): string[] {
+    return Object.keys(StatusEnum).filter((key) => isNaN(Number(key)));
+  }
+
+  static getStatusOptions(): { label: string; value: StatusEnum }[] {
+    return Object.keys(StatusEnum)
+      .filter((key) => isNaN(Number(key)))
+      .map((key) => ({
+        label: key,
+        value: StatusEnum[key as keyof typeof StatusEnum],
+      }));
+  }
+
+  static getStatusKeyFromValue(value: StatusEnum): string | undefined {
+    return StatusEnum[value];
+  }
+}
+
 export const LearningModeDisplayNames: Record<LearningModeEnum, string> = {
   [LearningModeEnum.Online]: 'Online',
   [LearningModeEnum.Offline]: 'Offline',

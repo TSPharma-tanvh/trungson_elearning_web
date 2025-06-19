@@ -3,6 +3,7 @@ import { CategoryResponse } from '@/domain/models/category/response/category-res
 import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { useCategoryLoader } from '@/presentation/hooks/use-category-loader';
 import { CategoryEnum } from '@/utils/enum/core-enum';
+import { CategoryOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -14,17 +15,24 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
+  FormControl,
   IconButton,
   InputAdornment,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
+  OutlinedInput,
   Pagination,
+  Select,
   TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+
+import { CustomSearchInput } from '../core/text-field/custom-search-input';
 
 interface CategorySelectDialogProps {
   open: boolean;
@@ -35,7 +43,6 @@ interface CategorySelectDialogProps {
   value?: string;
 }
 
-// ⛳ CategorySelectDialog.tsx
 function CategorySelectDialog({
   open,
   onClose,
@@ -97,19 +104,7 @@ function CategorySelectDialog({
       </DialogTitle>
 
       <Box px={2} pb={2}>
-        <TextField
-          fullWidth
-          placeholder="Search..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <CustomSearchInput value={searchText} onChange={setSearchText} placeholder="Search..." />
 
         <List ref={listRef} sx={{ overflow: 'auto', maxHeight: 300 }}>
           {categories.length === 0 && !loadingCategories ? (
@@ -163,7 +158,7 @@ interface CategorySelectProps {
   disabled?: boolean;
   categories?: CategoryResponse[];
 }
-// ⛳ CategorySelect.tsx
+
 export function CategorySelect({
   categoryUsecase,
   value,
@@ -210,21 +205,31 @@ export function CategorySelect({
 
   return (
     <>
-      <TextField
-        fullWidth
-        label={label}
-        value={selectedCategory?.categoryName || ''}
-        onClick={() => setOpen(true)}
-        disabled={disabled}
-        InputProps={{
-          readOnly: true,
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton edge="end" onClick={() => setOpen(true)} disabled={disabled}></IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      <FormControl fullWidth disabled={disabled}>
+        <InputLabel id="category-select-label">{label}</InputLabel>
+        <Select
+          labelId="category-select-label"
+          value={value || ''}
+          onClick={() => setOpen(true)}
+          input={
+            <OutlinedInput
+              label={label}
+              startAdornment={
+                <InputAdornment position="start">
+                  <CategoryOutlined sx={{ mr: 1 }} />
+                </InputAdornment>
+              }
+            />
+          }
+          renderValue={(selected) => selectedCategory?.categoryName || ''}
+          open={false}
+          displayEmpty
+        >
+          <MenuItem value="" disabled>
+            {selectedCategory?.categoryName || 'No category selected'}
+          </MenuItem>
+        </Select>
+      </FormControl>
 
       <CategorySelectDialog
         open={open}

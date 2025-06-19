@@ -5,7 +5,7 @@ import { CourseDetailListResult } from '@/domain/models/courses/response/course-
 import { CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
 
-interface UseCourseLoaderProps {
+interface UseCourseSelectLoaderProps {
   courseUsecase: CourseUsecase | null;
   isOpen: boolean;
   pathID?: string;
@@ -16,7 +16,7 @@ interface UseCourseLoaderProps {
   searchText?: string;
 }
 
-interface CourseLoaderState {
+interface CourseSelectLoaderState {
   courses: CourseDetailResponse[];
   loadingCourses: boolean;
   hasMore: boolean;
@@ -38,7 +38,7 @@ interface CourseLoaderState {
   loadCourses: (page: number, reset?: boolean) => Promise<void>;
 }
 
-export function useCourseLoader({
+export function useCourseSelectLoader({
   courseUsecase,
   isOpen,
   pathID,
@@ -47,7 +47,7 @@ export function useCourseLoader({
   displayType: initialDisplayType,
   scheduleStatus: initialScheduleStatus,
   searchText: initialSearchText = '',
-}: UseCourseLoaderProps): CourseLoaderState {
+}: UseCourseSelectLoaderProps): CourseSelectLoaderState {
   const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);

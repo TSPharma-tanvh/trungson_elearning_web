@@ -2,15 +2,8 @@ import { GetCategoryRequest } from '@/domain/models/category/request/get-categor
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { ApiResponse } from '@/domain/models/core/api-response';
 import { CategoryRepository } from '@/domain/repositories/category/category-repository';
-
-
-
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
-
-
-
-
 
 export class CategoryRepositoryImpl implements CategoryRepository {
   async getCategoryById(id: string): Promise<ApiResponse> {

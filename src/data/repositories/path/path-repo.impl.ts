@@ -1,5 +1,6 @@
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { ApiResponse } from '@/domain/models/core/api-response';
+import { CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
 import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { PathRepository } from '@/domain/repositories/path/path-repository';
@@ -8,6 +9,25 @@ import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class PathRepoImpl implements PathRepository {
+  async createPath(request: CreateCoursePathRequest): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.post<ApiResponse>(apiEndpoints.path.create, request.toFormData(), {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to register user');
+    }
+  }
   async getPathListInfo(request: GetPathRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.path.getAll, {
