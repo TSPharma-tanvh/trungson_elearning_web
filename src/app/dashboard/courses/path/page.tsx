@@ -10,7 +10,7 @@ import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@
 import { Plus } from '@phosphor-icons/react';
 
 import CoursePathDetailForm from '@/presentation/components/courses/path/course-path-detail-form';
-import { CreateCoursePathForm } from '@/presentation/components/courses/path/create-path-form';
+import { CreateCoursePathDialog } from '@/presentation/components/courses/path/create-path-form';
 import { PathFilters } from '@/presentation/components/courses/path/path-filter';
 import CoursePathTable from '@/presentation/components/courses/path/path-table';
 import { UpdatePathFormDialog } from '@/presentation/components/courses/path/update-path-form';
@@ -25,6 +25,10 @@ export default function Page(): React.JSX.Element {
   const [filters, setFilters] = React.useState<GetPathRequest>(new GetPathRequest({ pageNumber: 1, pageSize: 10 }));
   const [selectedPath, setSelectedPath] = React.useState<CoursePathResponse | null>(null);
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
+  const [pathToEdit, setPathToEdit] = React.useState<CoursePathResponse | null>(null);
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
+
   const fetchPaths = React.useCallback(async () => {
     try {
       const request = new GetPathRequest({
@@ -59,16 +63,6 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const viewCoursePath = async (item: CoursePathResponse) => {
-    try {
-      const detail = await pathUseCase.getPathDetailInfo(item.id ?? '');
-      setSelectedPath(detail);
-      setShowForm(true);
-    } catch (error) {
-      console.error('Failed to fetch course path detail:', error);
-    }
-  };
-
   const handleEditCoursePath = async (request: UpdateCoursePathRequest) => {
     try {
       await pathUseCase.updatePathInfo(request);
@@ -80,21 +74,21 @@ export default function Page(): React.JSX.Element {
 
   const handleDeletePaths = async (ids: string[]) => {
     try {
-      // Implement delete logic
-      console.log('Deleting paths:', ids);
+      setDeleteLoading(true);
+      for (const id of ids) {
+        const response = await pathUseCase.deletePath(id);
+        if (!response) {
+          throw new Error(`Failed to delete path with ID: ${id}`);
+        }
+      }
       await fetchPaths();
     } catch (error) {
       console.error('Failed to delete course paths:', error);
+      throw error;
+    } finally {
+      setDeleteLoading(false);
     }
   };
-
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
-
-  const [pathToEdit, setPathToEdit] = React.useState<CoursePathResponse | null>(null);
-
-  React.useEffect(() => {
-    fetchPaths();
-  }, [fetchPaths]);
 
   const handleOpenEditDialog = (path: CoursePathResponse) => {
     setPathToEdit(path);
@@ -103,7 +97,7 @@ export default function Page(): React.JSX.Element {
 
   const handleCreateCoursePath = async (request: CreateCoursePathRequest) => {
     try {
-      await pathUseCase.createPath(request); // Assuming createPath exists in pathUseCase
+      await pathUseCase.createPath(request);
       setShowCreateDialog(false);
       await fetchPaths();
     } catch (error) {
@@ -154,13 +148,14 @@ export default function Page(): React.JSX.Element {
           setPathToEdit(null);
         }}
         onSubmit={handleEditCoursePath}
-      />{' '}
-      <Dialog open={showCreateDialog} onClose={() => setShowCreateDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Tạo mới khóa học</DialogTitle>
-        <DialogContent>
-          <CreateCoursePathForm onSubmit={handleCreateCoursePath} disabled={false} loading={false} />
-        </DialogContent>
-      </Dialog>
+      />
+      <CreateCoursePathDialog
+        onSubmit={handleCreateCoursePath}
+        disabled={false}
+        loading={false}
+        open={showCreateDialog}
+        onClose={() => setShowCreateDialog(false)}
+      />
     </Stack>
   );
 }

@@ -1,4 +1,7 @@
+'use client';
+
 import { InputAdornment, TextField } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles'; // Import SxProps and Theme
 
 interface CustomTextFieldProps {
   label: string;
@@ -9,6 +12,7 @@ interface CustomTextFieldProps {
   rows?: number;
   type?: string;
   icon?: React.ReactNode;
+  sx?: SxProps<Theme>;
 }
 
 export const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -20,6 +24,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
   rows,
   type = 'text',
   icon,
+  sx,
 }) => (
   <TextField
     label={label}
@@ -34,5 +39,6 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
     InputProps={{
       startAdornment: icon ? <InputAdornment position="start">{icon}</InputAdornment> : undefined,
     }}
+    sx={sx}
   />
 );

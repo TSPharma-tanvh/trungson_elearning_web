@@ -6,6 +6,11 @@ import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-pat
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { CoursePathResult } from '@/domain/models/path/response/course-path-result';
 import { PathRepository } from '@/domain/repositories/path/path-repository';
+import { StatusEnum } from '@/utils/enum/core-enum';
+
+
+
+
 
 export class PathUsecase {
   constructor(private readonly pathRepo: PathRepository) {}
@@ -47,6 +52,16 @@ export class PathUsecase {
 
   async updatePathInfo(request: UpdateCoursePathRequest): Promise<ApiResponse> {
     var result = await this.pathRepo.updatePath(request);
+
+    return result;
+  }
+
+  async deletePath(id: string): Promise<ApiResponse> {
+    const newFormData = new UpdateCoursePathRequest({
+      id: id ?? '',
+      status: StatusEnum.Deleted,
+    });
+    var result = await this.pathRepo.updatePath(newFormData);
 
     return result;
   }

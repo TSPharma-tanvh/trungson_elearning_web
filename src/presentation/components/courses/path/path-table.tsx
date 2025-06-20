@@ -23,9 +23,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableRowProps,
   Typography,
 } from '@mui/material';
 
+import { ConfirmDeleteDialog } from '../../dashboard/core/dialog/confirm-delete-dialog';
 import CoursePathDetailForm from './course-path-detail-form';
 import { UpdatePathFormDialog } from './update-path-form';
 
@@ -36,8 +38,8 @@ interface Props {
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteCoursePaths: (ids: string[]) => void;
-  onEditCoursePath: (data: UpdateCoursePathRequest) => void;
+  onDeleteCoursePaths: (ids: string[]) => Promise<void>;
+  onEditCoursePath: (data: UpdateCoursePathRequest) => Promise<void>;
 }
 
 export default function CoursePathTable({
@@ -55,8 +57,11 @@ export default function CoursePathTable({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = React.useState<CoursePathResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
-  const [editPathData, setEditUserData] = React.useState<CoursePathResponse | null>(null);
+  const [editPathData, setEditPathData] = React.useState<CoursePathResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
+
   const isSelected = (id: string) => selected.has(id);
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,12 +83,33 @@ export default function CoursePathTable({
 
   const handleMenuClose = () => setAnchorEl(null);
 
+  const handleOpenDeleteDialog = (ids: string[]) => {
+    setIdsToDelete(ids);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    await onDeleteCoursePaths(idsToDelete);
+    setSelected((prev) => {
+      const next = new Set(prev);
+      idsToDelete.forEach((id) => next.delete(id));
+      return next;
+    });
+    setDeleteDialogOpen(false);
+    setIdsToDelete([]);
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setIdsToDelete([]);
+  };
+
   return (
     <>
       <Card>
         {selected.size > 0 && (
           <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button color="error" variant="outlined" onClick={() => onDeleteCoursePaths(Array.from(selected))}>
+            <Button color="error" variant="outlined" onClick={() => handleOpenDeleteDialog(Array.from(selected))}>
               Delete Selected ({selected.size})
             </Button>
           </Box>
@@ -180,7 +206,7 @@ export default function CoursePathTable({
           <MenuItem
             onClick={() => {
               if (selectedRow) {
-                setEditUserData(selectedRow);
+                setEditPathData(selectedRow);
                 setEditOpen(true);
               }
               handleMenuClose();
@@ -188,10 +214,9 @@ export default function CoursePathTable({
           >
             Edit
           </MenuItem>
-
           <MenuItem
             onClick={() => {
-              if (selectedRow?.id) onDeleteCoursePaths([selectedRow.id]);
+              if (selectedRow?.id) handleOpenDeleteDialog([selectedRow.id]);
               handleMenuClose();
             }}
           >
@@ -219,6 +244,13 @@ export default function CoursePathTable({
           onClose={() => setViewOpen(false)}
         />
       )}
+
+      <ConfirmDeleteDialog
+        open={deleteDialogOpen}
+        selectedCount={idsToDelete.length}
+        onCancel={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 }
