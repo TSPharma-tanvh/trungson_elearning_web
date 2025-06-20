@@ -1,0 +1,185 @@
+import { useEffect, useState } from 'react';
+import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
+import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import CloseIcon from '@mui/icons-material/Close';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import { Article, Tag } from '@phosphor-icons/react';
+
+import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
+import { CustomDateTimePicker } from '../../core/picker/custom-date-picker';
+import { CustomTextField } from '../../core/text-field/custom-textfield';
+import { EnrollmentSelect } from '../../enrollment/enrollment-select';
+
+interface EditCourseDialogProps {
+  open: boolean;
+  data: CourseDetailResponse | null;
+  onClose: () => void;
+  onSubmit: (data: UpdateCourseRequest) => void;
+}
+
+export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }: EditCourseDialogProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { categoryUsecase, courseUsecase, enrollUsecase, fileUsecase } = useDI();
+
+  const [fullScreen, setFullScreen] = useState(false);
+  const [formData, setFormData] = useState<UpdateCourseRequest>(new UpdateCourseRequest({}));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (course && open) {
+      const newFormData = new UpdateCourseRequest({
+        id: course.id || '',
+        name: course.name || '',
+        detail: course.detail || undefined,
+        isRequired: course.isRequired || false,
+        startTime: course.startTime ? new Date(course.startTime).toISOString().slice(0, 16) : '',
+        endTime: course.endTime ? new Date(course.endTime).toISOString().slice(0, 16) : '',
+        disableStatus:
+          course.disableStatus !== undefined ? StatusEnum[course.disableStatus as keyof typeof StatusEnum] : undefined,
+        displayType:
+          course.displayType !== undefined
+            ? DisplayTypeEnum[course.displayType as keyof typeof DisplayTypeEnum]
+            : undefined,
+        enrollmentCriteriaID: course.enrollmentCriteriaId || undefined,
+        categoryID: course.categoryId || undefined,
+        thumbnailID: course.thumbnailId || undefined,
+        lessonIds: course.lessons != null ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
+        categoryEnum: CategoryEnum.Course,
+        isDeleteOldThumbnail: false,
+      });
+      setFormData(newFormData);
+    }
+  }, [course, open, fileUsecase]);
+
+  const handleChange = <K extends keyof UpdateCourseRequest>(field: K, value: UpdateCourseRequest[K]) => {
+    setFormData((prev) => new UpdateCourseRequest({ ...prev, [field]: value }));
+  };
+
+  const iconStyle = {
+    size: 20,
+    weight: 'fill' as const,
+    color: '#616161',
+  };
+
+  const statusOptions = [
+    { value: StatusEnum.Enable, label: 'Enable' },
+    { value: StatusEnum.Disable, label: 'Disable' },
+    { value: StatusEnum.Deleted, label: 'Deleted' },
+  ];
+
+  const displayTypeOptions = [
+    { value: DisplayTypeEnum.Public, label: 'Public' },
+    { value: DisplayTypeEnum.Private, label: 'Private' },
+  ];
+
+  if (!course) return null;
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
+        <Typography variant="h6" component="div">
+          Update Course
+        </Typography>
+        <Box>
+          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+            {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>
+
+      <DialogContent>
+        <Box mt={1}>
+          <Typography variant="body2" mb={2}>
+            ID: {course?.id}
+          </Typography>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <CustomTextField
+                label="Name"
+                value={formData.name}
+                onChange={(value) => handleChange('name', value)}
+                disabled={isSubmitting}
+                icon={<Tag {...iconStyle} />}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <CustomTextField
+                label="Detail"
+                value={formData.detail}
+                onChange={(value) => handleChange('detail', value)}
+                disabled={isSubmitting}
+                icon={<Article {...iconStyle} />}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label="Start Time"
+                value={formData.startTime}
+                onChange={(value) => handleChange('startTime', value)}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label="End Time"
+                value={formData.endTime}
+                onChange={(value) => handleChange('endTime', value)}
+                disabled={isSubmitting}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label="Status"
+                value={formData.disableStatus ?? ''}
+                onChange={(value) => handleChange('disableStatus', value as StatusEnum)}
+                disabled={isSubmitting}
+                options={statusOptions}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label="Display Type"
+                value={formData.displayType ?? ''}
+                onChange={(value) => handleChange('displayType', value as DisplayTypeEnum)}
+                disabled={isSubmitting}
+                options={displayTypeOptions}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <EnrollmentSelect
+                enrollmentUsecase={enrollUsecase}
+                categoryEnum={CategoryEnum.Course}
+                value={formData.enrollmentCriteriaID ?? ''}
+                onChange={(value) => handleChange('enrollmentCriteriaID', value)}
+                disabled={isSubmitting}
+                label="Enrollment Criteria"
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+}

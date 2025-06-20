@@ -55,6 +55,9 @@ interface EnrollmentCriteriaEndpoints {
 
 interface CoursesEndpoints {
   getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
 }
 
 interface FileResourcesEndpoints {
@@ -123,6 +126,9 @@ const endpoints: EndpointDefinitions = {
   },
   courses: {
     getAll: 'Course/GetCourse',
+    getById: (id: string) => `Course/GetCourseById/${id}`,
+    create: 'Course/CreateCourse',
+    update: 'Course/UpdateCourse',
   },
   fileResources: {
     getAll: 'Resource/GetFileResources',

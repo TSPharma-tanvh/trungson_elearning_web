@@ -35,9 +35,9 @@ import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-do
 import { CustomDateTimePicker } from '../../core/picker/custom-date-picker';
 import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '../../core/text-field/custom-textfield';
+import { CourseSelectDialog } from '../../courses/courses/courses-select';
 import { EnrollmentSelect } from '../../enrollment/enrollment-select';
 import { FileResourceSelect } from '../../file/file-resource-select';
-import { CourseSelectDialog } from '../courses/courses-select';
 
 interface EditPathDialogProps {
   open: boolean;
@@ -46,7 +46,7 @@ interface EditPathDialogProps {
   onSubmit: (data: UpdateCoursePathRequest) => void;
 }
 
-export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: EditPathDialogProps) {
+export function UpdatePathFormDialog({ open, path: path, onClose, onSubmit }: EditPathDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { categoryUsecase, courseUsecase, enrollUsecase, fileUsecase } = useDI();
@@ -58,32 +58,32 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
 
   useEffect(() => {
-    if (user && open) {
+    if (path && open) {
       const newFormData = new UpdateCoursePathRequest({
-        id: user.id || '',
-        name: user.name || '',
-        detail: user.detail || undefined,
-        isRequired: user.isRequired || false,
-        startTime: user.startTime ? new Date(user.startTime).toISOString().slice(0, 16) : '',
-        endTime: user.endTime ? new Date(user.endTime).toISOString().slice(0, 16) : '',
-        status: user.status !== undefined ? StatusEnum[user.status as keyof typeof StatusEnum] : undefined,
+        id: path.id || '',
+        name: path.name || '',
+        detail: path.detail || undefined,
+        isRequired: path.isRequired || false,
+        startTime: path.startTime ? new Date(path.startTime).toISOString().slice(0, 16) : '',
+        endTime: path.endTime ? new Date(path.endTime).toISOString().slice(0, 16) : '',
+        status: path.status !== undefined ? StatusEnum[path.status as keyof typeof StatusEnum] : undefined,
         displayType:
-          user.displayType !== undefined
-            ? DisplayTypeEnum[user.displayType as keyof typeof DisplayTypeEnum]
+          path.displayType !== undefined
+            ? DisplayTypeEnum[path.displayType as keyof typeof DisplayTypeEnum]
             : undefined,
-        enrollmentCriteriaID: user.enrollmentCriteriaID || undefined,
-        categoryID: user.categoryID || undefined,
-        thumbnailID: user.thumbnailID || undefined,
-        courseIds: user.courses.map((course) => course.id).join(',') || '',
+        enrollmentCriteriaID: path.enrollmentCriteriaID || undefined,
+        categoryID: path.categoryID || undefined,
+        thumbnailID: path.thumbnailID || undefined,
+        courseIds: path.courses.map((course) => course.id).join(',') || '',
         categoryEnum: CategoryEnumUtils.getCategoryKeyFromValue(CategoryEnum.Path),
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
 
       // Fetch preview URL for thumbnailID if it exists
-      if (user.thumbnailID) {
+      if (path.thumbnailID) {
         fileUsecase
-          .getFileResouceById(user.thumbnailID)
+          .getFileResouceById(path.thumbnailID)
           .then((file) => setPreviewUrl(file.resourceUrl || null))
           .catch((error) => {
             console.error('Error fetching thumbnail:', error);
@@ -93,7 +93,7 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
         setPreviewUrl(null);
       }
     }
-  }, [user, open, fileUsecase]);
+  }, [path, open, fileUsecase]);
 
   useEffect(() => {
     if (!open) {
@@ -186,7 +186,7 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
     { value: DisplayTypeEnum.Private, label: 'Private' },
   ];
 
-  if (!user) return null;
+  if (!path) return null;
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -206,7 +206,7 @@ export function UpdatePathFormDialog({ open, path: user, onClose, onSubmit }: Ed
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {user.id}
+            ID: {path.id}
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>

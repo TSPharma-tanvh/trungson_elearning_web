@@ -9,6 +9,38 @@ import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class PathRepoImpl implements PathRepository {
+  async getPathListInfo(request: GetPathRequest): Promise<ApiPaginationResponse> {
+    try {
+      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.path.getAll, {
+        params: request.toJson(),
+      });
+
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch path info');
+    }
+  }
+
+  async getPathDetailInfo(id: string): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.get<ApiResponse>(apiEndpoints.path.getById(id));
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch path info');
+    }
+  }
   async createPath(request: CreateCoursePathRequest): Promise<ApiResponse> {
     try {
       const response = await apiClient.post<ApiResponse>(apiEndpoints.path.create, request.toFormData(), {
@@ -25,42 +57,9 @@ export class PathRepoImpl implements PathRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to register user');
+      throw new Error(error?.message || 'Failed to create path');
     }
   }
-  async getPathListInfo(request: GetPathRequest): Promise<ApiPaginationResponse> {
-    try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.path.getAll, {
-        params: request.toJson(),
-      });
-
-      const apiResponse = response.data;
-
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
-        throw new Error(apiResponse?.message || 'Unknown API error');
-      }
-
-      return apiResponse;
-    } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch user info');
-    }
-  }
-
-  async getPathDetailInfo(id: string): Promise<ApiResponse> {
-    try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.path.getById(id));
-      const apiResponse = response.data;
-
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
-        throw new Error(apiResponse?.message || 'Unknown API error');
-      }
-
-      return apiResponse;
-    } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch user info');
-    }
-  }
-
   async updatePath(request: UpdateCoursePathRequest): Promise<ApiResponse> {
     try {
       const formData = request.toFormData();
@@ -79,7 +78,7 @@ export class PathRepoImpl implements PathRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch user info');
+      throw new Error(error?.message || 'Failed to fetch path info');
     }
   }
 }

@@ -22,13 +22,6 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from '@mui/material';
 
@@ -40,7 +33,7 @@ interface Props {
   onClose: () => void;
 }
 
-//Path Information
+// Path Information
 interface PathInfoCardProps {
   coursePath: CoursePathResponse;
   fullScreen: boolean;
@@ -93,7 +86,7 @@ function PathInfoCard({ coursePath, fullScreen }: PathInfoCardProps) {
   );
 }
 
-//Schedule Information
+// Schedule Information
 interface ScheduleCardProps {
   coursePath: CoursePathResponse;
 }
@@ -108,7 +101,7 @@ function ScheduleCard({ coursePath }: ScheduleCardProps) {
               Start Time
             </Typography>
             <CustomFieldTypography
-              value={coursePath.startTime ? DateTimeUtils.formatISODate(coursePath.startTime) : undefined}
+              value={coursePath.startTime ? DateTimeUtils.formatISODateFromString(coursePath.startTime) : undefined}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -116,7 +109,7 @@ function ScheduleCard({ coursePath }: ScheduleCardProps) {
               End Time
             </Typography>
             <CustomFieldTypography
-              value={coursePath.endTime ? DateTimeUtils.formatISODate(coursePath.endTime) : undefined}
+              value={coursePath.endTime ? DateTimeUtils.formatISODateFromString(coursePath.endTime) : undefined}
             />
           </Grid>
         </Grid>
@@ -159,7 +152,7 @@ function StatusCard({ coursePath }: StatusCardProps) {
   );
 }
 
-//Enrollment Criteria
+// Enrollment Criteria
 interface EnrollmentCardProps {
   coursePath: CoursePathResponse;
   fullScreen: boolean;
@@ -188,7 +181,7 @@ function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) {
   );
 }
 
-//Course Details (Collapsible)
+// Course Details (Collapsible)
 interface CourseDetailsCardProps {
   course: CourseResponse;
   fullScreen: boolean;
@@ -196,119 +189,80 @@ interface CourseDetailsCardProps {
 function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
   const [expanded, setExpanded] = useState(false);
 
+  const renderField = (
+    label: string,
+    value?: string | number | boolean | null | undefined,
+    children?: React.ReactNode
+  ) => (
+    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+      <Typography variant="subtitle2" fontWeight={500}>
+        {label}
+      </Typography>
+      {children ? children : <CustomFieldTypography value={value} />}
+    </Grid>
+  );
+
   return (
-    <>
-      <TableRow>
-        <TableCell>
-          <CustomFieldTypography value={course.id} />
-        </TableCell>
-        <TableCell>
-          <CustomFieldTypography value={course.name} />
-        </TableCell>
-        <TableCell>
-          <CustomFieldTypography value={course.isRequired ? 'Yes' : 'No'} />
-        </TableCell>
-        <TableCell>
-          <CustomFieldTypography value={course.courseType} />
-        </TableCell>
-        <TableCell>
-          <IconButton size="small" onClick={() => setExpanded(!expanded)}>
-            <ExpandMoreIcon sx={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+    <Card
+      sx={{
+        mb: 3,
+        mx: window.innerWidth < 600 ? 1 : 2,
+      }}
+    >
+      <CardHeader
+        title={course.name ?? 'Unnamed Course'}
+        action={
+          <IconButton
+            onClick={() => setExpanded(!expanded)}
+            sx={{
+              transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s',
+            }}
+          >
+            <ExpandMoreIcon />
           </IconButton>
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell colSpan={5} sx={{ py: 0 }}>
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <Box sx={{ p: 2, bgcolor: 'background.default' }}>
-              <Grid container spacing={2}>
-                {/* Course Metadata */}
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Description
-                  </Typography>
-                  <CustomFieldTypography value={course.detail} />
-                </Grid>
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Category ID
-                  </Typography>
-                  <CustomFieldTypography value={course.categoryId} />
-                </Grid>
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Thumbnail ID
-                  </Typography>
-                  <CustomFieldTypography value={course.thumbnailId} />
-                </Grid>
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Enrollment Criteria ID
-                  </Typography>
-                  <CustomFieldTypography value={course.enrollmentCriteriaId} />
-                </Grid>
-                {/* Schedule */}
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Start Time
-                  </Typography>
-                  <CustomFieldTypography
-                    value={course.startTime ? DateTimeUtils.formatISODate(course.startTime) : undefined}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    End Time
-                  </Typography>
-                  <CustomFieldTypography
-                    value={course.endTime ? DateTimeUtils.formatISODate(course.endTime) : undefined}
-                  />
-                </Grid>
-                {/* Status and Links */}
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Disable Status
-                  </Typography>
-                  <CustomFieldTypography value={course.disableStatus} />
-                </Grid>
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Schedule Status
-                  </Typography>
-                  <CustomFieldTypography value={course.scheduleStatus} />
-                </Grid>
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Display Type
-                  </Typography>
-                  <CustomFieldTypography value={course.displayType} />
-                </Grid>
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Meeting Link
-                  </Typography>
-                  <CustomFieldTypography>
-                    {course.meetingLink ? (
-                      <a href={course.meetingLink} target="_blank" rel="noopener noreferrer">
-                        Link
-                      </a>
-                    ) : (
-                      '-'
-                    )}
-                  </CustomFieldTypography>
-                </Grid>
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    Teacher ID
-                  </Typography>
-                  <CustomFieldTypography value={course.teacherId} />
-                </Grid>
-              </Grid>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
+        }
+        sx={{ py: 1 }}
+      />
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Grid container spacing={2}>
+            {renderField('ID', course.id)}
+            {renderField('Description', course.detail)}
+            {renderField('Is Required', course.isRequired ? 'Yes' : 'No')}
+            {renderField('Course Type', course.courseType)}
+            {renderField('Category ID', course.categoryId)}
+            {renderField('Thumbnail ID', course.thumbnailId)}
+            {renderField('Enrollment Criteria ID', course.enrollmentCriteriaId)}
+            {renderField(
+              'Start Time',
+              course.startTime ? DateTimeUtils.formatISODateFromString(course.startTime) : undefined
+            )}
+            {renderField(
+              'End Time',
+              course.endTime ? DateTimeUtils.formatISODateFromString(course.endTime) : undefined
+            )}
+            {renderField('Disable Status', course.disableStatus)}
+            {renderField('Schedule Status', course.scheduleStatus)}
+            {renderField('Display Type', course.displayType)}
+            {renderField(
+              'Meeting Link',
+              undefined,
+              course.meetingLink ? (
+                <Typography variant="body2" component="span">
+                  <a href={course.meetingLink} target="_blank" rel="noopener noreferrer">
+                    Link
+                  </a>
+                </Typography>
+              ) : (
+                <CustomFieldTypography value="-" />
+              )
+            )}
+            {renderField('Teacher ID', course.teacherId)}
+          </Grid>
+        </CardContent>
+      </Collapse>
+    </Card>
   );
 }
 
@@ -336,7 +290,7 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Pr
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
-      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', pr: 1 }}>
         <Typography variant="h6">Course Path Details</Typography>
         <Box>
           <IconButton onClick={() => setFullScreen((prev) => !prev)}>
@@ -347,7 +301,7 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Pr
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent dividers sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
         {loading || !coursePath ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
             <CircularProgress />
@@ -368,32 +322,17 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Pr
             <StatusCard coursePath={coursePath} />
             <EnrollmentCard coursePath={coursePath} fullScreen={fullScreen} />
 
-            {/* Courses Table */}
-            <Typography variant="subtitle1" fontWeight={500} mt={3} mb={1}>
-              Included Courses
-            </Typography>
-            {coursePath.courses.length > 0 ? (
-              <TableContainer component={Paper}>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell>Is Required</TableCell>
-                      <TableCell>Course Type</TableCell>
-                      <TableCell />
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {coursePath.courses.map((course) => (
-                      <CourseDetailsCard key={course.id} course={course} fullScreen={fullScreen} />
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            ) : (
-              <CustomFieldTypography value={undefined} fallback="No courses included in this path." />
-            )}
+            {/* Courses Section */}
+            <Box sx={{ mb: 2 }}>
+              <CardHeader title="Included Courses" sx={{ pl: 2, pb: 1, mb: 2 }} />
+              {coursePath.courses.length > 0 ? (
+                coursePath.courses.map((course) => (
+                  <CourseDetailsCard key={course.id} course={course} fullScreen={fullScreen} />
+                ))
+              ) : (
+                <CustomFieldTypography value={undefined} fallback="No courses included in this path." />
+              )}
+            </Box>
           </Box>
         )}
       </DialogContent>

@@ -8,10 +8,6 @@ import { CoursePathResult } from '@/domain/models/path/response/course-path-resu
 import { PathRepository } from '@/domain/repositories/path/path-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
-
-
-
-
 export class PathUsecase {
   constructor(private readonly pathRepo: PathRepository) {}
 
@@ -19,7 +15,7 @@ export class PathUsecase {
     var result = await this.pathRepo.getPathListInfo(request);
 
     if (!result || !Array.isArray(result.result)) {
-      throw new Error('Failed to load user list.');
+      throw new Error('Failed to load path list.');
     }
 
     const data = result.result.map(CoursePathResponse.fromJson);
@@ -34,7 +30,7 @@ export class PathUsecase {
 
   async getPathDetailInfo(id: string): Promise<CoursePathResponse> {
     if (id === null || id === undefined || id.trim() === '') {
-      throw new Error('User ID is missing.');
+      throw new Error('ID is missing.');
     }
 
     var result = await this.pathRepo.getPathDetailInfo(id);

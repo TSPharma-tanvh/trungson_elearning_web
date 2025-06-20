@@ -35,6 +35,7 @@ export class DependencyContainer {
   //path
   public pathRepo = new PathRepoImpl();
 
+
   //category
   public categoryRepo = new CategoryRepositoryImpl();
 

@@ -4,6 +4,7 @@ import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
 export class GetCourseRequest {
   pathID?: string;
   name?: string;
+  isRequired?: boolean;
   disableStatus?: StatusEnum;
   teacherID?: string;
   courseType?: LearningModeEnum;
@@ -25,6 +26,7 @@ export class GetCourseRequest {
     return new GetCourseRequest({
       pathID: json.pathID,
       name: json.name,
+      isRequired: json.isRequired,
       disableStatus: json.disableStatus != null ? (Number(json.disableStatus) as StatusEnum) : undefined,
       teacherID: json.teacherID,
       courseType: json.courseType != null ? (Number(json.courseType) as LearningModeEnum) : undefined,
@@ -44,6 +46,7 @@ export class GetCourseRequest {
     return {
       pathID: this.pathID,
       name: this.name,
+      isRequired: this.isRequired,
       disableStatus: this.disableStatus != null ? Number(this.disableStatus) : undefined,
       teacherID: this.teacherID,
       courseType: this.courseType != null ? Number(this.courseType) : undefined,

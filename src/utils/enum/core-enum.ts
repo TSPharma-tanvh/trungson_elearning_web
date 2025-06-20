@@ -42,6 +42,13 @@ export enum CategoryEnum {
   Criteria = 7,
 }
 
+export class CoreEnumUtils {
+  static getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
+    if (!enumObj) return [];
+    return Object.keys(enumObj).filter((key) => isNaN(Number(key)));
+  }
+}
+
 export class CategoryEnumUtils {
   static getCategoryKeys(): string[] {
     return Object.keys(CategoryEnum).filter((key) => isNaN(Number(key)));

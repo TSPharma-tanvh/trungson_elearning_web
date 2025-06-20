@@ -31,7 +31,7 @@ import { ConfirmDeleteDialog } from '../../dashboard/core/dialog/confirm-delete-
 import CoursePathDetailForm from './course-path-detail-form';
 import { UpdatePathFormDialog } from './update-path-form';
 
-interface Props {
+interface CoursePathTableProps {
   rows: CoursePathResponse[];
   count: number;
   page: number;
@@ -51,7 +51,7 @@ export default function CoursePathTable({
   onRowsPerPageChange,
   onDeleteCoursePaths,
   onEditCoursePath,
-}: Props) {
+}: CoursePathTableProps) {
   const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -157,8 +157,8 @@ export default function CoursePathTable({
                     </TableCell>
                     <TableCell>{row.detail}</TableCell>
                     <TableCell>{row.isRequired ? 'Yes' : 'No'}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODate(row.startTime ?? '')}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODate(row.endTime ?? '')}</TableCell>
+                    <TableCell>{DateTimeUtils.formatISODateFromString(row.startTime ?? '')}</TableCell>
+                    <TableCell>{DateTimeUtils.formatISODateFromString(row.endTime ?? '')}</TableCell>
                     <TableCell>{row.status}</TableCell>
                     <TableCell>{row.displayType}</TableCell>
                     <TableCell>{row.category?.categoryName}</TableCell>
