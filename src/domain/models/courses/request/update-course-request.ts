@@ -21,7 +21,6 @@ export class UpdateCourseRequest {
   endTime?: string;
   meetingLink?: string;
   scheduleStatus?: ScheduleStatusEnum;
-  enrollmentCriteriaID?: string;
   lessonIds?: string;
   categoryID?: string;
   thumbnailID?: string;
@@ -35,6 +34,11 @@ export class UpdateCourseRequest {
   resourcesDeleteIds?: string;
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
+  enrollmentCriteriaIDs?: string;
+  enrollmentCourseIDs?: string;
+  maxCapacity?: number;
+  enrollmentStatus?: StatusEnum;
+  enrollmentCriteriaType?: CategoryEnum;
 
   constructor(init: Partial<UpdateCourseRequest>) {
     Object.assign(this, init);
@@ -56,7 +60,11 @@ export class UpdateCourseRequest {
       endTime: json.endTime,
       meetingLink: json.meetingLink,
       scheduleStatus: json.scheduleStatus,
-      enrollmentCriteriaID: json.enrollmentCriteriaID,
+      enrollmentCriteriaIDs: json.enrollmentCriteriaIDs,
+      enrollmentCourseIDs: json.enrollmentCourseIDs,
+      maxCapacity: json.maxCapacity,
+      enrollmentStatus: json.enrollmentStatus,
+      enrollmentCriteriaType: json.enrollmentCriteriaType,
       lessonIds: json.lessonIds,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
@@ -87,7 +95,11 @@ export class UpdateCourseRequest {
       endTime: this.endTime,
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
-      enrollmentCriteriaID: this.enrollmentCriteriaID,
+      enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
+      enrollmentCourseIDs: this.enrollmentCourseIDs,
+      maxCapacity: this.maxCapacity,
+      enrollmentStatus: this.enrollmentStatus,
+      enrollmentCriteriaType: this.enrollmentCriteriaType,
       lessonIds: this.lessonIds,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
@@ -104,7 +116,6 @@ export class UpdateCourseRequest {
 
   toFormData(): FormData {
     const formData = new FormData();
-
     formData.append('Id', this.id);
     if (this.pathID) formData.append('PathID', this.pathID);
     if (this.detail) formData.append('Detail', this.detail);
@@ -119,8 +130,13 @@ export class UpdateCourseRequest {
     if (this.endTime) formData.append('EndTime', this.endTime);
     if (this.meetingLink) formData.append('MeetingLink', this.meetingLink);
     if (this.scheduleStatus !== undefined) formData.append('ScheduleStatus', this.scheduleStatus.toString());
+    if (this.enrollmentCriteriaIDs) formData.append('EnrollmentCriteriaIDs', this.enrollmentCriteriaIDs);
+    if (this.enrollmentCourseIDs) formData.append('EnrollmentCourseIDs', this.enrollmentCourseIDs);
+    if (this.maxCapacity !== undefined) formData.append('MaxCapacity', this.maxCapacity.toString());
+    if (this.enrollmentStatus !== undefined) formData.append('EnrollmentStatus', this.enrollmentStatus.toString());
+    if (this.enrollmentCriteriaType !== undefined)
+      formData.append('EnrollmentCriteriaType', this.enrollmentCriteriaType.toString());
     if (this.lessonIds) formData.append('LessonIds', this.lessonIds);
-    if (this.enrollmentCriteriaID) formData.append('EnrollmentCriteriaID', this.enrollmentCriteriaID);
     if (this.categoryID) formData.append('CategoryID', this.categoryID);
     if (this.thumbnailID) formData.append('ThumbnailID', this.thumbnailID);
     if (this.resourceIDs) formData.append('ResourceIDs', this.resourceIDs);

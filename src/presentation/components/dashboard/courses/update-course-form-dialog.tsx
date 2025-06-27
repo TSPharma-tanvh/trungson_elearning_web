@@ -8,7 +8,10 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Box,
+  Button,
+  CircularProgress,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -21,6 +24,7 @@ import { Article, Tag } from '@phosphor-icons/react';
 
 import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '../../core/picker/custom-date-picker';
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '../../core/text-field/custom-textfield';
 import { EnrollmentSelect } from '../../enrollment/enrollment-select';
 
@@ -55,7 +59,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           course.displayType !== undefined
             ? DisplayTypeEnum[course.displayType as keyof typeof DisplayTypeEnum]
             : undefined,
-        enrollmentCriteriaID: course.enrollmentCriteriaId || undefined,
+        enrollmentCriteriaIDs: course.enrollmentCriteriaId || undefined,
         categoryID: course.categoryId || undefined,
         thumbnailID: course.thumbnailId || undefined,
         lessonIds: course.lessons != null ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
@@ -68,6 +72,20 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
   const handleChange = <K extends keyof UpdateCourseRequest>(field: K, value: UpdateCourseRequest[K]) => {
     setFormData((prev) => new UpdateCourseRequest({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    setIsSubmitting(true);
+    try {
+      await onSubmit(formData);
+      console.error(formData);
+      onClose();
+    } catch (error) {
+      console.error('Error updating path:', error);
+      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const iconStyle = {
@@ -171,8 +189,10 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <EnrollmentSelect
                 enrollmentUsecase={enrollUsecase}
                 categoryEnum={CategoryEnum.Course}
-                value={formData.enrollmentCriteriaID ?? ''}
-                onChange={(value) => handleChange('enrollmentCriteriaID', value)}
+                value={
+                  formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
+                }
+                onChange={(value: string[]) => handleChange('enrollmentCriteriaIDs', value.join(','))}
                 disabled={isSubmitting}
                 label="Enrollment Criteria"
               />
@@ -180,6 +200,37 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           </Grid>
         </Box>
       </DialogContent>
+
+      <DialogActions>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column-reverse' : 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+            width: '100%',
+            m: 2,
+          }}
+        >
+          <Button
+            onClick={onClose}
+            variant="outlined"
+            sx={{ width: isMobile ? '100%' : '180px' }}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            sx={{ width: isMobile ? '100%' : '180px' }}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+          </Button>
+        </Box>
+      </DialogActions>
     </Dialog>
   );
 }

@@ -9,7 +9,7 @@ export class CreateCoursePathRequest {
   status?: StatusEnum;
   displayType?: DisplayTypeEnum;
   courseIds?: string;
-  enrollmentCriteriaID?: string;
+  enrollmentCriteriaIDs?: string;
   categoryID?: string;
   thumbnailID?: string;
   thumbnail?: File;
@@ -32,7 +32,7 @@ export class CreateCoursePathRequest {
       status: json.status,
       displayType: json.displayType,
       courseIds: json.courseIds,
-      enrollmentCriteriaID: json.enrollmentCriteriaID,
+      enrollmentCriteriaIDs: json.enrollmentCriteriaIDs,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
       thumbDocumentNo: json.thumbDocumentNo,
@@ -52,7 +52,7 @@ export class CreateCoursePathRequest {
       status: this.status,
       displayType: this.displayType,
       courseIds: this.courseIds,
-      enrollmentCriteriaID: this.enrollmentCriteriaID,
+      enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
       thumbDocumentNo: this.thumbDocumentNo,
@@ -73,7 +73,7 @@ export class CreateCoursePathRequest {
     if (this.status !== undefined) formData.append('Status', this.status.toString());
     if (this.displayType !== undefined) formData.append('DisplayType', this.displayType.toString());
     if (this.courseIds !== undefined) formData.append('CourseIds', this.courseIds);
-    if (this.enrollmentCriteriaID !== undefined) formData.append('EnrollmentCriteriaID', this.enrollmentCriteriaID);
+    if (this.enrollmentCriteriaIDs !== undefined) formData.append('EnrollmentCriteriaIDs', this.enrollmentCriteriaIDs);
     if (this.categoryID !== undefined) formData.append('CategoryID', this.categoryID);
     if (this.thumbnailID !== undefined) formData.append('ThumbnailID', this.thumbnailID);
     if (this.thumbnail !== undefined) formData.append('Thumbnail', this.thumbnail);

@@ -157,27 +157,77 @@ interface EnrollmentCardProps {
   coursePath: CoursePathResponse;
   fullScreen: boolean;
 }
-function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) {
+
+export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) {
+  const enrollments = coursePath.enrollmentCriteria ?? [];
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+
+  const toggleExpanded = (id: string) => {
+    setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const renderField = (
+    label: string,
+    value?: string | number | boolean | null | undefined,
+    children?: React.ReactNode
+  ) => (
+    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+      <Typography variant="subtitle2" fontWeight={500}>
+        {label}
+      </Typography>
+      {children ?? <CustomFieldTypography value={value} />}
+    </Grid>
+  );
+
+  if (enrollments.length === 0) return null;
+
   return (
-    <Card sx={{ mb: 2 }}>
-      <CardHeader title="Enrollment Criteria" />
-      <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={fullScreen ? 4 : 6}>
-            <Typography variant="subtitle2" fontWeight={500}>
-              Enrollment Criteria ID
-            </Typography>
-            <CustomFieldTypography value={coursePath.enrollmentCriteriaID} />
-          </Grid>
-          <Grid item xs={12} sm={fullScreen ? 4 : 6}>
-            <Typography variant="subtitle2" fontWeight={500}>
-              Max Capacity
-            </Typography>
-            <CustomFieldTypography value={coursePath.enrollmentCriteria?.maxCapacity} />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+    <Box sx={{ mb: 2 }}>
+      <CardHeader title="Enrollment Criteria" sx={{ pl: 2, pb: 1, mb: 2 }} />
+      {enrollments.map((enroll, index) => {
+        const isExpanded = expandedIds[enroll.id] ?? false;
+
+        return (
+          <Card
+            key={enroll.id}
+            variant="outlined"
+            sx={{
+              mb: 2,
+              mx: window.innerWidth < 600 ? 1 : 2,
+            }}
+          >
+            <CardHeader
+              title={enroll.name ?? `Enrollment #${index + 1}`}
+              action={
+                <IconButton
+                  onClick={() => toggleExpanded(enroll.id)}
+                  sx={{
+                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s',
+                  }}
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              }
+              sx={{ py: 1 }}
+            />
+            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+              <CardContent>
+                <Grid container spacing={2}>
+                  {renderField('ID', enroll.id)}
+                  {renderField('Max Capacity', enroll.maxCapacity)}
+                  {renderField('Target Type', enroll.targetType)}
+                  {renderField('Target ID', enroll.targetID)}
+                  {renderField('Target Level ID', enroll.targetLevelID)}
+                  {renderField('Target Pharmacy ID', enroll.targetPharmacyID)}
+                  {renderField('Description', enroll.desc)}
+                </Grid>
+              </CardContent>
+            </Collapse>
+          </Card>
+        );
+      })}
+    </Box>
   );
 }
 
@@ -320,8 +370,10 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Pr
             <PathInfoCard coursePath={coursePath} fullScreen={fullScreen} />
             <ScheduleCard coursePath={coursePath} />
             <StatusCard coursePath={coursePath} />
-            <EnrollmentCard coursePath={coursePath} fullScreen={fullScreen} />
 
+            <Box sx={{ mb: 2 }}>
+              <EnrollmentCard coursePath={coursePath} fullScreen={fullScreen} />
+            </Box>
             {/* Courses Section */}
             <Box sx={{ mb: 2 }}>
               <CardHeader title="Included Courses" sx={{ pl: 2, pb: 1, mb: 2 }} />

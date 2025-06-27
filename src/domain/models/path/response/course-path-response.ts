@@ -2,6 +2,7 @@ import { CategoryDetailResponse } from '../../category/response/category-detail-
 import { CourseResponse } from '../../courses/response/course-response';
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
+import { UserPathProgressResponse } from '../../user-path/response/user-path-progress-response';
 
 export class CoursePathResponse {
   id?: string;
@@ -14,10 +15,10 @@ export class CoursePathResponse {
   displayType?: string;
   categoryID?: string;
   thumbnailID?: string;
-  enrollmentCriteriaID?: string;
-  enrollmentCriteria?: EnrollmentCriteriaResponse;
+  enrollmentCriteria?: EnrollmentCriteriaResponse[];
   category?: CategoryDetailResponse;
   thumbnail?: FileResourcesResponse;
+  userPathProgress?: UserPathProgressResponse[];
   courses: CourseResponse[] = [];
 
   static fromJson(json: any): CoursePathResponse {
@@ -32,12 +33,16 @@ export class CoursePathResponse {
     dto.displayType = json.displayType;
     dto.categoryID = json.categoryID;
     dto.thumbnailID = json.thumbnailID;
-    dto.enrollmentCriteriaID = json.enrollmentCriteriaID;
-    dto.enrollmentCriteria = json.enrollmentCriteria
-      ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
+    dto.enrollmentCriteria = Array.isArray(json.enrollmentCriteria)
+      ? json.enrollmentCriteria.map((item: any) => EnrollmentCriteriaResponse.fromJSON(item))
       : undefined;
+
     dto.category = json.category ? CategoryDetailResponse.fromJson(json.category) : undefined;
     dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined;
+    dto.userPathProgress = Array.isArray(json.userPathProgress)
+      ? json.userPathProgress.map((u: any) => UserPathProgressResponse.fromJson(u))
+      : undefined;
+
     dto.courses = Array.isArray(json.courses) ? json.courses.map((c: any) => CourseResponse.fromJson(c)) : [];
     return dto;
   }
@@ -54,10 +59,10 @@ export class CoursePathResponse {
       displayType: this.displayType,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
-      enrollmentCriteriaID: this.enrollmentCriteriaID,
-      enrollmentCriteria: this.enrollmentCriteria?.toJSON(),
+      enrollmentCriteria: this.enrollmentCriteria?.map((item) => item.toJSON()),
       category: this.category?.toJson(),
       thumbnail: this.thumbnail?.toJson(),
+      userPathProgress: this.userPathProgress?.map((item) => item.toJson()),
       courses: this.courses.map((c) => c.toJson()),
     };
   }

@@ -26,7 +26,7 @@ export class CreateCourseRequest {
   scheduleStatus: ScheduleStatusEnum = ScheduleStatusEnum.Schedule;
   lessonIds?: string;
 
-  enrollmentCriteriaID?: string;
+  enrollmentCriteriaIDs?: string;
   categoryID?: string;
 
   thumbnailID?: string;
@@ -63,7 +63,7 @@ export class CreateCourseRequest {
       meetingLink: json.meetingLink,
       scheduleStatus: json.scheduleStatus,
       lessonIds: json.lessonIds,
-      enrollmentCriteriaID: json.enrollmentCriteriaID,
+      enrollmentCriteriaIDs: json.enrollmentCriteriaIDs,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
       resourceIDs: json.resourceIDs,
@@ -93,7 +93,7 @@ export class CreateCourseRequest {
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
       lessonIds: this.lessonIds,
-      enrollmentCriteriaID: this.enrollmentCriteriaID,
+      enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
       resourceIDs: this.resourceIDs,
@@ -124,7 +124,7 @@ export class CreateCourseRequest {
     if (this.meetingLink) formData.append('MeetingLink', this.meetingLink);
     formData.append('ScheduleStatus', this.scheduleStatus.toString());
     if (this.lessonIds) formData.append('LessonIds', this.lessonIds);
-    if (this.enrollmentCriteriaID) formData.append('EnrollmentCriteriaID', this.enrollmentCriteriaID);
+    if (this.enrollmentCriteriaIDs) formData.append('EnrollmentCriteriaIDs', this.enrollmentCriteriaIDs);
     if (this.categoryID) formData.append('CategoryID', this.categoryID);
     if (this.thumbnailID) formData.append('ThumbnailID', this.thumbnailID);
     if (this.resourceIDs) formData.append('ResourceIDs', this.resourceIDs);

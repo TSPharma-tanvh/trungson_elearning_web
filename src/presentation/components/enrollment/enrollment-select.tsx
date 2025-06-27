@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
@@ -11,6 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogTitle,
@@ -25,6 +28,7 @@ import {
   Pagination,
   Select,
   SelectChangeEvent,
+  SelectProps,
   TextField,
   Typography,
   useMediaQuery,
@@ -33,15 +37,14 @@ import {
 
 import { CustomSearchInput } from '../core/text-field/custom-search-input';
 
-interface EnrollmentSelectProps {
+interface EnrollmentSelectProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   enrollmentUsecase: EnrollmentUsecase;
-  value: string;
-  onChange: (value: string) => void;
+  value: string[];
+  onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
   categoryEnum: CategoryEnum;
 }
-
 export function EnrollmentSelect({
   enrollmentUsecase,
   value,
@@ -54,9 +57,11 @@ export function EnrollmentSelect({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [localValue, setLocalValue] = useState<string>(value);
+  const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const [selectedEnrollment, setSelectedEnrollment] = useState<EnrollmentCriteriaDetailResponse | undefined>(undefined);
+  const [selectedEnrollmentMap, setSelectedEnrollmentMap] = useState<Record<string, EnrollmentCriteriaDetailResponse>>(
+    {}
+  );
 
   const {
     enrollments,
@@ -77,52 +82,52 @@ export function EnrollmentSelect({
   const isFull = isSmallScreen || isFullscreen;
 
   useEffect(() => {
-    const fetchEnrollment = async () => {
-      if (!value || !enrollmentUsecase) return;
+    const fetch = async () => {
+      const newMap = { ...selectedEnrollmentMap };
+      let updated = false;
 
-      const exists = enrollments.find((e) => e.id === value);
-      if (exists) {
-        const mapped: EnrollmentCriteriaDetailResponse = {
-          ...exists,
-          toJson: () => ({
-            ...exists,
-          }),
-        };
-        setSelectedEnrollment(mapped);
-        return;
+      for (const id of value) {
+        if (!newMap[id]) {
+          try {
+            const detail = await enrollmentUsecase.getEnrollmentById(id);
+            newMap[id] = detail;
+            updated = true;
+          } catch (err) {
+            console.error(`Failed to load enrollment ID ${id}`, err);
+          }
+        }
       }
 
-      try {
-        const detail = await enrollmentUsecase.getEnrollmentById(value);
-        setSelectedEnrollment(detail);
-      } catch (e) {
-        console.error('Failed to fetch enrollment:', e);
-      }
+      if (updated) setSelectedEnrollmentMap(newMap);
     };
 
-    fetchEnrollment();
-  }, [value, enrollmentUsecase, enrollments]);
+    if (value.length > 0) fetch();
+  }, [value, enrollmentUsecase]);
 
+  // Keep localValue in sync on prop change
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
 
-  const handleOpen = () => {
-    if (!disabled) setDialogOpen(true);
-  };
-
+  const handleOpen = () => !disabled && setDialogOpen(true);
   const handleClose = () => {
     setDialogOpen(false);
-    setLocalValue(value);
+    setLocalValue(value); // Reset
   };
-
   const handleSave = () => {
     onChange(localValue);
+    console.error(localValue);
     setDialogOpen(false);
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
     loadEnrollments(newPage);
+    listRef.current?.scrollTo(0, 0);
+  };
+
+  const handleClearFilters = () => {
+    setLocalSearchText('');
+    setDisableStatus(undefined);
   };
 
   return (
@@ -130,66 +135,93 @@ export function EnrollmentSelect({
       <FormControl fullWidth disabled={disabled}>
         <InputLabel id="enrollment-select-label">{label}</InputLabel>
         <Select
+          multiple
           labelId="enrollment-select-label"
           value={value}
-          input={<OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1 }} />} />}
+          input={
+            <OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+          }
           onClick={handleOpen}
-          renderValue={() =>
-            selectedEnrollment?.name || enrollments.find((e) => e.id === value)?.name || value || 'No Selection'
+          renderValue={(selected) =>
+            selected.map((id: string) => selectedEnrollmentMap[id]?.name || id).join(', ') || 'No Criteria Selected'
           }
           open={false}
         />
       </FormControl>
 
-      <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm">
-        <DialogTitle>
-          Select Enrollment Criteria
-          <Box sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <IconButton onClick={() => setIsFullscreen(!isFullscreen)}>
-              {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-            </IconButton>
-            <IconButton onClick={handleClose}>
-              <CloseIcon />
-            </IconButton>
+      <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
+        <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6">Select Enrollment Criteria</Typography>
+            <Box>
+              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+                {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+              </IconButton>
+              <IconButton onClick={handleClose} size="small">
+                <CloseIcon />
+              </IconButton>
+            </Box>
           </Box>
-        </DialogTitle>
 
-        <Box px={2} py={1} display="flex" gap={2} flexDirection={isSmallScreen ? 'column' : 'row'}>
           <CustomSearchInput
             value={localSearchText}
-            onChange={(value) => {
-              setLocalSearchText(value);
-              setSearchText(value);
+            onChange={(val) => {
+              setLocalSearchText(val);
+              setSearchText(val);
             }}
             placeholder="Search enrollment..."
           />
-          <FormControl size="small" sx={{ minWidth: 160 }}>
-            <InputLabel>Disable Status</InputLabel>
-            <Select
-              value={disableStatus !== undefined ? String(disableStatus) : ''}
-              label="Disable Status"
-              onChange={(e: SelectChangeEvent<string>) => {
-                const val = e.target.value;
-                setDisableStatus(val !== '' ? (Number(val) as StatusEnum) : undefined);
-              }}
-            >
-              {[undefined, StatusEnum.Enable, StatusEnum.Disable].map((opt) => (
-                <MenuItem key={opt ?? 'all'} value={opt !== undefined ? String(opt) : ''}>
-                  {opt != null ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'All'}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
 
-        <Box px={2} pb={2}>
-          <List ref={listRef} sx={{ maxHeight: 300, overflow: 'auto' }}>
-            {enrollments.map((item) => (
-              <ListItem key={item.id} button selected={localValue === item.id} onClick={() => setLocalValue(item.id)}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            <FormControl size="small" sx={{ minWidth: 160 }}>
+              <InputLabel>Disable Status</InputLabel>
+              <Select
+                value={disableStatus !== undefined ? String(disableStatus) : ''}
+                onChange={(e: SelectChangeEvent<string>) =>
+                  setDisableStatus(e.target.value !== '' ? (Number(e.target.value) as StatusEnum) : undefined)
+                }
+                label="Disable Status"
+              >
+                {[undefined, StatusEnum.Enable, StatusEnum.Disable].map((opt) => (
+                  <MenuItem key={opt ?? 'all'} value={opt !== undefined ? String(opt) : ''}>
+                    {opt != null ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'All'}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button size="small" onClick={handleClearFilters} variant="outlined">
+              Clear Filters
+            </Button>
+          </Box>
+        </DialogTitle>
+
+        <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
+          {enrollments.map((item) => {
+            const checked = localValue.includes(item.id);
+            return (
+              <MenuItem
+                key={item.id}
+                value={item.id}
+                onClick={() => {
+                  setLocalValue((prev) => (checked ? prev.filter((id) => id !== item.id) : [...prev, item.id]));
+                }}
+              >
+                <Checkbox checked={checked} />
                 <ListItemText primary={item.name} />
-              </ListItem>
-            ))}
-          </List>
+              </MenuItem>
+            );
+          })}
+
+          {loadingEnrollments && (
+            <Typography variant="body2" sx={{ p: 2 }}>
+              Loading...
+            </Typography>
+          )}
+          {!loadingEnrollments && enrollments.length === 0 && (
+            <Typography variant="body2" sx={{ p: 2 }}>
+              No enrollment criteria found
+            </Typography>
+          )}
         </Box>
 
         <DialogActions sx={{ flexDirection: 'column', gap: 2 }}>
@@ -206,7 +238,7 @@ export function EnrollmentSelect({
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave} variant="contained" disabled={!localValue}>
+            <Button onClick={handleSave} variant="contained">
               Save
             </Button>
           </Box>

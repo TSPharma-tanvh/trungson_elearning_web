@@ -51,6 +51,8 @@ interface CategoryEndpoints {
 interface EnrollmentCriteriaEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
 }
 
 interface CoursesEndpoints {
@@ -60,6 +62,12 @@ interface CoursesEndpoints {
   update: StaticEndpoint;
 }
 
+interface LessonsEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+}
 interface FileResourcesEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
@@ -76,6 +84,7 @@ interface EndpointDefinitions {
   category: CategoryEndpoints;
   enrollment: EnrollmentCriteriaEndpoints;
   courses: CoursesEndpoints;
+  lessons: LessonsEndpoints;
   fileResources: FileResourcesEndpoints;
 }
 
@@ -123,12 +132,20 @@ const endpoints: EndpointDefinitions = {
   enrollment: {
     getAll: 'EnrollmentCriteria/GetEnrollmentCriteria',
     getById: (id: string) => `EnrollmentCriteria/GetEnrollmentCriteriaById/${id}`,
+    create: 'EnrollmentCriteria/CreateEnrollmentCriteria',
+    update: 'EnrollmentCriteria/UpdateEnrollmentCriteria',
   },
   courses: {
     getAll: 'Course/GetCourse',
     getById: (id: string) => `Course/GetCourseById/${id}`,
     create: 'Course/CreateCourse',
     update: 'Course/UpdateCourse',
+  },
+  lessons: {
+    getAll: 'Lesson/GetLesson',
+    getById: (id: string) => `Lesson/GetLessonById/${id}`,
+    create: 'Lesson/CreateLesson',
+    update: 'Lesson/UpdateLesson',
   },
   fileResources: {
     getAll: 'Resource/GetFileResources',

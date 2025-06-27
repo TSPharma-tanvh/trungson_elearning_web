@@ -3,6 +3,7 @@ import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
 import { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
+import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { PathUsecase } from '@/domain/usecases/path/path-usecase';
 import { RoleUsecase } from '@/domain/usecases/role/role-usecase';
 import { SendNotificationUseCase } from '@/domain/usecases/SendNotificationUseCase';
@@ -13,6 +14,7 @@ import { CategoryRepositoryImpl } from '@/data/repositories/category/category-re
 import { CourseRepoImpl } from '@/data/repositories/courses/courses-repo-impl';
 import { EnrollmentRepoImpl } from '@/data/repositories/enrollment/enrollment-repo-impl';
 import { FileResourceRepositoryImpl } from '@/data/repositories/file/file-resource-repo-impl';
+import { LessonRepoImpl } from '@/data/repositories/lesson/lesson-repo-impl';
 import { NotificationRepoImpl } from '@/data/repositories/NotificationRepoImpl';
 import { PathRepoImpl } from '@/data/repositories/path/path-repo.impl';
 import { RoleRepositoryImpl } from '@/data/repositories/role/role-repo-impl';
@@ -35,7 +37,6 @@ export class DependencyContainer {
   //path
   public pathRepo = new PathRepoImpl();
 
-
   //category
   public categoryRepo = new CategoryRepositoryImpl();
 
@@ -44,6 +45,9 @@ export class DependencyContainer {
 
   //course
   public courseRepo = new CourseRepoImpl();
+
+  //lesson
+  public lessonRepo = new LessonRepoImpl();
 
   //resource
   public fileRepo = new FileResourceRepositoryImpl();
@@ -71,6 +75,9 @@ export class DependencyContainer {
 
   //course
   public courseUsecase = new CourseUsecase(this.courseRepo);
+
+  //lesson
+  public lessonUsecase = new LessonUsecase(this.lessonRepo);
 
   //file resource
   public fileUsecase = new FileResourcesUsecase(this.fileRepo);

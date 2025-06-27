@@ -1,3 +1,4 @@
+import { CategoryEnum } from '@/utils/enum/core-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
 
 export class UpdateCoursePathRequest {
@@ -9,9 +10,7 @@ export class UpdateCoursePathRequest {
   endTime?: string;
   status?: StatusEnum;
   displayType?: DisplayTypeEnum;
-  courseIds?: string;
   userIds?: string;
-  enrollmentCriteriaID?: string;
   categoryID?: string;
   thumbnailID?: string;
   thumbnail?: File;
@@ -19,6 +18,11 @@ export class UpdateCoursePathRequest {
   thumbPrefixName?: string;
   categoryEnum?: string;
   isDeleteOldThumbnail?: boolean;
+  enrollmentCriteriaIDs?: string;
+  enrollmentCriteriaType?: CategoryEnum;
+  enrollmentStatus?: StatusEnum;
+  maxCapacity?: number;
+  enrollmentCourseIDs?: string;
 
   constructor(init?: Partial<UpdateCoursePathRequest>) {
     Object.assign(this, init);
@@ -34,15 +38,18 @@ export class UpdateCoursePathRequest {
       endTime: json.endTime,
       status: json.status,
       displayType: json.displayType,
-      courseIds: json.courseIds,
       userIds: json.userIds,
-      enrollmentCriteriaID: json.enrollmentCriteriaID,
+      enrollmentCriteriaIDs: json.enrollmentCriteriaIDs,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
       thumbDocumentNo: json.thumbDocumentNo,
       thumbPrefixName: json.thumbPrefixName,
       categoryEnum: json.categoryEnum,
       isDeleteOldThumbnail: json.isDeleteOldThumbnail,
+      enrollmentCriteriaType: json.enrollmentCriteriaType,
+      enrollmentStatus: json.enrollmentStatus,
+      maxCapacity: json.maxCapacity,
+      enrollmentCourseIDs: json.enrollmentCourseIDs,
     });
   }
 
@@ -56,15 +63,18 @@ export class UpdateCoursePathRequest {
       endTime: this.endTime,
       status: this.status,
       displayType: this.displayType,
-      courseIds: this.courseIds,
       userIds: this.userIds,
-      enrollmentCriteriaID: this.enrollmentCriteriaID,
+      enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
       thumbDocumentNo: this.thumbDocumentNo,
       thumbPrefixName: this.thumbPrefixName,
       categoryEnum: this.categoryEnum,
       isDeleteOldThumbnail: this.isDeleteOldThumbnail,
+      enrollmentCriteriaType: this.enrollmentCriteriaType,
+      enrollmentStatus: this.enrollmentStatus,
+      maxCapacity: this.maxCapacity,
+      enrollmentCourseIDs: this.enrollmentCourseIDs,
     };
   }
 
@@ -79,9 +89,8 @@ export class UpdateCoursePathRequest {
     if (this.endTime) formData.append('endTime', this.endTime);
     if (this.status !== undefined) formData.append('status', String(this.status));
     if (this.displayType !== undefined) formData.append('displayType', String(this.displayType));
-    if (this.courseIds) formData.append('courseIds', this.courseIds);
     if (this.userIds) formData.append('userIds', this.userIds);
-    if (this.enrollmentCriteriaID) formData.append('enrollmentCriteriaID', this.enrollmentCriteriaID);
+    if (this.enrollmentCriteriaIDs) formData.append('EnrollmentCriteriaIDs', this.enrollmentCriteriaIDs);
     if (this.categoryID) formData.append('categoryID', this.categoryID);
     if (this.thumbnailID) formData.append('thumbnailID', this.thumbnailID);
     if (this.thumbDocumentNo) formData.append('thumbDocumentNo', this.thumbDocumentNo);
@@ -90,6 +99,11 @@ export class UpdateCoursePathRequest {
     if (this.isDeleteOldThumbnail !== undefined)
       formData.append('isDeleteOldThumbnail', String(this.isDeleteOldThumbnail));
     if (this.thumbnail) formData.append('thumbnail', this.thumbnail);
+    if (this.enrollmentCriteriaType !== undefined)
+      formData.append('enrollmentCriteriaType', String(this.enrollmentCriteriaType));
+    if (this.enrollmentStatus !== undefined) formData.append('enrollmentStatus', String(this.enrollmentStatus));
+    if (this.maxCapacity !== undefined) formData.append('maxCapacity', String(this.maxCapacity));
+    if (this.enrollmentCourseIDs) formData.append('enrollmentCourseIDs', this.enrollmentCourseIDs);
 
     return formData;
   }
