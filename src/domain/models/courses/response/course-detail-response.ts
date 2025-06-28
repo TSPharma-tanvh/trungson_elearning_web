@@ -16,8 +16,7 @@ export class CourseDetailResponse {
   endTime?: Date;
   meetingLink?: string;
   scheduleStatus!: string;
-  enrollmentCriteriaId?: string;
-  enrollmentCriteria?: EnrollmentCriteriaResponse;
+  enrollmentCriteria?: EnrollmentCriteriaResponse[];
   categoryId?: string;
   thumbnailId?: string;
   thumbnail?: FileResourcesResponse;
@@ -43,10 +42,7 @@ export class CourseDetailResponse {
       endTime: json.endTime ? new Date(json.endTime) : undefined,
       meetingLink: json.meetingLink,
       scheduleStatus: json.scheduleStatus,
-      enrollmentCriteriaId: json.enrollmentCriteriaId,
-      enrollmentCriteria: json.enrollmentCriteria
-        ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
-        : undefined,
+      enrollmentCriteria: json.enrollmentCriteria?.map((ec: any) => EnrollmentCriteriaResponse.fromJSON(ec)),
       categoryId: json.categoryId,
       thumbnailId: json.thumbnailId,
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
@@ -70,8 +66,7 @@ export class CourseDetailResponse {
       endTime: this.endTime?.toISOString(),
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
-      enrollmentCriteriaId: this.enrollmentCriteriaId,
-      enrollmentCriteria: this.enrollmentCriteria?.toJSON(),
+      enrollmentCriteria: this.enrollmentCriteria?.map((ec) => ec.toJSON()),
       categoryId: this.categoryId,
       thumbnailId: this.thumbnailId,
       thumbnail: this.thumbnail?.toJson(),

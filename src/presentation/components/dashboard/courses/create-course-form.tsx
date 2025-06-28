@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
+import { CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
 import { CategoryEnum, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -15,31 +15,31 @@ import { CustomTextField } from '../../core/text-field/custom-textfield';
 
 interface Props {
   disabled?: boolean;
-  onSubmit: (data: CreateCoursePathRequest) => void;
+  onSubmit: (data: CreateCourseRequest) => void;
   loading?: boolean;
   open: boolean;
   onClose: () => void;
 }
 
-export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function CreateCourseDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
 
-  const [form, setForm] = useState<CreateCoursePathRequest>(
-    new CreateCoursePathRequest({
+  const [form, setForm] = useState<CreateCourseRequest>(
+    new CreateCourseRequest({
       name: '',
       detail: '',
       isRequired: false,
       startTime: '',
       endTime: '',
-      status: StatusEnum.Enable,
+      disableStatus: StatusEnum.Enable,
       displayType: DisplayTypeEnum.Public,
       categoryEnum: CategoryEnum.Path,
     })
   );
 
-  const handleChange = <K extends keyof CreateCoursePathRequest>(key: K, value: CreateCoursePathRequest[K]) => {
-    setForm((prev) => new CreateCoursePathRequest({ ...prev, [key]: value }));
+  const handleChange = <K extends keyof CreateCourseRequest>(key: K, value: CreateCourseRequest[K]) => {
+    setForm((prev) => new CreateCourseRequest({ ...prev, [key]: value }));
   };
 
   useEffect(() => {
@@ -155,8 +155,8 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
                 label="Trạng thái"
-                value={form.status!}
-                onChange={(val) => handleChange('status', val)}
+                value={form.disableStatus!}
+                onChange={(val) => handleChange('disableStatus', val)}
                 disabled={disabled}
                 options={[
                   { value: StatusEnum.Enable, label: 'Kích hoạt' },

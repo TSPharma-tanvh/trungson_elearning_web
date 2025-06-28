@@ -85,7 +85,6 @@ export function UpdatePathFormDialog({ open, path: path, onClose, onSubmit }: Ed
       });
       setCourseFormData(newFormData);
 
-      // Fetch preview URL for thumbnailID if it exists
       if (path.thumbnailID) {
         fileUsecase
           .getFileResouceById(path.thumbnailID)

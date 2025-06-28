@@ -46,9 +46,14 @@ export function useLessonSelectLoader({
   const [hasMore, setHasMore] = useState(true);
   const [loadingLessons, setLoadingLessons] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+
   const [searchText, setSearchText] = useState(initialSearchText);
   const [lessonType, setLessonType] = useState<LearningModeEnum | undefined>(initialLessonType);
   const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(initialDisableStatus);
+
+  const [displayType, setDisplayType] = useState<DisplayTypeEnum | undefined>();
+  const [scheduleStatus, setScheduleStatus] = useState<ScheduleStatusEnum | undefined>();
+
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -102,7 +107,7 @@ export function useLessonSelectLoader({
   }, [isOpen, searchText, disableStatus, lessonType]);
 
   return {
-    lessons: lessons,
+    lessons,
     loadingLessons,
     hasMore,
     isSelectOpen,
@@ -112,6 +117,8 @@ export function useLessonSelectLoader({
     setIsSelectOpen,
     setSearchText,
     setLessonType,
+    setDisplayType,
+    setScheduleStatus,
     setDisableStatus,
     searchText,
     lessonType,

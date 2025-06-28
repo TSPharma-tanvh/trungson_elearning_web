@@ -36,7 +36,7 @@ interface CourseTableProps {
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteCoursePaths: (ids: string[]) => Promise<void>;
-  onEditCoursePath: (data: UpdateCourseRequest) => Promise<void>;
+  onEditCourse: (data: UpdateCourseRequest) => Promise<void>;
 }
 
 export default function CourseTable({
@@ -47,7 +47,7 @@ export default function CourseTable({
   onPageChange,
   onRowsPerPageChange,
   onDeleteCoursePaths,
-  onEditCoursePath,
+  onEditCourse,
 }: CourseTableProps) {
   const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
@@ -230,7 +230,7 @@ export default function CourseTable({
           data={editCourseData}
           onClose={() => setEditOpen(false)}
           onSubmit={async (updatedData) => {
-            await onEditCoursePath(updatedData);
+            await onEditCourse(updatedData);
             setEditOpen(false);
           }}
         />

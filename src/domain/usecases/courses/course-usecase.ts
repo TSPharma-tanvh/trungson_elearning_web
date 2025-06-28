@@ -51,7 +51,7 @@ export class CourseUsecase {
     return result;
   }
 
-  async deletePath(id: string): Promise<ApiResponse> {
+  async deleteCourse(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateCourseRequest({
       id: id ?? '',
       disableStatus: StatusEnum.Deleted,

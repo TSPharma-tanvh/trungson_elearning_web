@@ -3,30 +3,38 @@ import { UpdateCourseRequest } from '@/domain/models/courses/request/update-cour
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   Grid,
   IconButton,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, Tag } from '@phosphor-icons/react';
+import { Article, Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
+import { CategorySelect } from '../../category/category-select';
 import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '../../core/picker/custom-date-picker';
 import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '../../core/text-field/custom-textfield';
+import { LessonSelectDialog } from '../../courses/lessons/lesson-select';
 import { EnrollmentSelect } from '../../enrollment/enrollment-select';
+import { FileResourceSelect } from '../../file/file-resource-select';
 
 interface EditCourseDialogProps {
   open: boolean;
@@ -38,11 +46,13 @@ interface EditCourseDialogProps {
 export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }: EditCourseDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, courseUsecase, enrollUsecase, fileUsecase } = useDI();
+  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateCourseRequest>(new UpdateCourseRequest({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
 
   useEffect(() => {
     if (course && open) {
@@ -59,7 +69,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           course.displayType !== undefined
             ? DisplayTypeEnum[course.displayType as keyof typeof DisplayTypeEnum]
             : undefined,
-        enrollmentCriteriaIDs: course.enrollmentCriteriaId || undefined,
+        enrollmentCriteriaType: CategoryEnum.Course,
+        enrollmentCriteriaIDs: course.enrollmentCriteria?.map((enrollment) => enrollment.id).join(',') || undefined,
         categoryID: course.categoryId || undefined,
         thumbnailID: course.thumbnailId || undefined,
         lessonIds: course.lessons != null ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
@@ -72,6 +83,53 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
   const handleChange = <K extends keyof UpdateCourseRequest>(field: K, value: UpdateCourseRequest[K]) => {
     setFormData((prev) => new UpdateCourseRequest({ ...prev, [field]: value }));
+  };
+
+  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (newSource) {
+      setThumbnailSource(newSource);
+      if (newSource === 'upload') {
+        handleChange('thumbnailID', undefined);
+        setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
+      } else {
+        handleChange('thumbnail', undefined);
+        if (formData.thumbnailID) {
+          fileUsecase
+            .getFileResouceById(formData.thumbnailID)
+            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .catch((error) => {
+              console.error('Error fetching thumbnail:', error);
+              setPreviewUrl(null);
+            });
+        } else {
+          setPreviewUrl(null);
+        }
+      }
+    }
+  };
+
+  const handleFileSelectChange = async (id: string) => {
+    handleChange('thumbnailID', id);
+    if (id) {
+      try {
+        const file = await fileUsecase.getFileResouceById(id);
+        setPreviewUrl(file.resourceUrl || null);
+      } catch (error) {
+        console.error('Error fetching file resource:', error);
+        setPreviewUrl(null);
+      }
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
+  const handleFileUpload = (file: File | null) => {
+    handleChange('thumbnail', file ?? undefined);
+    if (file) {
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setPreviewUrl(null);
+    }
   };
 
   const handleSave = async () => {
@@ -185,6 +243,15 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 options={displayTypeOptions}
               />
             </Grid>
+            <Grid item xs={12}>
+              <LessonSelectDialog
+                lessonUsecase={lessonUsecase}
+                value={formData.lessonIds ? formData.lessonIds.split(',').filter((id) => id) : []}
+                onChange={(value: string[]) => handleChange('lessonIds', value.join(','))}
+                disabled={isSubmitting}
+                pathID={formData.id}
+              />
+            </Grid>
             <Grid item xs={12} sm={6}>
               <EnrollmentSelect
                 enrollmentUsecase={enrollUsecase}
@@ -196,6 +263,133 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 disabled={isSubmitting}
                 label="Enrollment Criteria"
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={formData.categoryID}
+                onChange={(value) => handleChange('categoryID', value)}
+                categoryEnum={CategoryEnum.Course}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <ToggleButtonGroup
+                value={thumbnailSource}
+                exclusive
+                onChange={handleThumbnailSourceChange}
+                aria-label="thumbnail source"
+                fullWidth
+                disabled={isSubmitting}
+                sx={{ mb: 2 }}
+              >
+                <ToggleButton value="select" aria-label="select from resources">
+                  Select from Resources
+                </ToggleButton>
+                <ToggleButton value="upload" aria-label="upload file">
+                  Upload File
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              {thumbnailSource === 'select' ? (
+                <FileResourceSelect
+                  fileUsecase={fileUsecase}
+                  type={FileResourceEnum.Image}
+                  status={StatusEnum.Enable}
+                  value={formData.thumbnailID}
+                  onChange={handleFileSelectChange}
+                  label="Thumbnail"
+                  disabled={isSubmitting}
+                />
+              ) : (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      label="Thumbnail Document No"
+                      value={formData.thumbDocumentNo}
+                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      disabled={isSubmitting}
+                      icon={<ImageIcon {...iconStyle} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      label="Thumbnail Prefix Name"
+                      value={formData.thumbPrefixName}
+                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      disabled={isSubmitting}
+                      icon={<ImageIcon {...iconStyle} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      fullWidth
+                      disabled={isSubmitting}
+                      startIcon={<ImageIcon {...iconStyle} />}
+                    >
+                      Upload Thumbnail
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                      />
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={!!formData.isRequired}
+                          onChange={(e) => handleChange('isRequired', e.target.checked)}
+                          disabled={isSubmitting}
+                        />
+                      }
+                      label="Is Required"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={!!formData.isDeleteOldThumbnail}
+                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          disabled={isSubmitting}
+                        />
+                      }
+                      label="Delete Old Thumbnail"
+                    />
+                  </Grid>
+                  {previewUrl && (
+                    <Grid item xs={12}>
+                      <Box
+                        sx={{
+                          width: fullScreen ? 400 : 200,
+                          height: fullScreen ? 400 : 200,
+                          borderRadius: 1,
+                          border: '1px solid #ccc',
+                          overflow: 'hidden',
+                          mt: 2,
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          mx: 'auto',
+                        }}
+                      >
+                        <img
+                          src={previewUrl}
+                          alt="Thumbnail Preview"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      </Box>
+                    </Grid>
+                  )}
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Box>

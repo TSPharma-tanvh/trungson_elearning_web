@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { GetLessonRequest } from '@/domain/lessons/request/get-lesson-request';
 import { LessonDetailResponse } from '@/domain/lessons/response/lesson-detail-response';
 import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
+import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
+import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
 import {
   DisplayTypeDisplayNames,
   DisplayTypeEnum,
@@ -81,23 +83,24 @@ export function LessonSelectDialog({
   const {
     lessons,
     loadingLessons,
+    hasMore,
+    isSelectOpen,
     pageNumber,
     totalPages,
+    listRef,
+    setIsSelectOpen,
     setSearchText,
-    lessonType,
-    displayType,
-    scheduleStatus,
-    disableStatus,
     setLessonType,
     setDisplayType,
     setScheduleStatus,
     setDisableStatus,
-    listRef,
+    searchText,
+    lessonType,
+    disableStatus,
     loadLessons,
   } = useLessonSelectLoader({
     lessonUsecase,
     isOpen: dialogOpen,
-    pathID: '',
     searchText: debouncedSearchText,
   });
 
@@ -153,11 +156,12 @@ export function LessonSelectDialog({
           const newMap = { ...selectedLessonMap };
           let updated = false;
           for (const lesson of result.Lessons) {
-            if (!newMap[lesson.id]) {
+            if (lesson.id && !newMap[lesson.id]) {
               newMap[lesson.id] = lesson;
               updated = true;
             }
           }
+
           if (updated) {
             setSelectedLessonMap(newMap);
           }
@@ -167,7 +171,7 @@ export function LessonSelectDialog({
       };
       fetchSelectedLessons();
     }
-  }, [LessonUsecase, value, pathID, selectedLessonMap]);
+  }, [lessonUsecase, value, selectedLessonMap]);
 
   useEffect(() => {
     if (dialogOpen) {
@@ -236,7 +240,7 @@ export function LessonSelectDialog({
                 ))}
               </Select>
             </FormControl>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Display Type</InputLabel>
               <Select
                 value={displayType !== undefined ? String(displayType) : ''}
@@ -251,8 +255,8 @@ export function LessonSelectDialog({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            </FormControl> */}
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Schedule Status</InputLabel>
               <Select
                 value={scheduleStatus ?? ''}
@@ -267,7 +271,7 @@ export function LessonSelectDialog({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Disable Status</InputLabel>
               <Select
@@ -296,11 +300,11 @@ export function LessonSelectDialog({
                 value={lesson.id}
                 onClick={() =>
                   setLocalValue((prev) =>
-                    prev.includes(lesson.id) ? prev.filter((id) => id !== lesson.id) : [...prev, lesson.id]
+                    prev.includes(lesson.id!) ? prev.filter((id) => id !== lesson.id!) : [...prev, lesson.id!]
                   )
                 }
               >
-                <Checkbox checked={localValue.includes(lesson.id)} />
+                <Checkbox checked={localValue.includes(lesson.id!)} />
                 <ListItemText primary={lesson.name} />
               </MenuItem>
             ))}
