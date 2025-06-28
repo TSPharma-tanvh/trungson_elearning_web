@@ -154,7 +154,9 @@ export default function CourseTable({
                         </Box>
                       </Stack>
                     </TableCell>
-                    <TableCell>{row.detail}</TableCell>
+                    <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
+                      <Typography variant="body2">{row.detail}</Typography>
+                    </TableCell>
                     <TableCell>{row.isRequired ? 'Yes' : 'No'}</TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromDate(row.startTime)}</TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromDate(row.endTime)}</TableCell>

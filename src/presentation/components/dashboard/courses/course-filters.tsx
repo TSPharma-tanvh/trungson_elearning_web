@@ -62,7 +62,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           fullWidth
-          placeholder="Search path"
+          placeholder="Search course"
           startAdornment={
             <InputAdornment position="start">
               <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />

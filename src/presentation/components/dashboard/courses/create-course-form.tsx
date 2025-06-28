@@ -71,7 +71,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create Course Path
+          Create Course
         </Typography>
         <Box>
           <IconButton onClick={() => setFullScreen((prev) => !prev)}>
