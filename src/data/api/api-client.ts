@@ -26,7 +26,7 @@ class ApiClient {
       // },
       paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
       withCredentials: true,
-      timeout: 10000,
+      timeout: 100000,
     });
     this.setupInterceptors();
   }

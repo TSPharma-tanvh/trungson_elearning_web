@@ -68,9 +68,11 @@ export class CreateLessonRequest {
     if (this.courseID) form.append('CourseID', this.courseID);
     if (this.name) form.append('Name', this.name);
     if (this.detail) form.append('Detail', this.detail);
-    form.append('EnablePlay', this.enablePlay.toString());
-    form.append('Status', this.status.toString());
-    form.append('LessonType', this.lessonType.toString());
+
+    //Chỉ thêm nếu đã được định nghĩa
+    form.append('EnablePlay', this.enablePlay?.toString() ?? 'true');
+    if (this.status !== undefined) form.append('Status', this.status.toString());
+    if (this.lessonType !== undefined) form.append('LessonType', this.lessonType.toString());
 
     if (this.categoryID) form.append('CategoryID', this.categoryID);
     if (this.thumbnailID) form.append('ThumbnailID', this.thumbnailID);
@@ -81,7 +83,12 @@ export class CreateLessonRequest {
       form.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
     if (this.categoryEnum !== undefined) form.append('CategoryEnum', this.categoryEnum.toString());
 
+    //Check required field video
+    if (!this.video) {
+      throw new Error('Video is required but missing');
+    }
     form.append('Video', this.video);
+
     if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
     if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
 

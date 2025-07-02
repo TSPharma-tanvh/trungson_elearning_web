@@ -5,6 +5,7 @@ import { UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/requ
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, CategoryEnumUtils } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
@@ -68,8 +69,8 @@ export function UpdatePathFormDialog({ open, path: path, onClose, onSubmit }: Ed
         name: path.name || '',
         detail: path.detail || undefined,
         isRequired: path.isRequired || false,
-        startTime: path.startTime ? new Date(path.startTime).toISOString().slice(0, 16) : '',
-        endTime: path.endTime ? new Date(path.endTime).toISOString().slice(0, 16) : '',
+        startTime: path.startTime,
+        endTime: path.endTime,
         status: path.status !== undefined ? StatusEnum[path.status as keyof typeof StatusEnum] : undefined,
         displayType:
           path.displayType !== undefined

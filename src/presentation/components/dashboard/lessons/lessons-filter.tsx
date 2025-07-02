@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { GetLessonRequest } from '@/domain/lessons/request/get-lesson-request';
+import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
 import {

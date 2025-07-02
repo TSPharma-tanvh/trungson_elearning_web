@@ -42,8 +42,8 @@ export function CustomDateTimePicker({ label, value, onChange, disabled = false 
     <DateTimePicker
       label={label}
       value={value ? dayjs(value) : null}
-      format="DD/MM/YYYY HH:mm"
-      onChange={(newValue) => onChange(newValue?.toISOString() || '')}
+      format="DD/MM/YYYY hh:mm A"
+      onChange={(newValue) => onChange(newValue ? dayjs(newValue).format('YYYY-MM-DDTHH:mm:ss') : '')}
       disabled={disabled}
       slots={{
         popper: StyledPopper,
@@ -60,6 +60,7 @@ export function CustomDateTimePicker({ label, value, onChange, disabled = false 
           },
         },
       }}
+      ampm
     />
   );
 }

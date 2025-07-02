@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GetLessonRequest } from '@/domain/lessons/request/get-lesson-request';
-import { LessonDetailResponse } from '@/domain/lessons/response/lesson-detail-response';
+import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
+import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';

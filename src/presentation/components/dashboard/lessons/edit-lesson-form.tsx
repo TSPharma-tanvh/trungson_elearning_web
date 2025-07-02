@@ -1,0 +1,572 @@
+import { useEffect, useState } from 'react';
+import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
+import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import CloseIcon from '@mui/icons-material/Close';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
+
+import { CategorySelect } from '../../category/category-select';
+import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
+import { CustomTextField } from '../../core/text-field/custom-textfield';
+import { CustomVideoPlayer } from '../../file/custom-video-player';
+import { FileResourceSelect } from '../../file/file-resource-select';
+
+interface EditLessonDialogProps {
+  open: boolean;
+  data: LessonDetailResponse | null;
+  onClose: () => void;
+  onSubmit: (data: UpdateLessonRequest) => void;
+}
+
+export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }: EditLessonDialogProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase } = useDI();
+
+  const [fullScreen, setFullScreen] = useState(false);
+  const [formData, setFormData] = useState<UpdateLessonRequest>(new UpdateLessonRequest({}));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
+  const [videoSource, setVideoSource] = useState<'upload' | 'select'>('select');
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function setupFormData() {
+      if (lesson && open) {
+        let videoFile: File | undefined = undefined;
+
+        if (lesson.video?.resourceUrl && !formData.video) {
+          const fetchedFile = await urlToFile(lesson.video.resourceUrl, lesson.video.name ?? '');
+          if (fetchedFile) {
+            videoFile = fetchedFile;
+          }
+        }
+        const newFormData = new UpdateLessonRequest({
+          id: lesson.id || '',
+          name: lesson.name || '',
+          detail: lesson.detail || undefined,
+          enablePlay: lesson.enablePlay || undefined,
+          status: lesson.status !== undefined ? StatusEnum[lesson.status as keyof typeof StatusEnum] : undefined,
+          lessonType:
+            lesson.lessonType !== undefined
+              ? LearningModeEnum[lesson.lessonType as keyof typeof LearningModeEnum]
+              : undefined,
+          categoryID: lesson.categoryID || undefined,
+          thumbnailID: lesson.thumbnailID || undefined,
+          categoryEnum: CategoryEnum.Lesson,
+          isDeleteOldThumbnail: false,
+          videoID: lesson.videoID || undefined,
+          video: videoFile,
+        });
+        setFormData(newFormData);
+      }
+    }
+    setupFormData();
+  }, [lesson, open, fileUsecase]);
+
+  async function urlToFile(url: string, filename: string): Promise<File | null> {
+    try {
+      const response = await fetch(url, { mode: 'cors' });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch file: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      return new File([blob], filename, { type: blob.type });
+    } catch (error) {
+      console.error(`Error fetching file from ${url}:`, error);
+      return null;
+    }
+  }
+
+  const handleChange = <K extends keyof UpdateLessonRequest>(field: K, value: UpdateLessonRequest[K]) => {
+    setFormData((prev) => new UpdateLessonRequest({ ...prev, [field]: value }));
+  };
+
+  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (newSource) {
+      if (newSource === 'upload' && formData.thumbnail) {
+        setPreviewUrl(URL.createObjectURL(formData.thumbnail));
+      }
+      setThumbnailSource(newSource);
+      if (newSource === 'upload') {
+        // handleChange('thumbnailID', undefined);
+        // setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
+      } else {
+        handleChange('thumbnail', undefined);
+        if (formData.thumbnailID) {
+          fileUsecase
+            .getFileResouceById(formData.thumbnailID)
+            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .catch((error) => {
+              console.error('Error fetching thumbnail:', error);
+              setPreviewUrl(null);
+            });
+        } else {
+          setPreviewUrl(null);
+        }
+      }
+    }
+  };
+
+  const handleVideoSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (newSource) {
+      if (newSource === 'upload' && formData.video) {
+        setVideoPreviewUrl(URL.createObjectURL(formData.video));
+      }
+      setVideoSource(newSource);
+      if (newSource === 'upload') {
+        handleChange('video', undefined);
+        handleChange('videoDocumentNo', undefined);
+        handleChange('videoPrefixName', undefined);
+        setVideoPreviewUrl(null);
+      } else {
+        handleChange('video', undefined);
+        if (formData.videoID) {
+          fileUsecase
+            .getFileResouceById(formData.videoID)
+            .then((file) => setVideoPreviewUrl(file.resourceUrl || null))
+            .catch((error) => {
+              console.error('Error fetching video resource:', error);
+              setVideoPreviewUrl(null);
+            });
+        } else {
+          setVideoPreviewUrl(null);
+        }
+      }
+    }
+  };
+
+  const handleVideoUpload = (file: File | null) => {
+    handleChange('video', file ?? undefined);
+    if (file) {
+      setVideoPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setVideoPreviewUrl(null);
+    }
+  };
+
+  const handleThumbnailSelectChange = async (id: string) => {
+    handleChange('thumbnailID', id);
+    if (id) {
+      try {
+        const file = await fileUsecase.getFileResouceById(id);
+        setPreviewUrl(file.resourceUrl || null);
+      } catch (error) {
+        console.error('Error fetching file resource:', error);
+        setPreviewUrl(null);
+      }
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
+  const handleVideoSelectChange = async (id: string) => {
+    handleChange('videoID', id);
+    if (id) {
+      try {
+        const file = await fileUsecase.getFileResouceById(id);
+        setVideoPreviewUrl(file.resourceUrl || null);
+      } catch (error) {
+        console.error('Error fetching video resource:', error);
+        setVideoPreviewUrl(null);
+      }
+    } else {
+      setVideoPreviewUrl(null);
+    }
+  };
+
+  const handleFileUpload = (file: File | null) => {
+    handleChange('thumbnail', file ?? undefined);
+    if (file) {
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSubmitting(true);
+
+    try {
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout after 1 hour')), 3600000)
+      );
+
+      await Promise.race([onSubmit(formData), timeoutPromise]);
+
+      onClose();
+    } catch (error: any) {
+      console.error('Error updating lesson:', error);
+      CustomSnackBar.showSnackbar(error?.message || 'Failed to update lesson', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (isSubmitting) {
+      intervalId = setInterval(() => {
+        CustomSnackBar.showSnackbar('Still waiting for server...', 'info');
+      }, 120000);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isSubmitting]);
+
+  const iconStyle = {
+    size: 20,
+    weight: 'fill' as const,
+    color: '#616161',
+  };
+
+  const statusOptions = [
+    { value: StatusEnum.Enable, label: 'Enable' },
+    { value: StatusEnum.Disable, label: 'Disable' },
+    { value: StatusEnum.Deleted, label: 'Deleted' },
+  ];
+
+  const displayTypeOptions = [
+    { value: DisplayTypeEnum.Public, label: 'Public' },
+    { value: DisplayTypeEnum.Private, label: 'Private' },
+  ];
+
+  const lessonTypeOptions = [
+    { value: LearningModeEnum.Online, label: 'Online' },
+    { value: LearningModeEnum.Offline, label: 'Offline' },
+  ];
+
+  if (!lesson) return null;
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
+        <Typography variant="h6" component="div">
+          Update Lesson
+        </Typography>
+        <Box>
+          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+            {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>
+
+      <DialogContent>
+        <Box mt={1}>
+          <Typography variant="body2" mb={2}>
+            ID: {lesson?.id}
+          </Typography>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <CustomTextField
+                label="Name"
+                value={formData.name}
+                onChange={(value) => handleChange('name', value)}
+                disabled={isSubmitting}
+                icon={<Tag {...iconStyle} />}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <CustomTextField
+                label="Detail"
+                value={formData.detail}
+                onChange={(value) => handleChange('detail', value)}
+                disabled={isSubmitting}
+                icon={<Article {...iconStyle} />}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label="Lesson Type"
+                value={formData.lessonType ?? ''}
+                onChange={(value) => handleChange('lessonType', value as LearningModeEnum)}
+                disabled={isSubmitting}
+                options={lessonTypeOptions}
+              />
+            </Grid>
+
+            {/* <Grid item xs={12} sm={6}>
+              <EnrollmentSelect
+                enrollmentUsecase={enrollUsecase}
+                categoryEnum={CategoryEnum.Lesson}
+                value={
+                  formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
+                }
+                onChange={(value: string[]) => handleChange('enrollmentCriteriaIDs', value.join(','))}
+                disabled={isSubmitting}
+                label="Enrollment Criteria"
+              />
+            </Grid> */}
+            <Grid item xs={12} sm={6}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={formData.categoryID}
+                onChange={(value) => handleChange('categoryID', value)}
+                categoryEnum={CategoryEnum.Lesson}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            {/* Image */}
+
+            <Grid item xs={12}>
+              <Typography variant="h6">Update Thumbnail</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <ToggleButtonGroup
+                value={thumbnailSource}
+                exclusive
+                onChange={handleThumbnailSourceChange}
+                aria-label="thumbnail source"
+                fullWidth
+                disabled={isSubmitting}
+                sx={{ mb: 2 }}
+              >
+                <ToggleButton value="select" aria-label="select from resources">
+                  Select from Resources
+                </ToggleButton>
+                <ToggleButton value="upload" aria-label="upload file">
+                  Upload File
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              {thumbnailSource === 'select' ? (
+                <FileResourceSelect
+                  fileUsecase={fileUsecase}
+                  type={FileResourceEnum.Image}
+                  status={StatusEnum.Enable}
+                  value={formData.thumbnailID}
+                  onChange={handleThumbnailSelectChange}
+                  label="Thumbnail"
+                  disabled={isSubmitting}
+                />
+              ) : (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      label="Thumbnail Document No"
+                      value={formData.thumbDocumentNo}
+                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      disabled={isSubmitting}
+                      icon={<ImageIcon {...iconStyle} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      label="Thumbnail Prefix Name"
+                      value={formData.thumbPrefixName}
+                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      disabled={isSubmitting}
+                      icon={<ImageIcon {...iconStyle} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      fullWidth
+                      disabled={isSubmitting}
+                      startIcon={<ImageIcon {...iconStyle} />}
+                    >
+                      Upload Thumbnail
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                      />
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12}></Grid>
+                  <Grid item xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={!!formData.isDeleteOldThumbnail}
+                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          disabled={isSubmitting}
+                        />
+                      }
+                      label="Delete Old Thumbnail"
+                    />
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
+
+            {(previewUrl || lesson.thumbnail?.resourceUrl) && (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    width: fullScreen ? 400 : 200,
+                    height: fullScreen ? 400 : 200,
+                    borderRadius: 1,
+                    border: '1px solid #ccc',
+                    overflow: 'hidden',
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mx: 'auto',
+                  }}
+                >
+                  <img
+                    src={previewUrl ?? lesson.thumbnail?.resourceUrl ?? ''}
+                    alt="Thumbnail Preview"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </Box>
+              </Grid>
+            )}
+
+            {/* Video */}
+
+            <Grid item xs={12}>
+              <Typography variant="h6">Update Video</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <ToggleButtonGroup
+                value={videoSource}
+                exclusive
+                onChange={handleVideoSourceChange}
+                aria-label="thumbnail source"
+                fullWidth
+                disabled={isSubmitting}
+                sx={{ mb: 2 }}
+              >
+                <ToggleButton value="select" aria-label="select from resources">
+                  Select from Resources
+                </ToggleButton>
+                <ToggleButton value="upload" aria-label="upload file">
+                  Upload File
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              {videoSource === 'select' ? (
+                <FileResourceSelect
+                  fileUsecase={fileUsecase}
+                  type={FileResourceEnum.Video}
+                  status={StatusEnum.Enable}
+                  value={formData.videoID}
+                  onChange={handleVideoSelectChange}
+                  label="Video"
+                  disabled={isSubmitting}
+                />
+              ) : (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      label="Video Document No"
+                      value={formData.thumbDocumentNo}
+                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      disabled={isSubmitting}
+                      icon={<ImageIcon {...iconStyle} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      label="Video Prefix Name"
+                      value={formData.thumbPrefixName}
+                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      disabled={isSubmitting}
+                      icon={<ImageIcon {...iconStyle} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      fullWidth
+                      disabled={isSubmitting}
+                      startIcon={<ImageIcon {...iconStyle} />}
+                    >
+                      Upload Video
+                      <input
+                        type="file"
+                        hidden
+                        accept="video/*"
+                        onChange={(e) => handleVideoUpload(e.target.files?.[0] || null)}
+                      />
+                    </Button>
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
+            {(videoPreviewUrl || lesson.video?.resourceUrl) && (
+              <Grid item xs={12}>
+                <CustomVideoPlayer src={videoPreviewUrl ?? lesson.video?.resourceUrl ?? ''} fullscreen={true} />
+              </Grid>
+            )}
+          </Grid>
+        </Box>
+      </DialogContent>
+
+      <DialogActions>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column-reverse' : 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+            width: '100%',
+            m: 2,
+          }}
+        >
+          <Button
+            onClick={onClose}
+            variant="outlined"
+            sx={{ width: isMobile ? '100%' : '180px' }}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            sx={{ width: isMobile ? '100%' : '180px' }}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+          </Button>
+        </Box>
+      </DialogActions>
+    </Dialog>
+  );
+}

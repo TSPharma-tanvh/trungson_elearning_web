@@ -68,6 +68,13 @@ interface LessonsEndpoints {
   create: StaticEndpoint;
   update: StaticEndpoint;
 }
+
+interface ClassEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+}
 interface FileResourcesEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
@@ -85,6 +92,7 @@ interface EndpointDefinitions {
   enrollment: EnrollmentCriteriaEndpoints;
   courses: CoursesEndpoints;
   lessons: LessonsEndpoints;
+  class: ClassEndpoints;
   fileResources: FileResourcesEndpoints;
 }
 
@@ -146,6 +154,12 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `Lesson/GetLessonById/${id}`,
     create: 'Lesson/CreateLesson',
     update: 'Lesson/UpdateLesson',
+  },
+  class: {
+    getAll: 'Class/GetClass',
+    getById: (id: string) => `Class/GetClassById/${id}`,
+    create: 'Class/CreateClass',
+    update: 'Class/UpdateClass',
   },
   fileResources: {
     getAll: 'Resource/GetFileResources',

@@ -1,29 +1,30 @@
+import { AttendanceRecordResponse } from '../../attendance/response/attendance-record-response';
+import { CategoryResponse } from '../../category/response/category-response';
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
+import { FileClassRelationResponse } from '../../file/response/file-class-relation-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
 
 export class ClassResponse {
-  id?: string;
-  pathId?: string;
-  detail?: string;
-  isRequired?: boolean;
-  name?: string;
-  disableStatus!: number;
-  teacherId?: string;
-  courseType!: number;
-  displayType!: number;
-  imageId?: string;
-  startTime?: Date;
-  endTime?: Date;
+  id!: string;
+  className!: string;
+  classDetail?: string;
+  duration!: string; // ISO string for TimeSpan equivalent
+  locationID?: string;
+  teacherID?: string;
+  qrCodeURL?: string;
+  startAt!: Date;
+  endAt!: Date;
+  minuteLate!: number;
+  classType?: string;
   meetingLink?: string;
-  scheduleStatus!: number;
-  enrollmentCriteriaId?: string;
-  enrollmentCriteria?: EnrollmentCriteriaResponse;
-  categoryId?: string;
-  categoryName?: string;
-  pathName?: string;
-  thumbnailId?: string;
+  scheduleStatus?: string;
+  categoryID?: string;
+  category?: CategoryResponse;
+  attendanceRecords?: AttendanceRecordResponse[];
+  thumbnailID?: string;
+  enrollmentCriteria?: EnrollmentCriteriaResponse[];
   thumbnail?: FileResourcesResponse;
-  fileResources?: FileResourcesResponse[];
+  fileClassRelation?: FileClassRelationResponse[];
 
   constructor(init?: Partial<ClassResponse>) {
     Object.assign(this, init);
@@ -32,56 +33,50 @@ export class ClassResponse {
   static fromJson(json: any): ClassResponse {
     return new ClassResponse({
       id: json.id,
-      pathId: json.pathId,
-      detail: json.detail,
-      isRequired: json.isRequired,
-      name: json.name,
-      disableStatus: json.disableStatus,
-      teacherId: json.teacherId,
-      courseType: json.courseType,
-      displayType: json.displayType,
-      imageId: json.imageId,
-      startTime: json.startTime ? new Date(json.startTime) : undefined,
-      endTime: json.endTime ? new Date(json.endTime) : undefined,
+      className: json.className,
+      classDetail: json.classDetail,
+      duration: json.duration, // ISO string, e.g., "00:45:00"
+      locationID: json.locationID,
+      teacherID: json.teacherID,
+      qrCodeURL: json.qrCodeURL,
+      startAt: json.startAt ? new Date(json.startAt) : undefined,
+      endAt: json.endAt ? new Date(json.endAt) : undefined,
+      minuteLate: json.minuteLate,
+      classType: json.classType,
       meetingLink: json.meetingLink,
       scheduleStatus: json.scheduleStatus,
-      enrollmentCriteriaId: json.enrollmentCriteriaId,
-      enrollmentCriteria: json.enrollmentCriteria
-        ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
-        : undefined,
-      categoryId: json.categoryId,
-      categoryName: json.categoryName,
-      pathName: json.pathName,
-      thumbnailId: json.thumbnailId,
+      categoryID: json.categoryID,
+      category: json.category ? CategoryResponse.fromJSON(json.category) : undefined,
+      attendanceRecords: json.attendanceRecords?.map((x: any) => AttendanceRecordResponse.fromJson(x)),
+      thumbnailID: json.thumbnailID,
+      enrollmentCriteria: json.enrollmentCriteria?.map((x: any) => EnrollmentCriteriaResponse.fromJSON(x)),
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
-      fileResources: json.fileResources?.map((f: any) => FileResourcesResponse.fromJson(f)),
+      fileClassRelation: json.fileClassRelation?.map((x: any) => FileClassRelationResponse.fromJson(x)),
     });
   }
 
   toJson(): any {
     return {
       id: this.id,
-      pathId: this.pathId,
-      detail: this.detail,
-      isRequired: this.isRequired,
-      name: this.name,
-      disableStatus: this.disableStatus,
-      teacherId: this.teacherId,
-      courseType: this.courseType,
-      displayType: this.displayType,
-      imageId: this.imageId,
-      startTime: this.startTime?.toISOString(),
-      endTime: this.endTime?.toISOString(),
+      className: this.className,
+      classDetail: this.classDetail,
+      duration: this.duration,
+      locationID: this.locationID,
+      teacherID: this.teacherID,
+      qrCodeURL: this.qrCodeURL,
+      startAt: this.startAt?.toISOString(),
+      endAt: this.endAt?.toISOString(),
+      minuteLate: this.minuteLate,
+      classType: this.classType,
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
-      enrollmentCriteriaId: this.enrollmentCriteriaId,
-      enrollmentCriteria: this.enrollmentCriteria?.toJSON(),
-      categoryId: this.categoryId,
-      categoryName: this.categoryName,
-      pathName: this.pathName,
-      thumbnailId: this.thumbnailId,
+      categoryID: this.categoryID,
+      category: this.category?.toJSON(),
+      attendanceRecords: this.attendanceRecords?.map((x) => x.toJson()),
+      thumbnailID: this.thumbnailID,
+      enrollmentCriteria: this.enrollmentCriteria?.map((x) => x.toJSON()),
       thumbnail: this.thumbnail?.toJson(),
-      fileResources: this.fileResources?.map((f) => f.toJson()),
+      fileClassRelation: this.fileClassRelation?.map((x) => x.toJson()),
     };
   }
 }

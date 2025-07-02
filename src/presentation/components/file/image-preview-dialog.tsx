@@ -22,9 +22,21 @@ export default function ImagePreviewDialog({
   return (
     <Dialog open={open} onClose={onClose} fullScreen={fullscreen} maxWidth="md" fullWidth>
       <DialogContent>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6">{title}</Typography>
-          <Box>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexWrap="nowrap">
+          <Typography
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              pr: 2,
+            }}
+          >
+            {title}
+          </Typography>
+
+          <Box display="flex" flexDirection="row" alignItems="center" flexShrink={0}>
             {onToggleFullscreen && (
               <IconButton onClick={onToggleFullscreen} title="Toggle Fullscreen">
                 <FullscreenIcon />
@@ -35,6 +47,7 @@ export default function ImagePreviewDialog({
             </IconButton>
           </Box>
         </Box>
+
         <img src={imageUrl} alt={title} style={{ width: '100%', maxHeight: '90vh', objectFit: 'contain' }} />
       </DialogContent>
     </Dialog>

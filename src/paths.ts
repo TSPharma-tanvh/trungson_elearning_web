@@ -10,6 +10,8 @@ export const paths = {
     integrations: '/dashboard/system/integrations',
     settings: '/dashboard/system/settings',
     class: '/dashboard/class/class',
+    teacher: '/dashboard/class/teacher',
+    attendance: '/dashboard/class/attendance',
     quiz: '/dashboard/quiz/quiz',
     question: '/dashboard/quiz/questions',
     form: '/dashboard/management/form',

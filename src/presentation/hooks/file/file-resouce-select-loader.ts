@@ -10,7 +10,7 @@ interface FileResourceSelectLoaderProps {
   fileUsecase: FileResourcesUsecase;
   isOpen: boolean;
   status?: StatusEnum;
-  type: FileResourceEnum;
+  type?: FileResourceEnum;
   searchText?: string;
 }
 
@@ -18,37 +18,29 @@ interface FileResourceSelectLoaderState {
   files: FileResourcesResponse[];
   loadingFiles: boolean;
   hasMore: boolean;
-  isSelectOpen: boolean;
   pageNumber: number;
   totalPages: number;
   listRef: React.RefObject<HTMLUListElement>;
-  setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSearchText: React.Dispatch<React.SetStateAction<string>>;
-  setStatus: React.Dispatch<React.SetStateAction<StatusEnum | undefined>>;
-  searchText: string;
-  status: StatusEnum | undefined;
-  type: FileResourceEnum | undefined;
   loadFileResources: (page: number, reset?: boolean) => Promise<void>;
+  searchText: string;
+  setSearchText: (text: string) => void;
 }
 
 export function useResourceSelectLoader({
   fileUsecase,
   isOpen,
-  status: initialStatus,
-  searchText: initialSearchText = '',
-  type: initialType,
+  status,
+  searchText = '',
+  type,
 }: FileResourceSelectLoaderProps): FileResourceSelectLoaderState {
   const [files, setFiles] = useState<FileResourcesResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [loadingFiles, setLoadingFiles] = useState(false);
-  const [searchText, setSearchText] = useState(initialSearchText);
-  const [status, setStatus] = useState<StatusEnum | undefined>(initialStatus);
-  const [type, setType] = useState<FileResourceEnum | undefined>(initialType);
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const [searchTextState, setSearchText] = useState(searchText); // Khởi tạo từ prop
 
   const loadFileResources = async (page: number, reset: boolean = false) => {
     if (!fileUsecase || loadingFiles || !isOpen) return;
@@ -59,16 +51,17 @@ export function useResourceSelectLoader({
     try {
       const request = new GetFileResourcesRequest({
         type: type != null ? FileResourceEnumUtils.getContentTypeByEnum(type) : undefined,
-        status: status,
-        searchText: searchText,
+        status,
+        searchText: searchTextState,
         pageNumber: page,
         pageSize: 10,
       });
 
       const result: FileResourceListResult = await fileUsecase.getFileResourceList(request);
+
       if (isOpen) {
         setFiles((prev) => (reset || page === 1 ? result.files : [...prev, ...result.files]));
-        setHasMore(result.files.length > 0 && result.totalRecords > files.length + result.files.length);
+        setHasMore(result.files.length > 0 && result.totalRecords > (reset ? 0 : files.length + result.files.length));
         setTotalPages(Math.ceil(result.totalRecords / 10));
         setPageNumber(page);
       }
@@ -80,22 +73,24 @@ export function useResourceSelectLoader({
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) return;
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    const fetchData = async () => {
       setFiles([]);
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadFileResources(1, true);
-    }
+      await loadFileResources(1, true);
+    };
+
+    fetchData();
 
     return () => {
-      abortControllerRef.current?.abort();
+      controller.abort();
       abortControllerRef.current = null;
-      setFiles([]);
-      setPageNumber(1);
-      setTotalPages(1);
-      setHasMore(true);
-      setIsSelectOpen(false);
     };
   }, [isOpen, searchText, status, type]);
 
@@ -103,16 +98,11 @@ export function useResourceSelectLoader({
     files,
     loadingFiles,
     hasMore,
-    isSelectOpen,
     pageNumber,
     totalPages,
     listRef,
-    setIsSelectOpen,
-    setSearchText,
-    setStatus,
-    searchText,
-    status,
-    type,
     loadFileResources,
+    searchText: searchTextState,
+    setSearchText,
   };
 }

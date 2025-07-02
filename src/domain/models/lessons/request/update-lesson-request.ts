@@ -16,6 +16,7 @@ export class UpdateLessonRequest {
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
   video?: File;
+  videoID?: string;
   videoDocumentNo?: string;
   videoPrefixName?: string;
 
@@ -38,6 +39,7 @@ export class UpdateLessonRequest {
       thumbPrefixName: json.thumbPrefixName,
       isDeleteOldThumbnail: json.isDeleteOldThumbnail,
       categoryEnum: json.categoryEnum,
+      videoID: json.thumbnailID,
       videoDocumentNo: json.videoDocumentNo,
       videoPrefixName: json.videoPrefixName,
     });
@@ -58,6 +60,7 @@ export class UpdateLessonRequest {
       thumbPrefixName: this.thumbPrefixName,
       isDeleteOldThumbnail: this.isDeleteOldThumbnail,
       categoryEnum: this.categoryEnum,
+      videoID: this.videoID,
       videoDocumentNo: this.videoDocumentNo,
       videoPrefixName: this.videoPrefixName,
     };
@@ -73,7 +76,6 @@ export class UpdateLessonRequest {
     if (this.enablePlay !== undefined) form.append('EnablePlay', this.enablePlay.toString());
     if (this.status !== undefined) form.append('Status', this.status.toString());
     if (this.lessonType !== undefined) form.append('LessonType', this.lessonType.toString());
-
     if (this.categoryID) form.append('CategoryID', this.categoryID);
     if (this.thumbnailID) form.append('ThumbnailID', this.thumbnailID);
     if (this.thumbnail) form.append('Thumbnail', this.thumbnail);
@@ -82,8 +84,8 @@ export class UpdateLessonRequest {
     if (this.isDeleteOldThumbnail !== undefined)
       form.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
     if (this.categoryEnum !== undefined) form.append('CategoryEnum', this.categoryEnum.toString());
-
     if (this.video) form.append('Video', this.video);
+    if (this.videoID) form.append('VideoID', this.videoID);
     if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
     if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
 

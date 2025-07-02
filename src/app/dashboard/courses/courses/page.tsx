@@ -39,7 +39,7 @@ export default function Page(): React.JSX.Element {
       setCourses(courses);
       setTotalCount(totalRecords);
     } catch (error) {
-      console.error('Failed to fetch course paths:', error);
+      console.error('Failed to fetch courses:', error);
     }
   }, [filters, page, rowsPerPage, courseUsecase]);
 
@@ -72,7 +72,7 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleEditCoursePath = async (request: UpdateCourseRequest) => {
+  const handleEditCourse = async (request: UpdateCourseRequest) => {
     try {
       await courseUsecase.updateCourse(request);
       await fetchCourses();
@@ -121,8 +121,8 @@ export default function Page(): React.JSX.Element {
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
-        onDeleteCoursePaths={handleDeleteCourses}
-        onEditCourse={handleEditCoursePath}
+        onDeleteCourses={handleDeleteCourses}
+        onEditCourse={handleEditCourse}
       ></CourseTable>
 
       <CreateCourseDialog

@@ -6,6 +6,7 @@ export const navItems = [
   {
     key: 'management',
     title: 'Management',
+    icon: 'userManager',
     items: [
       { key: 'customers', title: 'Customers', href: paths.dashboard.customers, icon: 'users' },
       { key: 'users', title: 'Users', href: paths.dashboard.users, icon: 'users' },
@@ -15,6 +16,7 @@ export const navItems = [
   {
     key: 'courses',
     title: 'Courses',
+    icon: 'book',
     items: [
       { key: 'path', title: 'Path', href: paths.dashboard.path, icon: 'path' },
       { key: 'courses', title: 'Courses', href: paths.dashboard.courses, icon: 'course' },
@@ -22,10 +24,20 @@ export const navItems = [
     ],
   },
   {
-    key: 'content',
-    title: 'Content',
+    key: 'class',
+    title: 'Class',
+    icon: 'class',
     items: [
       { key: 'class', title: 'Class', href: paths.dashboard.class, icon: 'chalkboard-simple' },
+      { key: 'teacher', title: 'Teacher', href: paths.dashboard.teacher, icon: 'teacher' },
+      { key: 'attendance', title: 'Attendance', href: paths.dashboard.attendance, icon: 'student' },
+    ],
+  },
+  {
+    key: 'quiz',
+    title: 'Quiz',
+    icon: 'test',
+    items: [
       { key: 'quiz', title: 'Quiz', href: paths.dashboard.quiz, icon: 'quiz' },
       { key: 'question', title: 'Question', href: paths.dashboard.question, icon: 'question' },
       { key: 'form', title: 'Form', href: paths.dashboard.form, icon: 'form' },
@@ -34,6 +46,7 @@ export const navItems = [
   {
     key: 'system',
     title: 'System',
+    icon: 'setting',
     items: [
       { key: 'integrations', title: 'Integrations', href: paths.dashboard.integrations, icon: 'plugs-connected' },
       { key: 'settings', title: 'Settings', href: paths.dashboard.settings, icon: 'gear-six' },
@@ -43,6 +56,8 @@ export const navItems = [
   {
     key: 'communication',
     title: 'Communication',
+    icon: 'chat',
+
     items: [
       { key: 'email', title: 'Email', href: paths.dashboard.email, icon: 'email' },
       { key: 'notification', title: 'Notification', href: paths.dashboard.notification, icon: 'notification' },

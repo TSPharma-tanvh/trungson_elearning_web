@@ -1,10 +1,10 @@
-import { CreateLessonRequest } from '@/domain/lessons/request/create-lesson-request';
-import { GetLessonRequest } from '@/domain/lessons/request/get-lesson-request';
-import { UpdateLessonRequest } from '@/domain/lessons/request/update-lesson-request';
-import { LessonDetailResponse } from '@/domain/lessons/response/lesson-detail-response';
-import { LessonDetailListResult } from '@/domain/lessons/response/lesson-detail-result';
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { ApiResponse } from '@/domain/models/core/api-response';
+import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
+import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
+import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
+import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { LessonDetailListResult } from '@/domain/models/lessons/response/lesson-detail-result';
 import { LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
@@ -52,7 +52,7 @@ export class LessonUsecase {
     return result;
   }
 
-  async deletePath(id: string): Promise<ApiResponse> {
+  async deleteLesson(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateLessonRequest({
       id: id ?? '',
       status: StatusEnum.Deleted,

@@ -1,8 +1,8 @@
-import { CreateLessonRequest } from '@/domain/lessons/request/create-lesson-request';
-import { GetLessonRequest } from '@/domain/lessons/request/get-lesson-request';
-import { UpdateLessonRequest } from '@/domain/lessons/request/update-lesson-request';
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { ApiResponse } from '@/domain/models/core/api-response';
+import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
+import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
+import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
 
 import { apiClient } from '@/data/api/api-client';
@@ -48,6 +48,7 @@ export class LessonRepoImpl implements LessonRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;
@@ -70,6 +71,7 @@ export class LessonRepoImpl implements LessonRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;

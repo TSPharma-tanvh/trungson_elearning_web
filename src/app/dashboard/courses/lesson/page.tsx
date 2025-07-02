@@ -1,20 +1,100 @@
 'use client';
 
 import React from 'react';
-import { GetLessonRequest } from '@/domain/lessons/request/get-lesson-request';
+import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
+import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
+import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
+import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { Plus } from '@phosphor-icons/react';
 
+import { CreateLessonDialog } from '@/presentation/components/dashboard/lessons/create-lesson-form';
+import LessonTable from '@/presentation/components/dashboard/lessons/lesson-table';
 import { LessonsFilters } from '@/presentation/components/dashboard/lessons/lessons-filter';
 
 export default function Page(): React.JSX.Element {
+  const { lessonUsecase } = useDI();
   const [filters, setFilters] = React.useState<GetLessonRequest>(new GetLessonRequest({ pageNumber: 1, pageSize: 10 }));
   const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [selectedRow, setSelectedRow] = React.useState<LessonDetailResponse | null>(null);
+
+  const [lessons, setLessons] = React.useState<LessonDetailResponse[]>([]);
+  const [totalCount, setTotalCount] = React.useState(0);
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+
+  const fetchLessons = React.useCallback(async () => {
+    try {
+      const request = new GetLessonRequest({
+        ...filters,
+        pageNumber: page + 1,
+        pageSize: rowsPerPage,
+      });
+      const { Lessons, totalRecords } = await lessonUsecase.getLessonListInfo(request);
+      setLessons(Lessons);
+      setTotalCount(totalRecords);
+    } catch (error) {
+      console.error('Failed to fetch Lesson paths:', error);
+    }
+  }, [filters, page, rowsPerPage, lessonUsecase]);
+
+  React.useEffect(() => {
+    fetchLessons();
+  }, [fetchLessons]);
 
   const handleFilter = (newFilters: GetLessonRequest) => {
     setFilters(newFilters);
     setPage(0);
+  };
+
+  const handlePageChange = (_: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSize = parseInt(event.target.value, 10);
+    setRowsPerPage(newSize);
+    setPage(0);
+  };
+
+  const handleCreateLesson = async (request: CreateLessonRequest) => {
+    try {
+      await lessonUsecase.createLesson(request);
+      setShowCreateDialog(false);
+      await fetchLessons();
+    } catch (error) {
+      console.error('Failed to create Lesson path:', error);
+    }
+  };
+
+  const handleEditLessonPath = async (request: UpdateLessonRequest) => {
+    try {
+      await lessonUsecase.updateLesson(request);
+      await fetchLessons();
+    } catch (error) {
+      console.error('Failed to update Lesson path:', error);
+    }
+  };
+
+  const handleDeleteLessons = async (ids: string[]) => {
+    try {
+      setDeleteLoading(true);
+      for (const id of ids) {
+        const response = await lessonUsecase.deleteLesson(id);
+        if (!response) {
+          throw new Error(`Failed to delete path with ID: ${id}`);
+        }
+      }
+      await fetchLessons();
+    } catch (error) {
+      console.error('Failed to delete Lesson paths:', error);
+      throw error;
+    } finally {
+      setDeleteLoading(false);
+    }
   };
 
   return (
@@ -26,12 +106,29 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          //   onClick={() => setShowCreateDialog(true)}
+          onClick={() => setShowCreateDialog(true)}
         >
           Add
         </Button>
       </Stack>
       <LessonsFilters onFilter={handleFilter} />
+      <LessonTable
+        rows={lessons}
+        count={totalCount}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
+        onDeleteLessonPaths={handleDeleteLessons}
+        onEditLesson={handleEditLessonPath}
+      ></LessonTable>
+      <CreateLessonDialog
+        onSubmit={handleCreateLesson}
+        disabled={false}
+        loading={false}
+        open={showCreateDialog}
+        onClose={() => setShowCreateDialog(false)}
+      />
     </Stack>
   );
 }

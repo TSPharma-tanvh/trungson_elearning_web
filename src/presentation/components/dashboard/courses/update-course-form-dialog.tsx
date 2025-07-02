@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
@@ -61,8 +62,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         name: course.name || '',
         detail: course.detail || undefined,
         isRequired: course.isRequired || false,
-        startTime: course.startTime ? new Date(course.startTime).toISOString().slice(0, 16) : '',
-        endTime: course.endTime ? new Date(course.endTime).toISOString().slice(0, 16) : '',
+        startTime: course.startTime ? DateTimeUtils.formatISODateToString(course.startTime) : '',
+        endTime: course.endTime ? DateTimeUtils.formatISODateToString(course.endTime) : '',
         disableStatus:
           course.disableStatus !== undefined ? StatusEnum[course.disableStatus as keyof typeof StatusEnum] : undefined,
         displayType:
@@ -77,6 +78,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         categoryEnum: CategoryEnum.Course,
         isDeleteOldThumbnail: false,
       });
+      console.error(newFormData);
       setFormData(newFormData);
     }
   }, [course, open, fileUsecase]);

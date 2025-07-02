@@ -3,6 +3,7 @@
 import * as React from 'react';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Icon } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -133,7 +134,8 @@ function renderNavItems({
   toggleExpanded: (key: string) => void;
 }): React.JSX.Element {
   const children = items.reduce((acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
-    const { key, items: subItems, title } = curr;
+    const { key, items: subItems, title, icon } = curr;
+    const Icon = icon ? navIcons[icon] : null;
 
     if (subItems) {
       // Parent menu
@@ -153,6 +155,9 @@ function renderNavItems({
               userSelect: 'none',
             }}
           >
+            <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
+              {Icon ? <Icon fill={'var(--NavItem-icon-color)'} fontSize="var(--icon-fontSize-md)" /> : null}
+            </Box>
             <Box sx={{ flex: '1 1 auto' }}>
               <Typography
                 component="span"

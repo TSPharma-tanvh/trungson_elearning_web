@@ -65,7 +65,7 @@ export function FileResourceSelect({
   const [previewVideoOpen, setPreviewVideoOpen] = useState(false);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { files, pageNumber, totalPages, loadingFiles, loadFileResources, listRef, setSearchText, searchText } =
     useResourceSelectLoader({ fileUsecase, isOpen: open, type, status });
@@ -93,7 +93,10 @@ export function FileResourceSelect({
   };
 
   const handlePageChange = async (_: any, page: number) => {
-    await loadFileResources(page);
+    await loadFileResources(page, true);
+    if (listRef.current) {
+      listRef.current.scrollTop = 0;
+    }
   };
 
   const handleViewFile = (file: FileResourcesResponse) => {
@@ -231,12 +234,15 @@ export function FileResourceSelect({
 
         <DialogActions sx={{ flexDirection: 'column', gap: 2 }}>
           {totalPages > 1 && (
-            <Pagination
-              count={totalPages}
-              page={pageNumber}
-              onChange={handlePageChange}
-              size={isMobile ? 'small' : 'medium'}
-            />
+            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <Pagination
+                count={totalPages}
+                page={pageNumber}
+                onChange={handlePageChange}
+                color="primary"
+                size={isSmallScreen ? 'small' : 'medium'}
+              />
+            </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button onClick={() => setOpen(false)}>Cancel</Button>

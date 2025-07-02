@@ -43,21 +43,29 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
   );
 
   const renderEnrollmentCriteria = () => {
-    if (!course.enrollmentCriteria) return null;
+    if (!course.enrollmentCriteria || course.enrollmentCriteria.length === 0) return null;
+
     return (
       <Card sx={{ mb: 2 }}>
         <CardHeader title="Enrollment Criteria" />
         <CardContent>
-          <Grid container spacing={2}>
-            {renderField('ID', course.enrollmentCriteria.id)}
-            {renderField('Name', course.enrollmentCriteria.name)}
-            {renderField('Description', course.enrollmentCriteria.desc)}
-            {renderField('Target Type', course.enrollmentCriteria.targetType)}
-            {renderField('Target ID', course.enrollmentCriteria.targetID)}
-            {renderField('Target Level ID', course.enrollmentCriteria.targetLevelID)}
-            {renderField('Max Capacity', course.enrollmentCriteria.maxCapacity)}
-            {renderField('Target Pharmacy ID', course.enrollmentCriteria.targetPharmacyID)}
-          </Grid>
+          {course.enrollmentCriteria.map((criteria, index) => (
+            <Box key={criteria.id ?? index} sx={{ mb: 2 }}>
+              <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                Criteria #{index + 1}
+              </Typography>
+              <Grid container spacing={2}>
+                {renderField('ID', criteria.id)}
+                {renderField('Name', criteria.name)}
+                {renderField('Description', criteria.desc)}
+                {renderField('Target Type', criteria.targetType)}
+                {renderField('Target ID', criteria.targetID)}
+                {renderField('Target Level ID', criteria.targetLevelID)}
+                {renderField('Max Capacity', criteria.maxCapacity)}
+                {renderField('Target Pharmacy ID', criteria.targetPharmacyID)}
+              </Grid>
+            </Box>
+          ))}
         </CardContent>
       </Card>
     );
@@ -157,7 +165,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
               course.startTime ? DateTimeUtils.formatISODateFromDate(course.startTime) : undefined
             )}
             {renderField('End Time', course.endTime ? DateTimeUtils.formatISODateFromDate(course.endTime) : undefined)}
-            {renderField('Enrollment Criteria ID', course.enrollmentCriteriaId)}
+            {/* {renderField('Enrollment Criteria ID', course.enrollmentCriteria)} */}
             {renderField('Category ID', course.categoryId)}
             {renderField('Thumbnail ID', course.thumbnailId)}
           </Grid>

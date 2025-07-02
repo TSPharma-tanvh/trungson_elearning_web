@@ -3,6 +3,8 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, IconButton, Typography } from '@mui/material';
 
+import { CustomVideoPlayer } from './custom-video-player';
+
 interface VideoPreviewDialogProps {
   open: boolean;
   onClose: () => void;
@@ -22,10 +24,32 @@ export default function VideoPreviewDialog({
 }: VideoPreviewDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} fullScreen={fullscreen} maxWidth="md" fullWidth>
-      <DialogContent>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6">{title}</Typography>
-          <Box>
+      <DialogContent
+        sx={{
+          height: '100%',
+          maxHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          p: 2,
+          boxSizing: 'border-box',
+        }}
+      >
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexWrap="nowrap">
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              flexGrow: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              pr: 2,
+            }}
+          >
+            {title}
+          </Typography>
+
+          <Box display="flex" flexDirection="row" alignItems="center" flexShrink={0}>
             {onToggleFullscreen && (
               <IconButton onClick={onToggleFullscreen} title="Toggle Fullscreen">
                 {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
@@ -36,7 +60,8 @@ export default function VideoPreviewDialog({
             </IconButton>
           </Box>
         </Box>
-        <video src={videoUrl} controls style={{ width: '100%', maxHeight: '90vh' }} />
+
+        <CustomVideoPlayer src={videoUrl} fullscreen={fullscreen} />
       </DialogContent>
     </Dialog>
   );

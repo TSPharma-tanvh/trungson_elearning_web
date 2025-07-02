@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { GetLessonRequest } from '@/domain/lessons/request/get-lesson-request';
-import { LessonDetailResponse } from '@/domain/lessons/response/lesson-detail-response';
-import { LessonDetailListResult } from '@/domain/lessons/response/lesson-detail-result';
+import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
+import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { LessonDetailListResult } from '@/domain/models/lessons/response/lesson-detail-result';
 import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
 

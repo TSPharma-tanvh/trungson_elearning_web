@@ -35,7 +35,7 @@ interface CourseTableProps {
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteCoursePaths: (ids: string[]) => Promise<void>;
+  onDeleteCourses: (ids: string[]) => Promise<void>;
   onEditCourse: (data: UpdateCourseRequest) => Promise<void>;
 }
 
@@ -46,7 +46,7 @@ export default function CourseTable({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteCoursePaths,
+  onDeleteCourses: onDeleteCourses,
   onEditCourse,
 }: CourseTableProps) {
   const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
@@ -86,7 +86,7 @@ export default function CourseTable({
   };
 
   const handleConfirmDelete = async () => {
-    await onDeleteCoursePaths(idsToDelete);
+    await onDeleteCourses(idsToDelete);
     setSelected((prev) => {
       const next = new Set(prev);
       idsToDelete.forEach((id) => next.delete(id));
