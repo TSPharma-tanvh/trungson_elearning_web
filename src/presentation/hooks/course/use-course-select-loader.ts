@@ -77,14 +77,14 @@ export function useCourseSelectLoader({
         displayType,
         scheduleStatus,
         pageNumber: page,
-        pageSize: 1,
+        pageSize: 10,
       });
 
       const result: CourseDetailListResult = await courseUsecase.getCourseListInfo(request);
       if (isOpen) {
         setCourses((prev) => (reset || page === 1 ? result.courses : [...prev, ...result.courses]));
         setHasMore(result.courses.length > 0 && result.totalRecords > courses.length + result.courses.length);
-        setTotalPages(Math.ceil(result.totalRecords / 1));
+        setTotalPages(Math.ceil(result.totalRecords / 10));
         setPageNumber(page);
       }
     } catch (error) {

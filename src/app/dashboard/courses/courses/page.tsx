@@ -11,9 +11,9 @@ import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import { CourseFilters } from '@/presentation/components/dashboard/courses/course-filters';
-import CourseTable from '@/presentation/components/dashboard/courses/course-table';
-import { CreateCourseDialog } from '@/presentation/components/dashboard/courses/create-course-form';
+import { CourseFilters } from '@/presentation/components/dashboard/courses/courses/course-filters';
+import CourseTable from '@/presentation/components/dashboard/courses/courses/course-table';
+import { CreateCourseDialog } from '@/presentation/components/dashboard/courses/courses/create-course-form';
 
 export default function Page(): React.JSX.Element {
   const { courseUsecase } = useDI();

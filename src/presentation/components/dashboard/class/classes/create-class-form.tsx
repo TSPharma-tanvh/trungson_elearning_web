@@ -7,10 +7,9 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 
-import { CustomButton } from '../../core/button/custom-button';
-import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '../../core/picker/custom-date-picker';
-import { CustomTextField } from '../../core/text-field/custom-textfield';
+import { CustomButton } from '@/presentation/components/core/button/custom-button';
+import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
+import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
 interface Props {
   disabled?: boolean;

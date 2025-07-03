@@ -18,15 +18,10 @@ import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/category-multickeck-form';
-import { ClassFilters } from '@/presentation/components/dashboard/class/class-filter';
-import ClassTable from '@/presentation/components/dashboard/class/class-table';
-import { CreateClassDialog } from '@/presentation/components/dashboard/class/create-class-form';
-import { AddCustomerDialog } from '@/presentation/components/dashboard/customer/add-customer';
-import { CustomersFilters } from '@/presentation/components/dashboard/customer/customers-filters';
-import { CustomersTable } from '@/presentation/components/dashboard/customer/customers-table';
-import type { Customer } from '@/presentation/components/dashboard/customer/customers-table';
-import LessonTable from '@/presentation/components/dashboard/lessons/lesson-table';
+import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/classes/category-multickeck-form';
+import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
+import ClassTable from '@/presentation/components/dashboard/class/classes/class-table';
+import { CreateClassDialog } from '@/presentation/components/dashboard/class/classes/create-class-form';
 
 export default function Page(): React.JSX.Element {
   const theme = useTheme();

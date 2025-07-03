@@ -24,7 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { ConfirmDeleteDialog } from '../core/dialog/confirm-delete-dialog';
+import { ConfirmDeleteDialog } from '../../core/dialog/confirm-delete-dialog';
 import ClassDetailForm from './class-detail-form';
 import { UpdateClassFormDialog } from './update-class-form';
 

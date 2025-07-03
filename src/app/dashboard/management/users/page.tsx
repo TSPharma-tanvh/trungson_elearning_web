@@ -24,18 +24,15 @@ export default function Page(): React.JSX.Element {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [filters, setFilters] = React.useState<GetUserRequest>({
-    pageNumber: 1,
-    pageSize: 10,
-  });
+  const [filters, setFilters] = React.useState<GetUserRequest>(new GetUserRequest({ pageNumber: 1, pageSize: 10 }));
 
   const fetchUsers = React.useCallback(async () => {
     try {
-      const request: GetUserRequest = {
+      const request: GetUserRequest = new GetUserRequest({
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
-      };
+      });
 
       const { users, totalRecords, pageSize, pageNumber } = await userUsecase.getUserListInfo(request);
 
@@ -51,7 +48,7 @@ export default function Page(): React.JSX.Element {
   }, [fetchUsers]);
 
   const handleFilter = (newFilters: GetUserRequest) => {
-    setFilters({ ...newFilters, pageNumber: 1 });
+    setFilters(new GetUserRequest({ ...newFilters, pageNumber: 1 }));
     setPage(0);
   };
 

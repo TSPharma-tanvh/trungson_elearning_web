@@ -46,10 +46,10 @@ import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 
-interface CourseSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+interface CourseMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   courseUsecase: CourseUsecase | null;
-  value: string;
-  onChange: (value: string) => void;
+  value: string[];
+  onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
   pathID?: string;
@@ -62,7 +62,7 @@ const filterOptions = {
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
 };
 
-export function CourseSelectDialog({
+export function CourseMultiSelectDialog({
   courseUsecase,
   value,
   onChange,
@@ -70,12 +70,12 @@ export function CourseSelectDialog({
   disabled = false,
   pathID,
   ...selectProps
-}: CourseSelectDialogProps) {
+}: CourseMultiSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [localValue, setLocalValue] = useState<string>(value);
+  const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useCourseSelectDebounce(localSearchText, 300);
   const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
@@ -147,7 +147,7 @@ export function CourseSelectDialog({
   }, [value]);
 
   useEffect(() => {
-    if (courseUsecase && value) {
+    if (courseUsecase && value.length > 0) {
       const fetchSelectedCourses = async () => {
         try {
           const request = new GetCourseRequest({ pathID });
@@ -193,12 +193,15 @@ export function CourseSelectDialog({
         <InputLabel id="course-select-label">{label}</InputLabel>
         <Select
           labelId="course-select-label"
+          multiple
           value={value}
           input={
             <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedCourseMap[selected]?.name || 'No Course Selected'}
+          renderValue={(selected) =>
+            selected.map((id: string) => selectedCourseMap[id]?.name || id).join(', ') || 'No Courses Selected'
+          }
           open={false}
           {...selectProps}
         />
@@ -207,7 +210,7 @@ export function CourseSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Course</Typography>
+            <Typography variant="h6">Select Courses</Typography>
             <Box>
               <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
@@ -219,7 +222,6 @@ export function CourseSelectDialog({
           </Box>
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {/* ...filter controls giữ nguyên... */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Course Type</InputLabel>
               <Select
@@ -236,6 +238,52 @@ export function CourseSelectDialog({
                 ))}
               </Select>
             </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Display Type</InputLabel>
+              <Select
+                value={displayType !== undefined ? String(displayType) : ''}
+                onChange={(e: SelectChangeEvent<string>) =>
+                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined)
+                }
+                label="Display Type"
+              >
+                {filterOptions.displayType.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {opt != null ? DisplayTypeDisplayNames[opt] : 'All'}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Schedule Status</InputLabel>
+              <Select
+                value={scheduleStatus ?? ''}
+                onChange={(e) =>
+                  setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined)
+                }
+                label="Schedule Status"
+              >
+                {filterOptions.scheduleStatus.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {opt != null ? ScheduleStatusDisplayNames[opt] : 'All'}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Disable Status</InputLabel>
+              <Select
+                value={disableStatus ?? ''}
+                onChange={(e) => setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
+                label="Disable Status"
+              >
+                {filterOptions.disableStatus.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {opt != null ? StatusDisplayNames[opt] : 'All'}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               Clear Filters
             </Button>
@@ -248,10 +296,13 @@ export function CourseSelectDialog({
               <MenuItem
                 key={course.id}
                 value={course.id}
-                selected={localValue === course.id}
-                onClick={() => setLocalValue(course.id)}
+                onClick={() =>
+                  setLocalValue((prev) =>
+                    prev.includes(course.id) ? prev.filter((id) => id !== course.id) : [...prev, course.id]
+                  )
+                }
               >
-                <Checkbox checked={localValue === course.id} />
+                <Checkbox checked={localValue.includes(course.id)} />
                 <ListItemText primary={course.name} />
               </MenuItem>
             ))}
@@ -282,7 +333,7 @@ export function CourseSelectDialog({
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave} variant="contained" disabled={!localValue}>
+            <Button onClick={handleSave} variant="contained">
               Save
             </Button>
           </Box>

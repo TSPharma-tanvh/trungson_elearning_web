@@ -1,7 +1,7 @@
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { ApiResponse } from '@/domain/models/core/api-response';
 import { ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
-import { GetUserRequest, getUserRequestToJSON } from '@/domain/models/user/request/get-user-request';
+import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
 import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { UserRepository } from '@/domain/repositories/user/user-repository';
@@ -50,7 +50,7 @@ export class UserRepositoryImpl implements UserRepository {
   async getUserListInfo(request: GetUserRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.user.getAll, {
-        params: getUserRequestToJSON(request),
+        params: request.toJSON(),
       });
 
       const apiResponse = response.data;

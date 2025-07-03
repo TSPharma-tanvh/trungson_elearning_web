@@ -6,6 +6,11 @@ import { CreateClassRequest } from '@/domain/models/class/request/create-class-r
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
+import { CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
+import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
+import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
+import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
+import { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -18,49 +23,43 @@ import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/category-multickeck-form';
-import { ClassFilters } from '@/presentation/components/dashboard/class/class-filter';
-import ClassTable from '@/presentation/components/dashboard/class/class-table';
-import { CreateClassDialog } from '@/presentation/components/dashboard/class/create-class-form';
-import { AddCustomerDialog } from '@/presentation/components/dashboard/customer/add-customer';
-import { CustomersFilters } from '@/presentation/components/dashboard/customer/customers-filters';
-import { CustomersTable } from '@/presentation/components/dashboard/customer/customers-table';
-import type { Customer } from '@/presentation/components/dashboard/customer/customers-table';
-import LessonTable from '@/presentation/components/dashboard/lessons/lesson-table';
+import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/classes/category-multickeck-form';
+import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
+import { CreateClassTeacherDialog } from '@/presentation/components/dashboard/class/teacher/create-teacher-form';
 
 export default function Page(): React.JSX.Element {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { classUsecase } = useDI();
+  const { classTeacherUsecase } = useDI();
 
   const [showForm, setShowForm] = React.useState(false);
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetClassRequest>(new GetClassRequest({ pageNumber: 1, pageSize: 10 }));
-  const [classes, setClasses] = React.useState<ClassResponse[]>([]);
+  const [teachers, setTeachers] = React.useState<ClassTeacherResponse[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
 
-  const fetchClasses = React.useCallback(async () => {
+  const fetchTeachers = React.useCallback(async () => {
     try {
-      const request = new GetClassRequest({
+      const request = new GetClassTeacherRequest({
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { class: classList, totalRecords } = await classUsecase.getClassListInfo(request);
-      setClasses(classList);
+      const { teachers, totalRecords } = await classTeacherUsecase.getClassTeacherListInfo(request);
+      setTeachers(teachers);
       setTotalCount(totalRecords);
     } catch (error) {
       console.error('Failed to fetch class:', error);
     }
-  }, [filters, page, rowsPerPage, classUsecase]);
+  }, [filters, page, rowsPerPage, classTeacherUsecase]);
 
   React.useEffect(() => {
-    fetchClasses();
-  }, [fetchClasses]);
+    fetchTeachers();
+  }, [fetchTeachers]);
 
   const handleAddClick = () => {
     setShowForm(true);
@@ -81,44 +80,35 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateClass = async (request: CreateClassRequest) => {
+  const handleCreateTeacher = async (request: CreateClassTeacherRequest) => {
     try {
-      await classUsecase.createClass(request);
+      await classTeacherUsecase.createClassTeacher(request);
       setShowCreateDialog(false);
-      await fetchClasses();
+      await fetchTeachers();
     } catch (error) {
       console.error('Failed to create Class path:', error);
     }
   };
 
-  const handleEditClass = async (request: UpdateClassRequest) => {
+  const handleEditTeacher = async (request: UpdateClassTeacherRequest) => {
     try {
-      await classUsecase.updateClass(request);
-      await fetchClasses();
+      await classTeacherUsecase.updateClassTeacher(request);
+      await fetchTeachers();
     } catch (error) {
       console.error('Failed to update Class path:', error);
     }
   };
 
-  const handleEditClassPath = async (request: UpdateClassRequest) => {
-    try {
-      await classUsecase.updateClass(request);
-      await fetchClasses();
-    } catch (error) {
-      console.error('Failed to update Class path:', error);
-    }
-  };
-
-  const handleDeleteClasss = async (ids: string[]) => {
+  const handleDeleteTeachers = async (ids: string[]) => {
     try {
       setDeleteLoading(true);
       for (const id of ids) {
-        const response = await classUsecase.deleteClass(id);
+        const response = await classTeacherUsecase.deleteClassTeacher(id);
         if (!response) {
           throw new Error(`Failed to delete path with ID: ${id}`);
         }
       }
-      await fetchClasses();
+      await fetchTeachers();
     } catch (error) {
       console.error('Failed to delete Class paths:', error);
       throw error;
@@ -131,7 +121,7 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Class</Typography>
+          <Typography variant="h4">Class Teacher</Typography>
         </Stack>
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
@@ -147,16 +137,16 @@ export default function Page(): React.JSX.Element {
           <CategoryMultiCheckForm onChange={handleAddClick} />
         </Box>
 
-        <ClassTable
+        {/* <ClassTable
           rows={classes}
           count={totalCount}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
-          onDeleteClass={handleDeleteClasss}
-          onEditClass={handleEditClass}
-        ></ClassTable>
+          onDeleteClass={handleDeleteTeachers}
+          onEditClass={handleEditTeacher}
+        ></ClassTable> */}
       </Stack>
 
       {/* <AddCustomerDialog
@@ -167,8 +157,8 @@ export default function Page(): React.JSX.Element {
         }}
       /> */}
 
-      <CreateClassDialog
-        onSubmit={handleCreateClass}
+      <CreateClassTeacherDialog
+        onSubmit={handleCreateTeacher}
         disabled={false}
         loading={false}
         open={showCreateDialog}

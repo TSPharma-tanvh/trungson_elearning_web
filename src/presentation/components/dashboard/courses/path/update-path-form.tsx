@@ -32,14 +32,14 @@ import {
 } from '@mui/material';
 import { Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
-import { CategorySelect } from '../../category/category-select';
-import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '../../core/picker/custom-date-picker';
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
-import { CustomTextField } from '../../core/text-field/custom-textfield';
-import { CourseSelectDialog } from '../../courses/courses/courses-select';
-import { EnrollmentSelect } from '../../enrollment/enrollment-select';
-import { FileResourceSelect } from '../../file/file-resource-select';
+import { CategorySelect } from '@/presentation/components/category/category-select';
+import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
+import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
+import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
+import { CourseMultiSelectDialog } from '@/presentation/components/courses/courses/courses-multi-select';
+import { EnrollmentSelect } from '@/presentation/components/enrollment/enrollment-select';
+import { FileResourceSelect } from '@/presentation/components/file/file-resource-select';
 
 interface EditPathDialogProps {
   open: boolean;
@@ -271,7 +271,7 @@ export function UpdatePathFormDialog({ open, path: path, onClose, onSubmit }: Ed
               />
             </Grid>
             <Grid item xs={12}>
-              <CourseSelectDialog
+              <CourseMultiSelectDialog
                 courseUsecase={courseUsecase}
                 value={
                   courseFormData.enrollmentCourseIDs

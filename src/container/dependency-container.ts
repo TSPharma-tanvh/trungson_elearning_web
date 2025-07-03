@@ -1,5 +1,6 @@
 import { SignInUseCase } from '@/domain/usecases/auth/auth-usecase';
 import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
+import { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
 import { ClassUsecase } from '@/domain/usecases/class/class-usecase';
 import { CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
@@ -13,6 +14,7 @@ import { UserUsecase } from '@/domain/usecases/user/user-usecase';
 import { AuthRepositoryImpl } from '@/data/repositories/auth/auth-repo-impl';
 import { CategoryRepositoryImpl } from '@/data/repositories/category/category-repo-impl';
 import { ClassRepoImpl } from '@/data/repositories/class/class-repo-impl';
+import { ClassTeacherRepoImpl } from '@/data/repositories/class/class-teacher-repo-impl';
 import { CourseRepoImpl } from '@/data/repositories/courses/courses-repo-impl';
 import { EnrollmentRepoImpl } from '@/data/repositories/enrollment/enrollment-repo-impl';
 import { FileResourceRepositoryImpl } from '@/data/repositories/file/file-resource-repo-impl';
@@ -54,6 +56,9 @@ export class DependencyContainer {
   //class
   public classRepo = new ClassRepoImpl();
 
+  //teacher
+  public classTeacherRepo = new ClassTeacherRepoImpl();
+
   //resource
   public fileRepo = new FileResourceRepositoryImpl();
 
@@ -86,6 +91,9 @@ export class DependencyContainer {
 
   //class
   public classUsecase = new ClassUsecase(this.classRepo);
+
+  //teacher
+  public classTeacherUsecase = new ClassTeacherUsecase(this.classTeacherRepo);
 
   //file resource
   public fileUsecase = new FileResourcesUsecase(this.fileRepo);

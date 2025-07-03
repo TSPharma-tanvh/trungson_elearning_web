@@ -1,8 +1,5 @@
 export class GetClassTeacherRequest {
   userID?: string;
-  courseID?: string;
-  classID?: string;
-  classType?: string;
   status?: string;
   searchText?: string;
 
@@ -16,9 +13,6 @@ export class GetClassTeacherRequest {
   static fromJSON(json: any): GetClassTeacherRequest {
     return new GetClassTeacherRequest({
       userID: json.userID,
-      courseID: json.courseID,
-      classID: json.classID,
-      classType: json.classType,
       status: json.status,
       searchText: json.searchText,
       pageNumber: json.pageNumber ?? 1,
@@ -29,9 +23,6 @@ export class GetClassTeacherRequest {
   toJSON(): any {
     return {
       userID: this.userID,
-      courseID: this.courseID,
-      classID: this.classID,
-      classType: this.classType,
       status: this.status,
       searchText: this.searchText,
       pageNumber: this.pageNumber,

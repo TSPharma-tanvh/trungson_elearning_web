@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
+import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -24,7 +25,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomFieldTypography from '../../core/text-field/custom-typhography';
+import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
 interface Props {
   open: boolean;
@@ -72,41 +73,31 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   };
 
   const renderFileResources = () => {
-    if (!classes.fileResources || classes.fileResources.length === 0) return null;
+    // Flatten all fileResources from fileClassRelation
+    const fileResources: FileResourcesResponse[] =
+      classes.fileClassRelation?.flatMap((relation) => (relation.fileResources ? [relation.fileResources] : [])) || [];
 
-    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
-
-    const toggleExpanded = (lessonId: string) => {
-      setExpandedLessons((prev) => ({
-        ...prev,
-        [lessonId]: !prev[lessonId],
-      }));
-    };
+    if (fileResources.length === 0) return null;
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader
-          title="Lessons"
-          sx={{ pl: 2, pb: 1, mb: 2 }} // Added mb: 2 for title margin, adjusted pb: 1
-        />
-        {classes.fileResources && classes.fileResources.length > 0 && (
-          <Card sx={{ mb: 2 }}>
-            <CardHeader title="Attached Files" />
-            <CardContent>
-              <Grid container spacing={2}>
-                {classes.fileResources.map((file, index) => (
-                  <Grid item xs={12} key={index}>
-                    <Typography>
-                      <a href={file.resourceUrl} target="_blank" rel="noopener noreferrer">
-                        {file.name ?? `File ${index + 1}`}
-                      </a>
-                    </Typography>
-                  </Grid>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
-        )}
+        <CardHeader title="Attached Files" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <Card sx={{ mb: 2 }}>
+          <CardHeader title="Files" />
+          <CardContent>
+            <Grid container spacing={2}>
+              {fileResources.map((file, index) => (
+                <Grid item xs={12} key={index}>
+                  <Typography>
+                    <a href={file.resourceUrl} target="_blank" rel="noopener noreferrer">
+                      {file.name ?? `File ${index + 1}`}
+                    </a>
+                  </Typography>
+                </Grid>
+              ))}
+            </Grid>
+          </CardContent>
+        </Card>
       </Box>
     );
   };

@@ -35,17 +35,17 @@ import {
 } from '@mui/material';
 import { Article, Calendar, Image as ImageIcon, Note, QrCode, Tag } from '@phosphor-icons/react';
 
-import { CategorySelect } from '../../category/category-select';
-import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '../../core/picker/custom-date-picker';
-import { CustomTimePicker } from '../../core/picker/custom-time-picker';
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
-import { CustomTextField } from '../../core/text-field/custom-textfield';
-import { EnrollmentSelect } from '../../enrollment/enrollment-select';
-import { FileResourceMultiSelect } from '../../file/file-resource-multi-select';
-import { FileResourceSelect } from '../../file/file-resource-select';
-import ImagePreviewDialog from '../../file/image-preview-dialog';
-import VideoPreviewDialog from '../../file/video-preview-dialog';
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
+import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
+import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
+import { CategorySelect } from '@/presentation/components/category/category-select';
+import { EnrollmentSelect } from '@/presentation/components/enrollment/enrollment-select';
+import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
+import { CustomTimePicker } from '@/presentation/components/core/picker/custom-time-picker';
+import { FileResourceMultiSelect } from '@/presentation/components/file/file-resource-multi-select';
+import { FileResourceSelect } from '@/presentation/components/file/file-resource-select';
+import VideoPreviewDialog from '@/presentation/components/file/video-preview-dialog';
+import ImagePreviewDialog from '@/presentation/components/file/image-preview-dialog';
 
 interface EditClassDialogProps {
   open: boolean;
@@ -327,7 +327,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 disabled={isSubmitting}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <CustomTimePicker
                 label="Select Duration"
