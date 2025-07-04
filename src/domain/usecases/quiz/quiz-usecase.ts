@@ -1,0 +1,64 @@
+import { ApiResponse } from '@/domain/models/core/api-response';
+import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
+import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
+import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
+import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { QuizListResult } from '@/domain/models/quiz/response/quiz-result';
+import { QuizRepository } from '@/domain/repositories/quiz/quiz-repository';
+import { StatusEnum } from '@/utils/enum/core-enum';
+
+export class QuizUsecase {
+  constructor(private readonly courseRepo: QuizRepository) {}
+
+  async getQuizListInfo(request: GetQuizRequest): Promise<QuizListResult> {
+    const result = await this.courseRepo.getQuizListInfo(request);
+
+    if (!result || !Array.isArray(result.result)) {
+      throw new Error('Failed to load user list.');
+    }
+
+    const data = result.result.map(QuizResponse.fromJSON);
+
+    return {
+      quizzes: data,
+      totalRecords: result.totalRecords ?? result.result.length,
+      pageSize: result.pageSize ?? request.pageSize,
+      pageNumber: result.pageNumber ?? request.pageNumber,
+    };
+  }
+
+  async getQuizById(id: string): Promise<QuizResponse> {
+    if (id === null || id === undefined || id.trim() === '') {
+      throw new Error('ID is missing.');
+    }
+
+    var result = await this.courseRepo.getQuizById(id);
+
+    var userResponse = QuizResponse.fromJSON(result.result);
+
+    return userResponse;
+  }
+
+  async createQuiz(request: CreateQuizRequest): Promise<ApiResponse> {
+    const response = await this.courseRepo.createQuiz(request);
+
+    return response;
+  }
+
+  async updateQuiz(request: UpdateQuizRequest): Promise<ApiResponse> {
+    var result = await this.courseRepo.updateQuiz(request);
+
+    return result;
+  }
+
+  async deleteQuiz(id: string): Promise<ApiResponse> {
+    const newFormData = new UpdateQuizRequest({
+      id: id ?? '',
+      status: StatusEnum.Deleted,
+    });
+
+    var result = await this.courseRepo.updateQuiz(newFormData);
+
+    return result;
+  }
+}

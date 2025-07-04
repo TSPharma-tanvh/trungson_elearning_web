@@ -42,6 +42,23 @@ export enum CategoryEnum {
   Criteria = 7,
 }
 
+export enum CheckinTimeEnum {
+  OnTime = 0,
+  Late = 1,
+  Absent = 2,
+}
+export enum QuizTypeEnum {
+  LessonQuiz = 0,
+  ExamQuiz = 1,
+}
+
+export enum QuestionEnum {
+  SingleChoice = 0,
+  MultipleChoice = 1,
+  ShortAnswer = 2,
+  LongAnswer = 3,
+}
+
 export class CoreEnumUtils {
   static getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
     if (!enumObj) return [];

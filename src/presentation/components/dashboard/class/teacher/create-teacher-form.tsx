@@ -9,8 +9,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 
-import { ClassMultiSelectDialog } from '@/presentation/components/class/class-multi-select';
-import { ClassSelectDialog } from '@/presentation/components/class/class-select';
+import { ClassMultiSelectDialog } from '@/presentation/components/classes/class/class-multi-select';
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';

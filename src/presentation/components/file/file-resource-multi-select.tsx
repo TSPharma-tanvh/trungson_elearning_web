@@ -141,14 +141,16 @@ export function FileResourceMultiSelect({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="file-multi-select-label">{label}</InputLabel>
+        <InputLabel id="file-multi-select-label" shrink>
+          {label}
+        </InputLabel>
         <Select
           labelId="file-multi-select-label"
           multiple
           value={value}
           onClick={() => setOpen(true)}
           input={<OutlinedInput label={label} />}
-          renderValue={() => selectedFiles.map((f) => f.name).join(', ')}
+          renderValue={() => (selectedFiles.length ? selectedFiles.map((f) => f.name).join(', ') : 'No files selected')}
           open={false}
           displayEmpty
         >

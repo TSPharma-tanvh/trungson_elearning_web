@@ -44,8 +44,8 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import { CustomSearchInput } from '../core/text-field/custom-search-input';
-import ClassDetailForm from '../dashboard/class/classes/class-detail-form';
+import { CustomSearchInput } from '../../core/text-field/custom-search-input';
+import ClassDetailForm from '../../dashboard/class/classes/class-detail-form';
 
 interface ClassSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   classUsecase: ClassUsecase | null;
@@ -256,7 +256,6 @@ export function ClassSelectDialog({
                   size="small"
                   onClick={(e) => {
                     e.stopPropagation();
-                    console.log('User Details:', cls);
                     setSelectedClass(cls);
                     setViewOpen(true);
                   }}

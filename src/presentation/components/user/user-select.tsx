@@ -114,7 +114,7 @@ export function UserSelectDialog({
   useEffect(() => {
     if (userUsecase && value) {
       const fetchSelectedUsers = async () => {
-        setLoading(true); // Set loading to true before fetching
+        setLoading(true);
         try {
           const request = new GetUserRequest({});
           const result = await userUsecase.getUserListInfo(request);
@@ -132,12 +132,12 @@ export function UserSelectDialog({
         } catch (error) {
           console.error('Error fetching selected users:', error);
         } finally {
-          setLoading(false); // Set loading to false after fetching
+          setLoading(false);
         }
       };
       fetchSelectedUsers();
     } else {
-      setLoading(false); // No userUsecase or value, so no need to fetch
+      setLoading(false);
     }
   }, [userUsecase, value, selectedUserMap]);
 
@@ -159,7 +159,7 @@ export function UserSelectDialog({
         <InputLabel id="user-select-label">{label}</InputLabel>
         <Select
           labelId="user-select-label"
-          value={loading ? '' : value || ''} // Use empty string during loading
+          value={loading ? '' : value || ''}
           input={
             <OutlinedInput
               label={label}

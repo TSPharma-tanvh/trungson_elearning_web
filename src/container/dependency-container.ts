@@ -7,6 +7,7 @@ import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-useca
 import { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { PathUsecase } from '@/domain/usecases/path/path-usecase';
+import { QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { RoleUsecase } from '@/domain/usecases/role/role-usecase';
 import { SendNotificationUseCase } from '@/domain/usecases/SendNotificationUseCase';
 import { UserUsecase } from '@/domain/usecases/user/user-usecase';
@@ -21,6 +22,7 @@ import { FileResourceRepositoryImpl } from '@/data/repositories/file/file-resour
 import { LessonRepoImpl } from '@/data/repositories/lesson/lesson-repo-impl';
 import { NotificationRepoImpl } from '@/data/repositories/NotificationRepoImpl';
 import { PathRepoImpl } from '@/data/repositories/path/path-repo.impl';
+import { QuizRepoImpl } from '@/data/repositories/quiz/quiz-repo-impl';
 import { RoleRepositoryImpl } from '@/data/repositories/role/role-repo-impl';
 import { UserRepositoryImpl } from '@/data/repositories/user/user-repo-impl';
 
@@ -62,6 +64,9 @@ export class DependencyContainer {
   //resource
   public fileRepo = new FileResourceRepositoryImpl();
 
+  //quiz
+  public quizRepo = new QuizRepoImpl();
+
   /// Use cases
   public sendNotificationUseCase = new SendNotificationUseCase(this.notificationRepo);
 
@@ -94,6 +99,9 @@ export class DependencyContainer {
 
   //teacher
   public classTeacherUsecase = new ClassTeacherUsecase(this.classTeacherRepo);
+
+  //quiz
+  public quizUsecase = new QuizUsecase(this.quizRepo);
 
   //file resource
   public fileUsecase = new FileResourcesUsecase(this.fileRepo);

@@ -29,6 +29,7 @@ import {
 import { Article, Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
 import { CategorySelect } from '@/presentation/components/category/category-select';
+import { ClassTeacherSelectDialog } from '@/presentation/components/classes/teacher/teacher-select';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -47,7 +48,7 @@ interface EditCourseDialogProps {
 export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }: EditCourseDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase } = useDI();
+  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase, classTeacherUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateCourseRequest>(new UpdateCourseRequest({}));
@@ -70,6 +71,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           course.displayType !== undefined
             ? DisplayTypeEnum[course.displayType as keyof typeof DisplayTypeEnum]
             : undefined,
+        teacherID: course.teacherId || undefined,
         enrollmentCriteriaType: CategoryEnum.Course,
         enrollmentCriteriaIDs: course.enrollmentCriteria?.map((enrollment) => enrollment.id).join(',') || undefined,
         categoryID: course.categoryId || undefined,
@@ -137,7 +139,6 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     setIsSubmitting(true);
     try {
       await onSubmit(formData);
-      console.error(formData);
       onClose();
     } catch (error) {
       console.error('Error updating path:', error);
@@ -271,6 +272,15 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 value={formData.categoryID}
                 onChange={(value) => handleChange('categoryID', value)}
                 categoryEnum={CategoryEnum.Course}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <ClassTeacherSelectDialog
+                classUsecase={classTeacherUsecase}
+                value={formData.teacherID ?? ''}
+                onChange={(value) => handleChange('teacherID', value)}
                 disabled={isSubmitting}
               />
             </Grid>

@@ -35,17 +35,18 @@ import {
 } from '@mui/material';
 import { Article, Calendar, Image as ImageIcon, Note, QrCode, Tag } from '@phosphor-icons/react';
 
+import { CategorySelect } from '@/presentation/components/category/category-select';
+import { ClassTeacherSelectDialog } from '@/presentation/components/classes/teacher/teacher-select';
+import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
+import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
+import { CustomTimePicker } from '@/presentation/components/core/picker/custom-time-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
-import { CategorySelect } from '@/presentation/components/category/category-select';
 import { EnrollmentSelect } from '@/presentation/components/enrollment/enrollment-select';
-import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import { CustomTimePicker } from '@/presentation/components/core/picker/custom-time-picker';
 import { FileResourceMultiSelect } from '@/presentation/components/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/file/file-resource-select';
-import VideoPreviewDialog from '@/presentation/components/file/video-preview-dialog';
 import ImagePreviewDialog from '@/presentation/components/file/image-preview-dialog';
+import VideoPreviewDialog from '@/presentation/components/file/video-preview-dialog';
 
 interface EditClassDialogProps {
   open: boolean;
@@ -57,7 +58,7 @@ interface EditClassDialogProps {
 export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: EditClassDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase } = useDI();
+  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase, classTeacherUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateClassRequest>(new UpdateClassRequest({}));
@@ -375,6 +376,15 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 disabled={isSubmitting}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <ClassTeacherSelectDialog
+                classUsecase={classTeacherUsecase}
+                value={formData.teacherID ?? ''}
+                onChange={(value) => handleChange('teacherID', value)}
+                disabled={isSubmitting}
+              />
+            </Grid>
             {/* <Grid item xs={12} sm={12}>
               <FileResourceMultiSelect
                 fileUsecase={fileUsecase}
@@ -388,7 +398,11 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               />
             </Grid> */}
             {/* Upload file resources */}
+
             <Grid item xs={12}>
+              <Typography variant="body2" mb={1}>
+                Upload Files
+              </Typography>
               <ToggleButtonGroup
                 value={fileSelectSource}
                 exclusive
@@ -496,6 +510,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
             )}
             {/* upload thumbnail */}
             <Grid item xs={12}>
+              <Typography variant="body2" mb={1}>
+                Upload Thumbnail
+              </Typography>
               <ToggleButtonGroup
                 value={thumbnailSource}
                 exclusive

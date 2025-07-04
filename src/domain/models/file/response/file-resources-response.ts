@@ -8,6 +8,10 @@ export class FileResourcesResponse {
   name?: string;
   size: number = 0;
 
+  constructor(init?: Partial<FileResourcesResponse>) {
+    Object.assign(this, init);
+  }
+
   static fromJson(json: any): FileResourcesResponse {
     const dto = new FileResourcesResponse();
     dto.id = json.id;
