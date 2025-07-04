@@ -25,6 +25,8 @@ import dayjs from 'dayjs';
 import { config } from '@/config';
 import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/classes/category-multickeck-form';
 import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
+import { ClassTeacherFilters } from '@/presentation/components/dashboard/class/teacher/class-teacher-filter';
+import TeacherTable from '@/presentation/components/dashboard/class/teacher/class-teacher-table';
 import { CreateClassTeacherDialog } from '@/presentation/components/dashboard/class/teacher/create-teacher-form';
 
 export default function Page(): React.JSX.Element {
@@ -35,7 +37,9 @@ export default function Page(): React.JSX.Element {
 
   const [showForm, setShowForm] = React.useState(false);
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [filters, setFilters] = React.useState<GetClassRequest>(new GetClassRequest({ pageNumber: 1, pageSize: 10 }));
+  const [filters, setFilters] = React.useState<GetClassTeacherRequest>(
+    new GetClassTeacherRequest({ pageNumber: 1, pageSize: 10 })
+  );
   const [teachers, setTeachers] = React.useState<ClassTeacherResponse[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -65,7 +69,7 @@ export default function Page(): React.JSX.Element {
     setShowForm(true);
   };
 
-  const handleFilter = (newFilters: GetClassRequest) => {
+  const handleFilter = (newFilters: GetClassTeacherRequest) => {
     setFilters(newFilters);
     setPage(0);
   };
@@ -99,11 +103,13 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleDeleteTeachers = async (ids: string[]) => {
+  const handleDeleteTeachers = async (ids: string[], userIds: string[]) => {
     try {
       setDeleteLoading(true);
-      for (const id of ids) {
-        const response = await classTeacherUsecase.deleteClassTeacher(id);
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        const userId = userIds[i];
+        const response = await classTeacherUsecase.deleteClassTeacher(id, userId);
         if (!response) {
           throw new Error(`Failed to delete path with ID: ${id}`);
         }
@@ -131,23 +137,17 @@ export default function Page(): React.JSX.Element {
           Add
         </Button>
       </Stack>
-      <ClassFilters onFilter={handleFilter} />
-      <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>
-        <Box flex={1}>
-          <CategoryMultiCheckForm onChange={handleAddClick} />
-        </Box>
-
-        {/* <ClassTable
-          rows={classes}
-          count={totalCount}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          onDeleteClass={handleDeleteTeachers}
-          onEditClass={handleEditTeacher}
-        ></ClassTable> */}
-      </Stack>
+      <ClassTeacherFilters onFilter={handleFilter} />
+      <TeacherTable
+        rows={teachers}
+        count={totalCount}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
+        onDeleteTeachers={handleDeleteTeachers}
+        onEditTeacher={handleEditTeacher}
+      ></TeacherTable>
 
       {/* <AddCustomerDialog
         open={showForm}

@@ -51,9 +51,10 @@ export class ClassTeacherUsecase {
     return result;
   }
 
-  async deleteClassTeacher(id: string): Promise<ApiResponse> {
+  async deleteClassTeacher(id: string, userId: string): Promise<ApiResponse> {
     const newFormData = new UpdateClassTeacherRequest({
       id: id ?? '',
+      userID: userId ?? '',
       status: ActiveEnum[ActiveEnum.Inactive],
     });
     var result = await this.ClassTeacherRepo.updateClassTeacher(newFormData);

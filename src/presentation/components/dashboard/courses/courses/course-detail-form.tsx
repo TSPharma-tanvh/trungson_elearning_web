@@ -24,7 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomFieldTypography from '../../core/text-field/custom-typhography';
+import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
 interface Props {
   open: boolean;
@@ -85,10 +85,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader
-          title="Lessons"
-          sx={{ pl: 2, pb: 1, mb: 2 }} // Added mb: 2 for title margin, adjusted pb: 1
-        />
+        <CardHeader title="Lessons" sx={{ pl: 2, pb: 1, mb: 2 }} />
         {course.lessons.map((lesson, index) => {
           const lessonId = lesson.id ?? `lesson-${index}`;
           const isExpanded = expandedLessons[lessonId] || false;
@@ -97,8 +94,8 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             <Card
               key={lessonId}
               sx={{
-                mb: 3, // Increased margin-bottom to 24px for more separation
-                mx: window.innerWidth < 600 ? 1 : 2, // Retained responsive horizontal margin
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
               }}
             >
               <CardHeader

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
 import { ClassUsecase } from '@/domain/usecases/class/class-usecase';
@@ -45,6 +45,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '../core/text-field/custom-search-input';
+import ClassDetailForm from '../dashboard/class/classes/class-detail-form';
 
 interface ClassSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   classUsecase: ClassUsecase | null;
@@ -66,7 +67,7 @@ export function ClassSelectDialog({
   classUsecase,
   value,
   onChange,
-  label = 'Classs',
+  label = 'Class',
   disabled = false,
   pathID,
   ...selectProps
@@ -81,7 +82,8 @@ export function ClassSelectDialog({
   const [selectedClassMap, setSelectedClassMap] = useState<Record<string, ClassResponse>>({});
   const [classType, setClassType] = useState<LearningModeEnum | undefined>(undefined);
   const [scheduleStatus, setScheduleStatus] = useState<ScheduleStatusEnum | undefined>(undefined);
-
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [selectedClass, setSelectedClass] = React.useState<ClassResponse | null>(null);
   const {
     classes,
     loadingClasses,
@@ -250,6 +252,17 @@ export function ClassSelectDialog({
               >
                 <Checkbox checked={localValue === cls.id} />
                 <ListItemText primary={cls.className} />
+                <Button
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log('User Details:', cls);
+                    setSelectedClass(cls);
+                    setViewOpen(true);
+                  }}
+                >
+                  Show Detail
+                </Button>
               </MenuItem>
             ))}
             {loadingClasses && (
@@ -285,7 +298,10 @@ export function ClassSelectDialog({
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedClass && (
+        <ClassDetailForm open={viewOpen} classId={selectedClass?.id ?? null} onClose={() => setViewOpen(false)} />
+      )}
     </>
   );
 }
-// ...existing code...

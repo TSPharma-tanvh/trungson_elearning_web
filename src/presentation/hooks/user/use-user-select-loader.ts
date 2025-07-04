@@ -46,7 +46,6 @@ export function useUserSelectLoader({
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const loadUsers = async (page: number, reset: boolean = false) => {
-    console.error('loader user select');
     if (!userUsecase || loadingUsers || !isOpen) return;
 
     setLoadingUsers(true);

@@ -16,7 +16,7 @@ import {
   StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { AccountCircle, Book, BookOutlined } from '@mui/icons-material';
+import { AccountCircle } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -36,9 +36,7 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
   SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
 } from '@mui/material';
@@ -71,8 +69,9 @@ export function UserSelectDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useUserSelectDebounce(localSearchText, 300);
   const [selectedUserMap, setSelectedUserMap] = useState<Record<string, UserResponse>>({});
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [selectedUser, setSelectedUser] = React.useState<UserResponse | null>(null);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { users, loadingUsers, pageNumber, totalPages, listRef, setSearchText, loadUsers } = useUserSelectLoader({
     userUsecase,
@@ -106,7 +105,41 @@ export function UserSelectDialog({
 
   useEffect(() => {
     setSearchText(debouncedSearchText);
-  }, [debouncedSearchText]);
+  }, [debouncedSearchText, setSearchText]);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (userUsecase && value) {
+      const fetchSelectedUsers = async () => {
+        setLoading(true); // Set loading to true before fetching
+        try {
+          const request = new GetUserRequest({});
+          const result = await userUsecase.getUserListInfo(request);
+          const newMap = { ...selectedUserMap };
+          let updated = false;
+          for (const user of result.users) {
+            if (!newMap[user.id]) {
+              newMap[user.id] = user;
+              updated = true;
+            }
+          }
+          if (updated) {
+            setSelectedUserMap(newMap);
+          }
+        } catch (error) {
+          console.error('Error fetching selected users:', error);
+        } finally {
+          setLoading(false); // Set loading to false after fetching
+        }
+      };
+      fetchSelectedUsers();
+    } else {
+      setLoading(false); // No userUsecase or value, so no need to fetch
+    }
+  }, [userUsecase, value, selectedUserMap]);
 
   useEffect(() => {
     if (dialogOpen) {
@@ -120,17 +153,13 @@ export function UserSelectDialog({
     }
   }, [users, dialogOpen]);
 
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
         <InputLabel id="user-select-label">{label}</InputLabel>
         <Select
           labelId="user-select-label"
-          value={value}
+          value={loading ? '' : value || ''} // Use empty string during loading
           input={
             <OutlinedInput
               label={label}
@@ -139,13 +168,21 @@ export function UserSelectDialog({
           }
           onClick={handleOpen}
           renderValue={() =>
-            selectedUserMap[value]
-              ? `${selectedUserMap[value].firstName} ${selectedUserMap[value].lastName}`
-              : 'Select User'
+            loading
+              ? 'Loading...'
+              : selectedUserMap[value]
+                ? `${selectedUserMap[value].firstName} ${selectedUserMap[value].lastName}`
+                : 'Select User'
           }
           open={false}
           {...selectProps}
-        />
+        >
+          {Object.values(selectedUserMap).map((user) => (
+            <MenuItem key={user.id} value={user.id}>
+              {`${user.firstName} ${user.lastName}`}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
 
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm">
@@ -174,7 +211,6 @@ export function UserSelectDialog({
                   size="small"
                   onClick={(e) => {
                     e.stopPropagation();
-                    console.log('User Details:', user);
                     setSelectedUser(user);
                     setViewOpen(true);
                   }}
@@ -183,8 +219,6 @@ export function UserSelectDialog({
                 </Button>
               </MenuItem>
             ))}
-            {loadingUsers && <Typography sx={{ p: 2 }}>Loading...</Typography>}
-            {!loadingUsers && users.length === 0 && <Typography sx={{ p: 2 }}>No users found.</Typography>}
           </Box>
         </DialogContent>
 

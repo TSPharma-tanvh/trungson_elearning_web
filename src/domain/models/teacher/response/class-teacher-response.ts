@@ -10,6 +10,8 @@ export class ClassTeacherResponse {
   user?: UserResponse;
   courses?: CourseDetailResponse[];
   classes?: ClassResponse[];
+  createdDateTime!: string;
+  updatedDateTime?: string;
 
   constructor(init?: Partial<ClassTeacherResponse>) {
     Object.assign(this, init);
@@ -24,6 +26,8 @@ export class ClassTeacherResponse {
       user: json.user ? UserResponse.fromJSON(json.user) : undefined,
       courses: Array.isArray(json.courses) ? json.courses.map((c: any) => CourseDetailResponse.fromJSON(c)) : undefined,
       classes: Array.isArray(json.classes) ? json.classes.map((cl: any) => ClassResponse.fromJson(cl)) : undefined,
+      createdDateTime: json.createdDateTime ?? json.CreatedDateTime ?? '',
+      updatedDateTime: json.updatedDateTime ?? json.UpdatedDateTime,
     });
   }
 
@@ -36,6 +40,8 @@ export class ClassTeacherResponse {
       User: this.user?.toJSON(),
       Courses: this.courses?.map((c) => c.toJSON()),
       Classes: this.classes?.map((cl) => cl.toJson()),
+      CreatedDateTime: this.createdDateTime,
+      UpdatedDateTime: this.updatedDateTime,
     };
   }
 }

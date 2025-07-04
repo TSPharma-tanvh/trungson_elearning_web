@@ -110,7 +110,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
 
           <Grid item xs={12} sm={6}>
             <CustomDateTimePicker
-              label="Thowfi gianKết thúc"
+              label="Thời gian kết thúc"
               value={form.endAt?.toISOString()}
               onChange={(val) => handleChange('endAt', new Date(val))}
               disabled={disabled}

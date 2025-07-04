@@ -1,80 +1,71 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
-import { CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
+import { useEffect, useState } from 'react';
+import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
+import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
-import { ActiveEnum, LearningModeEnum } from '@/utils/enum/core-enum';
+import { ActiveEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/system';
+import { Form } from 'react-hook-form';
 
 import { ClassMultiSelectDialog } from '@/presentation/components/class/class-multi-select';
-import { ClassSelectDialog } from '@/presentation/components/class/class-select';
-import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CourseMultiSelectDialog } from '@/presentation/components/courses/courses/courses-multi-select';
-import { CourseSelectDialog } from '@/presentation/components/courses/courses/courses-select';
 import { UserSelectDialog } from '@/presentation/components/user/user-select';
 
-interface Props {
-  disabled?: boolean;
-  onSubmit: (data: CreateClassTeacherRequest) => void;
-  loading?: boolean;
+interface EditClassTeacherDialogProps {
   open: boolean;
+  data: ClassTeacherResponse | null;
   onClose: () => void;
+  onSubmit: (data: UpdateClassTeacherRequest) => void;
 }
 
-export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onSubmit }: EditClassTeacherDialogProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { userUsecase, courseUsecase, classUsecase } = useDI();
-  const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
+
+  const [fullScreen, setFullScreen] = useState(false);
+  const [formData, setFormData] = useState<UpdateClassTeacherRequest>(new UpdateClassTeacherRequest({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const getNewForm = () =>
-    new CreateClassTeacherRequest({
-      userID: '',
-      status: ActiveEnum[ActiveEnum.Active],
-      courseID: undefined,
-      classID: undefined,
-    });
-  const [form, setForm] = useState<CreateClassTeacherRequest>(getNewForm());
-
-  const handleChange = <K extends keyof CreateClassTeacherRequest>(key: K, value: CreateClassTeacherRequest[K]) => {
-    setForm((prev) => new CreateClassTeacherRequest({ ...prev, [key]: value }));
-  };
-
   useEffect(() => {
-    const updateRows = () => {
-      const windowHeight = window.innerHeight;
-      const windowWidth = window.innerWidth;
-      const aspectRatio = windowWidth / windowHeight;
+    if (teacher && open) {
+      const newFormData = new UpdateClassTeacherRequest({
+        id: teacher?.id,
+        userID: teacher?.userID,
+        courseID: teacher?.courses !== undefined ? teacher?.courses?.map((course) => course.id).join(',') : undefined,
+        classID:
+          teacher?.classes !== undefined ? teacher.classes?.map((classData) => classData.id).join(',') : undefined,
+        status: teacher?.status,
+      });
+      setFormData(newFormData);
+    }
+  }, [teacher, open]);
 
-      let otherElementsHeight = 300;
-      if (windowHeight < 600) {
-        otherElementsHeight = 250;
-      } else if (windowHeight > 1000) {
-        otherElementsHeight = 350;
-      }
-
-      const rowHeight = aspectRatio > 1.5 ? 22 : 24;
-      const availableHeight = windowHeight - otherElementsHeight;
-      const calculatedRows = Math.max(3, Math.floor(availableHeight / rowHeight));
-
-      setDetailRows(fullScreen ? calculatedRows : 3);
-    };
-
-    updateRows();
-    window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
-  }, [fullScreen]);
+  const handleChange = <K extends keyof UpdateClassTeacherRequest>(key: K, value: UpdateClassTeacherRequest[K]) => {
+    setFormData((prev) => new UpdateClassTeacherRequest({ ...prev, [key]: value }));
+  };
 
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      await onSubmit(form);
+      await onSubmit(formData);
       onClose();
     } catch (error) {
       console.error('Error updating path:', error);
@@ -84,14 +75,12 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
     }
   };
 
-  useEffect(() => {
-    setForm(getNewForm());
-  }, [open]);
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Tạo lớp học</Typography>
+        <Typography variant="h6" component="div">
+          Update Teacher
+        </Typography>
         <Box>
           <IconButton onClick={() => setFullScreen((prev) => !prev)}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
@@ -101,12 +90,13 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', height: fullScreen ? '100%' : 'auto', p: 2 }}>
+
+      <DialogContent>
         <Grid container spacing={fullScreen ? (window.innerWidth < 600 ? 0.8 : 2.6) : 4}>
           <Grid item xs={12} mt={1}>
             <UserSelectDialog
               userUsecase={userUsecase}
-              value={form.userID ?? ''}
+              value={formData.userID ?? ''}
               onChange={(val) => handleChange('userID', val)}
               disabled={isSubmitting}
             />
@@ -115,18 +105,18 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
           <Grid item xs={12}>
             <CustomTextField
               label="Mô tả"
-              value={form.description || ''}
+              value={formData.description || ''}
               onChange={(val) => handleChange('description', val)}
-              disabled={disabled}
               multiline
               rows={detailRows}
+              disabled={false}
             />
           </Grid>
 
           <Grid item xs={12} sm={6}>
             <CourseMultiSelectDialog
               courseUsecase={courseUsecase}
-              value={form.courseID ? form.courseID.split(',').filter((id) => id) : []}
+              value={formData.courseID ? formData.courseID.split(',').filter((id) => id) : []}
               onChange={(value: string[]) => handleChange('courseID', value.join(','))}
               disabled={isSubmitting}
             />
@@ -135,30 +125,55 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
           <Grid item xs={12} sm={6}>
             <ClassMultiSelectDialog
               classUsecase={classUsecase}
-              value={form.classID ? form.classID.split(',').filter((id) => id) : []}
+              value={formData.classID ? formData.classID.split(',').filter((id) => id) : []}
               onChange={(val) => handleChange('classID', val.join(','))}
               disabled={isSubmitting}
             />
           </Grid>
-
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <CustomSelectDropDown<string>
               label="Trạng thái"
-              value={form.status!}
+              value={formData.status!}
               onChange={(val) => handleChange('status', val)}
-              disabled={disabled}
               options={[
                 { value: ActiveEnum[ActiveEnum.Active], label: 'Kích hoạt' },
                 { value: ActiveEnum[ActiveEnum.Inactive], label: 'Tạm khóa' },
               ]}
             />
           </Grid>
-
-          <Grid item xs={12}>
-            <CustomButton label="Tạo lớp" onClick={() => onSubmit(form)} loading={loading} disabled={disabled} />
-          </Grid>
         </Grid>
       </DialogContent>
+
+      <DialogActions>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column-reverse' : 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+            width: '100%',
+            m: 2,
+          }}
+        >
+          <Button
+            onClick={onClose}
+            variant="outlined"
+            sx={{ width: isMobile ? '100%' : '180px' }}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            sx={{ width: isMobile ? '100%' : '180px' }}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+          </Button>
+        </Box>
+      </DialogActions>
     </Dialog>
   );
 }
