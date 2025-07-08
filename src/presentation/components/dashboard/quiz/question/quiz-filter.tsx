@@ -38,8 +38,6 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
     });
 
     onFilter(request);
-
-    onFilter(request);
   };
 
   const handleClear = () => {

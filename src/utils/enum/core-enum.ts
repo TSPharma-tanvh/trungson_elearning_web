@@ -59,6 +59,13 @@ export enum QuestionEnum {
   LongAnswer = 3,
 }
 
+export enum UserQuizProgressEnum {
+  NotStarted = 0,
+  Doing = 1,
+  Pass = 2,
+  Fail = 3,
+}
+
 export class CoreEnumUtils {
   static getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
     if (!enumObj) return [];

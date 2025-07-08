@@ -55,12 +55,12 @@ interface ClassTeacherSelectDialogProps extends Omit<SelectProps<string>, 'value
   pathID?: string;
 }
 
-const filterOptions = {
-  courseType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
-  displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
-  scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
-  disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
-};
+// const filterOptions = {
+//   courseType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
+//   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
+//   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
+//   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
+// };
 
 export function ClassTeacherSelectDialog({
   classUsecase,
@@ -234,25 +234,22 @@ export function ClassTeacherSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search classes..." />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Class Teacher Type</InputLabel>
-              <Select
-                value={classType !== undefined ? String(classType) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setClassTeacherType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
-                }
-                label="Class Teacher Type"
-              >
-                {filterOptions.courseType.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? LearningModeDisplayNames[opt] : 'All'}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Button size="small" onClick={handleClearFilters} variant="outlined">
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              flexWrap: 'nowrap',
+              width: '100%',
+            }}
+          >
+            <CustomSearchInput
+              value={localSearchText}
+              onChange={setLocalSearchText}
+              placeholder="Search classes..."
+              sx={{ flexGrow: 1, minWidth: 0 }}
+            />
+            <Button size="small" onClick={handleClearFilters} variant="outlined" sx={{ whiteSpace: 'nowrap' }}>
               Clear Filters
             </Button>
           </Box>

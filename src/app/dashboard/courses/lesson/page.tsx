@@ -10,9 +10,9 @@ import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { Plus } from '@phosphor-icons/react';
 
-import { CreateLessonDialog } from '@/presentation/components/dashboard/lessons/create-lesson-form';
-import LessonTable from '@/presentation/components/dashboard/lessons/lesson-table';
-import { LessonsFilters } from '@/presentation/components/dashboard/lessons/lessons-filter';
+import { CreateLessonDialog } from '@/presentation/components/dashboard/courses/lessons/create-lesson-form';
+import LessonTable from '@/presentation/components/dashboard/courses/lessons/lesson-table';
+import { LessonsFilters } from '@/presentation/components/dashboard/courses/lessons/lessons-filter';
 
 export default function Page(): React.JSX.Element {
   const { lessonUsecase } = useDI();

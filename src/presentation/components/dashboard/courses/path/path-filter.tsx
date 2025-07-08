@@ -37,8 +37,6 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
     });
 
     onFilter(request);
-
-    onFilter(request);
   };
 
   const handleClear = () => {

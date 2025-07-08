@@ -22,7 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomFieldTypography from '../../core/text-field/custom-typhography';
+import CustomFieldTypography from '../../../core/text-field/custom-typhography';
 
 interface Props {
   open: boolean;

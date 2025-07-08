@@ -39,21 +39,25 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
   };
 
   const handleFilter = () => {
-    onFilter({
-      searchTerm: searchTerm || undefined,
-      roles: roles.length > 0 ? roles : undefined,
-      pageNumber: 1,
-      pageSize: 10,
-    });
+    onFilter(
+      new GetUserRequest({
+        searchTerm: searchTerm || undefined,
+        roles: roles.length > 0 ? roles : undefined,
+        pageNumber: 1,
+        pageSize: 10,
+      })
+    );
   };
 
   const handleClear = () => {
     setSearchTerm('');
     setRoles([]);
-    onFilter({
-      pageNumber: 1,
-      pageSize: 10,
-    });
+    onFilter(
+      new GetUserRequest({
+        pageNumber: 1,
+        pageSize: 10,
+      })
+    );
   };
 
   return (

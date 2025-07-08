@@ -4,7 +4,7 @@ export class GetUserRequest {
   email?: string;
   firstName?: string;
   lastName?: string;
-  roles: string[] = [];
+  roles?: string[] = [];
   searchTerm?: string;
   pageNumber: number = 1;
   pageSize: number = 10;

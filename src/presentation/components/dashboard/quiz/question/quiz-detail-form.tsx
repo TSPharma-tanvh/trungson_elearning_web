@@ -1,0 +1,293 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { DateTimeUtils } from '@/utils/date-time-utils';
+import CloseIcon from '@mui/icons-material/Close';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Collapse,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
+
+import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
+import { CustomVideoPlayer } from '@/presentation/components/file/custom-video-player';
+import ImagePreviewDialog from '@/presentation/components/file/image-preview-dialog';
+
+interface Props {
+  open: boolean;
+  courseId: string | null;
+  onClose: () => void;
+}
+
+function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boolean }) {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const renderField = (label: string, value?: string | number | boolean | null) => (
+    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+      <Typography variant="subtitle2" fontWeight={500}>
+        {label}
+      </Typography>
+      <CustomFieldTypography value={value} />
+    </Grid>
+  );
+
+  const renderEnrollmentCriteria = () => {
+    if (!quiz.enrollmentCriteria || quiz.enrollmentCriteria.length === 0) return null;
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title="Enrollment Criteria" />
+        <CardContent>
+          {quiz.enrollmentCriteria.map((criteria, index) => (
+            <Box key={criteria.id ?? index} sx={{ mb: 2 }}>
+              <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                Criteria #{index + 1}
+              </Typography>
+              <Grid container spacing={2}>
+                {renderField('ID', criteria.id)}
+                {renderField('Name', criteria.name)}
+                {renderField('Description', criteria.desc)}
+                {renderField('Target Type', criteria.targetType)}
+                {renderField('Target ID', criteria.targetID)}
+                {renderField('Target Level ID', criteria.targetLevelID)}
+                {renderField('Max Capacity', criteria.maxCapacity)}
+                {renderField('Target Pharmacy ID', criteria.targetPharmacyID)}
+              </Grid>
+            </Box>
+          ))}
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderQuestions = () => {
+    if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) return null;
+
+    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
+
+    const toggleExpanded = (lessonId: string) => {
+      setExpandedLessons((prev) => ({
+        ...prev,
+        [lessonId]: !prev[lessonId],
+      }));
+    };
+
+    return (
+      <Box sx={{ mb: 2 }}>
+        <CardHeader title="Lessons" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        {quiz.quizQuestions.map((question, index) => {
+          const lessonId = question.id ?? `lesson-${index}`;
+          const isExpanded = expandedLessons[lessonId] || false;
+
+          return (
+            <Card
+              key={lessonId}
+              sx={{
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
+              }}
+            >
+              <CardHeader
+                title={question.questionText ?? `Lesson ${index + 1}`}
+                action={
+                  <IconButton
+                    onClick={() => toggleExpanded(lessonId)}
+                    sx={{
+                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s',
+                    }}
+                  >
+                    <ExpandMoreIcon />
+                  </IconButton>
+                }
+                sx={{ py: 1 }}
+              />
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {renderField('ID', question.id)}
+                    {renderField('Detail', question.questionText)}
+                    {renderField('questionType', question.questionType)}
+                    {renderField('point', question.point)}
+                    {renderField('canShuffle', question.canShuffle)}
+                    {renderField('totalAnswer', question.totalAnswer)}
+                    {renderField('canShuffle', question.canShuffle)}
+                  </Grid>
+                </CardContent>
+              </Collapse>
+            </Card>
+          );
+        })}
+      </Box>
+    );
+  };
+
+  const renderFiles = () => {
+    if (!quiz.fileQuizRelation?.length) return null;
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title="Attached Files" />
+        <CardContent>
+          <Grid container spacing={2}>
+            {quiz.fileQuizRelation.map((r) => {
+              const res = r.fileResources;
+              if (!res) return null;
+
+              /* Choose a renderer based on the MIME‑like `type` -------- */
+              if (res.type?.startsWith('image')) {
+                /* ---------- IMAGE ------------------------------------ */
+                return (
+                  <Grid item xs={12} sm={4} key={res.id}>
+                    <Box
+                      component="img"
+                      src={res.resourceUrl}
+                      sx={{
+                        width: '100%',
+                        borderRadius: 1,
+                        cursor: 'pointer',
+                        objectFit: 'cover',
+                        aspectRatio: '4 / 3',
+                      }}
+                      onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                    />
+                    <Typography variant="body2" mt={0.5} noWrap>
+                      {res.name}
+                    </Typography>
+                  </Grid>
+                );
+              }
+
+              if (res.type?.startsWith('video')) {
+                return (
+                  <Grid item xs={12} sm={6} key={res.id}>
+                    <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
+                    <Typography variant="body2" mt={0.5} noWrap>
+                      {res.name}
+                    </Typography>
+                  </Grid>
+                );
+              }
+
+              if (res.type?.startsWith('image')) {
+                return (
+                  <ImagePreviewDialog
+                    open={Boolean(previewUrl)}
+                    onClose={() => setPreviewUrl(null)}
+                    imageUrl={previewUrl ?? ''}
+                    title="Image Preview"
+                    fullscreen={fullScreen}
+                    onToggleFullscreen={() => {}}
+                  />
+                );
+              }
+
+              return (
+                <Grid item xs={12} sm={6} key={res.id}>
+                  <Typography variant="subtitle2">{res.name}</Typography>
+                  <Typography variant="body2" component="a" href={res.resourceUrl} target="_blank" rel="noreferrer">
+                    Download
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  return (
+    <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
+      <Box display="flex" alignItems="center" gap={2} mb={3}>
+        <Avatar src={quiz.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
+          {quiz.title?.[0] ?? '?'}
+        </Avatar>
+        <Typography variant="h5">{quiz.title ?? 'Unnamed Quiz'}</Typography>
+      </Box>
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title="Quiz Information" />
+        <CardContent>
+          <Grid container spacing={2}>
+            {renderField('ID', quiz.id)}
+            {renderField('Title', quiz.title)}
+            {renderField('Description', quiz.description)}
+            {renderField('Status', quiz.status)}
+            {renderField(
+              'Start Time',
+              quiz.startTime ? DateTimeUtils.formatISODateFromDate(quiz.startTime) : undefined
+            )}
+            {renderField('End Time', quiz.endTime ? DateTimeUtils.formatISODateFromDate(quiz.endTime) : undefined)}
+            {renderField('Total Score', quiz.totalScore)}
+          </Grid>
+        </CardContent>
+      </Card>
+      {renderEnrollmentCriteria()}
+      {renderQuestions()}
+      {renderFiles()}
+    </Box>
+  );
+}
+
+export default function QuizDetailForm({ open, courseId, onClose }: Props) {
+  const { quizUsecase } = useDI();
+  const [loading, setLoading] = useState(false);
+  const [course, setQuiz] = useState<QuizResponse | null>(null);
+  const [fullScreen, setFullScreen] = useState(false);
+
+  useEffect(() => {
+    if (open && courseId && quizUsecase) {
+      setLoading(true);
+      quizUsecase
+        .getQuizById(courseId)
+        .then(setQuiz)
+        .catch((error) => {
+          console.error('Error fetching course details:', error);
+          setQuiz(null);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [open, courseId, quizUsecase]);
+
+  if (!courseId) return null;
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
+        <Typography variant="h6">Quiz Details</Typography>
+        <Box>
+          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+            {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>
+      <DialogContent dividers sx={{ p: 0 }}>
+        {loading || !course ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress />
+          </Box>
+        ) : (
+          <QuizDetails quiz={course} fullScreen={fullScreen} />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}

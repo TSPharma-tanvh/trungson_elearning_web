@@ -90,7 +90,12 @@ interface QuizEndpoints {
   createByExcel: StaticEndpoint;
   update: StaticEndpoint;
 }
-
+interface QuestionEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+}
 interface FileResourcesEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
@@ -111,6 +116,7 @@ interface EndpointDefinitions {
   class: ClassEndpoints;
   classTeacher: ClassTeacherEndpoints;
   quiz: QuizEndpoints;
+  questions: QuestionEndpoints;
   fileResources: FileResourcesEndpoints;
 }
 
@@ -191,6 +197,12 @@ const endpoints: EndpointDefinitions = {
     create: 'Quiz/CreateQuiz',
     createByExcel: 'Quiz/CreateQuizFromExcel',
     update: 'Quiz/UpdateQuiz',
+  },
+  questions: {
+    getAll: 'Question/GetQuestion',
+    getById: (id: string) => `Question/GetQuestionById/${id}`,
+    create: 'Question/CreateQuestion',
+    update: 'Question/UpdateQuestion',
   },
   fileResources: {
     getAll: 'Resource/GetFileResources',

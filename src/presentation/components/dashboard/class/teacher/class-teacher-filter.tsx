@@ -39,8 +39,6 @@ export function ClassTeacherFilters({
     });
 
     onFilter(request);
-
-    onFilter(request);
   };
 
   const handleClear = () => {

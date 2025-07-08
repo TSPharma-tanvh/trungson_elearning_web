@@ -42,8 +42,6 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
     });
 
     onFilter(request);
-
-    onFilter(request);
   };
 
   const handleClear = () => {

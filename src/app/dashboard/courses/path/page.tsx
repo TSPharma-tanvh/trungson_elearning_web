@@ -9,11 +9,11 @@ import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import CoursePathDetailForm from '@/presentation/components/dashboard/path/course-path-detail-form';
-import { CreateCoursePathDialog } from '@/presentation/components/dashboard/path/create-path-form';
-import { PathFilters } from '@/presentation/components/dashboard/path/path-filter';
-import CoursePathTable from '@/presentation/components/dashboard/path/path-table';
-import { UpdatePathFormDialog } from '@/presentation/components/dashboard/path/update-path-form';
+import CoursePathDetailForm from '@/presentation/components/dashboard/courses/path/course-path-detail-form';
+import { CreateCoursePathDialog } from '@/presentation/components/dashboard/courses/path/create-path-form';
+import { PathFilters } from '@/presentation/components/dashboard/courses/path/path-filter';
+import CoursePathTable from '@/presentation/components/dashboard/courses/path/path-table';
+import { UpdatePathFormDialog } from '@/presentation/components/dashboard/courses/path/update-path-form';
 
 export default function Page(): React.JSX.Element {
   const { pathUseCase } = useDI();

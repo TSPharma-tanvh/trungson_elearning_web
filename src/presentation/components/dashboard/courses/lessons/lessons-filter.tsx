@@ -36,8 +36,6 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
     });
 
     onFilter(request);
-
-    onFilter(request);
   };
 
   const handleClear = () => {

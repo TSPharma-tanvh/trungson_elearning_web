@@ -1,8 +1,6 @@
-'use client';
-
 import React from 'react';
-import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
-import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
+import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
+import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import {
@@ -23,41 +21,40 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  TableRowProps,
   Typography,
 } from '@mui/material';
 
-import { ConfirmDeleteDialog } from '../../../dashboard/core/dialog/confirm-delete-dialog';
-import CoursePathDetailForm from './course-path-detail-form';
-import { UpdatePathFormDialog } from './update-path-form';
+import { ConfirmDeleteDialog } from '../../core/dialog/confirm-delete-dialog';
+import QuizDetailForm from './quiz-detail-form';
+import { UpdateQuizFormDialog } from './quiz-update-form';
 
-interface CoursePathTableProps {
-  rows: CoursePathResponse[];
+interface QuizTableProps {
+  rows: QuizResponse[];
   count: number;
   page: number;
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteCoursePaths: (ids: string[]) => Promise<void>;
-  onEditCoursePath: (data: UpdateCoursePathRequest) => Promise<void>;
+  onDeleteQuizs: (ids: string[]) => Promise<void>;
+  onEditQuiz: (data: UpdateQuizRequest) => Promise<void>;
 }
 
-export default function CoursePathTable({
+export default function QuizTable({
   rows,
   count,
   page,
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteCoursePaths,
-  onEditCoursePath,
-}: CoursePathTableProps) {
+  onDeleteQuizs: onDeleteQuizs,
+  onEditQuiz,
+}: QuizTableProps) {
   const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedRow, setSelectedRow] = React.useState<CoursePathResponse | null>(null);
+  const [selectedRow, setSelectedRow] = React.useState<QuizResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
-  const [editPathData, setEditPathData] = React.useState<CoursePathResponse | null>(null);
+  const [editQuizData, setEditPathData] = React.useState<QuizResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
@@ -76,7 +73,7 @@ export default function CoursePathTable({
     });
   };
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: CoursePathResponse) => {
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: QuizResponse) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
   };
@@ -89,7 +86,7 @@ export default function CoursePathTable({
   };
 
   const handleConfirmDelete = async () => {
-    await onDeleteCoursePaths(idsToDelete);
+    await onDeleteQuizs(idsToDelete);
     setSelected((prev) => {
       const next = new Set(prev);
       idsToDelete.forEach((id) => next.delete(id));
@@ -126,17 +123,16 @@ export default function CoursePathTable({
                     onChange={handleSelectAll}
                   />
                 </TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Title</TableCell>
                 <TableCell>Detail</TableCell>
-                <TableCell>Required</TableCell>
-                <TableCell>Start Time</TableCell>
-                <TableCell>End Time</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell>Display</TableCell>
-                <TableCell>Category</TableCell>
+                <TableCell>StartTime</TableCell>
+                <TableCell>EndTime</TableCell>
+                <TableCell>Total Score</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {rows.map((row) => {
                 const isItemSelected = isSelected(row.id!);
@@ -147,21 +143,24 @@ export default function CoursePathTable({
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" alignItems="center" spacing={2}>
-                        <Avatar src={row.thumbnail?.resourceUrl}>{row.name?.[0]}</Avatar>
+                        <Avatar src={row.thumbnail?.resourceUrl}>{row.title?.[0]}</Avatar>
                         <Box>
                           <Typography variant="subtitle2" noWrap>
-                            {row.name}
+                            {row.title}
                           </Typography>
                         </Box>
                       </Stack>
                     </TableCell>
-                    <TableCell>{row.detail}</TableCell>
-                    <TableCell>{row.isRequired ? 'Yes' : 'No'}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateFromString(row.startTime ?? '')}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateFromString(row.endTime ?? '')}</TableCell>
+                    <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
+                      <Typography variant="body2">{row.description}</Typography>
+                    </TableCell>
                     <TableCell>{row.status}</TableCell>
-                    <TableCell>{row.displayType}</TableCell>
-                    <TableCell>{row.category?.categoryName}</TableCell>
+                    <TableCell>{DateTimeUtils.formatISODateFromDate(row.startTime)}</TableCell>
+                    <TableCell>{DateTimeUtils.formatISODateFromDate(row.endTime)}</TableCell>
+                    <TableCell>{row.totalScore}</TableCell>
+                    {/* <TableCell>{row.courseType}</TableCell>
+                    <TableCell>{row.scheduleStatus}</TableCell>
+                    <TableCell>{row.displayType}</TableCell> */}
                     <TableCell align="right">
                       <IconButton onClick={(event) => handleMenuClick(event, row)}>
                         <MoreVert />
@@ -173,7 +172,6 @@ export default function CoursePathTable({
             </TableBody>
           </Table>
         </TableContainer>
-
         <TablePagination
           component="div"
           count={count}
@@ -225,24 +223,20 @@ export default function CoursePathTable({
         </MenuList>
       </Popover>
 
-      {editPathData && (
-        <UpdatePathFormDialog
+      {editQuizData && (
+        <UpdateQuizFormDialog
           open={editOpen}
-          path={editPathData}
+          data={editQuizData}
           onClose={() => setEditOpen(false)}
           onSubmit={async (updatedData) => {
-            await onEditCoursePath(updatedData);
+            await onEditQuiz(updatedData);
             setEditOpen(false);
           }}
         />
       )}
 
       {selectedRow && (
-        <CoursePathDetailForm
-          open={viewOpen}
-          coursePathId={selectedRow?.id ?? null}
-          onClose={() => setViewOpen(false)}
-        />
+        <QuizDetailForm open={viewOpen} courseId={selectedRow?.id ?? null} onClose={() => setViewOpen(false)} />
       )}
 
       <ConfirmDeleteDialog

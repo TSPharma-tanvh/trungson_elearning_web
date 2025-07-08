@@ -23,9 +23,9 @@ import {
   Typography,
 } from '@mui/material';
 
-import ImagePreviewDialog from '../../file/image-preview-dialog';
-import VideoPreviewDialog from '../../file/video-preview-dialog';
-import { ConfirmDeleteDialog } from '../core/dialog/confirm-delete-dialog';
+import ImagePreviewDialog from '../../../file/image-preview-dialog';
+import VideoPreviewDialog from '../../../file/video-preview-dialog';
+import { ConfirmDeleteDialog } from '../../core/dialog/confirm-delete-dialog';
 import { UpdateLessonFormDialog } from './edit-lesson-form';
 import ClassDetailForm from './lesson-detail-form';
 import LessonDetailForm from './lesson-detail-form';
