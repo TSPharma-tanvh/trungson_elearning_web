@@ -126,6 +126,11 @@ export function FileResourceSelect({
               label={label}
               sx={{
                 pr: selectedFile?.resourceUrl ? 5 : undefined,
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                flex: 1,
+                mr: 1,
               }}
               startAdornment={
                 <InputAdornment position="start">

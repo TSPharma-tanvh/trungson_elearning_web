@@ -48,6 +48,7 @@ export class QuestionRepoImpl implements QuestionRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;
@@ -70,6 +71,7 @@ export class QuestionRepoImpl implements QuestionRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;

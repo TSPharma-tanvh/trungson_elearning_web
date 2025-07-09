@@ -37,7 +37,7 @@ export function SideNav({ isOpen }: SideNavProps): React.JSX.Element {
   return (
     <Box
       sx={{
-        '--SideNav-background': 'var(--mui-palette-neutral-950)',
+        '--SideNav-background': 'var(--mui-palette-primary-dark)',
         '--SideNav-color': 'var(--mui-palette-common-white)',
         '--NavItem-color': 'var(--mui-palette-neutral-300)',
         '--NavItem-hover-background': 'rgba(255, 255, 255, 0.04)',
@@ -63,31 +63,10 @@ export function SideNav({ isOpen }: SideNavProps): React.JSX.Element {
     >
       <Stack spacing={2} sx={{ p: 3, flexShrink: 0 }}>
         <Box component={RouterLink} href={paths.home} sx={{ display: 'inline-flex' }}>
-          <Logo color="light" height={32} width={122} />
-        </Box>
-        <Box
-          sx={{
-            alignItems: 'center',
-            backgroundColor: 'var(--mui-palette-neutral-950)',
-            border: '1px solid var(--mui-palette-neutral-700)',
-            borderRadius: '12px',
-            cursor: 'pointer',
-            display: 'flex',
-            p: '4px 12px',
-          }}
-        >
-          <Box sx={{ flex: '1 1 auto' }}>
-            <Typography color="var(--mui-palette-neutral-400)" variant="body2">
-              Workspace
-            </Typography>
-            <Typography color="inherit" variant="subtitle1">
-              Devias
-            </Typography>
-          </Box>
-          <CaretUpDownIcon />
+          <Logo color="dark" height={64} width={200} />
         </Box>
       </Stack>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)', flexShrink: 0 }} />
+      <Divider sx={{ borderColor: 'var(--mui-palette-common-white)', flexShrink: 0 }} />
       <Box
         component="nav"
         sx={{
@@ -98,7 +77,7 @@ export function SideNav({ isOpen }: SideNavProps): React.JSX.Element {
           scrollBehavior: 'smooth', // Smooth scrolling
           // Custom scrollbar styling
           '&::-webkit-scrollbar': {
-            width: '8px',
+            width: '0px',
           },
           '&::-webkit-scrollbar-track': {
             backgroundColor: 'var(--mui-palette-neutral-900)',
@@ -146,7 +125,7 @@ function renderNavItems({
             sx={{
               alignItems: 'center',
               borderRadius: 1,
-              color: 'var(--NavItem-color)',
+              color: 'var(--mui-palette-common-white)',
               cursor: 'pointer',
               display: 'flex',
               flex: '0 0 auto',
@@ -156,7 +135,7 @@ function renderNavItems({
             }}
           >
             <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
-              {Icon ? <Icon fill={'var(--NavItem-icon-color)'} fontSize="var(--icon-fontSize-md)" /> : null}
+              {Icon ? <Icon fill={'var(--mui-palette-common-white)'} fontSize="var(--icon-fontSize-md)" /> : null}
             </Box>
             <Box sx={{ flex: '1 1 auto' }}>
               <Typography
@@ -220,7 +199,6 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
         sx={{
           alignItems: 'center',
           borderRadius: 1,
-          color: 'var(--NavItem-color)',
           cursor: 'pointer',
           display: 'flex',
           flex: '0 0 auto',
@@ -229,18 +207,18 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
           position: 'relative',
           textDecoration: 'none',
           whiteSpace: 'nowrap',
+          bgcolor: active ? 'var(--mui-palette-secondary-main)' : 'transparent',
+          color: active ? 'var(--mui-palette-common-white)' : 'var(--mui-palette-common-white)',
           ...(disabled && {
-            bgcolor: 'var(--NavItem-disabled-background)',
             color: 'var(--NavItem-disabled-color)',
             cursor: 'not-allowed',
           }),
-          ...(active && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
         }}
       >
         <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
           {Icon ? (
             <Icon
-              fill={active ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
+              fill={active ? 'var(--mui-palette-common-white)' : 'var(--mui-palette-common-white)'}
               fontSize="var(--icon-fontSize-md)"
               weight={active ? 'fill' : undefined}
             />

@@ -1,6 +1,7 @@
+import { orange } from '@mui/material/colors';
 import type { ColorSystemOptions } from '@mui/material/styles';
 
-import { california, kepple, mainGreen, nevada, redOrange, shakespeare, stormGrey } from './colors';
+import { california, kepple, mainGreen, mainOrange, nevada, redOrange, shakespeare, stormGrey } from './colors';
 import type { ColorScheme } from './types';
 
 export const colorSchemes = {
@@ -8,7 +9,7 @@ export const colorSchemes = {
     palette: {
       action: { disabledBackground: 'rgba(0, 0, 0, 0.12)' },
       background: {
-        default: 'var(--mui-palette-neutral-950)',
+        default: mainGreen[500],
         defaultChannel: '9 10 11',
         paper: 'var(--mui-palette-neutral-900)',
         paperChannel: '19 78 72',
@@ -42,10 +43,10 @@ export const colorSchemes = {
         contrastText: 'var(--mui-palette-common-black)',
       },
       secondary: {
-        ...nevada,
-        light: nevada[100],
-        main: nevada[200],
-        dark: nevada[300],
+        ...mainOrange,
+        light: mainOrange[100],
+        main: mainOrange[500],
+        dark: mainOrange[700],
         contrastText: 'var(--mui-palette-common-black)',
       },
       success: {
@@ -109,11 +110,11 @@ export const colorSchemes = {
         contrastText: 'var(--mui-palette-common-white)',
       },
       secondary: {
-        ...nevada,
-        light: nevada[600],
-        main: nevada[700],
-        dark: nevada[800],
-        contrastText: 'var(--mui-palette-common-white)',
+        ...mainOrange,
+        light: mainOrange[100],
+        main: mainOrange[500],
+        dark: mainOrange[700],
+        contrastText: 'var(--mui-palette-common-black)',
       },
       success: {
         ...kepple,

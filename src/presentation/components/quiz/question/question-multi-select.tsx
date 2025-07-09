@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
 import { QuestionResponse } from '@/domain/models/question/response/question-response';
 import { QuestionUsecase } from '@/domain/usecases/question/question-usecase';
@@ -45,6 +45,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
+import QuestionInformationForm from '../../dashboard/quiz/question/question-information-form';
 
 interface QuestionMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   questionUsecase: QuestionUsecase | null;
@@ -72,6 +73,8 @@ export function QuestionMultiSelectDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useQuestionSelectDebounce(localSearchText, 300);
   const [selectedQuestionMap, setSelectedQuestionMap] = useState<Record<string, QuestionResponse>>({});
+  const [selectedQuestion, setSelectedQuestion] = React.useState<QuestionResponse | null>(null);
+  const [viewOpen, setViewOpen] = React.useState(false);
 
   const {
     questions,
@@ -226,7 +229,26 @@ export function QuestionMultiSelectDialog({
                 }
               >
                 <Checkbox checked={localValue.includes(question.id)} />
-                <ListItemText primary={question.questionText} />
+                <ListItemText
+                  primary={question.questionText}
+                  sx={{
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    flex: 1,
+                    mr: 1,
+                  }}
+                />
+                <Button
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedQuestion(question);
+                    setViewOpen(true);
+                  }}
+                >
+                  Show Detail
+                </Button>
               </MenuItem>
             ))}
             {loadingQuestions && (
@@ -262,6 +284,14 @@ export function QuestionMultiSelectDialog({
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedQuestion && (
+        <QuestionInformationForm
+          open={viewOpen}
+          questionId={selectedQuestion?.id ?? null}
+          onClose={() => setViewOpen(false)}
+        />
+      )}
     </>
   );
 }

@@ -1,9 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { NoSsr } from '@/presentation/components/core/no-ssr';
 import Box from '@mui/material/Box';
 import { useColorScheme } from '@mui/material/styles';
+
+import { NoSsr } from '@/presentation/components/core/no-ssr';
 
 const HEIGHT = 60;
 const WIDTH = 60;
@@ -21,9 +22,9 @@ export function Logo({ color = 'dark', emblem, height = HEIGHT, width = WIDTH }:
   let url: string;
 
   if (emblem) {
-    url = color === 'light' ? '/assets/logo-emblem.svg' : '/assets/logo-emblem--dark.svg';
+    url = color === 'light' ? '/assets/icon/logo.svg' : '/assets/icon/logo-white-text.svg';
   } else {
-    url = color === 'light' ? '/assets/logo.svg' : '/assets/logo--dark.svg';
+    url = color === 'light' ? '/assets/icon/logo.svg' : '/assets/icon/logo-white-text.svg';
   }
 
   return <Box alt="logo" component="img" height={height} src={url} width={width} />;

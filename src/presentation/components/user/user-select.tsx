@@ -206,7 +206,16 @@ export function UserSelectDialog({
             {users.map((user) => (
               <MenuItem key={user.id} selected={localValue === user.id} onClick={() => setLocalValue(user.id)}>
                 <Checkbox checked={localValue === user.id} />
-                <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                <ListItemText
+                  primary={`${user.firstName} ${user.lastName}`}
+                  sx={{
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    flex: 1,
+                    mr: 1,
+                  }}
+                />
                 <Button
                   size="small"
                   onClick={(e) => {

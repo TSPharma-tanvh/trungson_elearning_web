@@ -47,6 +47,7 @@ export class PathRepoImpl implements PathRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;
@@ -68,6 +69,7 @@ export class PathRepoImpl implements PathRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;

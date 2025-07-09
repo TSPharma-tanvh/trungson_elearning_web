@@ -6,6 +6,7 @@ import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-c
 import { FileQuizRelationResponse } from '../../file/response/file-quiz-relation-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
 import { QuestionResponse } from '../../question/response/question-response';
+import { UserQuizQuestionResponse } from '../../question/response/user-quiz-question-response';
 import { UserAnswerResponse } from '../../user-answer/response/user-answer-response';
 import { UserQuizProgressionResponse } from '../../user-quiz/response/user-quiz-progress-response';
 import { QuizLessonResponse } from './quiz-lesson-response';
@@ -23,7 +24,7 @@ export class QuizResponse {
   thumbnail?: FileResourcesResponse;
   thumbnailID?: string;
 
-  quizQuestions: QuestionResponse[] = [];
+  quizQuestions: UserQuizQuestionResponse[] = [];
 
   enrollmentCriteria?: EnrollmentCriteriaResponse[];
 
@@ -67,7 +68,7 @@ export class QuizResponse {
     dto.thumbnailID = json.thumbnailID;
 
     dto.quizQuestions = Array.isArray(json.quizQuestions)
-      ? json.quizQuestions.map((q: any) => QuestionResponse.fromJSON(q))
+      ? json.quizQuestions.map((q: any) => UserQuizQuestionResponse.fromJSON(q))
       : [];
 
     dto.enrollmentCriteria = Array.isArray(json.enrollmentCriteria)

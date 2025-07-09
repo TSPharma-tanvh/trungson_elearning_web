@@ -282,6 +282,8 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 value={formData.classDetail}
                 onChange={(value) => handleChange('classDetail', value)}
                 disabled={isSubmitting}
+                multiline
+                rows={3}
                 icon={<Article {...iconStyle} />}
               />
             </Grid>

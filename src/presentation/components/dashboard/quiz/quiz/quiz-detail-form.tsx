@@ -38,7 +38,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
-    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+    <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
         {label}
       </Typography>
@@ -91,7 +91,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
       <Box sx={{ mb: 2 }}>
         <CardHeader title="Lessons" sx={{ pl: 2, pb: 1, mb: 2 }} />
         {quiz.quizQuestions.map((question, index) => {
-          const lessonId = question.id ?? `lesson-${index}`;
+          const lessonId = question.question?.id ?? `lesson-${index}`;
           const isExpanded = expandedLessons[lessonId] || false;
 
           return (
@@ -103,7 +103,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
               }}
             >
               <CardHeader
-                title={question.questionText ?? `Lesson ${index + 1}`}
+                title={question.question?.questionText ?? `Lesson ${index + 1}`}
                 action={
                   <IconButton
                     onClick={() => toggleExpanded(lessonId)}
@@ -120,13 +120,13 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', question.id)}
-                    {renderField('Detail', question.questionText)}
-                    {renderField('questionType', question.questionType)}
-                    {renderField('point', question.point)}
-                    {renderField('canShuffle', question.canShuffle)}
-                    {renderField('totalAnswer', question.totalAnswer)}
-                    {renderField('canShuffle', question.canShuffle)}
+                    {renderField('ID', question.question?.id)}
+                    {renderField('Detail', question.question?.questionText)}
+                    {renderField('questionType', question.question?.questionType)}
+                    {renderField('point', question.question?.point)}
+                    {renderField('canShuffle', question.question?.canShuffle)}
+                    {renderField('totalAnswer', question.question?.totalAnswer)}
+                    {renderField('status', question.question?.status)}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -234,6 +234,15 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
             )}
             {renderField('End Time', quiz.endTime ? DateTimeUtils.formatISODateFromDate(quiz.endTime) : undefined)}
             {renderField('Total Score', quiz.totalScore)}
+            {renderField('time', quiz.time)}
+            {renderField('type', quiz.type)}
+            {renderField('scoreToPass', quiz.scoreToPass)}
+            {renderField('scoreToPass', quiz.scoreToPass)}
+            {renderField('maxAttempts', quiz.maxAttempts)}
+            {renderField('canStartOver', quiz.canStartOver ? 'Yes' : 'No')}
+            {renderField('canShuffle', quiz.canShuffle ? 'Yes' : 'No')}
+            {renderField('isRequired', quiz.isRequired ? 'Yes' : 'No')}
+            {renderField('isAutoSubmitted', quiz.isAutoSubmitted ? 'Yes' : 'No')}
           </Grid>
         </CardContent>
       </Card>

@@ -49,6 +49,7 @@ export class QuizRepoImpl implements QuizRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;
@@ -69,6 +70,7 @@ export class QuizRepoImpl implements QuizRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;
@@ -91,6 +93,7 @@ export class QuizRepoImpl implements QuizRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;

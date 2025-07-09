@@ -14,6 +14,7 @@ interface CustomTextFieldProps {
   type?: string;
   inputMode?: 'text' | 'numeric' | 'decimal' | 'tel' | 'email' | 'url';
   pattern?: string;
+  patternError?: string;
   icon?: React.ReactNode;
   sx?: SxProps<Theme>;
   onValidationChange?: (isValid: boolean) => void;
@@ -29,6 +30,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
   type,
   inputMode = 'text',
   pattern,
+  patternError,
   icon,
   sx,
   onValidationChange,
@@ -39,6 +41,14 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
   const validateInput = (val: string): boolean => {
     let valid = true;
     switch (inputMode) {
+      case 'text':
+        if (pattern) {
+          const regex = new RegExp(pattern);
+          valid = regex.test(val);
+          if (!valid) setHelperText(`Định dạng không hợp lệ: ${patternError}`);
+        }
+        break;
+
       case 'numeric':
         valid = /^\d*$/.test(val);
         if (!valid) setHelperText('Chỉ được nhập số');

@@ -276,6 +276,13 @@ export function ClassTeacherSelectDialog({
                   <Checkbox checked={localValue === cls.id} />
                   <ListItemText
                     primary={`${cls.user?.firstName ?? ''} ${cls.user?.lastName ?? ''}`.trim() || 'Unnamed Teacher'}
+                    sx={{
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      flex: 1,
+                      mr: 1,
+                    }}
                   />
                   <Button
                     size="small"

@@ -33,6 +33,7 @@ export class UserRepositoryImpl implements UserRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;

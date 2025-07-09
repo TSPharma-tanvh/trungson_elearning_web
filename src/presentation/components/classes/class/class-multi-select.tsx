@@ -262,7 +262,16 @@ export function ClassMultiSelectDialog({
                 }}
               >
                 <Checkbox checked={localValue.includes(cls.id)} />
-                <ListItemText primary={cls.className} />
+                <ListItemText
+                  primary={cls.className}
+                  sx={{
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    flex: 1,
+                    mr: 1,
+                  }}
+                />
                 <Button
                   size="small"
                   onClick={(e) => {

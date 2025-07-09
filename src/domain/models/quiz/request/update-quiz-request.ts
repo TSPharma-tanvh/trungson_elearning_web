@@ -5,6 +5,7 @@ export class UpdateQuizRequest {
   lessonID?: string;
   levelID?: string;
   canStartOver?: boolean;
+  canShuffle?: boolean;
   isRequired?: boolean;
   type?: QuizTypeEnum;
   time?: string; // TimeSpan as ISO string or "HH:mm:ss"
@@ -51,6 +52,7 @@ export class UpdateQuizRequest {
       lessonID: this.lessonID,
       levelID: this.levelID,
       canStartOver: this.canStartOver,
+      canShuffle: this.canShuffle,
       isRequired: this.isRequired,
       type: this.type,
       time: this.time,
@@ -93,6 +95,7 @@ export class UpdateQuizRequest {
     appendIfExists('lessonID', this.lessonID);
     appendIfExists('levelID', this.levelID);
     appendIfExists('canStartOver', this.canStartOver);
+    appendIfExists('canShuffle', this.canShuffle);
     appendIfExists('isRequired', this.isRequired);
     appendIfExists('type', this.type);
     appendIfExists('time', this.time);

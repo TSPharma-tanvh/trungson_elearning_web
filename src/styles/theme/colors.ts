@@ -1,9 +1,5 @@
 import type { PaletteRange } from '@mui/material/styles/createPalette';
 
-
-
-
-
 export const california = {
   50: '#fffaea',
   100: '#fff3c6',
@@ -114,4 +110,17 @@ export const mainGreen = {
   800: '#083c1f',
   900: '#062f19',
   950: '#021b0e',
+} satisfies PaletteRange;
+export const mainOrange = {
+  50: '#fff3e8',
+  100: '#ffe0c2',
+  200: '#ffc190',
+  300: '#ffa05c',
+  400: '#ff8738',
+  500: '#f38020', // ← main
+  600: '#d96e1c',
+  700: '#b65b17',
+  800: '#944913',
+  900: '#783a10',
+  950: '#421f07',
 } satisfies PaletteRange;

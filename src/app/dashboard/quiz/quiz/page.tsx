@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import type { Metadata } from 'next';
 import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
@@ -10,21 +9,11 @@ import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Box, useMediaQuery, useTheme } from '@mui/system';
-import { Copy, CopySimple } from '@phosphor-icons/react/dist/ssr';
-import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
-import { Plus, Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
-import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
-import dayjs from 'dayjs';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
-import { config } from '@/config';
-import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/classes/category-multickeck-form';
-import { AddCustomerDialog } from '@/presentation/components/dashboard/customer/add-customer';
-import { CustomersFilters } from '@/presentation/components/dashboard/customer/customers-filters';
-import { CustomersTable } from '@/presentation/components/dashboard/customer/customers-table';
-import type { Customer } from '@/presentation/components/dashboard/customer/customers-table';
-import { QuizFilters } from '@/presentation/components/dashboard/quiz/question/quiz-filter';
-import QuizTable from '@/presentation/components/dashboard/quiz/question/quiz-table';
+import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
+import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
+import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
 // export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
 export default function Page(): React.JSX.Element {
@@ -137,13 +126,13 @@ export default function Page(): React.JSX.Element {
         onEditQuiz={handleEditQuiz}
       ></QuizTable>
 
-      {/* <CreateQuizDialog
+      <CreateQuizDialog
         onSubmit={handleCreateQuiz}
         disabled={false}
         loading={false}
         open={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}
-      /> */}
+      />
     </Stack>
   );
 }
