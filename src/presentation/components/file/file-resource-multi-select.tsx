@@ -208,7 +208,7 @@ export function FileResourceMultiSelect({
             )}
           </Box>
 
-          <List sx={{ maxHeight: 300, overflow: 'auto' }} ref={listRef}>
+          <List sx={{ overflow: 'auto' }} ref={listRef}>
             {files.map((file) => {
               const isImage = file.type?.startsWith('image/');
               const isVideo = file.type?.startsWith('video/');

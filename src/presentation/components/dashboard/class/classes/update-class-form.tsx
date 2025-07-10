@@ -198,7 +198,6 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
       }
 
       await onSubmit(formData);
-      console.error(formData);
       onClose();
     } catch (error) {
       console.error('Error updating path:', error);
@@ -475,7 +474,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          📎 {file.name}
+                          {file.name}
                         </Button>
                       </Grid>
                     );
@@ -503,7 +502,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        📎 {file.name}
+                        {file.name}
                       </Button>
                     </Grid>
                   ))}

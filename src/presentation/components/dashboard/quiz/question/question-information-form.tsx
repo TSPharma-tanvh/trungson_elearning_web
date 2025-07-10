@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
 import { QuestionResponse } from '@/domain/models/question/response/question-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { DateTimeUtils } from '@/utils/date-time-utils';
@@ -22,9 +23,12 @@ import {
   Grid,
   IconButton,
   Typography,
+  useTheme,
 } from '@mui/material';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
+import { CustomVideoPlayer } from '@/presentation/components/file/custom-video-player';
+import ImagePreviewDialog from '@/presentation/components/file/image-preview-dialog';
 
 interface Props {
   open: boolean;
@@ -33,6 +37,9 @@ interface Props {
 }
 
 function QuestionDetails({ question, fullScreen }: { question: QuestionResponse; fullScreen: boolean }) {
+  const theme = useTheme();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -71,6 +78,12 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
             >
               <CardHeader
                 title={answer.answerText ?? `Answer ${index + 1}`}
+                titleTypographyProps={{
+                  sx: {
+                    fontSize: 18,
+                    color: answer.isCorrect ? theme.palette.primary.light : theme.palette.error.main,
+                  },
+                }}
                 action={
                   <IconButton
                     onClick={() => toggleExpanded(lessonId)}
@@ -100,6 +113,109 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
     );
   };
 
+  const renderFileResources = () => {
+    if (!question.fileQuestionRelation?.length) return null;
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title="Attached Files" />
+        <CardContent>
+          <Grid container spacing={2}>
+            {question.fileQuestionRelation.map((r) => {
+              const res = r.fileResources;
+              if (!res) return null;
+
+              const isImage = res.type?.startsWith('image');
+              const isVideo = res.type?.startsWith('video');
+              const isOther = !isImage && !isVideo;
+
+              return (
+                <Grid item xs={12} sm={fullScreen ? 4 : 6} key={res.id}>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      paddingTop: '56.25%',
+                      borderRadius: 1,
+                      overflow: 'hidden',
+                      mb: 1,
+                    }}
+                  >
+                    {isImage && (
+                      <Box
+                        component="img"
+                        src={res.resourceUrl}
+                        alt={res.name}
+                        onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          cursor: 'pointer',
+                        }}
+                      />
+                    )}
+
+                    {isVideo && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                        }}
+                      >
+                        <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
+                      </Box>
+                    )}
+
+                    {isOther && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          backgroundColor: '#f5f5f5',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography variant="body2">No preview</Typography>
+                      </Box>
+                    )}
+                  </Box>
+
+                  <Typography variant="body2" noWrap>
+                    {res.name}
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
+
+          {/* Preview image modal */}
+          {previewUrl && (
+            <ImagePreviewDialog
+              open={Boolean(previewUrl)}
+              onClose={() => setPreviewUrl(null)}
+              imageUrl={previewUrl}
+              title="Image Preview"
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => {}}
+            />
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
       <Box display="flex" alignItems="center" gap={2} mb={3}>
@@ -113,22 +229,18 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
         <CardContent>
           <Grid container spacing={2}>
             {renderField('ID', question.id)}
-
-            {/* {renderField(
-              'Start Time',
-              question.startTime ? DateTimeUtils.formatISODateFromDate(question.startTime) : undefined
-            )}
-            {renderField(
-              'End Time',
-              question.endTime ? DateTimeUtils.formatISODateFromDate(question.endTime) : undefined
-            )} */}
-            {/* {renderField('Enrollment Criteria ID', question.enrollmentCriteria)} */}
+            {renderField('questionText', question.questionText)}
+            {renderField('point', question.point)}
+            {renderField('canShuffle', question.canShuffle ? 'Yes' : 'No')}
+            {renderField('totalAnswer', question.totalAnswer)}
+            {renderField('questionType', question.questionType)}
             {renderField('Category ID', question.categoryId)}
             {renderField('Thumbnail ID', question.thumbnailId)}
           </Grid>
         </CardContent>
       </Card>
       {renderAnswers()}
+      {renderFileResources()}
     </Box>
   );
 }
@@ -158,7 +270,7 @@ export default function QuestionInformationForm({ open, questionId, onClose }: P
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Question Details</Typography>
+        <Typography variant="h6">Question Information</Typography>
         <Box>
           <IconButton onClick={() => setFullScreen((prev) => !prev)}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}

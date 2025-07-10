@@ -27,6 +27,8 @@ import {
 } from '@mui/material';
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 
+import { QuizMultiSelectDialog } from '@/presentation/components/quiz/quiz/quiz-multi-select';
+
 import { CategorySelect } from '../../../category/category-select';
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
@@ -44,7 +46,7 @@ interface EditLessonDialogProps {
 export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }: EditLessonDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase } = useDI();
+  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase, quizUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateLessonRequest>(new UpdateLessonRequest({}));
@@ -75,6 +77,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             lesson.lessonType !== undefined
               ? LearningModeEnum[lesson.lessonType as keyof typeof LearningModeEnum]
               : undefined,
+          quizIDs: lesson?.quizzes !== undefined ? lesson?.quizzes?.map((quiz) => quiz.id).join(',') : undefined,
+
           categoryID: lesson.categoryID || undefined,
           thumbnailID: lesson.thumbnailID || undefined,
           categoryEnum: CategoryEnum.Lesson,
@@ -314,6 +318,15 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                 onChange={(value) => handleChange('lessonType', value as LearningModeEnum)}
                 disabled={isSubmitting}
                 options={lessonTypeOptions}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <QuizMultiSelectDialog
+                quizUsecase={quizUsecase}
+                value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
+                onChange={(val) => handleChange('quizIDs', val.join(','))}
+                disabled={isSubmitting}
               />
             </Grid>
 

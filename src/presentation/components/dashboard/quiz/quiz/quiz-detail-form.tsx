@@ -149,64 +149,92 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
               const res = r.fileResources;
               if (!res) return null;
 
-              /* Choose a renderer based on the MIME‑like `type` -------- */
-              if (res.type?.startsWith('image')) {
-                /* ---------- IMAGE ------------------------------------ */
-                return (
-                  <Grid item xs={12} sm={4} key={res.id}>
-                    <Box
-                      component="img"
-                      src={res.resourceUrl}
-                      sx={{
-                        width: '100%',
-                        borderRadius: 1,
-                        cursor: 'pointer',
-                        objectFit: 'cover',
-                        aspectRatio: '4 / 3',
-                      }}
-                      onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
-                    />
-                    <Typography variant="body2" mt={0.5} noWrap>
-                      {res.name}
-                    </Typography>
-                  </Grid>
-                );
-              }
-
-              if (res.type?.startsWith('video')) {
-                return (
-                  <Grid item xs={12} sm={6} key={res.id}>
-                    <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
-                    <Typography variant="body2" mt={0.5} noWrap>
-                      {res.name}
-                    </Typography>
-                  </Grid>
-                );
-              }
-
-              if (res.type?.startsWith('image')) {
-                return (
-                  <ImagePreviewDialog
-                    open={Boolean(previewUrl)}
-                    onClose={() => setPreviewUrl(null)}
-                    imageUrl={previewUrl ?? ''}
-                    title="Image Preview"
-                    fullscreen={fullScreen}
-                    onToggleFullscreen={() => {}}
-                  />
-                );
-              }
+              const isImage = res.type?.startsWith('image');
+              const isVideo = res.type?.startsWith('video');
+              const isOther = !isImage && !isVideo;
 
               return (
-                <Grid item xs={12} sm={6} key={res.id}>
-                  <Typography variant="subtitle2">{res.name}</Typography>
-                  <Typography variant="body2" component="a" href={res.resourceUrl} target="_blank" rel="noreferrer">
-                    Download
+                <Grid item xs={12} sm={fullScreen ? 4 : 6} key={res.id}>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      paddingTop: '56.25%',
+                      borderRadius: 1,
+                      overflow: 'hidden',
+                      mb: 1,
+                    }}
+                  >
+                    {isImage && (
+                      <Box
+                        component="img"
+                        src={res.resourceUrl}
+                        alt={res.name}
+                        onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          cursor: 'pointer',
+                        }}
+                      />
+                    )}
+
+                    {isVideo && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                        }}
+                      >
+                        <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
+                      </Box>
+                    )}
+
+                    {isOther && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          backgroundColor: '#f5f5f5',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography variant="body2">No preview</Typography>
+                      </Box>
+                    )}
+                  </Box>
+
+                  <Typography variant="body2" noWrap>
+                    {res.name}
                   </Typography>
                 </Grid>
               );
             })}
           </Grid>
+
+          {/* Preview image modal */}
+          {previewUrl && (
+            <ImagePreviewDialog
+              open={Boolean(previewUrl)}
+              onClose={() => setPreviewUrl(null)}
+              imageUrl={previewUrl}
+              title="Image Preview"
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => {}}
+            />
+          )}
         </CardContent>
       </Card>
     );

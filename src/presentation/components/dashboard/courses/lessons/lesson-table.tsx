@@ -143,6 +143,7 @@ export default function LessonTable({
               <TableCell>LessonType</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Video</TableCell>
+              <TableCell>Quiz</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -191,7 +192,7 @@ export default function LessonTable({
                       '-'
                     )}
                   </TableCell>
-
+                  <TableCell>{row.quizzes?.length}</TableCell>
                   <TableCell align="right">
                     <IconButton onClick={(event) => handleMenuClick(event, row)}>
                       <MoreVert />

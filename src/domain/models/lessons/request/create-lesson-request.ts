@@ -7,6 +7,7 @@ export class CreateLessonRequest {
   enablePlay: boolean = true;
   status: StatusEnum = StatusEnum.Enable;
   lessonType: LearningModeEnum = LearningModeEnum.Online;
+  quizIDs?: string;
   categoryID?: string;
   thumbnailID?: string;
   thumbnail?: File;
@@ -32,6 +33,7 @@ export class CreateLessonRequest {
       enablePlay: json.enablePlay,
       status: json.status,
       lessonType: json.lessonType,
+      quizIDs: json.quizIDs,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
       thumbDocumentNo: json.thumbDocumentNo,
@@ -51,6 +53,7 @@ export class CreateLessonRequest {
       enablePlay: this.enablePlay,
       status: this.status,
       lessonType: this.lessonType,
+      quizIDs: this.quizIDs,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
       thumbDocumentNo: this.thumbDocumentNo,
@@ -69,11 +72,11 @@ export class CreateLessonRequest {
     if (this.name) form.append('Name', this.name);
     if (this.detail) form.append('Detail', this.detail);
 
-    //Chỉ thêm nếu đã được định nghĩa
     form.append('EnablePlay', this.enablePlay?.toString() ?? 'true');
     if (this.status !== undefined) form.append('Status', this.status.toString());
     if (this.lessonType !== undefined) form.append('LessonType', this.lessonType.toString());
 
+    if (this.quizIDs) form.append('QuizIDs', this.quizIDs);
     if (this.categoryID) form.append('CategoryID', this.categoryID);
     if (this.thumbnailID) form.append('ThumbnailID', this.thumbnailID);
     if (this.thumbnail) form.append('Thumbnail', this.thumbnail);

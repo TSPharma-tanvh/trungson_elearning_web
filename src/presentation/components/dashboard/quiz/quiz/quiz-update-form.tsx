@@ -383,7 +383,6 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 value={formData.questionIDs ? formData.questionIDs.split(',').filter((id) => id) : []}
                 onChange={(value: string[]) => handleChange('questionIDs', value.join(','))}
                 disabled={isSubmitting}
-                pathID={formData.id}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -494,7 +493,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          📎 {file.name}
+                          {file.name}
                         </Button>
                       </Grid>
                     );
@@ -522,7 +521,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        📎 {file.name}
+                        {file.name}
                       </Button>
                     </Grid>
                   ))}

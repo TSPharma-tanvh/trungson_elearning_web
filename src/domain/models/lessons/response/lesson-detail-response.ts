@@ -1,8 +1,8 @@
 import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { EnrollmentCriteriaResponse } from '@/domain/models/enrollment/response/enrollment-criteria-response';
 import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
-import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-lesson-response';
 import { QuizLessonResponse } from '@/domain/models/quiz/response/quiz-lesson-response';
+import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-lesson-response';
 
 export class LessonDetailResponse {
   id?: string;

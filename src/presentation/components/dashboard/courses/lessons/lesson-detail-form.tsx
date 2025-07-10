@@ -5,6 +5,7 @@ import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-de
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -14,6 +15,7 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
+  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -64,6 +66,130 @@ function LessonDetails({ lesson: lesson, fullScreen }: { lesson: LessonDetailRes
     );
   };
 
+  const renderQuizzes = () => {
+    if (!lesson.quizzes || lesson.quizzes.length === 0) return null;
+
+    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
+
+    const toggleExpanded = (lessonId: string) => {
+      setExpandedLessons((prev) => ({
+        ...prev,
+        [lessonId]: !prev[lessonId],
+      }));
+    };
+
+    return (
+      <Box sx={{ mb: 2 }}>
+        <CardHeader title="Quizzes" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        {lesson.quizzes.map((quiz, index) => {
+          const lessonId = quiz.id ?? `${index}`;
+          const isExpanded = expandedLessons[lessonId] || false;
+
+          return (
+            <Card
+              key={lessonId}
+              sx={{
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
+              }}
+            >
+              <CardHeader
+                title={quiz.title ?? `Quiz ${index + 1}`}
+                action={
+                  <IconButton
+                    onClick={() => toggleExpanded(lessonId)}
+                    sx={{
+                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s',
+                    }}
+                  >
+                    <ExpandMoreIcon />
+                  </IconButton>
+                }
+                sx={{ py: 1 }}
+              />
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {renderField('ID', quiz.id)}
+                    {renderField('Name', quiz.title)}
+                    {renderField('Detail', quiz.description)}
+                    {renderField('Status', quiz.status)}
+                    {renderField('Start Time', DateTimeUtils.formatISODateFromString(quiz.startTime ?? ''))}
+                    {renderField('End Time', DateTimeUtils.formatISODateFromString(quiz.endTime ?? ''))}
+                    {renderField('Total Score', quiz.totalScore)}
+                  </Grid>
+                </CardContent>
+              </Collapse>
+            </Card>
+          );
+        })}
+      </Box>
+    );
+  };
+
+  const renderUserProgress = () => {
+    if (!lesson.userLessonProgress || lesson.userLessonProgress.length === 0) return null;
+
+    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
+
+    const toggleExpanded = (lessonId: string) => {
+      setExpandedLessons((prev) => ({
+        ...prev,
+        [lessonId]: !prev[lessonId],
+      }));
+    };
+
+    return (
+      <Box sx={{ mb: 2 }}>
+        <CardHeader title="User Progress" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        {lesson.userLessonProgress.map((progress, index) => {
+          const lessonId = progress.id ?? `${index}`;
+          const isExpanded = expandedLessons[lessonId] || false;
+
+          return (
+            <Card
+              key={lessonId}
+              sx={{
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
+              }}
+            >
+              <CardHeader
+                title={progress.id ?? `Quiz ${index + 1}`}
+                action={
+                  <IconButton
+                    onClick={() => toggleExpanded(lessonId)}
+                    sx={{
+                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s',
+                    }}
+                  >
+                    <ExpandMoreIcon />
+                  </IconButton>
+                }
+                sx={{ py: 1 }}
+              />
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {renderField('ID', progress.id)}
+                    {renderField('userID', progress.userID)}
+                    {renderField('lessonID', progress.lessonID)}
+                    {renderField('Start Time', DateTimeUtils.formatISODateFromString(progress.startDate ?? ''))}
+                    {renderField('End Time', DateTimeUtils.formatISODateFromString(progress.endDate ?? ''))}
+                    {renderField('Total Score', progress.lastAccess)}
+                    {renderField('Status', progress.status)}
+                  </Grid>
+                </CardContent>
+              </Collapse>
+            </Card>
+          );
+        })}
+      </Box>
+    );
+  };
+
   return (
     <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
       <Box display="flex" alignItems="center" gap={2} mb={3}>
@@ -94,6 +220,7 @@ function LessonDetails({ lesson: lesson, fullScreen }: { lesson: LessonDetailRes
         </CardContent>
       </Card>
       {renderEnrollmentCriteria()}
+      {renderQuizzes()}
     </Box>
   );
 }

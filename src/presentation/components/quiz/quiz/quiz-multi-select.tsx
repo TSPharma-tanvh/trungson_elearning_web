@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
-import { QuestionUsecase } from '@/domain/usecases/question/question-usecase';
-import { useQuestionSelectDebounce } from '@/presentation/hooks/question/use-question-select-debounce';
-import { useQuestionSelectLoader } from '@/presentation/hooks/question/use-question-select-loader';
+import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
+import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
+import { useQuizSelectDebounce } from '@/presentation/hooks/quiz/use-quiz-select-debounce';
+import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
 import {
   DisplayTypeDisplayNames,
   DisplayTypeEnum,
@@ -45,38 +45,37 @@ import {
 import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
-import QuestionInformationForm from '../../dashboard/quiz/question/question-information-form';
 
-interface QuestionMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
-  questionUsecase: QuestionUsecase | null;
+interface QuizMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
+  quizUsecase: QuizUsecase | null;
   value: string[];
   onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
 }
 
-export function QuestionMultiSelectDialog({
-  questionUsecase,
+export function QuizMultiSelectDialog({
+  quizUsecase,
   value,
   onChange,
-  label = 'Questions',
+  label = 'Quizzes',
   disabled = false,
   ...selectProps
-}: QuestionMultiSelectDialogProps) {
+}: QuizMultiSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useQuestionSelectDebounce(localSearchText, 300);
-  const [selectedQuestionMap, setSelectedQuestionMap] = useState<Record<string, QuestionResponse>>({});
-  const [selectedQuestion, setSelectedQuestion] = React.useState<QuestionResponse | null>(null);
+  const debouncedSearchText = useQuizSelectDebounce(localSearchText, 300);
+  const [selectedQuizMap, setSelectedQuizMap] = useState<Record<string, QuizResponse>>({});
+  const [selectedQuiz, setSelectedQuiz] = React.useState<QuizResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
 
   const {
-    questions,
-    loadingQuestions,
+    quizzes,
+    loadingQuizzes,
     hasMore,
     isSelectOpen,
     pageNumber,
@@ -85,9 +84,9 @@ export function QuestionMultiSelectDialog({
     setIsSelectOpen,
     setSearchText,
     searchText,
-    loadQuestions,
-  } = useQuestionSelectLoader({
-    questionUsecase,
+    loadQuizzes,
+  } = useQuizSelectLoader({
+    quizUsecase,
     isOpen: dialogOpen,
     searchText: debouncedSearchText,
   });
@@ -114,8 +113,8 @@ export function QuestionMultiSelectDialog({
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (questionUsecase && !loadingQuestions) {
-      loadQuestions(newPage, true);
+    if (quizUsecase && !loadingQuizzes) {
+      loadQuizzes(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -132,45 +131,45 @@ export function QuestionMultiSelectDialog({
   }, [value]);
 
   useEffect(() => {
-    if (questionUsecase && value.length > 0) {
-      const fetchSelectedQuestions = async () => {
+    if (quizUsecase && value.length > 0) {
+      const fetchSelectedQuizzes = async () => {
         try {
-          const request = new GetQuestionRequest({});
-          const result = await questionUsecase.getQuestionListInfo(request);
-          const newMap = { ...selectedQuestionMap };
+          const request = new GetQuizRequest({});
+          const result = await quizUsecase.getQuizListInfo(request);
+          const newMap = { ...selectedQuizMap };
           let updated = false;
-          for (const question of result.questions) {
-            if (!newMap[question.id]) {
-              newMap[question.id] = question;
+          for (const quiz of result.quizzes) {
+            if (!newMap[quiz.id ?? '']) {
+              newMap[quiz.id ?? ''] = quiz;
               updated = true;
             }
           }
           if (updated) {
-            setSelectedQuestionMap(newMap);
+            setSelectedQuizMap(newMap);
           }
         } catch (error) {
           console.error('Error fetching selected courses:', error);
         }
       };
-      fetchSelectedQuestions();
+      fetchSelectedQuizzes();
     }
-  }, [questionUsecase, value, selectedQuestionMap]);
+  }, [quizUsecase, value, selectedQuizMap]);
 
   useEffect(() => {
     if (dialogOpen) {
-      const newMap = { ...selectedQuestionMap };
+      const newMap = { ...selectedQuizMap };
       let updated = false;
-      for (const question of questions) {
-        if (question.id && !newMap[question.id]) {
-          newMap[question.id] = question;
+      for (const quiz of quizzes) {
+        if (quiz.id && !newMap[quiz.id]) {
+          newMap[quiz.id] = quiz;
           updated = true;
         }
       }
       if (updated) {
-        setSelectedQuestionMap(newMap);
+        setSelectedQuizMap(newMap);
       }
     }
-  }, [questions, dialogOpen, selectedQuestionMap]);
+  }, [quizzes, dialogOpen, selectedQuizMap]);
 
   return (
     <>
@@ -185,8 +184,7 @@ export function QuestionMultiSelectDialog({
           }
           onClick={handleOpen}
           renderValue={(selected) =>
-            selected.map((id: string) => selectedQuestionMap[id]?.questionText || id).join(', ') ||
-            'No Questions Selected'
+            selected.map((id: string) => selectedQuizMap[id]?.title || id).join(', ') || 'No Quizzes Selected'
           }
           open={false}
           {...selectProps}
@@ -196,7 +194,7 @@ export function QuestionMultiSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Questions</Typography>
+            <Typography variant="h6">Select Quizzes</Typography>
             <Box>
               <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
@@ -216,19 +214,19 @@ export function QuestionMultiSelectDialog({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {questions.map((question) => (
+            {quizzes.map((quiz) => (
               <MenuItem
-                key={question.id}
-                value={question.id}
+                key={quiz.id}
+                value={quiz.id}
                 onClick={() =>
                   setLocalValue((prev) =>
-                    prev.includes(question.id) ? prev.filter((id) => id !== question.id) : [...prev, question.id]
+                    prev.includes(quiz.id!) ? prev.filter((id) => id! !== quiz.id!) : [...prev, quiz.id!]
                   )
                 }
               >
-                <Checkbox checked={localValue.includes(question.id)} />
+                <Checkbox checked={localValue.includes(quiz.id ?? '')} />
                 <ListItemText
-                  primary={question.questionText}
+                  primary={quiz.title}
                   sx={{
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
@@ -241,7 +239,7 @@ export function QuestionMultiSelectDialog({
                   size="small"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedQuestion(question);
+                    setSelectedQuiz(quiz);
                     setViewOpen(true);
                   }}
                 >
@@ -249,14 +247,14 @@ export function QuestionMultiSelectDialog({
                 </Button>
               </MenuItem>
             ))}
-            {loadingQuestions && (
+            {loadingQuizzes && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
             )}
-            {!loadingQuestions && questions.length === 0 && (
+            {!loadingQuizzes && quizzes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No questions found
+                No quizzes found
               </Typography>
             )}
           </Box>
@@ -283,13 +281,9 @@ export function QuestionMultiSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedQuestion && (
-        <QuestionInformationForm
-          open={viewOpen}
-          questionId={selectedQuestion?.id ?? null}
-          onClose={() => setViewOpen(false)}
-        />
-      )}
+      {/* {selectedQuiz && (
+        <QuizInformationForm open={viewOpen} quizId={selectedQuiz?.id ?? null} onClose={() => setViewOpen(false)} />
+      )} */}
     </>
   );
 }

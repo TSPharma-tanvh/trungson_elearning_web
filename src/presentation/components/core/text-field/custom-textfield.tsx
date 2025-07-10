@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InputAdornment, TextField } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
 
@@ -18,6 +18,7 @@ interface CustomTextFieldProps {
   icon?: React.ReactNode;
   sx?: SxProps<Theme>;
   onValidationChange?: (isValid: boolean) => void;
+  required?: boolean;
 }
 
 export const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -34,12 +35,21 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
   icon,
   sx,
   onValidationChange,
+  required = false,
 }) => {
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState('');
 
   const validateInput = (val: string): boolean => {
     let valid = true;
+
+    if (required && val.trim() === '') {
+      setHelperText('Trường này là bắt buộc');
+      setError(true);
+      onValidationChange?.(false);
+      return false;
+    }
+
     switch (inputMode) {
       case 'text':
         if (pattern) {
@@ -53,18 +63,22 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
         valid = /^\d*$/.test(val);
         if (!valid) setHelperText('Chỉ được nhập số');
         break;
+
       case 'decimal':
         valid = /^\d*\.?\d*$/.test(val);
         if (!valid) setHelperText('Chỉ được nhập số thực');
         break;
+
       case 'tel':
         valid = /^[0-9+\-()\s]*$/.test(val);
         if (!valid) setHelperText('Số điện thoại không hợp lệ');
         break;
+
       case 'email':
         valid = val === '' || /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val);
         if (!valid) setHelperText('Email không hợp lệ');
         break;
+
       case 'url':
         if (val) {
           try {
@@ -76,6 +90,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
         }
         break;
     }
+
     if (valid) setHelperText('');
     setError(!valid);
     onValidationChange?.(valid);
@@ -88,16 +103,25 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
     onChange(val);
   };
 
+  const handleBlur = () => {
+    validateInput(String(value ?? ''));
+  };
+
   const getEffectiveType = () => {
     if (['numeric', 'decimal', 'tel'].includes(inputMode)) return 'text';
     return type || 'text';
   };
+
+  useEffect(() => {
+    validateInput(String(value ?? ''));
+  }, [value, required]);
 
   return (
     <TextField
       label={label}
       value={value ?? ''}
       onChange={handleChange}
+      onBlur={handleBlur}
       fullWidth
       disabled={disabled}
       multiline={multiline}

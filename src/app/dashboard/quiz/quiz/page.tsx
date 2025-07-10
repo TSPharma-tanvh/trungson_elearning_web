@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
 import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
@@ -9,10 +10,14 @@ import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Copy } from '@phosphor-icons/react';
+import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
+import { Plus, Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 
 import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
+import { ImportQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-import-form';
 import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
 // export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
@@ -20,6 +25,7 @@ export default function Page(): React.JSX.Element {
   const { quizUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  const [showImportDialog, setShowImportDialog] = React.useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetQuizRequest>(new GetQuizRequest({ pageNumber: 1, pageSize: 10 }));
   const [quizzes, setQuizzes] = React.useState<QuizResponse[]>([]);
@@ -73,6 +79,16 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleImportQuiz = async (request: CreateQuizFromExcelRequest) => {
+    try {
+      await quizUsecase.importFromExcel(request);
+      setShowImportDialog(false);
+      await fetchQuizs();
+    } catch (error) {
+      console.error('Failed to create course path:', error);
+    }
+  };
+
   const handleEditQuiz = async (request: UpdateQuizRequest) => {
     try {
       await quizUsecase.updateQuiz(request);
@@ -105,14 +121,28 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4">Quizzes</Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => setShowImportDialog(true)}
+            >
+              Import Questions to Quiz
+            </Button>
+            <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+              Download Example File
+            </Button>
+          </Stack>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => setShowCreateDialog(true)}
-        >
-          Add
-        </Button>
+        <div>
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => setShowCreateDialog(true)}
+          >
+            Add
+          </Button>
+        </div>
       </Stack>
       <QuizFilters onFilter={handleFilter} />
       <QuizTable
@@ -132,6 +162,14 @@ export default function Page(): React.JSX.Element {
         loading={false}
         open={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}
+      />
+
+      <ImportQuizDialog
+        onSubmit={handleImportQuiz}
+        disabled={false}
+        loading={false}
+        open={showImportDialog}
+        onClose={() => setShowImportDialog(false)}
       />
     </Stack>
   );

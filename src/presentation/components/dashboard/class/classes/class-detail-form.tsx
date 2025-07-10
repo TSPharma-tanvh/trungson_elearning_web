@@ -26,6 +26,8 @@ import {
 } from '@mui/material';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
+import { CustomVideoPlayer } from '@/presentation/components/file/custom-video-player';
+import ImagePreviewDialog from '@/presentation/components/file/image-preview-dialog';
 
 interface Props {
   open: boolean;
@@ -34,6 +36,8 @@ interface Props {
 }
 
 function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; fullScreen: boolean }) {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -73,32 +77,105 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   };
 
   const renderFileResources = () => {
-    // Flatten all fileResources from fileClassRelation
-    const fileResources: FileResourcesResponse[] =
-      classes.fileClassRelation?.flatMap((relation) => (relation.fileResources ? [relation.fileResources] : [])) || [];
-
-    if (fileResources.length === 0) return null;
+    if (!classes.fileClassRelation?.length) return null;
 
     return (
-      <Box sx={{ mb: 2 }}>
-        <CardHeader title="Attached Files" sx={{ pl: 2, pb: 1, mb: 2 }} />
-        <Card sx={{ mb: 2 }}>
-          <CardHeader title="Files" />
-          <CardContent>
-            <Grid container spacing={2}>
-              {fileResources.map((file, index) => (
-                <Grid item xs={12} key={index}>
-                  <Typography>
-                    <a href={file.resourceUrl} target="_blank" rel="noopener noreferrer">
-                      {file.name ?? `File ${index + 1}`}
-                    </a>
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title="Attached Files" />
+        <CardContent>
+          <Grid container spacing={2}>
+            {classes.fileClassRelation.map((r) => {
+              const res = r.fileResources;
+              if (!res) return null;
+
+              const isImage = res.type?.startsWith('image');
+              const isVideo = res.type?.startsWith('video');
+              const isOther = !isImage && !isVideo;
+
+              return (
+                <Grid item xs={12} sm={fullScreen ? 4 : 6} key={res.id}>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      paddingTop: '56.25%',
+                      borderRadius: 1,
+                      overflow: 'hidden',
+                      mb: 1,
+                    }}
+                  >
+                    {isImage && (
+                      <Box
+                        component="img"
+                        src={res.resourceUrl}
+                        alt={res.name}
+                        onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          cursor: 'pointer',
+                        }}
+                      />
+                    )}
+
+                    {isVideo && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                        }}
+                      >
+                        <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
+                      </Box>
+                    )}
+
+                    {isOther && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          backgroundColor: '#f5f5f5',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography variant="body2">No preview</Typography>
+                      </Box>
+                    )}
+                  </Box>
+
+                  <Typography variant="body2" noWrap>
+                    {res.name}
                   </Typography>
                 </Grid>
-              ))}
-            </Grid>
-          </CardContent>
-        </Card>
-      </Box>
+              );
+            })}
+          </Grid>
+
+          {/* Preview image modal */}
+          {previewUrl && (
+            <ImagePreviewDialog
+              open={Boolean(previewUrl)}
+              onClose={() => setPreviewUrl(null)}
+              imageUrl={previewUrl}
+              title="Image Preview"
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => {}}
+            />
+          )}
+        </CardContent>
+      </Card>
     );
   };
 

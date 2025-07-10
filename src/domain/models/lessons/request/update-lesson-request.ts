@@ -8,6 +8,7 @@ export class UpdateLessonRequest {
   enablePlay?: boolean;
   status?: StatusEnum;
   lessonType?: LearningModeEnum;
+  quizIDs?: string;
   categoryID?: string;
   thumbnailID?: string;
   thumbnail?: File;
@@ -33,6 +34,7 @@ export class UpdateLessonRequest {
       enablePlay: json.enablePlay,
       status: json.status,
       lessonType: json.lessonType,
+      quizIDs: json.quizIDs,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
       thumbDocumentNo: json.thumbDocumentNo,
@@ -54,6 +56,7 @@ export class UpdateLessonRequest {
       enablePlay: this.enablePlay,
       status: this.status,
       lessonType: this.lessonType,
+      quizIDs: this.quizIDs,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
       thumbDocumentNo: this.thumbDocumentNo,
@@ -76,6 +79,7 @@ export class UpdateLessonRequest {
     if (this.enablePlay !== undefined) form.append('EnablePlay', this.enablePlay.toString());
     if (this.status !== undefined) form.append('Status', this.status.toString());
     if (this.lessonType !== undefined) form.append('LessonType', this.lessonType.toString());
+    if (this.quizIDs) form.append('QuizIDs', this.quizIDs);
     if (this.categoryID) form.append('CategoryID', this.categoryID);
     if (this.thumbnailID) form.append('ThumbnailID', this.thumbnailID);
     if (this.thumbnail) form.append('Thumbnail', this.thumbnail);

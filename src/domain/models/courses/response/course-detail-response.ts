@@ -1,6 +1,6 @@
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
-import { LessonResponse } from '../../lesson/response/lesson-response';
+import { LessonResponse } from '../../lessons/response/lesson-response';
 
 export class CourseDetailResponse {
   id: string = '';
