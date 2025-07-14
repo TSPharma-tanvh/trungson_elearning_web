@@ -145,20 +145,23 @@ export function ClassMultiSelectDialog({
   }, [value]);
 
   useEffect(() => {
-    if (classUsecase && value) {
+    if (classUsecase && value.length > 0) {
       const fetchSelectedClasses = async () => {
         try {
-          const request = new GetClassRequest({ searchText: undefined, pageNumber: 1, pageSize: 10 });
-          const result = await classUsecase.getClassListInfo(request);
           const newMap = { ...selectedClassMap };
           let updated = false;
-          // result.class is the correct property, not result.courses
-          for (const cls of result.class) {
-            if (!newMap[cls.id]) {
-              newMap[cls.id] = cls;
-              updated = true;
+
+          for (const id of value) {
+            if (!newMap[id]) {
+              const response = await classUsecase.getClassById(id);
+              const cls = response;
+              if (cls?.id) {
+                newMap[cls.id] = cls;
+                updated = true;
+              }
             }
           }
+
           if (updated) {
             setSelectedClassMap(newMap);
           }
@@ -166,10 +169,10 @@ export function ClassMultiSelectDialog({
           console.error('Error fetching selected classes:', error);
         }
       };
+
       fetchSelectedClasses();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classUsecase, value, pathID]);
+  }, [classUsecase, value]);
 
   useEffect(() => {
     if (dialogOpen) {

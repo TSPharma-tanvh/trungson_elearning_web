@@ -6,16 +6,6 @@ import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { useQuizSelectDebounce } from '@/presentation/hooks/quiz/use-quiz-select-debounce';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
-import {
-  DisplayTypeDisplayNames,
-  DisplayTypeEnum,
-  LearningModeDisplayNames,
-  LearningModeEnum,
-  ScheduleStatusDisplayNames,
-  ScheduleStatusEnum,
-  StatusDisplayNames,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
 import { Book, BookOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -134,26 +124,31 @@ export function QuizMultiSelectDialog({
     if (quizUsecase && value.length > 0) {
       const fetchSelectedQuizzes = async () => {
         try {
-          const request = new GetQuizRequest({});
-          const result = await quizUsecase.getQuizListInfo(request);
           const newMap = { ...selectedQuizMap };
           let updated = false;
-          for (const quiz of result.quizzes) {
-            if (!newMap[quiz.id ?? '']) {
-              newMap[quiz.id ?? ''] = quiz;
-              updated = true;
+
+          for (const id of value) {
+            if (!newMap[id]) {
+              const response = await quizUsecase.getQuizById(id);
+              const quiz = response;
+              if (quiz?.id) {
+                newMap[quiz.id] = quiz;
+                updated = true;
+              }
             }
           }
+
           if (updated) {
             setSelectedQuizMap(newMap);
           }
         } catch (error) {
-          console.error('Error fetching selected courses:', error);
+          console.error('Error fetching selected quizzes:', error);
         }
       };
+
       fetchSelectedQuizzes();
     }
-  }, [quizUsecase, value, selectedQuizMap]);
+  }, [quizUsecase, value]);
 
   useEffect(() => {
     if (dialogOpen) {

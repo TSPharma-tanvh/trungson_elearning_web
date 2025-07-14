@@ -203,14 +203,14 @@ export function CustomVideoPlayer({ src, fullscreen }: Props) {
         >
           <IconButton
             onClick={togglePlay}
-            sx={{ color: theme.palette.primary.main, fontSize: 24, p: isMobile ? 1.0 : 1.5 }}
+            sx={{ color: theme.palette.primary.main, fontSize: 24, p: isMobile ? 1.0 : 1.0 }}
           >
             {isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
           </IconButton>
 
           <IconButton
             onClick={toggleMute}
-            sx={{ color: theme.palette.primary.main, fontSize: 24, p: isMobile ? 1.0 : 1.5 }}
+            sx={{ color: theme.palette.primary.main, fontSize: 24, p: isMobile ? 1.0 : 1.0 }}
           >
             {muted || volume === 0 ? <VolumeOffIcon /> : <VolumeUpIcon />}
           </IconButton>
@@ -222,7 +222,7 @@ export function CustomVideoPlayer({ src, fullscreen }: Props) {
               min={0}
               max={1}
               step={0.01}
-              sx={{ width: isMobile ? 60 : 80, color: theme.palette.primary.main, height: 2 }}
+              sx={{ width: isMobile ? '0%' : '5%', color: theme.palette.primary.main, height: 2 }}
             />
           )}
 
@@ -233,7 +233,7 @@ export function CustomVideoPlayer({ src, fullscreen }: Props) {
               <Typography
                 variant="body2"
                 sx={{
-                  minWidth: isMobile ? 30 : 50,
+                  minWidth: isMobile ? 10 : 50,
                   color: '#fff',
                   fontWeight: 'bold',
                 }}
@@ -244,7 +244,7 @@ export function CustomVideoPlayer({ src, fullscreen }: Props) {
               <Slider
                 value={progress}
                 onChange={handleProgressChange}
-                sx={{ color: theme.palette.primary.main, height: 2 }}
+                sx={{ width: isMobile ? '30%' : '80%', color: theme.palette.primary.main, height: 2 }}
               />
 
               <Box flexGrow={2} />
@@ -252,7 +252,7 @@ export function CustomVideoPlayer({ src, fullscreen }: Props) {
               <Typography
                 variant="body2"
                 sx={{
-                  minWidth: isMobile ? 30 : 50,
+                  minWidth: isMobile ? 20 : 50,
                   color: '#fff',
                   fontWeight: 'bold',
                 }}
@@ -262,23 +262,16 @@ export function CustomVideoPlayer({ src, fullscreen }: Props) {
             </>
           ) : (
             <>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: '#fff',
-                }}
-              >
-                {formatTime((progress / 100) * duration)}
-              </Typography>
+              <Box flexGrow={2} />
 
               <Typography
-                variant="body2"
                 sx={{
                   color: '#fff',
                 }}
               >
-                {formatTime(duration)}
+                {formatTime((progress / 100) * duration)}/{formatTime(duration)}
               </Typography>
+              <Box flexGrow={2} />
             </>
           )}
           <Box>

@@ -114,6 +114,8 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
   };
 
   const renderFileResources = () => {
+    const [previewFullScreen, setPreviewFullScreen] = useState(false);
+
     if (!question.fileQuestionRelation?.length) return null;
 
     return (
@@ -207,8 +209,8 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
               onClose={() => setPreviewUrl(null)}
               imageUrl={previewUrl}
               title="Image Preview"
-              fullscreen={fullScreen}
-              onToggleFullscreen={() => {}}
+              fullscreen={previewFullScreen}
+              onToggleFullscreen={() => setPreviewFullScreen((prev) => !prev)}
             />
           )}
         </CardContent>

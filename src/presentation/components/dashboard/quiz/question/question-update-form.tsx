@@ -33,6 +33,8 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
+import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 import { AnswerMultiSelectDialog } from '@/presentation/components/shared/quiz/answer/answer-multi-select';
 
 interface EditQuestionDialogProps {
@@ -235,14 +237,6 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
             </Grid>
 
             <Grid item xs={12}>
-              <AnswerMultiSelectDialog
-                answerUsecase={answerUsecase}
-                value={formData.answerIDs ? formData.answerIDs.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => handleChange('answerIDs', value.join(','))}
-                disabled={isSubmitting}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
@@ -251,7 +245,14 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                 disabled={isSubmitting}
               />
             </Grid>
-
+            <Grid item xs={12}>
+              <AnswerMultiSelectDialog
+                answerUsecase={answerUsecase}
+                value={formData.answerIDs ? formData.answerIDs.split(',').filter((id) => id) : []}
+                onChange={(value: string[]) => handleChange('answerIDs', value.join(','))}
+                disabled={isSubmitting}
+              />
+            </Grid>
             {/* Upload file resources */}
 
             <Grid item xs={12}>
@@ -519,6 +520,30 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
           </Button>
         </Box>
       </DialogActions>
+
+      {filePreviewData?.url && (
+        <>
+          {filePreviewData.type?.includes('image') ? (
+            <ImagePreviewDialog
+              open={filePreviewOpen}
+              onClose={() => setFilePreviewOpen(false)}
+              imageUrl={filePreviewData.url}
+              title={filePreviewData.title}
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+            />
+          ) : filePreviewData.type?.includes('video') ? (
+            <VideoPreviewDialog
+              open={filePreviewOpen}
+              onClose={() => setFilePreviewOpen(false)}
+              videoUrl={filePreviewData.url}
+              title={filePreviewData.title}
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+            />
+          ) : null}
+        </>
+      )}
     </Dialog>
   );
 }

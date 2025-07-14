@@ -6,16 +6,6 @@ import { AnswerResponse } from '@/domain/models/answer/response/answer-response'
 import { AnswerUsecase } from '@/domain/usecases/answer/answer-usecase';
 import { useAnswerSelectLoader } from '@/presentation/hooks/answer/use-answer-select-loader';
 import { useAnswerSelectDebounce } from '@/presentation/hooks/answer/use-question-select-debounce';
-import {
-  DisplayTypeDisplayNames,
-  DisplayTypeEnum,
-  LearningModeDisplayNames,
-  LearningModeEnum,
-  ScheduleStatusDisplayNames,
-  ScheduleStatusEnum,
-  StatusDisplayNames,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
 import { Book, BookOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -134,23 +124,28 @@ export function AnswerMultiSelectDialog({
     if (answerUsecase && value.length > 0) {
       const fetchSelectedAnswers = async () => {
         try {
-          const request = new GetAnswerRequest({});
-          const result = await answerUsecase.getAnswerListInfo(request);
           const newMap = { ...selectedAnswerMap };
           let updated = false;
-          for (const answer of result.answers) {
-            if (!newMap[answer.id ?? '']) {
-              newMap[answer.id ?? ''] = answer;
-              updated = true;
+
+          for (const id of value) {
+            if (!newMap[id]) {
+              const response = await answerUsecase.getAnswerById(id);
+              const answer = response;
+              if (answer?.id) {
+                newMap[answer.id] = answer;
+                updated = true;
+              }
             }
           }
+
           if (updated) {
             setSelectedAnswerMap(newMap);
           }
         } catch (error) {
-          console.error('Error fetching selected courses:', error);
+          console.error('Error fetching selected answers:', error);
         }
       };
+
       fetchSelectedAnswers();
     }
   }, [answerUsecase, value, selectedAnswerMap]);

@@ -150,16 +150,20 @@ export function CourseMultiSelectDialog({
     if (courseUsecase && value.length > 0) {
       const fetchSelectedCourses = async () => {
         try {
-          const request = new GetCourseRequest({ pathID });
-          const result = await courseUsecase.getCourseListInfo(request);
           const newMap = { ...selectedCourseMap };
           let updated = false;
-          for (const course of result.courses) {
-            if (!newMap[course.id]) {
-              newMap[course.id] = course;
-              updated = true;
+
+          for (const id of value) {
+            if (!newMap[id]) {
+              const response = await courseUsecase.getCourseById(id);
+              const course = response;
+              if (course?.id) {
+                newMap[course.id] = course;
+                updated = true;
+              }
             }
           }
+
           if (updated) {
             setSelectedCourseMap(newMap);
           }
@@ -167,9 +171,10 @@ export function CourseMultiSelectDialog({
           console.error('Error fetching selected courses:', error);
         }
       };
+
       fetchSelectedCourses();
     }
-  }, [courseUsecase, value, pathID, selectedCourseMap]);
+  }, [courseUsecase, value]);
 
   useEffect(() => {
     if (dialogOpen) {

@@ -126,26 +126,31 @@ export function QuestionMultiSelectDialog({
     if (questionUsecase && value.length > 0) {
       const fetchSelectedQuestions = async () => {
         try {
-          const request = new GetQuestionRequest({});
-          const result = await questionUsecase.getQuestionListInfo(request);
           const newMap = { ...selectedQuestionMap };
           let updated = false;
-          for (const question of result.questions) {
-            if (!newMap[question.id]) {
-              newMap[question.id] = question;
-              updated = true;
+
+          for (const id of value) {
+            if (!newMap[id]) {
+              const response = await questionUsecase.getQuestionById(id);
+              const question = response;
+              if (question?.id) {
+                newMap[question.id] = question;
+                updated = true;
+              }
             }
           }
+
           if (updated) {
             setSelectedQuestionMap(newMap);
           }
         } catch (error) {
-          console.error('Error fetching selected courses:', error);
+          console.error('Error fetching selected questions:', error);
         }
       };
+
       fetchSelectedQuestions();
     }
-  }, [questionUsecase, value, selectedQuestionMap]);
+  }, [questionUsecase, value]);
 
   useEffect(() => {
     if (dialogOpen) {
