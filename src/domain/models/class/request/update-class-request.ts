@@ -117,8 +117,8 @@ export class UpdateClassRequest {
     appendIfExist('LocationID', this.locationID);
     appendIfExist('TeacherID', this.teacherID);
     appendIfExist('QRCodeURL', this.qrCodeURL);
-    appendIfExist('StartAt', DateTimeUtils.formatISODateToString(this.startAt));
-    appendIfExist('EndAt', DateTimeUtils.formatISODateToString(this.endAt));
+    if (this.startAt) appendIfExist('StartAt', DateTimeUtils.formatISODateToString(this.startAt));
+    if (this.endAt) appendIfExist('EndAt', DateTimeUtils.formatISODateToString(this.endAt));
     appendIfExist('MinuteLate', this.minuteLate);
     appendIfExist('EnrollmentCriteriaIDs', this.enrollmentCriteriaIDs);
     appendIfExist('ClassType', this.classType);

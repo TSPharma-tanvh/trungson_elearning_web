@@ -1,7 +1,7 @@
 // src/app/notification/page.tsx
 import React from 'react';
 import { Metadata } from 'next';
-import NotificationForm from '@/presentation/components/notification/NotificationForm';
+import NotificationForm from '@/presentation/components/shared/notification/NotificationForm';
 
 import { config } from '@/config';
 

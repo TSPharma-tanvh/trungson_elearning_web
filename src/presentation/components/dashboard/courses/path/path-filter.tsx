@@ -48,7 +48,14 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
   };
 
   return (
-    <Card sx={{ p: 2 }}>
+    <Card
+      sx={{
+        p: 2,
+        backgroundColor: 'var(--mui-palette-common-white)',
+        color: 'var(--mui-palette-primary-main)',
+        border: '1px solid var(--mui-palette-primary-main)',
+      }}
+    >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
         <OutlinedInput
           size="small"
@@ -58,14 +65,24 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
           placeholder="Search path"
           startAdornment={
             <InputAdornment position="start">
-              <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
+              <MagnifyingGlassIcon
+                fontSize="var(--icon-fontSize-md)"
+                style={{ color: 'var(--mui-palette-primary-main)' }}
+              />
             </InputAdornment>
           }
-          sx={{ maxWidth: 250 }}
+          sx={{
+            maxWidth: 250,
+            input: { color: 'var(--mui-palette-primary-main)' },
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
+          }}
         />
 
         {/* Is Required */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
+        <FormControl
+          size="small"
+          sx={{ minWidth: 150, '& .MuiInputLabel-root': { color: 'var(--mui-palette-primary-main)' } }}
+        >
           <InputLabel>Is Required</InputLabel>
           <Select
             value={isRequired === undefined ? '' : isRequired ? 'true' : 'false'}
@@ -73,6 +90,13 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
             onChange={(e) => {
               const val = e.target.value;
               setIsRequired(val === '' ? undefined : val === 'true');
+            }}
+            sx={{
+              '& .MuiSelect-select': {
+                backgroundColor: 'var(--mui-palette-common-white)',
+                color: 'var(--mui-palette-primary-main)',
+              },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
             }}
           >
             <MenuItem value="">All</MenuItem>
@@ -82,12 +106,22 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
         </FormControl>
 
         {/* Status */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
+        <FormControl
+          size="small"
+          sx={{ minWidth: 150, '& .MuiInputLabel-root': { color: 'var(--mui-palette-primary-main)' } }}
+        >
           <InputLabel>Status</InputLabel>
           <Select
             value={status !== undefined ? status.toString() : ''}
             onChange={(e) => setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum))}
             label="Status"
+            sx={{
+              '& .MuiSelect-select': {
+                backgroundColor: 'var(--mui-palette-common-white)',
+                color: 'var(--mui-palette-primary-main)',
+              },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
+            }}
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value={StatusEnum.Enable}>Enable</MenuItem>
@@ -97,7 +131,10 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
         </FormControl>
 
         {/* Display Type */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
+        <FormControl
+          size="small"
+          sx={{ minWidth: 150, '& .MuiInputLabel-root': { color: 'var(--mui-palette-primary-main)' } }}
+        >
           <InputLabel>Display Type</InputLabel>
           <Select
             label="Display Type"
@@ -105,6 +142,13 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
             onChange={(e) =>
               setDisplayType(e.target.value === '' ? undefined : (Number(e.target.value) as DisplayTypeEnum))
             }
+            sx={{
+              '& .MuiSelect-select': {
+                backgroundColor: 'var(--mui-palette-common-white)',
+                color: 'var(--mui-palette-primary-main)',
+              },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
+            }}
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value={DisplayTypeEnum.Public}>Public</MenuItem>
@@ -112,10 +156,28 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
           </Select>
         </FormControl>
 
-        <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: 'var(--mui-palette-primary-main)', color: 'var(--mui-palette-common-white)' }}
+          size="small"
+          onClick={handleFilter}
+        >
           Filter
         </Button>
-        <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
+        <Button
+          variant="outlined"
+          sx={{
+            color: 'var(--mui-palette-secondary-main)',
+            borderColor: 'var(--mui-palette-secondary-main)',
+            '&:hover': {
+              backgroundColor: 'var(--mui-palette-secondary-main)',
+              color: 'var(--mui-palette-common-white)',
+              borderColor: 'var(--mui-palette-secondary-dark)',
+            },
+          }}
+          size="small"
+          onClick={handleClear}
+        >
           Clear
         </Button>
       </Stack>

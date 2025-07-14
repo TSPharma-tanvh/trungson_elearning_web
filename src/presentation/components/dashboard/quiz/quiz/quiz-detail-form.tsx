@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { QuestionResponse } from '@/domain/models/question/response/question-response';
+import { UserQuestionResponse } from '@/domain/models/question/response/user-question-response';
 import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { DateTimeUtils } from '@/utils/date-time-utils';
@@ -8,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Avatar,
   Box,
@@ -25,8 +28,10 @@ import {
 } from '@mui/material';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
-import { CustomVideoPlayer } from '@/presentation/components/file/custom-video-player';
-import ImagePreviewDialog from '@/presentation/components/file/image-preview-dialog';
+import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
+
+import QuestionInformationForm from '../../../shared/quiz/question/question-information-form';
 
 interface Props {
   open: boolean;
@@ -36,6 +41,8 @@ interface Props {
 
 function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boolean }) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedQuestion, setSelectedQuestion] = React.useState<UserQuestionResponse | null>(null);
+  const [viewOpen, setViewOpen] = React.useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
@@ -89,7 +96,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Lessons" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title="Quizzes" sx={{ pl: 2, pb: 1, mb: 2 }} />
         {quiz.quizQuestions.map((question, index) => {
           const lessonId = question.question?.id ?? `lesson-${index}`;
           const isExpanded = expandedLessons[lessonId] || false;
@@ -105,18 +112,36 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
               <CardHeader
                 title={question.question?.questionText ?? `Lesson ${index + 1}`}
                 action={
-                  <IconButton
-                    onClick={() => toggleExpanded(lessonId)}
-                    sx={{
-                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.2s',
-                    }}
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
+                  <Box>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (question.question) {
+                          setSelectedQuestion(question.question ?? null);
+                        }
+                        setViewOpen(true);
+                      }}
+                      sx={{
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+
+                    <IconButton
+                      onClick={() => toggleExpanded(lessonId)}
+                      sx={{
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  </Box>
                 }
                 sx={{ py: 1 }}
               />
+
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
@@ -277,6 +302,15 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
       {renderEnrollmentCriteria()}
       {renderQuestions()}
       {renderFiles()}
+
+      {/* question details */}
+      {selectedQuestion && (
+        <QuestionInformationForm
+          open={viewOpen}
+          questionId={selectedQuestion?.id ?? null}
+          onClose={() => setViewOpen(false)}
+        />
+      )}
     </Box>
   );
 }

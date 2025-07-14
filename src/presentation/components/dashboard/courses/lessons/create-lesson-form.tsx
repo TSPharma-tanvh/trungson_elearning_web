@@ -7,12 +7,13 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 import { Image as ImageIcon, VideoCamera } from '@phosphor-icons/react';
 
+import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
+
 import { CustomButton } from '../../../core/button/custom-button';
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '../../../core/picker/custom-date-picker';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '../../../core/text-field/custom-textfield';
-import { CustomVideoPlayer } from '../../../file/custom-video-player';
 
 interface Props {
   disabled?: boolean;

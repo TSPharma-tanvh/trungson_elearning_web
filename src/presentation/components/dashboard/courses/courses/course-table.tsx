@@ -3,28 +3,11 @@ import { UpdateCourseRequest } from '@/domain/models/courses/request/update-cour
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  IconButton,
-  MenuItem,
-  MenuList,
-  Popover,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
 
-import { ConfirmDeleteDialog } from '../../core/dialog/confirm-delete-dialog';
+import { CustomTable } from '@/presentation/components/core/custom-table';
+import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
+
 import CourseDetailForm from './course-detail-form';
 import { UpdateCourseFormDialog } from './update-course-form-dialog';
 
@@ -46,185 +29,113 @@ export default function CourseTable({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteCourses: onDeleteCourses,
+  onDeleteCourses,
   onEditCourse,
 }: CourseTableProps) {
-  const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
-  const [selected, setSelected] = React.useState<Set<string>>(new Set());
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedRow, setSelectedRow] = React.useState<CourseDetailResponse | null>(null);
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [editCourseData, setEditPathData] = React.useState<CourseDetailResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
+  const [editCourseData, setEditCourseData] = React.useState<CourseDetailResponse | null>(null);
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
 
-  const isSelected = (id: string) => selected.has(id);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
-  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelected(event.target.checked ? new Set(rowIds) : new Set());
-  };
-
-  const handleSelectOne = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
-
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: CourseDetailResponse) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRow(row);
-  };
-
-  const handleMenuClose = () => setAnchorEl(null);
-
-  const handleOpenDeleteDialog = (ids: string[]) => {
-    setIdsToDelete(ids);
-    setDeleteDialogOpen(true);
+  const handleRequestDelete = (id: string) => {
+    setPendingDeleteId(id);
+    setDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
-    await onDeleteCourses(idsToDelete);
-    setSelected((prev) => {
-      const next = new Set(prev);
-      idsToDelete.forEach((id) => next.delete(id));
-      return next;
-    });
-    setDeleteDialogOpen(false);
-    setIdsToDelete([]);
+    if (pendingDeleteId) {
+      await onDeleteCourses([pendingDeleteId]);
+      setPendingDeleteId(null);
+    }
+    setDialogOpen(false);
   };
 
   const handleCancelDelete = () => {
-    setDeleteDialogOpen(false);
-    setIdsToDelete([]);
+    setPendingDeleteId(null);
+    setDialogOpen(false);
   };
 
   return (
     <>
-      <Card>
-        {selected.size > 0 && (
-          <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button color="error" variant="outlined" onClick={() => handleOpenDeleteDialog(Array.from(selected))}>
-              Delete Selected ({selected.size})
-            </Button>
-          </Box>
+      <CustomTable<CourseDetailResponse>
+        rows={rows}
+        count={count}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        getRowId={(row) => row.id!}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
+        onDelete={onDeleteCourses}
+        actionMenuItems={[
+          {
+            label: 'View Details',
+            onClick: (row) => {
+              setEditCourseData(row);
+              setViewOpen(true);
+            },
+          },
+          {
+            label: 'Edit',
+            onClick: (row) => {
+              setEditCourseData(row);
+              setEditOpen(true);
+            },
+          },
+          {
+            label: 'Delete',
+            onClick: (row) => {
+              if (row.id) handleRequestDelete(row.id);
+            },
+          },
+        ]}
+        renderHeader={() => (
+          <>
+            <TableCell>Name</TableCell>
+            <TableCell>Detail</TableCell>
+            <TableCell>Required</TableCell>
+            <TableCell>Start Time</TableCell>
+            <TableCell>End Time</TableCell>
+            <TableCell>Disable Status</TableCell>
+            <TableCell>Course Type</TableCell>
+            <TableCell>Schedule Status</TableCell>
+            <TableCell>Display Type</TableCell>
+          </>
         )}
-
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selected.size === rows.length && rows.length > 0}
-                    indeterminate={selected.size > 0 && selected.size < rows.length}
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Detail</TableCell>
-                <TableCell>Required</TableCell>
-                <TableCell>StartTime</TableCell>
-                <TableCell>EndTime</TableCell>
-                <TableCell>DisableStatus</TableCell>
-                <TableCell>CourseType</TableCell>
-                <TableCell>ScheduleStatus</TableCell>
-                <TableCell>DisplayType</TableCell>
-                <TableCell align="right">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {rows.map((row) => {
-                const isItemSelected = isSelected(row.id!);
-                return (
-                  <TableRow key={row.id} selected={isItemSelected} hover>
-                    <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => handleSelectOne(row.id!)} />
-                    </TableCell>
-                    <TableCell>
-                      <Stack direction="row" alignItems="center" spacing={2}>
-                        <Avatar src={row.thumbnail?.resourceUrl}>{row.name?.[0]}</Avatar>
-                        <Box>
-                          <Typography variant="subtitle2" noWrap>
-                            {row.name}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
-                      <Typography variant="body2">{row.detail}</Typography>
-                    </TableCell>
-                    <TableCell>{row.isRequired ? 'Yes' : 'No'}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateFromDate(row.startTime)}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateFromDate(row.endTime)}</TableCell>
-                    <TableCell>{row.disableStatus}</TableCell>
-                    <TableCell>{row.courseType}</TableCell>
-                    <TableCell>{row.scheduleStatus}</TableCell>
-                    <TableCell>{row.displayType}</TableCell>
-                    <TableCell align="right">
-                      <IconButton onClick={(event) => handleMenuClick(event, row)}>
-                        <MoreVert />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          component="div"
-          count={count}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={onPageChange}
-          onRowsPerPageChange={onRowsPerPageChange}
-          labelDisplayedRows={() => `Page ${page + 1} of ${Math.ceil(count / rowsPerPage)}`}
-        />
-      </Card>
-
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleMenuClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <MenuList>
-          <MenuItem
-            onClick={() => {
-              if (selectedRow) {
-                setViewOpen(true);
-              }
-              handleMenuClose();
-            }}
-          >
-            View Details
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              if (selectedRow) {
-                setEditPathData(selectedRow);
-                setEditOpen(true);
-              }
-              handleMenuClose();
-            }}
-          >
-            Edit
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              if (selectedRow?.id) handleOpenDeleteDialog([selectedRow.id]);
-              handleMenuClose();
-            }}
-          >
-            Delete
-          </MenuItem>
-        </MenuList>
-      </Popover>
+        renderRow={(row, isSelected, onSelect, onActionClick) => (
+          <>
+            <TableCell padding="checkbox">
+              <Checkbox checked={isSelected} onChange={onSelect} />
+            </TableCell>
+            <TableCell>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Avatar src={row.thumbnail?.resourceUrl}>{row.name?.[0]}</Avatar>
+                <Box>
+                  <Typography variant="subtitle2" noWrap>
+                    {row.name}
+                  </Typography>
+                </Box>
+              </Stack>
+            </TableCell>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
+              <Typography variant="body2">{row.detail}</Typography>
+            </TableCell>
+            <TableCell>{row.isRequired ? 'Yes' : 'No'}</TableCell>
+            <TableCell>{DateTimeUtils.formatISODateFromDate(row.startTime)}</TableCell>
+            <TableCell>{DateTimeUtils.formatISODateFromDate(row.endTime)}</TableCell>
+            <TableCell>{row.disableStatus}</TableCell>
+            <TableCell>{row.courseType}</TableCell>
+            <TableCell>{row.scheduleStatus}</TableCell>
+            <TableCell>{row.displayType}</TableCell>
+            <TableCell align="right">
+              <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+                <MoreVert />
+              </IconButton>
+            </TableCell>
+          </>
+        )}
+      />
 
       {editCourseData && (
         <UpdateCourseFormDialog
@@ -238,13 +149,13 @@ export default function CourseTable({
         />
       )}
 
-      {selectedRow && (
-        <CourseDetailForm open={viewOpen} courseId={selectedRow?.id ?? null} onClose={() => setViewOpen(false)} />
+      {editCourseData && (
+        <CourseDetailForm open={viewOpen} courseId={editCourseData.id ?? null} onClose={() => setViewOpen(false)} />
       )}
 
       <ConfirmDeleteDialog
-        open={deleteDialogOpen}
-        selectedCount={idsToDelete.length}
+        open={dialogOpen}
+        selectedCount={1}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
       />

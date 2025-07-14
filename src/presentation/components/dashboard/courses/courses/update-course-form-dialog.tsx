@@ -28,15 +28,15 @@ import {
 } from '@mui/material';
 import { Article, Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
-import { CategorySelect } from '@/presentation/components/category/category-select';
-import { ClassTeacherSelectDialog } from '@/presentation/components/classes/teacher/teacher-select';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { LessonSelectDialog } from '@/presentation/components/courses/lessons/lesson-select';
-import { EnrollmentSelect } from '@/presentation/components/enrollment/enrollment-select';
-import { FileResourceSelect } from '@/presentation/components/file/file-resource-select';
+import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
+import { LessonSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-select';
+import { EnrollmentSelect } from '@/presentation/components/shared/enrollment/enrollment-select';
+import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface EditCourseDialogProps {
   open: boolean;
@@ -92,7 +92,6 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     if (newSource) {
       setThumbnailSource(newSource);
       if (newSource === 'upload') {
-        handleChange('thumbnailID', undefined);
         setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
       } else {
         handleChange('thumbnail', undefined);

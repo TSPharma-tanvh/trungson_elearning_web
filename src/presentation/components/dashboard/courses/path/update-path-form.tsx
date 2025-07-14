@@ -32,14 +32,14 @@ import {
 } from '@mui/material';
 import { Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
-import { CategorySelect } from '@/presentation/components/category/category-select';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { CourseMultiSelectDialog } from '@/presentation/components/courses/courses/courses-multi-select';
-import { EnrollmentSelect } from '@/presentation/components/enrollment/enrollment-select';
-import { FileResourceSelect } from '@/presentation/components/file/file-resource-select';
+import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';
+import { EnrollmentSelect } from '@/presentation/components/shared/enrollment/enrollment-select';
+import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface EditPathDialogProps {
   open: boolean;

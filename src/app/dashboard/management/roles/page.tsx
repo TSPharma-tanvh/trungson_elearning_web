@@ -72,7 +72,9 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ display: 'flex', flex: '1 1 auto' }}>
-          <Typography variant="h4">Roles</Typography>
+          <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
+            Roles
+          </Typography>
         </Stack>
         <div>
           <Button

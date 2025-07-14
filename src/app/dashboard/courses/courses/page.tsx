@@ -5,8 +5,6 @@ import { CreateCourseRequest } from '@/domain/models/courses/request/create-cour
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
-import { CourseDetailListResult } from '@/domain/models/courses/response/course-detail-result';
-import { CourseResponse } from '@/domain/models/courses/response/course-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -39,7 +37,7 @@ export default function Page(): React.JSX.Element {
       setCourses(courses);
       setTotalCount(totalRecords);
     } catch (error) {
-      console.error('Failed to fetch courses:', error);
+      setCourses([]);
     }
   }, [filters, page, rowsPerPage, courseUsecase]);
 
@@ -103,7 +101,9 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Courses</Typography>
+          <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
+            Courses
+          </Typography>
         </Stack>
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}

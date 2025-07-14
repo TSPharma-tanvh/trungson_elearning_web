@@ -23,11 +23,11 @@ import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/classes/category-multickeck-form';
 import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
 import { ClassTeacherFilters } from '@/presentation/components/dashboard/class/teacher/class-teacher-filter';
 import TeacherTable from '@/presentation/components/dashboard/class/teacher/class-teacher-table';
 import { CreateClassTeacherDialog } from '@/presentation/components/dashboard/class/teacher/create-teacher-form';
+import { CategoryMultiCheckForm } from '@/presentation/components/shared/category/category-multickeck-form';
 
 export default function Page(): React.JSX.Element {
   const theme = useTheme();

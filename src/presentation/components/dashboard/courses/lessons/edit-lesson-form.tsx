@@ -27,14 +27,14 @@ import {
 } from '@mui/material';
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 
-import { QuizMultiSelectDialog } from '@/presentation/components/quiz/quiz/quiz-multi-select';
+import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
+import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
+import { QuizMultiSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select';
 
-import { CategorySelect } from '../../../category/category-select';
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '../../../core/text-field/custom-textfield';
-import { CustomVideoPlayer } from '../../../file/custom-video-player';
-import { FileResourceSelect } from '../../../file/file-resource-select';
 
 interface EditLessonDialogProps {
   open: boolean;

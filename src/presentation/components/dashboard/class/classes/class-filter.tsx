@@ -2,34 +2,24 @@
 
 import * as React from 'react';
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
-import { LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
-import {
-  Box,
-  Button,
-  Card,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Stack,
-  TextField,
-} from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
+import { Button, Card, Stack } from '@mui/material';
+
+import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
+import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest) => void }): React.JSX.Element {
   const [searchText, setSearchText] = React.useState('');
   const [className, setClassName] = React.useState('');
-  const [classType, setClassType] = React.useState<string | undefined>(undefined);
-  const [scheduleStatus, setScheduleStatus] = React.useState<string | undefined>(undefined);
+  const [classType, setClassType] = React.useState<LearningModeEnum | undefined>(undefined);
+  const [scheduleStatus, setScheduleStatus] = React.useState<ScheduleStatusEnum | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetClassRequest({
       searchText: searchText || undefined,
       className: className || undefined,
-      classType: classType !== undefined ? LearningModeEnum[+classType as number] : undefined,
-      scheduleStatus: scheduleStatus !== undefined ? ScheduleStatusEnum[+scheduleStatus as number] : undefined,
+      classType: classType !== undefined ? LearningModeEnum[classType] : undefined,
+      scheduleStatus: scheduleStatus !== undefined ? ScheduleStatusEnum[scheduleStatus] : undefined,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -47,56 +37,59 @@ export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest
   };
 
   return (
-    <Card sx={{ p: 2 }}>
+    <Card
+      sx={{
+        p: 2,
+        backgroundColor: 'var(--mui-palette-common-white)',
+        color: 'var(--mui-palette-primary-main)',
+        border: '1px solid var(--mui-palette-primary-main)',
+      }}
+    >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
         {/* Search Text */}
-        <OutlinedInput
-          size="small"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          fullWidth
-          placeholder="Search..."
-          startAdornment={
-            <InputAdornment position="start">
-              <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
-            </InputAdornment>
-          }
-          sx={{ maxWidth: 250 }}
-        />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search class" />
 
         {/* Class Type */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Class Type</InputLabel>
-          <Select
-            value={classType ?? ''}
-            label="Class Type"
-            onChange={(e) => setClassType(e.target.value === '' ? undefined : e.target.value)}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={LearningModeEnum.Online.toString()}>Online</MenuItem>
-            <MenuItem value={LearningModeEnum.Offline.toString()}>Offline</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<LearningModeEnum>
+          label="Class Type"
+          value={classType}
+          onChange={(val) => setClassType(val)}
+          options={CoreEnumUtils.getEnumOptions(LearningModeEnum)}
+        />
 
         {/* Schedule Status */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Schedule Status</InputLabel>
-          <Select
-            value={scheduleStatus ?? ''}
-            label="Schedule Status"
-            onChange={(e) => setScheduleStatus(e.target.value === '' ? undefined : e.target.value)}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={ScheduleStatusEnum.Schedule.toString()}>Schedule</MenuItem>
-            <MenuItem value={ScheduleStatusEnum.Ongoing.toString()}>Ongoing</MenuItem>
-            <MenuItem value={ScheduleStatusEnum.Cancelled.toString()}>Cancelled</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<ScheduleStatusEnum>
+          label="Schedule Status"
+          value={scheduleStatus}
+          onChange={(val) => setScheduleStatus(val)}
+          options={CoreEnumUtils.getEnumOptions(ScheduleStatusEnum)}
+          minWidth={180}
+        />
 
-        <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={handleFilter}
+          sx={{ backgroundColor: 'var(--mui-palette-primary-main)', color: 'var(--mui-palette-common-white)' }}
+        >
           Filter
         </Button>
-        <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={handleClear}
+          sx={{
+            color: 'var(--mui-palette-secondary-main)',
+            borderColor: 'var(--mui-palette-secondary-main)',
+            '&:hover': {
+              backgroundColor: 'var(--mui-palette-secondary-main)',
+              color: 'var(--mui-palette-common-white)',
+              borderColor: 'var(--mui-palette-secondary-dark)',
+            },
+          }}
+        >
           Clear
         </Button>
       </Stack>

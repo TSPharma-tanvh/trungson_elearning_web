@@ -1,3 +1,4 @@
+import { AnswerUsecase } from '@/domain/usecases/answer/answer-usecase';
 import { SignInUseCase } from '@/domain/usecases/auth/auth-usecase';
 import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
@@ -13,6 +14,7 @@ import { RoleUsecase } from '@/domain/usecases/role/role-usecase';
 import { SendNotificationUseCase } from '@/domain/usecases/SendNotificationUseCase';
 import { UserUsecase } from '@/domain/usecases/user/user-usecase';
 
+import { AnswerRepoImpl } from '@/data/repositories/answer/answer-repo-impl';
 import { AuthRepositoryImpl } from '@/data/repositories/auth/auth-repo-impl';
 import { CategoryRepositoryImpl } from '@/data/repositories/category/category-repo-impl';
 import { ClassRepoImpl } from '@/data/repositories/class/class-repo-impl';
@@ -72,6 +74,9 @@ export class DependencyContainer {
   //question
   public questionRepo = new QuestionRepoImpl();
 
+  //answer
+  public answerRepo = new AnswerRepoImpl();
+
   /// Use cases
   public sendNotificationUseCase = new SendNotificationUseCase(this.notificationRepo);
 
@@ -110,6 +115,9 @@ export class DependencyContainer {
 
   //question
   public questionUsecase = new QuestionUsecase(this.questionRepo);
+
+  //answer
+  public answerUsecase = new AnswerUsecase(this.answerRepo);
 
   //file resource
   public fileUsecase = new FileResourcesUsecase(this.fileRepo);

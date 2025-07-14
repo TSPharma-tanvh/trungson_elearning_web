@@ -16,7 +16,6 @@ export class CreateLessonRequest {
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
 
-  // Required
   video!: File;
   videoDocumentNo?: string;
   videoPrefixName?: string;

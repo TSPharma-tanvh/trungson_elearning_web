@@ -71,8 +71,14 @@ export class CoreEnumUtils {
     if (!enumObj) return [];
     return Object.keys(enumObj).filter((key) => isNaN(Number(key)));
   }
-}
 
+  static getEnumOptions<T extends object, V = T[keyof T]>(enumObj: T): { label: string; value: V }[] {
+    return this.getEnumKeys(enumObj).map((key) => ({
+      label: key,
+      value: enumObj[key as keyof T] as V,
+    }));
+  }
+}
 export class CategoryEnumUtils {
   static getCategoryKeys(): string[] {
     return Object.keys(CategoryEnum).filter((key) => isNaN(Number(key)));

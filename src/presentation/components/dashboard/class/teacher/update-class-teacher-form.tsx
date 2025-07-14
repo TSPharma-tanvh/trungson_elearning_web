@@ -20,11 +20,11 @@ import {
 import { Box, useMediaQuery, useTheme } from '@mui/system';
 import { Form } from 'react-hook-form';
 
-import { ClassMultiSelectDialog } from '@/presentation/components/classes/class/class-multi-select';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { CourseMultiSelectDialog } from '@/presentation/components/courses/courses/courses-multi-select';
+import { ClassMultiSelectDialog } from '@/presentation/components/shared/classes/class/class-multi-select';
+import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';
 import { UserSelectDialog } from '@/presentation/components/user/user-select';
 
 interface EditClassTeacherDialogProps {

@@ -27,7 +27,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { ConfirmDeleteDialog } from '../../../dashboard/core/dialog/confirm-delete-dialog';
+import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 import CoursePathDetailForm from './course-path-detail-form';
 import { UpdatePathFormDialog } from './update-path-form';
 
@@ -106,24 +106,64 @@ export default function CoursePathTable({
 
   return (
     <>
-      <Card>
+      <Card
+        sx={{
+          p: '0 0 8px 0',
+          backgroundColor: 'var(--mui-palette-common-white)',
+          color: 'var(--mui-palette-primary-main)',
+          border: '1px solid var(--mui-palette-primary-main)',
+          borderRadius: '16px',
+        }}
+      >
         {selected.size > 0 && (
-          <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button color="error" variant="outlined" onClick={() => handleOpenDeleteDialog(Array.from(selected))}>
+          <Box
+            display="flex"
+            justifyContent="flex-end"
+            p={2}
+            sx={{ backgroundColor: 'var(--mui-palette-primary-main)' }}
+          >
+            <Button
+              sx={{
+                backgroundColor: 'var(--mui-palette-secondary-main)',
+                color: 'var(--mui-palette-common-white)',
+                '&:hover': { backgroundColor: 'var(--mui-palette-secondary-dark)' },
+              }}
+              variant="outlined"
+              onClick={() => handleOpenDeleteDialog(Array.from(selected))}
+            >
               Delete Selected ({selected.size})
             </Button>
           </Box>
         )}
 
-        <TableContainer>
+        <TableContainer sx={{ border: 'none' }}>
           <Table>
-            <TableHead>
+            <TableHead
+              sx={{
+                '& .MuiTableCell-head': {
+                  backgroundColor: 'var(--mui-palette-primary-main)',
+                  color: 'var(--mui-palette-common-white)',
+                },
+                '& .MuiTableCell-body': {
+                  borderBottom: '1px solid var(--mui-palette-primary-main)',
+                },
+              }}
+            >
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={selected.size === rows.length && rows.length > 0}
                     indeterminate={selected.size > 0 && selected.size < rows.length}
                     onChange={handleSelectAll}
+                    sx={{
+                      color: 'var(--mui-palette-common-white)',
+                      '&.Mui-checked': {
+                        color: 'var(--mui-palette-common-white)',
+                      },
+                      '&.MuiCheckbox-indeterminate': {
+                        color: 'var(--mui-palette-common-white)',
+                      },
+                    }}
                   />
                 </TableCell>
                 <TableCell>Name</TableCell>
@@ -137,7 +177,13 @@ export default function CoursePathTable({
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody
+              sx={{
+                '& .MuiTableCell-body': {
+                  borderBottom: '1px solid var(--mui-palette-primary-main)',
+                },
+              }}
+            >
               {rows.map((row) => {
                 const isItemSelected = isSelected(row.id!);
                 return (
@@ -182,6 +228,14 @@ export default function CoursePathTable({
           onPageChange={onPageChange}
           onRowsPerPageChange={onRowsPerPageChange}
           labelDisplayedRows={() => `Page ${page + 1} of ${Math.ceil(count / rowsPerPage)}`}
+          sx={{
+            '& .MuiTablePagination-actions button': {
+              color: 'var(--mui-palette-primary-main)',
+              '&.Mui-disabled': {
+                color: 'var(--mui-palette-action-disabled)',
+              },
+            },
+          }}
         />
       </Card>
 

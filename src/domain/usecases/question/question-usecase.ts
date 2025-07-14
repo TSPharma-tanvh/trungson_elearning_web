@@ -54,6 +54,7 @@ export class QuestionUsecase {
   async deleteQuestion(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateQuestionRequest({
       id: id ?? '',
+      status: StatusEnum.Deleted,
     });
 
     var result = await this.courseRepo.updateQuestion(newFormData);

@@ -4,22 +4,11 @@ import * as React from 'react';
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import {
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+
+import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
+import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseRequest) => void }): React.JSX.Element {
   const [searchText, setSearchText] = React.useState('');
@@ -53,102 +42,60 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
   };
 
   return (
-    <Card sx={{ p: 2 }}>
+    <Card
+      sx={{
+        p: 2,
+        backgroundColor: 'var(--mui-palette-common-white)',
+        color: 'var(--mui-palette-primary-main)',
+        border: '1px solid var(--mui-palette-primary-main)',
+      }}
+    >
+      {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <OutlinedInput
-          size="small"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          fullWidth
-          placeholder="Search course"
-          startAdornment={
-            <InputAdornment position="start">
-              <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
-            </InputAdornment>
-          }
-          sx={{ maxWidth: 250 }}
-        />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search course" />
 
         {/* Is Required */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Is Required</InputLabel>
-          <Select
-            value={isRequired === undefined ? '' : isRequired ? 'true' : 'false'}
-            label="Is Required"
-            onChange={(e) => {
-              const val = e.target.value;
-              setIsRequired(val === '' ? undefined : val === 'true');
-            }}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="true">Required</MenuItem>
-            <MenuItem value="false">Optional</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<boolean>
+          label="Is Required"
+          value={isRequired}
+          onChange={setIsRequired}
+          options={[
+            { value: true, label: 'Required' },
+            { value: false, label: 'Optional' },
+          ]}
+        />
 
         {/* Course Type */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Type</InputLabel>
-          <Select
-            value={courseType !== undefined ? courseType.toString() : ''}
-            onChange={(e) =>
-              setCourseType(e.target.value === '' ? undefined : (Number(e.target.value) as LearningModeEnum))
-            }
-            label="Type"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={LearningModeEnum.Online}>Online</MenuItem>
-            <MenuItem value={LearningModeEnum.Offline}>Offline</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<LearningModeEnum>
+          label="Type"
+          value={courseType}
+          onChange={(val) => setCourseType(val)}
+          options={CoreEnumUtils.getEnumOptions(LearningModeEnum)}
+        />
 
         {/* Status */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            value={status !== undefined ? status.toString() : ''}
-            onChange={(e) => setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum))}
-            label="Status"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={StatusEnum.Enable}>Enable</MenuItem>
-            <MenuItem value={StatusEnum.Disable}>Disable</MenuItem>
-            <MenuItem value={StatusEnum.Deleted}>Deleted</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<StatusEnum>
+          label="Status"
+          value={status}
+          onChange={(val) => setStatus(val)}
+          options={CoreEnumUtils.getEnumOptions(StatusEnum)}
+        />
 
         {/* Display Type */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Display Type</InputLabel>
-          <Select
-            label="Display Type"
-            value={displayType !== undefined ? displayType.toString() : ''}
-            onChange={(e) =>
-              setDisplayType(e.target.value === '' ? undefined : (Number(e.target.value) as DisplayTypeEnum))
-            }
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={DisplayTypeEnum.Public}>Public</MenuItem>
-            <MenuItem value={DisplayTypeEnum.Private}>Private</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<DisplayTypeEnum>
+          label="Display Type"
+          value={displayType}
+          onChange={(val) => setDisplayType(val)}
+          options={CoreEnumUtils.getEnumOptions(DisplayTypeEnum)}
+        />
 
         {/* Schedule status */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            value={scheduleStatus !== undefined ? scheduleStatus.toString() : ''}
-            onChange={(e) =>
-              setScheduleStatus(e.target.value === '' ? undefined : (Number(e.target.value) as ScheduleStatusEnum))
-            }
-            label="Status"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={ScheduleStatusEnum.Schedule}>Schedule</MenuItem>
-            <MenuItem value={ScheduleStatusEnum.Ongoing}>Ongoing</MenuItem>
-            <MenuItem value={ScheduleStatusEnum.Cancelled}>Cancelled</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<ScheduleStatusEnum>
+          label="Status"
+          value={scheduleStatus}
+          onChange={(val) => setScheduleStatus(val)}
+          options={CoreEnumUtils.getEnumOptions(ScheduleStatusEnum)}
+        />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
           Filter

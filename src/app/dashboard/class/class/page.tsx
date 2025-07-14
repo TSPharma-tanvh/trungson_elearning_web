@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import type { Metadata } from 'next';
 import { CreateClassRequest } from '@/domain/models/class/request/create-class-request';
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
@@ -10,15 +9,9 @@ import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Box, useMediaQuery, useTheme } from '@mui/system';
-import { Copy, CopySimple } from '@phosphor-icons/react/dist/ssr';
-import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
-import { Plus, Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
-import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
-import dayjs from 'dayjs';
+import { useMediaQuery, useTheme } from '@mui/system';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
-import { config } from '@/config';
-import { CategoryMultiCheckForm } from '@/presentation/components/dashboard/class/classes/category-multickeck-form';
 import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
 import ClassTable from '@/presentation/components/dashboard/class/classes/class-table';
 import { CreateClassDialog } from '@/presentation/components/dashboard/class/classes/create-class-form';
@@ -126,7 +119,9 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Class</Typography>
+          <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
+            Class
+          </Typography>
         </Stack>
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}

@@ -61,7 +61,15 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
   };
 
   return (
-    <Card sx={{ p: 2 }}>
+    <Card
+      sx={{
+        p: 2,
+        backgroundColor: 'var(--mui-palette-common-white)',
+        color: 'var(--mui-palette-primary-main)',
+        border: '1px solid var(--mui-palette-primary-main)',
+      }}
+    >
+      {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
         <OutlinedInput
           size="small"
@@ -71,13 +79,24 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
           placeholder="Search User"
           startAdornment={
             <InputAdornment position="start">
-              <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
+              <MagnifyingGlassIcon
+                fontSize="var(--icon-fontSize-md)"
+                style={{ color: 'var(--mui-palette-primary-main)' }}
+              />{' '}
             </InputAdornment>
           }
-          sx={{ maxWidth: '300px' }}
+          sx={{
+            maxWidth: 250,
+            input: { color: 'var(--mui-palette-primary-main)' },
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
+          }}
         />
 
-        <FormControl sx={{ m: 1, minWidth: 120, maxWidth: '300px' }} size="small" fullWidth>
+        <FormControl
+          sx={{ minWidth: 150, maxWidth: 200, '& .MuiInputLabel-root': { color: 'var(--mui-palette-primary-main)' } }}
+          size="small"
+          fullWidth
+        >
           <InputLabel id="role-select-label">Roles</InputLabel>
           <Select
             multiple
@@ -95,6 +114,13 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
                   .join(', ')
               )
             }
+            sx={{
+              '& .MuiSelect-select': {
+                backgroundColor: 'var(--mui-palette-common-white)',
+                color: 'var(--mui-palette-primary-main)',
+              },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
+            }}
             MenuProps={{
               PaperProps: {
                 style: { maxHeight: 300 },
@@ -106,9 +132,24 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
             }}
           >
             {roleOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                <Checkbox checked={roles.includes(option.value)} />
-                <ListItemText primary={option.label} />
+              <MenuItem
+                key={option.value}
+                value={option.value}
+                style={{ color: 'var(--mui-palette-primary-main)', backgroundColor: 'var(--mui-palette-common-white)' }}
+              >
+                <Checkbox
+                  checked={roles.includes(option.value)}
+                  style={{
+                    color: 'var(--mui-palette-primary-main)',
+                    backgroundColor: 'var(--mui-palette-common-white)',
+                  }}
+                />
+                <ListItemText
+                  primary={option.label}
+                  style={{
+                    color: 'var(--mui-palette-primary-main)',
+                  }}
+                />
               </MenuItem>
             ))}
             {loading && (
@@ -119,10 +160,30 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
           </Select>
         </FormControl>
 
-        <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={handleFilter}
+          sx={{ backgroundColor: 'var(--mui-palette-primary-main)', color: 'var(--mui-palette-common-white)' }}
+        >
           Filter
         </Button>
-        <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={handleClear}
+          sx={{
+            color: 'var(--mui-palette-secondary-main)',
+            borderColor: 'var(--mui-palette-secondary-main)',
+            '&:hover': {
+              backgroundColor: 'var(--mui-palette-secondary-main)',
+              color: 'var(--mui-palette-common-white)',
+              borderColor: 'var(--mui-palette-secondary-dark)',
+            },
+          }}
+        >
           Clear
         </Button>
       </Stack>

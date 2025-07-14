@@ -22,16 +22,15 @@ import {
 } from '@mui/material';
 import { Article, Calendar, Clock, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
-import { CategorySelect } from '@/presentation/components/category/category-select';
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { FileResourceSelect } from '@/presentation/components/file/file-resource-select';
-import ImagePreviewDialog from '@/presentation/components/file/image-preview-dialog';
-import VideoPreviewDialog from '@/presentation/components/file/video-preview-dialog';
-import { QuizSelectDialog } from '@/presentation/components/quiz/quiz/quiz-select';
+import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
+import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
+import { QuizSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 
 interface Props {
   disabled?: boolean;

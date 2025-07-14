@@ -21,7 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { ConfirmDeleteDialog } from '../../core/dialog/confirm-delete-dialog';
+import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 
 interface Props {
   rows: RoleResponse[];
@@ -128,10 +128,31 @@ export default function RolesTable({
 
   return (
     <>
-      <Card>
+      <Card
+        sx={{
+          p: '0 0 8px 0',
+          backgroundColor: 'var(--mui-palette-common-white)',
+          color: 'var(--mui-palette-primary-main)',
+          border: '1px solid var(--mui-palette-primary-main)',
+          borderRadius: '16px',
+        }}
+      >
         {selected.size > 0 && (
-          <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button color="error" variant="outlined" onClick={handleDeleteSelected}>
+          <Box
+            display="flex"
+            justifyContent="flex-end"
+            p={2}
+            sx={{ backgroundColor: 'var(--mui-palette-primary-main)' }}
+          >
+            <Button
+              sx={{
+                backgroundColor: 'var(--mui-palette-secondary-main)',
+                color: 'var(--mui-palette-common-white)',
+                '&:hover': { backgroundColor: 'var(--mui-palette-secondary-dark)' },
+              }}
+              variant="outlined"
+              onClick={handleDeleteSelected}
+            >
               Delete Selected ({selected.size})
             </Button>
           </Box>
@@ -139,13 +160,32 @@ export default function RolesTable({
 
         <TableContainer>
           <Table>
-            <TableHead>
+            <TableHead
+              sx={{
+                '& .MuiTableCell-head': {
+                  backgroundColor: 'var(--mui-palette-primary-main)',
+                  color: 'var(--mui-palette-common-white)',
+                },
+                '& .MuiTableCell-body': {
+                  borderBottom: '1px solid var(--mui-palette-primary-main)',
+                },
+              }}
+            >
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={selected.size === rows.length && rows.length > 0}
                     indeterminate={selected.size > 0 && selected.size < rows.length}
                     onChange={handleSelectAll}
+                    sx={{
+                      color: 'var(--mui-palette-common-white)',
+                      '&.Mui-checked': {
+                        color: 'var(--mui-palette-common-white)',
+                      },
+                      '&.MuiCheckbox-indeterminate': {
+                        color: 'var(--mui-palette-common-white)',
+                      },
+                    }}
                   />
                 </TableCell>
                 <TableCell>Role Name</TableCell>
@@ -154,7 +194,13 @@ export default function RolesTable({
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody
+              sx={{
+                '& .MuiTableCell-body': {
+                  borderBottom: '1px solid var(--mui-palette-primary-main)',
+                },
+              }}
+            >
               {rows.map((row) => {
                 const isItemSelected = isSelected(row.id ?? '');
                 return (
@@ -212,6 +258,14 @@ export default function RolesTable({
           labelDisplayedRows={() => {
             const totalPages = Math.ceil(count / rowsPerPage);
             return `Page ${page + 1} of ${totalPages}`;
+          }}
+          sx={{
+            '& .MuiTablePagination-actions button': {
+              color: 'var(--mui-palette-primary-main)',
+              '&.Mui-disabled': {
+                color: 'var(--mui-palette-action-disabled)',
+              },
+            },
           }}
         />
       </Card>

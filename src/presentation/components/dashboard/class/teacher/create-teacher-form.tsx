@@ -9,13 +9,12 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 
-import { ClassMultiSelectDialog } from '@/presentation/components/classes/class/class-multi-select';
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { CourseMultiSelectDialog } from '@/presentation/components/courses/courses/courses-multi-select';
-import { CourseSelectDialog } from '@/presentation/components/courses/courses/courses-select';
+import { ClassMultiSelectDialog } from '@/presentation/components/shared/classes/class/class-multi-select';
+import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';
 import { UserSelectDialog } from '@/presentation/components/user/user-select';
 
 interface Props {

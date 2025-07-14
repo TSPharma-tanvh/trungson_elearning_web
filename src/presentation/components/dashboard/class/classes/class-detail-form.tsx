@@ -2,11 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
 import { useDI } from '@/presentation/hooks/useDependencyContainer';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -16,7 +14,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -26,8 +23,8 @@ import {
 } from '@mui/material';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
-import { CustomVideoPlayer } from '@/presentation/components/file/custom-video-player';
-import ImagePreviewDialog from '@/presentation/components/file/image-preview-dialog';
+import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
 interface Props {
   open: boolean;
@@ -39,7 +36,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
-    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+    <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
         {label}
       </Typography>

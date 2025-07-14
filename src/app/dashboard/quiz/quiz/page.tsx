@@ -35,7 +35,7 @@ export default function Page(): React.JSX.Element {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const fetchQuizs = React.useCallback(async () => {
+  const fetchQuizzes = React.useCallback(async () => {
     try {
       const request = new GetQuizRequest({
         ...filters,
@@ -46,13 +46,13 @@ export default function Page(): React.JSX.Element {
       setQuizzes(quizzes);
       setTotalCount(totalRecords);
     } catch (error) {
-      console.error('Failed to fetch courses:', error);
+      setQuizzes([]);
     }
   }, [filters, page, rowsPerPage, quizUsecase]);
 
   React.useEffect(() => {
-    fetchQuizs();
-  }, [fetchQuizs]);
+    fetchQuizzes();
+  }, [fetchQuizzes]);
 
   const handleFilter = (newFilters: GetQuizRequest) => {
     setFilters(newFilters);
@@ -73,7 +73,7 @@ export default function Page(): React.JSX.Element {
     try {
       await quizUsecase.createQuiz(request);
       setShowCreateDialog(false);
-      await fetchQuizs();
+      await fetchQuizzes();
     } catch (error) {
       console.error('Failed to create course path:', error);
     }
@@ -83,7 +83,7 @@ export default function Page(): React.JSX.Element {
     try {
       await quizUsecase.importFromExcel(request);
       setShowImportDialog(false);
-      await fetchQuizs();
+      await fetchQuizzes();
     } catch (error) {
       console.error('Failed to create course path:', error);
     }
@@ -92,7 +92,7 @@ export default function Page(): React.JSX.Element {
   const handleEditQuiz = async (request: UpdateQuizRequest) => {
     try {
       await quizUsecase.updateQuiz(request);
-      await fetchQuizs();
+      await fetchQuizzes();
     } catch (error) {
       console.error('Failed to update course path:', error);
     }
@@ -107,7 +107,7 @@ export default function Page(): React.JSX.Element {
           throw new Error(`Failed to delete path with ID: ${id}`);
         }
       }
-      await fetchQuizs();
+      await fetchQuizzes();
     } catch (error) {
       console.error('Failed to delete course paths:', error);
       throw error;

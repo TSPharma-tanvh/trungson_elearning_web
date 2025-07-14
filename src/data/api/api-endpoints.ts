@@ -96,6 +96,13 @@ interface QuestionEndpoints {
   create: StaticEndpoint;
   update: StaticEndpoint;
 }
+
+interface AnswerEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+}
 interface FileResourcesEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
@@ -117,6 +124,7 @@ interface EndpointDefinitions {
   classTeacher: ClassTeacherEndpoints;
   quiz: QuizEndpoints;
   questions: QuestionEndpoints;
+  answers: AnswerEndpoints;
   fileResources: FileResourcesEndpoints;
 }
 
@@ -203,6 +211,12 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `Question/GetQuestionById/${id}`,
     create: 'Question/CreateQuestion',
     update: 'Question/UpdateQuestion',
+  },
+  answers: {
+    getAll: 'Answer/GetAnswer',
+    getById: (id: string) => `Answer/GetAnswerById/${id}`,
+    create: 'Answer/CreateAnswer',
+    update: 'Answer/UpdateAnswer',
   },
   fileResources: {
     getAll: 'Resource/GetFileResources',

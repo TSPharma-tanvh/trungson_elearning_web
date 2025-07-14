@@ -8,10 +8,11 @@ import { FileResourcesResponse } from '../../file/response/file-resources-respon
 export class QuestionResponse {
   id!: string;
   questionText: string = '';
-  questionType!: QuestionEnum;
+  questionType!: string;
   point!: number;
   canShuffle!: boolean;
   totalAnswer?: number;
+  status?: string;
   categoryId?: string;
   category?: CategoryResponse;
   thumbnailId?: string;
@@ -31,13 +32,16 @@ export class QuestionResponse {
     dto.point = json.point;
     dto.canShuffle = json.canShuffle;
     dto.totalAnswer = json.totalAnswer;
+    dto.status = json.status;
     dto.categoryId = json.categoryId;
     dto.thumbnailId = json.thumbnailId;
+
     dto.category = json.category ? CategoryResponse.fromJSON(json.category) : undefined;
     dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined;
     dto.fileQuestionRelation =
       json.fileQuestionRelation?.map((f: any) => FileQuestionRelationResponse.fromJSON(f)) ?? [];
     dto.answers = json.answers?.map((a: any) => AnswerResponse.fromJSON(a)) ?? [];
+
     return dto;
   }
 
@@ -49,6 +53,7 @@ export class QuestionResponse {
       point: this.point,
       canShuffle: this.canShuffle,
       totalAnswer: this.totalAnswer,
+      status: this.status,
       categoryId: this.categoryId,
       thumbnailId: this.thumbnailId,
       category: this.category?.toJSON(),

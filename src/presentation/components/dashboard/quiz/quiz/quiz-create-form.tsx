@@ -10,13 +10,13 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 import { Clock } from '@phosphor-icons/react';
 
-import { CategorySelect } from '@/presentation/components/category/category-select';
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { QuestionMultiSelectDialog } from '@/presentation/components/quiz/question/question-multi-select';
+import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { QuestionMultiSelectDialog } from '@/presentation/components/shared/quiz/question/question-multi-select';
 
 interface Props {
   disabled?: boolean;
