@@ -8,10 +8,10 @@ import { AnswerRepository } from '@/domain/repositories/answer/answer-repository
 import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class AnswerUsecase {
-  constructor(private readonly courseRepo: AnswerRepository) {}
+  constructor(private readonly answerRepo: AnswerRepository) {}
 
   async getAnswerListInfo(request: GetAnswerRequest): Promise<AnswerDetailListResult> {
-    const result = await this.courseRepo.getAnswerListInfo(request);
+    const result = await this.answerRepo.getAnswerListInfo(request);
 
     if (!result || !Array.isArray(result.result)) {
       throw new Error('Failed to load user list.');
@@ -32,7 +32,7 @@ export class AnswerUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.courseRepo.getAnswerById(id);
+    var result = await this.answerRepo.getAnswerById(id);
 
     var userResponse = AnswerDetailResponse.fromJSON(result.result);
 
@@ -40,13 +40,13 @@ export class AnswerUsecase {
   }
 
   async createAnswer(request: CreateAnswerRequest): Promise<ApiResponse> {
-    const response = await this.courseRepo.createAnswer(request);
+    const response = await this.answerRepo.createAnswer(request);
 
     return response;
   }
 
   async updateAnswer(request: UpdateAnswerRequest): Promise<ApiResponse> {
-    var result = await this.courseRepo.updateAnswer(request);
+    var result = await this.answerRepo.updateAnswer(request);
 
     return result;
   }
@@ -57,7 +57,7 @@ export class AnswerUsecase {
       status: StatusEnum.Deleted,
     });
 
-    var result = await this.courseRepo.updateAnswer(newFormData);
+    var result = await this.answerRepo.updateAnswer(newFormData);
 
     return result;
   }

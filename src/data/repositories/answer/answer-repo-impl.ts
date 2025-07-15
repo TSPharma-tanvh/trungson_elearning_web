@@ -44,7 +44,7 @@ export class AnswerRepoImpl implements AnswerRepository {
 
   async createAnswer(request: CreateAnswerRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.courses.create, request.toFormData(), {
+      const response = await apiClient.post<ApiResponse>(apiEndpoints.answers.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -67,7 +67,7 @@ export class AnswerRepoImpl implements AnswerRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.courses.update, formData, {
+      const response = await apiClient.put<ApiResponse>(apiEndpoints.answers.update, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -9,6 +9,7 @@ export class AnswerDetailResponse {
   isCorrect: boolean = false;
   categoryID?: string;
   thumbnailID?: string;
+  status?: string;
   category?: CategoryDetailResponse;
   thumbnail?: FileResourcesResponse;
   userAnswerAnswersRelations: UserAnswerAnswerRelationDetailResponse[] = [];
@@ -25,6 +26,7 @@ export class AnswerDetailResponse {
       isCorrect: json.isCorrect,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
+      status: json.status,
       category: json.category ? CategoryDetailResponse.fromJson(json.category) : undefined,
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
       userAnswerAnswersRelations:
@@ -40,6 +42,7 @@ export class AnswerDetailResponse {
       isCorrect: this.isCorrect,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
+      status: this.status,
       category: this.category?.toJson(),
       thumbnail: this.thumbnail?.toJson(),
       userAnswerAnswersRelations: this.userAnswerAnswersRelations.map((x) => x.toJSON()),

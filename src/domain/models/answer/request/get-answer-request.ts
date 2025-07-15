@@ -1,8 +1,11 @@
+import { StatusEnum } from '@/utils/enum/core-enum';
+
 export class GetAnswerRequest {
   questionID?: string;
   answerText?: string;
   isCorrect?: boolean;
   searchText?: string;
+  status?: StatusEnum;
   pageNumber: number = 1;
   pageSize: number = 10;
 
@@ -20,6 +23,7 @@ export class GetAnswerRequest {
       answerText: this.answerText,
       isCorrect: this.isCorrect,
       searchText: this.searchText,
+      status: this.status,
       pageNumber: this.pageNumber,
       pageSize: this.pageSize,
     };

@@ -1,5 +1,6 @@
 import {
   AddressBook,
+  ArticleNyTimes,
   Book,
   Books,
   Chalkboard,
@@ -51,4 +52,5 @@ export const navIcons = {
   test: Exam,
   chat: ChatCircleText,
   teacher: ChalkboardTeacher,
+  answer: ArticleNyTimes,
 } as Record<string, Icon>;
