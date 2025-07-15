@@ -95,10 +95,21 @@ export function FileResourceMultiSelect({
   });
 
   useEffect(() => {
-    if (value.length && selectedFiles.length === 0) {
-      Promise.all(value.map((id) => fileUsecase.getFileResouceById(id)))
-        .then(setSelectedFiles)
-        .catch(console.error);
+    const selectedIdsSet = new Set(selectedFiles.map((f) => f.id));
+    const missingIds = value.filter((id) => !selectedIdsSet.has(id));
+
+    if (missingIds.length > 0) {
+      Promise.all(
+        missingIds.map((id) =>
+          fileUsecase.getFileResouceById(id).catch((err) => {
+            console.error('Error loading file:', err);
+            return null;
+          })
+        )
+      ).then((newFiles) => {
+        const validNewFiles = newFiles.filter((f): f is FileResourcesResponse => !!f);
+        setSelectedFiles((prev) => [...prev, ...validNewFiles]);
+      });
     }
   }, [value]);
 
@@ -115,6 +126,7 @@ export function FileResourceMultiSelect({
   }, [selectedType, filterTypeEnabled, searchText]);
 
   const handleConfirm = () => {
+    console.error(selectedIds);
     const newSelectedFiles = files.filter((f) => selectedIds.includes(f.id ?? ''));
     onChange(selectedIds);
     setSelectedFiles(newSelectedFiles);

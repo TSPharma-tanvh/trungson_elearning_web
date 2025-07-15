@@ -1,15 +1,16 @@
-import { CategoryEnum, QuestionEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 export class CreateQuestionRequest {
-  questionText!: string;
-  questionType!: QuestionEnum;
-  point!: number;
+  questionText?: string;
+  questionType?: QuestionEnum;
+  point?: number;
   canShuffle: boolean = true;
 
-  categoryID!: string;
+  categoryID?: string;
   answerIDs?: string;
   thumbnailID?: string;
   resourceIDs?: string;
+  status?: StatusEnum;
 
   resources?: File[];
   resourceDocumentNo?: string;
@@ -30,34 +31,37 @@ export class CreateQuestionRequest {
 
   toFormData(): FormData {
     const form = new FormData();
-    form.append('questionText', this.questionText);
-    form.append('questionType', this.questionType.toString());
-    form.append('point', this.point.toString());
-    form.append('canShuffle', this.canShuffle.toString());
 
-    form.append('categoryID', this.categoryID);
-    if (this.answerIDs) form.append('answerIDs', this.answerIDs);
-    if (this.thumbnailID) form.append('thumbnailID', this.thumbnailID);
-    if (this.resourceIDs) form.append('resourceIDs', this.resourceIDs);
+    if (this.questionText !== undefined) form.append('QuestionText', this.questionText);
+    if (this.questionType !== undefined) form.append('QuestionType', this.questionType.toString());
+    if (this.point !== undefined) form.append('Point', this.point.toString());
 
-    this.resources?.forEach((file) => form.append('resources', file));
-    if (this.resourceDocumentNo) form.append('resourceDocumentNo', this.resourceDocumentNo);
-    if (this.resourcePrefixName) form.append('resourcePrefixName', this.resourcePrefixName);
+    form.append('CanShuffle', this.canShuffle.toString());
 
-    if (this.thumbnail) form.append('thumbnail', this.thumbnail);
-    if (this.thumbDocumentNo) form.append('thumbDocumentNo', this.thumbDocumentNo);
-    if (this.thumbPrefixName) form.append('thumbPrefixName', this.thumbPrefixName);
+    if (this.categoryID !== undefined) form.append('CategoryID', this.categoryID);
+    if (this.answerIDs !== undefined) form.append('AnswerIDs', this.answerIDs);
+    if (this.thumbnailID !== undefined) form.append('ThumbnailID', this.thumbnailID);
+    if (this.resourceIDs !== undefined) form.append('ResourceIDs', this.resourceIDs);
+    if (this.status !== undefined) form.append('Status', this.status.toString());
+
+    this.resources?.forEach((file) => form.append('Resources', file));
+    if (this.resourceDocumentNo) form.append('ResourceDocumentNo', this.resourceDocumentNo);
+    if (this.resourcePrefixName) form.append('ResourcePrefixName', this.resourcePrefixName);
+
+    if (this.thumbnail) form.append('Thumbnail', this.thumbnail);
+    if (this.thumbDocumentNo) form.append('ThumbDocumentNo', this.thumbDocumentNo);
+    if (this.thumbPrefixName) form.append('ThumbPrefixName', this.thumbPrefixName);
 
     if (this.isDeleteOldResource !== undefined) {
-      form.append('isDeleteOldResource', this.isDeleteOldResource.toString());
+      form.append('IsDeleteOldResource', this.isDeleteOldResource.toString());
     }
 
     if (this.isDeleteOldThumbnail !== undefined) {
-      form.append('isDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
+      form.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
     }
 
     if (this.categoryEnum !== undefined) {
-      form.append('categoryEnum', this.categoryEnum.toString());
+      form.append('CategoryEnum', this.categoryEnum.toString());
     }
 
     return form;

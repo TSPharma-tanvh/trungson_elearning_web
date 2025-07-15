@@ -1,11 +1,11 @@
-import { AnswerDetailResponse } from './answer-detail-response';
-import { UserAnswerResponseDetail as UserAnswerDetailResponse } from './user-answer-detail-response';
+import { UserAnswerResponse } from '../../user-answer/response/user-answer-response';
+import { AnswerResponse } from './answer-response';
 
 export class UserAnswerAnswerRelationDetailResponse {
   answerID!: string;
   userAnswerID!: string;
-  answer?: AnswerDetailResponse;
-  userAnswer?: UserAnswerDetailResponse;
+  answer?: AnswerResponse;
+  userAnswer?: UserAnswerResponse;
 
   constructor(init?: Partial<UserAnswerAnswerRelationDetailResponse>) {
     Object.assign(this, init);
@@ -15,8 +15,8 @@ export class UserAnswerAnswerRelationDetailResponse {
     return new UserAnswerAnswerRelationDetailResponse({
       answerID: json.answerID,
       userAnswerID: json.userAnswerID,
-      answer: json.answer ? AnswerDetailResponse.fromJSON(json.answer) : undefined,
-      userAnswer: json.userAnswer ? UserAnswerDetailResponse.fromJSON(json.userAnswer) : undefined,
+      answer: json.answer ? AnswerResponse.fromJSON(json.answer) : undefined,
+      userAnswer: json.userAnswer ? UserAnswerResponse.fromJSON(json.userAnswer) : undefined,
     });
   }
 

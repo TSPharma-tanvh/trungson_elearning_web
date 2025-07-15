@@ -23,7 +23,7 @@ export class QuestionRepoImpl implements QuestionRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch question info');
     }
   }
 
@@ -38,7 +38,7 @@ export class QuestionRepoImpl implements QuestionRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch question info');
     }
   }
 
@@ -59,7 +59,7 @@ export class QuestionRepoImpl implements QuestionRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to create course');
+      throw new Error(error?.message || 'Failed to create question');
     }
   }
 
@@ -82,7 +82,7 @@ export class QuestionRepoImpl implements QuestionRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch question info');
     }
   }
 }

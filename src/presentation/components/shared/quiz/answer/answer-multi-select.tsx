@@ -36,6 +36,8 @@ import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
+import AnswerInformationForm from './answer-information-form';
+
 interface AnswerMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   answerUsecase: AnswerUsecase | null;
   value: string[];
@@ -228,6 +230,7 @@ export function AnswerMultiSelectDialog({
                     textOverflow: 'ellipsis',
                     flex: 1,
                     mr: 1,
+                    color: answer.isCorrect ? theme.palette.primary.light : theme.palette.error.main,
                   }}
                 />
                 <Button
@@ -276,13 +279,13 @@ export function AnswerMultiSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {/* {selectedAnswer && (
+      {selectedAnswer && (
         <AnswerInformationForm
           open={viewOpen}
           answerId={selectedAnswer?.id ?? null}
           onClose={() => setViewOpen(false)}
         />
-      )} */}
+      )}
     </>
   );
 }
