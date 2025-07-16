@@ -10,37 +10,32 @@ export class CreateEnrollmentCriteriaRequest {
   maxCapacity: number;
   targetPharmacyID?: string;
 
-  constructor(
-    name: string,
-    maxCapacity: number,
-    desc?: string,
-    enrollmentStatus: StatusEnum = StatusEnum.Enable,
-    enrollmentCriteriaType: CategoryEnum = CategoryEnum.Criteria,
-    targetID?: string,
-    targetLevelID?: string,
-    targetPharmacyID?: string
-  ) {
-    this.name = name;
-    this.desc = desc;
-    this.enrollmentStatus = enrollmentStatus;
-    this.enrollmentCriteriaType = enrollmentCriteriaType;
-    this.targetID = targetID;
-    this.targetLevelID = targetLevelID;
-    this.maxCapacity = maxCapacity;
-    this.targetPharmacyID = targetPharmacyID;
+  constructor(data: Partial<CreateEnrollmentCriteriaRequest>) {
+    this.name = data.name ?? '';
+    this.desc = data.desc;
+    this.enrollmentStatus = data.enrollmentStatus ?? StatusEnum.Enable;
+    this.enrollmentCriteriaType = data.enrollmentCriteriaType ?? CategoryEnum.Criteria;
+    this.targetID = data.targetID;
+    this.targetLevelID = data.targetLevelID;
+    this.maxCapacity = data.maxCapacity ?? 0;
+    this.targetPharmacyID = data.targetPharmacyID;
   }
 
   static fromJSON(json: any): CreateEnrollmentCriteriaRequest {
-    return new CreateEnrollmentCriteriaRequest(
-      json.name,
-      json.maxCapacity,
-      json.desc,
-      json.enrollmentStatus,
-      json.enrollmentCriteriaType,
-      json.targetID,
-      json.targetLevelID,
-      json.targetPharmacyID
-    );
+    return new CreateEnrollmentCriteriaRequest({
+      name: json.name,
+      desc: json.desc,
+      enrollmentStatus: json.enrollmentStatus
+        ? StatusEnum[json.enrollmentStatus as keyof typeof StatusEnum]
+        : undefined,
+      enrollmentCriteriaType: json.enrollmentCriteriaType
+        ? CategoryEnum[json.enrollmentCriteriaType as keyof typeof CategoryEnum]
+        : undefined,
+      targetID: json.targetID,
+      targetLevelID: json.targetLevelID,
+      maxCapacity: json.maxCapacity,
+      targetPharmacyID: json.targetPharmacyID,
+    });
   }
 
   toJSON(): any {

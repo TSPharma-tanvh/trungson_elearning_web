@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NotificationEntity } from '@/domain/models/Notification';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Box, Button, TextField } from '@mui/material';
 
 interface Props {

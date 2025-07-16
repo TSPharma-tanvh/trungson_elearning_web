@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 import Button from '@mui/material/Button';

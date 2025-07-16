@@ -11,6 +11,8 @@ export const navItems = [
       { key: 'customers', title: 'Customers', href: paths.dashboard.customers, icon: 'users' },
       { key: 'users', title: 'Users', href: paths.dashboard.users, icon: 'users' },
       { key: 'roles', title: 'Roles', href: paths.dashboard.roles, icon: 'roles' },
+      { key: 'category', title: 'Category', href: paths.dashboard.category, icon: 'category' },
+      { key: 'criteria', title: 'Enrollment Criteria', href: paths.dashboard.criteria, icon: 'criteria' },
     ],
   },
   {
@@ -42,6 +44,38 @@ export const navItems = [
       { key: 'question', title: 'Question', href: paths.dashboard.question, icon: 'question' },
       { key: 'answers', title: 'Answers', href: paths.dashboard.answers, icon: 'answer' },
       { key: 'form', title: 'Form', href: paths.dashboard.form, icon: 'form' },
+    ],
+  },
+  {
+    key: 'progress',
+    title: 'Progress',
+    icon: 'progress',
+    items: [
+      { key: 'pathProgress', title: 'User Path Progress', href: paths.dashboard.userPathProgress, icon: 'userPath' },
+      {
+        key: 'courseProgress',
+        title: 'User Course Progress',
+        href: paths.dashboard.userCourseProgress,
+        icon: 'userCourse',
+      },
+      {
+        key: 'lessonProgress',
+        title: 'User Lesson Progress',
+        href: paths.dashboard.userLessonProgress,
+        icon: 'userLesson',
+      },
+      {
+        key: 'classProgress',
+        title: 'User Class Progress',
+        href: paths.dashboard.userClassProgress,
+        icon: 'userClass',
+      },
+      {
+        key: 'quizProgress',
+        title: 'User Quiz Progress',
+        href: paths.dashboard.userQuizProgress,
+        icon: 'userQuiz',
+      },
     ],
   },
   {

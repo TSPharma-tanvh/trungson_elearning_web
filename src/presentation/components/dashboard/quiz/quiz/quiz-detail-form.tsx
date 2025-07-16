@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { QuestionResponse } from '@/domain/models/question/response/question-response';
 import { UserQuestionResponse } from '@/domain/models/question/response/user-question-response';
 import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

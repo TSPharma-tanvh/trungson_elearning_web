@@ -6,6 +6,7 @@ import { UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/requ
 import { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { EnrollmentCriteriaListResult } from '@/domain/models/enrollment/response/enrollment-criteria-result';
 import { EnrollmentCriteriaRepository } from '@/domain/repositories/enrollment/enrollment-criteria-repository';
+import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class EnrollmentUsecase {
   constructor(private readonly enrollRepo: EnrollmentCriteriaRepository) {}
@@ -14,10 +15,10 @@ export class EnrollmentUsecase {
     const result = await this.enrollRepo.getEnrollmentList(request);
 
     if (!result || !Array.isArray(result.result)) {
-      throw new Error('Failed to load user list.');
+      throw new Error('Failed to load enrollment list.');
     }
 
-    const data = result.result.map(EnrollmentCriteriaResponse.fromJSON);
+    const data = result.result.map(EnrollmentCriteriaDetailResponse.fromJson);
 
     return {
       enrollments: data,
@@ -49,5 +50,13 @@ export class EnrollmentUsecase {
     const response = await this.enrollRepo.updateEnrollment(request);
 
     return response;
+  }
+
+  async deleteEnrollment(id: string): Promise<ApiResponse> {
+    const request = new UpdateEnrollmentCriteriaRequest({
+      id,
+      enrollmentStatus: StatusEnum.Deleted,
+    });
+    return await this.enrollRepo.updateEnrollment(request);
   }
 }

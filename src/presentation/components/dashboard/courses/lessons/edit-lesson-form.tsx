@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';

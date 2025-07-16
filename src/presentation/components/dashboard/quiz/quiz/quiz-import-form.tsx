@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -50,7 +50,8 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
 
   const [form, setForm] = useState<CreateQuizFromExcelRequest>(
     new CreateQuizFromExcelRequest({
-      categoryEnum: CategoryEnum.Quiz,
+      questionCategoryEnum: CategoryEnum.Question,
+      answerCategoryEnum: CategoryEnum.Answer,
     })
   );
   const [filePreviewOpen, setFilePreviewOpen] = useState(false);
@@ -155,7 +156,8 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
     if (!open) {
       setForm(
         new CreateQuizFromExcelRequest({
-          categoryEnum: CategoryEnum.Quiz,
+          questionCategoryEnum: CategoryEnum.Question,
+          answerCategoryEnum: CategoryEnum.Answer,
         })
       );
     }
@@ -202,7 +204,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               flex: 1,
             }}
           >
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <CustomTextField
                 label="Point to Pass"
                 inputMode="numeric"
@@ -218,12 +220,24 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.questionCategoryID}
+                label="Question category"
                 onChange={(value) => handleChange('questionCategoryID', value)}
                 categoryEnum={CategoryEnum.Question}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={form.answerCategoryID}
+                label="Answer category"
+                onChange={(value) => handleChange('answerCategoryID', value)}
+                categoryEnum={CategoryEnum.Answer}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -247,12 +261,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                 startIcon={<ImageIcon {...iconStyle} />}
               >
                 Upload File
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*,video/*,application/pdf"
-                  onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
-                />
+                <input type="file" hidden onChange={(e) => handleFileUpload(e.target.files?.[0] || null)} />
               </Button>
             </Grid>
             {form.excelFile ? (

@@ -5,7 +5,7 @@ import { CreateCourseRequest } from '@/domain/models/courses/request/create-cour
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 

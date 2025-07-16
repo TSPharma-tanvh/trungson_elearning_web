@@ -6,7 +6,7 @@ import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-requ
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';

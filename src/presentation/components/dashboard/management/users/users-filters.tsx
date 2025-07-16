@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
 import { useRoleOptions } from '@/presentation/hooks/role/use-role-options';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import {
   Box,
   Button,

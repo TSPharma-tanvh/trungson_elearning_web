@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { useRoleOptions } from '@/presentation/hooks/role/use-role-options';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';

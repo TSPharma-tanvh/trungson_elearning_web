@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
 import { QuestionResponse } from '@/domain/models/question/response/question-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';

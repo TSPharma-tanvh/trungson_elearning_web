@@ -5,7 +5,7 @@ import { CreateRoleRequest } from '@/domain/models/role/request/create-role-requ
 import { UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
 import { PermissionResponse } from '@/domain/models/role/response/permission-reponse';
 import { RoleResponse } from '@/domain/models/role/response/role-response'; // Import RoleResponse
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import {
   Box,
   Button,

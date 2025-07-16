@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { UserResponse } from '@/domain/models/user/response/user-response';
 
-import { useDI } from '../useDependencyContainer';
+import { useDI } from '../use-dependency-container';
 
 export function useUserInfo() {
   const [user, setUser] = useState<UserResponse | null>(null);

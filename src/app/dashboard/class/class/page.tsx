@@ -5,7 +5,7 @@ import { CreateClassRequest } from '@/domain/models/class/request/create-class-r
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';

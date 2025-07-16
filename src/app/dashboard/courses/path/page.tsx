@@ -5,7 +5,7 @@ import { CreateCoursePathRequest } from '@/domain/models/path/request/create-pat
 import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 

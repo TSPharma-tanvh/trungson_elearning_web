@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { useUserInfo } from '@/presentation/hooks/user/use-user-info';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';

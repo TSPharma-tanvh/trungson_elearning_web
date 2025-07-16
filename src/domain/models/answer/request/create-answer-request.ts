@@ -1,4 +1,4 @@
-import { StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 export class CreateAnswerRequest {
   questionID?: string;
@@ -10,7 +10,7 @@ export class CreateAnswerRequest {
   thumbDocumentNo?: string;
   thumbPrefixName?: string;
   isDeleteOldThumbnail?: boolean;
-  categoryEnum?: string;
+  categoryEnum?: CategoryEnum;
   status?: StatusEnum;
 
   constructor(init?: Partial<CreateAnswerRequest>) {
@@ -49,7 +49,9 @@ export class CreateAnswerRequest {
     if (this.isDeleteOldThumbnail !== undefined) {
       formData.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
     }
-    if (this.categoryEnum) formData.append('CategoryEnum', this.categoryEnum);
+    if (this.categoryEnum !== undefined) {
+      formData.append('CategoryEnum', this.categoryEnum.toString());
+    }
     if (this.status != null) formData.append('Status', String(this.status));
     return formData;
   }

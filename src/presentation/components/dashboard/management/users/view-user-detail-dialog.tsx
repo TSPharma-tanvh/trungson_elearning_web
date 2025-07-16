@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { UserResponse } from '@/domain/models/user/response/user-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';

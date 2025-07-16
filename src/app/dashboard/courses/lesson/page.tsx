@@ -5,7 +5,7 @@ import { CreateLessonRequest } from '@/domain/models/lessons/request/create-less
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { Plus } from '@phosphor-icons/react';

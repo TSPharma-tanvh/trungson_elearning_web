@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useRoleOptions } from '@/presentation/hooks/role/use-role-options';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Box, CircularProgress, MenuItem, Select } from '@mui/material';
 
 export function RoleSelect() {

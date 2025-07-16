@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Badge, Lock, Person, Phone, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Button,

@@ -1,7 +1,7 @@
-import { CategoryResponse } from './category-response';
+import { CategoryDetailResponse } from './category-detail-response';
 
 export interface CategoryListResult {
-  categories: CategoryResponse[];
+  categories: CategoryDetailResponse[];
   totalRecords: number;
   pageNumber: number;
   pageSize: number;

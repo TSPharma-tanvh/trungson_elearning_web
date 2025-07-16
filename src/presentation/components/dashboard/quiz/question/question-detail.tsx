@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
 import { QuestionResponse } from '@/domain/models/question/response/question-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

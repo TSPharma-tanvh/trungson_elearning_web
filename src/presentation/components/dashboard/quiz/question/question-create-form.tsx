@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import { Image } from '@mui/icons-material';

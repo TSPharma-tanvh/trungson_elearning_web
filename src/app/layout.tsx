@@ -4,7 +4,7 @@ import type { Viewport } from 'next';
 import '@/styles/global.css';
 
 import { UserProvider } from '@/presentation/contexts/user-context';
-import { DIProvider } from '@/presentation/hooks/useDependencyContainer';
+import { DIProvider } from '@/presentation/hooks/use-dependency-container';
 
 import { LocalizationProvider } from '@/presentation/components/core/localization-provider';
 import { CustomSnackBarProvider } from '@/presentation/components/core/snack-bar/CustomSnackBarProvider';

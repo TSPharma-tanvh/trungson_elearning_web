@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { GetRoleRequest } from '@/domain/models/role/request/get-role-request';
 import { UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
 import { RoleResponse } from '@/domain/models/role/response/role-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 

@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/presentation/hooks/useDependencyContainer.tsx"
+    "src/presentation/hooks/use-dependency-container.tsx"
   ],
   "exclude": ["node_modules"]
 }

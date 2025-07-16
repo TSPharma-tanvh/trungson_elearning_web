@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';

@@ -5,10 +5,11 @@ import { CreateAnswerRequest } from '@/domain/models/answer/request/create-answe
 import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
 import { UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
 import { AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import { CreateAnswerForm } from '@/presentation/components/dashboard/quiz/answer/answer-create-form';
 import { AnswerFilters } from '@/presentation/components/dashboard/quiz/answer/answer-filter';
 import AnswerTable from '@/presentation/components/dashboard/quiz/answer/answer-table';
 
@@ -127,13 +128,11 @@ export default function Page(): React.JSX.Element {
         onEditAnswer={handleEditAnswer}
       ></AnswerTable>
 
-      {/* <AnswerCreateForm
+      <CreateAnswerForm
         onSubmit={handleCreateAnswer}
-        disabled={false}
-        loading={false}
         open={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}
-      />  */}
+      />
     </Stack>
   );
 }

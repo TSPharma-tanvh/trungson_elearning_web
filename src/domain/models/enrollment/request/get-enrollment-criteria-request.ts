@@ -1,6 +1,8 @@
+import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
+
 export class GetEnrollmentCriteriaRequest {
-  targetType?: string;
-  disableStatus?: string;
+  targetType?: CategoryEnum;
+  disableStatus?: StatusEnum;
   targetID?: string;
   targetLevelID?: string;
   maxCapacity?: number;
@@ -9,21 +11,31 @@ export class GetEnrollmentCriteriaRequest {
   pageNumber: number = 1;
   pageSize: number = 10;
 
-  constructor(init?: Partial<GetEnrollmentCriteriaRequest>) {
-    Object.assign(this, init);
+  constructor(data: Partial<GetEnrollmentCriteriaRequest> = {}) {
+    Object.assign(this, {
+      targetType: data.targetType,
+      disableStatus: data.disableStatus,
+      targetID: data.targetID,
+      targetLevelID: data.targetLevelID,
+      maxCapacity: data.maxCapacity,
+      targetPharmacyID: data.targetPharmacyID,
+      searchText: data.searchText,
+      pageNumber: data.pageNumber ?? 1,
+      pageSize: data.pageSize ?? 10,
+    });
   }
 
   static fromJSON(json: any): GetEnrollmentCriteriaRequest {
     return new GetEnrollmentCriteriaRequest({
-      targetType: json.targetType,
-      disableStatus: json.disableStatus,
+      targetType: json.targetType ? CategoryEnum[json.targetType as keyof typeof CategoryEnum] : undefined,
+      disableStatus: json.disableStatus ? StatusEnum[json.disableStatus as keyof typeof StatusEnum] : undefined,
       targetID: json.targetID,
       targetLevelID: json.targetLevelID,
       maxCapacity: json.maxCapacity,
       targetPharmacyID: json.targetPharmacyID,
       searchText: json.searchText,
-      pageNumber: json.pageNumber ?? 1,
-      pageSize: json.pageSize ?? 10,
+      pageNumber: json.pageNumber,
+      pageSize: json.pageSize,
     });
   }
 

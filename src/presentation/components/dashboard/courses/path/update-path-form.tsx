@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, CategoryEnumUtils } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';

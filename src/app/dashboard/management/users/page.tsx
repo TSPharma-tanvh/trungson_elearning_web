@@ -4,7 +4,7 @@ import * as React from 'react';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { UserResponse } from '@/domain/models/user/response/user-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';

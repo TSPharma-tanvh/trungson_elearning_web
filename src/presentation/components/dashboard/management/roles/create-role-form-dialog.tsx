@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
 import { PermissionResponse } from '@/domain/models/role/response/permission-reponse';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import {
   Box,
   Button,

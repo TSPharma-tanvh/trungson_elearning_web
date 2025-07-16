@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
   CategoryEnum,

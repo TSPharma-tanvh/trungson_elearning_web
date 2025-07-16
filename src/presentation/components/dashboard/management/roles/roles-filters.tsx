@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { GetRoleRequest } from '@/domain/models/role/request/get-role-request';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 

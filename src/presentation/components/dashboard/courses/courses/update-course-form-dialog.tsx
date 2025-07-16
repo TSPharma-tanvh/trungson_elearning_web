@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';

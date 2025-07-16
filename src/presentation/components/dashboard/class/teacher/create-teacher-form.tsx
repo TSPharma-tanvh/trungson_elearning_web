@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { ActiveEnum, LearningModeEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';

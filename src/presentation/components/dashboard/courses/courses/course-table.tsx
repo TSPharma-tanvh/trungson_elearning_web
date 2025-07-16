@@ -105,9 +105,6 @@ export default function CourseTable({
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
           <>
-            <TableCell padding="checkbox">
-              <Checkbox checked={isSelected} onChange={onSelect} />
-            </TableCell>
             <TableCell>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar src={row.thumbnail?.resourceUrl}>{row.name?.[0]}</Avatar>

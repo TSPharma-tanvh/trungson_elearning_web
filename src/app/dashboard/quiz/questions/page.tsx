@@ -5,7 +5,7 @@ import { CreateQuestionRequest } from '@/domain/models/question/request/create-q
 import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
 import { UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
 import { QuestionResponse } from '@/domain/models/question/response/question-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 

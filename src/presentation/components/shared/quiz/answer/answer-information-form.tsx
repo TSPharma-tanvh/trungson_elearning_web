@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';

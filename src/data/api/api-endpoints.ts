@@ -46,6 +46,8 @@ interface PathEnpoints {
 interface CategoryEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
 }
 
 interface EnrollmentCriteriaEndpoints {
@@ -168,6 +170,8 @@ const endpoints: EndpointDefinitions = {
   category: {
     getAll: 'Category/GetCategories',
     getById: (id: string) => `Category/GetCategory/${id}`,
+    create: 'Category/CreateCategory',
+    update: 'Category/UpdateCategory',
   },
   enrollment: {
     getAll: 'EnrollmentCriteria/GetEnrollmentCriteria',

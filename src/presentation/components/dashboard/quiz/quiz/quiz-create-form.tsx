@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';

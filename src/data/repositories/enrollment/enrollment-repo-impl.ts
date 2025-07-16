@@ -60,7 +60,7 @@ export class EnrollmentRepoImpl implements EnrollmentCriteriaRepository {
 
   async updateEnrollment(request: UpdateEnrollmentCriteriaRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.enrollment.update, request.toJSON());
+      const response = await apiClient.put<ApiResponse>(apiEndpoints.enrollment.update, request.toJSON());
 
       const apiResponse = response.data;
 

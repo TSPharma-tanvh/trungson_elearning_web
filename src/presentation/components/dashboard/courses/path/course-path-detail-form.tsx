@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CourseResponse } from '@/domain/models/courses/response/course-response';
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

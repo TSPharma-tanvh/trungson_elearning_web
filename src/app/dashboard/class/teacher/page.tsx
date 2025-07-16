@@ -11,7 +11,7 @@ import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-clas
 import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
 import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';

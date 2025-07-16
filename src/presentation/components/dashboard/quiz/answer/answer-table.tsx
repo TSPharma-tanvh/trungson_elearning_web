@@ -9,6 +9,9 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
+import AnswerDetailForm from './answer-detail-form';
+import { UpdateAnswerFormDialog } from './answer-update-form';
+
 interface AnswerTableProps {
   rows: AnswerDetailResponse[];
   count: number;
@@ -100,10 +103,10 @@ export default function AnswerTable({
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
           <>
-            <TableCell>
+            <TableCell sx={{ width: '65%' }}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar src={row.thumbnail?.resourceUrl}>{row.answerText?.[0]}</Avatar>
-                <Box sx={{ maxWidth: '80%' }}>
+                <Box>
                   <Typography variant="subtitle2" noWrap>
                     {row.answerText}
                   </Typography>
@@ -132,7 +135,7 @@ export default function AnswerTable({
         )}
       />
 
-      {/* {editAnswerData && (
+      {editAnswerData && (
         <UpdateAnswerFormDialog
           open={editOpen}
           data={editAnswerData}
@@ -145,8 +148,8 @@ export default function AnswerTable({
       )}
 
       {editAnswerData && (
-        <AnswerDetailForm open={viewOpen} questionId={editAnswerData.id ?? null} onClose={() => setViewOpen(false)} />
-      )} */}
+        <AnswerDetailForm open={viewOpen} answerId={editAnswerData.id ?? null} onClose={() => setViewOpen(false)} />
+      )}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

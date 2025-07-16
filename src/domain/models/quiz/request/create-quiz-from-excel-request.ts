@@ -3,9 +3,13 @@ import { CategoryEnum } from '@/utils/enum/core-enum';
 export class CreateQuizFromExcelRequest {
   excelFile!: File;
   quizID!: string;
-  questionCategoryID!: string;
   scoreToPass!: number;
-  categoryEnum!: CategoryEnum;
+
+  questionCategoryID!: string;
+  questionCategoryEnum!: CategoryEnum;
+
+  answerCategoryID!: string;
+  answerCategoryEnum!: CategoryEnum;
 
   constructor(init?: Partial<CreateQuizFromExcelRequest>) {
     Object.assign(this, init);
@@ -21,9 +25,11 @@ export class CreateQuizFromExcelRequest {
     const formData = new FormData();
     formData.append('ExcelFile', this.excelFile);
     formData.append('QuizID', this.quizID);
-    formData.append('QuestionCategoryID', this.questionCategoryID);
     formData.append('ScoreToPass', this.scoreToPass.toString());
-    formData.append('CategoryEnum', this.categoryEnum.toString());
+    formData.append('QuestionCategoryID', this.questionCategoryID);
+    formData.append('QuestionCategoryEnum', this.questionCategoryEnum.toString());
+    formData.append('AnswerCategoryID', this.answerCategoryID);
+    formData.append('AnswerCategoryEnum', this.answerCategoryEnum.toString());
     return formData;
   }
 }

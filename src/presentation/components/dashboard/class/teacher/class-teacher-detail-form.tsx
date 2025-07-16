@@ -2,7 +2,7 @@ import { error } from 'console';
 
 import { useEffect, useState } from 'react';
 import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
-import { useDI } from '@/presentation/hooks/useDependencyContainer';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
