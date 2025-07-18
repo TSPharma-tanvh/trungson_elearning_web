@@ -26,6 +26,7 @@ export class DateTimeUtils {
     if (isNaN(date.getTime())) return '';
 
     const pad = (n: number) => n.toString().padStart(2, '0');
+
     return (
       date.getFullYear() +
       '-' +
@@ -42,11 +43,11 @@ export class DateTimeUtils {
   }
 
   static parseLocalDateTimeString(input: string): Date | undefined {
-    // input dạng: '2025-07-02T10:30:00'
-    const parts = input.split(/[-T:]/).map(Number);
-    if (parts.length < 6) return undefined;
+    if (!input) return undefined;
 
-    const [year, month, day, hour, minute, second] = parts;
-    return new Date(year, month - 1, day, hour, minute, second);
+    const date = input.endsWith('Z') ? dayjs.utc(input).local() : dayjs(input);
+    if (!date.isValid()) return undefined;
+
+    return date.toDate();
   }
 }

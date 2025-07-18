@@ -66,7 +66,7 @@ export default function Page(): React.JSX.Element {
       setShowCreateDialog(false);
       await fetchCourses();
     } catch (error) {
-      console.error('Failed to create course path:', error);
+      console.error('Failed to create course:', error);
     }
   };
 
@@ -75,7 +75,7 @@ export default function Page(): React.JSX.Element {
       await courseUsecase.updateCourse(request);
       await fetchCourses();
     } catch (error) {
-      console.error('Failed to update course path:', error);
+      console.error('Failed to update course:', error);
     }
   };
 
@@ -85,12 +85,12 @@ export default function Page(): React.JSX.Element {
       for (const id of ids) {
         const response = await courseUsecase.deleteCourse(id);
         if (!response) {
-          throw new Error(`Failed to delete path with ID: ${id}`);
+          throw new Error(`Failed to delete course with ID: ${id}`);
         }
       }
       await fetchCourses();
     } catch (error) {
-      console.error('Failed to delete course paths:', error);
+      console.error('Failed to delete course:', error);
       throw error;
     } finally {
       setDeleteLoading(false);

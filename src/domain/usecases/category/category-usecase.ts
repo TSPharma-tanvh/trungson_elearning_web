@@ -46,14 +46,9 @@ export class CategoryUsecase {
     return result;
   }
 
-  // async deleteCategory(id: string): Promise<ApiResponse> {
-  //   const newFormData = new UpdateCategoryRequest({
-  //     id: id ?? '',
-  //     sta: StatusEnum.Deleted,
-  //   });
+  async deleteCategory(id: string): Promise<ApiResponse> {
+    var result = await this.categoryRepo.deleteCategory(id);
 
-  //   var result = await this.categoryRepo.updateCategory(newFormData);
-
-  //   return result;
-  // }
+    return result;
+  }
 }

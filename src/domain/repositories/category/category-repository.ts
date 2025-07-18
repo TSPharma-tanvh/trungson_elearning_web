@@ -12,4 +12,6 @@ export interface CategoryRepository {
   createCategory(request: CreateCategoryRequest): Promise<ApiResponse>;
 
   updateCategory(request: UpdateCategoryRequest): Promise<ApiResponse>;
+
+  deleteCategory(id: string): Promise<ApiResponse>;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
-import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
+import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
@@ -8,32 +8,31 @@ import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
-import CategoryDetailForm from './category-detail-form';
-import { UpdateCategoryFormDialog } from './category-update-form';
-
-interface CategoryTableProps {
-  rows: CategoryDetailResponse[];
+interface UserPathProgressTableProps {
+  rows: UserPathProgressDetailResponse[];
   count: number;
   page: number;
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteCategories: (ids: string[]) => Promise<void>;
-  onEditCategory: (data: UpdateCategoryRequest) => Promise<void>;
+  onDeleteUserPathProgresss: (ids: string[]) => Promise<void>;
+  onEditUserPathProgress: (data: UpdateUserPathProgressRequest) => Promise<void>;
 }
 
-export default function CategoryTable({
+export default function UserPathProgressTable({
   rows,
   count,
   page,
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteCategories,
-  onEditCategory,
-}: CategoryTableProps) {
+  onDeleteUserPathProgresss,
+  onEditUserPathProgress,
+}: UserPathProgressTableProps) {
   const [editOpen, setEditOpen] = React.useState(false);
-  const [editCategoryData, setEditCategoryData] = React.useState<CategoryDetailResponse | null>(null);
+  const [editUserPathProgressData, setEditUserPathProgressData] = React.useState<UserPathProgressDetailResponse | null>(
+    null
+  );
   const [viewOpen, setViewOpen] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
 
@@ -46,7 +45,7 @@ export default function CategoryTable({
 
   const handleConfirmDelete = async () => {
     if (pendingDeleteId) {
-      await onDeleteCategories([pendingDeleteId]);
+      await onDeleteUserPathProgresss([pendingDeleteId]);
       setPendingDeleteId(null);
     }
     setDialogOpen(false);
@@ -59,7 +58,7 @@ export default function CategoryTable({
 
   return (
     <>
-      <CustomTable<CategoryDetailResponse>
+      <CustomTable<UserPathProgressDetailResponse>
         rows={rows}
         count={count}
         page={page}
@@ -67,19 +66,19 @@ export default function CategoryTable({
         getRowId={(row) => row.id!}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
-        onDelete={onDeleteCategories}
+        onDelete={onDeleteUserPathProgresss}
         actionMenuItems={[
           {
             label: 'View Details',
             onClick: (row) => {
-              setEditCategoryData(row);
+              setEditUserPathProgressData(row);
               setViewOpen(true);
             },
           },
           {
             label: 'Edit',
             onClick: (row) => {
-              setEditCategoryData(row);
+              setEditUserPathProgressData(row);
               setEditOpen(true);
             },
           },
@@ -92,28 +91,31 @@ export default function CategoryTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>Name</TableCell>
-            <TableCell>Detail</TableCell>
-            <TableCell>Type</TableCell>
+            <TableCell>Path Name</TableCell>
+            <TableCell>User Name</TableCell>
+            <TableCell>Progress</TableCell>
+            <TableCell>Start Time</TableCell>
+            <TableCell>End Time</TableCell>
+            <TableCell>Status</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
           <>
             <TableCell>
               <Stack direction="row" alignItems="center" spacing={2}>
-                <Avatar src={row.thumbnail?.resourceUrl}>{row.categoryName?.[0]}</Avatar>
                 <Box>
                   <Typography variant="subtitle2" noWrap>
-                    {row.categoryName}
+                    {row.id}
                   </Typography>
                 </Box>
               </Stack>
             </TableCell>
-            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
-              <Typography variant="body2">{row.description}</Typography>
-            </TableCell>
-
-            <TableCell>{row.category}</TableCell>
+            <TableCell>{row.coursePath?.name}</TableCell>
+            <TableCell>{row.user?.userName}</TableCell>
+            <TableCell>{row.progress}</TableCell>
+            <TableCell>{DateTimeUtils.formatISODateFromString(row.startDate ?? '')}</TableCell>
+            <TableCell>{DateTimeUtils.formatISODateFromString(row.endDate ?? '')}</TableCell>
+            <TableCell>{row.status}</TableCell>
 
             <TableCell align="right">
               <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
@@ -124,25 +126,25 @@ export default function CategoryTable({
         )}
       />
 
-      {editCategoryData && (
-        <UpdateCategoryFormDialog
+      {/* {editUserPathProgressData && (
+        <UpdateUserPathProgressFormDialog
           open={editOpen}
-          data={editCategoryData}
+          data={editUserPathProgressData}
           onClose={() => setEditOpen(false)}
           onSubmit={async (updatedData) => {
-            await onEditCategory(updatedData);
+            await onEditUserPathProgress(updatedData);
             setEditOpen(false);
           }}
         />
       )}
 
-      {editCategoryData && (
-        <CategoryDetailForm
+      {editUserPathProgressData && (
+        <UserPathProgressDetailForm
           open={viewOpen}
-          categoryId={editCategoryData.id ?? null}
+          courseId={editUserPathProgressData.id ?? null}
           onClose={() => setViewOpen(false)}
         />
-      )}
+      )} */}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

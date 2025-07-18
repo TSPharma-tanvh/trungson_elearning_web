@@ -8,6 +8,7 @@ import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-useca
 import { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { PathUsecase } from '@/domain/usecases/path/path-usecase';
+import { UserPathProgressUsecase } from '@/domain/usecases/progress/user-path-progress-usecase';
 import { QuestionUsecase } from '@/domain/usecases/question/question-usecase';
 import { QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { RoleUsecase } from '@/domain/usecases/role/role-usecase';
@@ -25,10 +26,14 @@ import { FileResourceRepositoryImpl } from '@/data/repositories/file/file-resour
 import { LessonRepoImpl } from '@/data/repositories/lesson/lesson-repo-impl';
 import { NotificationRepoImpl } from '@/data/repositories/NotificationRepoImpl';
 import { PathRepoImpl } from '@/data/repositories/path/path-repo.impl';
+import { UserPathProgressRepoImpl } from '@/data/repositories/progress/user-path-progress-repo-impl';
 import { QuestionRepoImpl } from '@/data/repositories/question/question-repo-impl';
 import { QuizRepoImpl } from '@/data/repositories/quiz/quiz-repo-impl';
 import { RoleRepositoryImpl } from '@/data/repositories/role/role-repo-impl';
 import { UserRepositoryImpl } from '@/data/repositories/user/user-repo-impl';
+
+import { EmployeeRepoImpl } from './data/repositories/employee/employee-repo-impl';
+import { EmployeeUsecase } from './domain/usecases/employee/employee-usecase';
 
 export class DependencyContainer {
   // Repository instances
@@ -77,6 +82,12 @@ export class DependencyContainer {
   //answer
   public answerRepo = new AnswerRepoImpl();
 
+  //employee
+  public employeeRepo = new EmployeeRepoImpl();
+
+  //progress
+  public userPathProgressRepo = new UserPathProgressRepoImpl();
+
   /// Use cases
   public sendNotificationUseCase = new SendNotificationUseCase(this.notificationRepo);
 
@@ -121,6 +132,12 @@ export class DependencyContainer {
 
   //file resource
   public fileUsecase = new FileResourcesUsecase(this.fileRepo);
+
+  //employee
+  public employeeUsecase = new EmployeeUsecase(this.employeeRepo);
+
+  //progress
+  public userPathProgressUsecase = new UserPathProgressUsecase(this.userPathProgressRepo);
 }
 
 // Export a singleton container

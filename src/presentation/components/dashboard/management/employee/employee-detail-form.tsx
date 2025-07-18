@@ -1,0 +1,151 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
+import CloseIcon from '@mui/icons-material/Close';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Collapse,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
+
+import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
+
+interface Props {
+  open: boolean;
+  employeeId: string | null;
+  onClose: () => void;
+}
+
+function EmployeeDetails({
+  employee,
+  fullScreen,
+  onAvatarClick,
+}: {
+  employee: EmployeeResponse;
+  fullScreen: boolean;
+  onAvatarClick: () => void;
+}) {
+  return (
+    <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
+      <Box display="flex" alignItems="center" gap={2} mb={3}>
+        <Avatar src={employee.avatar} sx={{ width: 64, height: 64, cursor: 'pointer' }} onClick={onAvatarClick}>
+          {employee.name?.[0] ?? '?'}
+        </Avatar>
+
+        <Typography variant="h5">{employee.name ?? 'Unnamed Employee'}</Typography>
+      </Box>
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title="Employee Information" />
+        <CardContent>
+          <Grid container spacing={2}>
+            {Object.entries(employee).map(([key, value]) => {
+              if (value === undefined || value === null) return null;
+
+              let displayValue = value;
+
+              const dateFields = ['birthDate', 'hireDate', 'birthDay'];
+              if (dateFields.includes(key) && typeof value === 'string') {
+                displayValue = DateTimeUtils.formatISODateFromString(value);
+              }
+
+              if (typeof value === 'boolean') {
+                displayValue = value ? 'Yes' : 'No';
+              }
+
+              const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+
+              return (
+                <Grid item xs={12} sm={fullScreen ? 3 : 4} key={key}>
+                  <Typography variant="subtitle2" fontWeight={500}>
+                    {label}
+                  </Typography>
+                  <CustomFieldTypography value={displayValue} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+}
+
+export default function EmployeeDetailForm({ open, employeeId, onClose }: Props) {
+  const { employeeUsecase } = useDI();
+  const [loading, setLoading] = useState(false);
+  const [employee, setEmployee] = useState<EmployeeResponse | null>(null);
+  const [fullScreen, setFullScreen] = useState(false);
+  const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
+  const [imageFullscreen, setImageFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (open && employeeId && employeeUsecase) {
+      setLoading(true);
+      employeeUsecase
+        .getEmployeeById(employeeId)
+        .then(setEmployee)
+        .catch((error) => {
+          console.error('Error fetching course details:', error);
+          setEmployee(null);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [open, employeeId, employeeUsecase]);
+
+  if (!employeeId) return null;
+
+  const handleAvatarClick = () => {
+    if (employee?.avatar) setImagePreviewOpen(true);
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
+        <Typography variant="h6">Employee Details</Typography>
+        <Box>
+          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+            {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>
+      <DialogContent dividers sx={{ p: 0 }}>
+        {loading || !employee ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress />
+          </Box>
+        ) : (
+          <EmployeeDetails employee={employee} fullScreen={fullScreen} onAvatarClick={handleAvatarClick} />
+        )}
+      </DialogContent>
+
+      <ImagePreviewDialog
+        open={imagePreviewOpen}
+        onClose={() => setImagePreviewOpen(false)}
+        imageUrl={employee?.avatar || ''}
+        title={employee?.name || 'Avatar'}
+        fullscreen={imageFullscreen}
+        onToggleFullscreen={() => setImageFullscreen((prev) => !prev)}
+      />
+    </Dialog>
+  );
+}

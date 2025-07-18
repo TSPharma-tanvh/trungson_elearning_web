@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import { Box, Dialog, DialogContent, IconButton, Typography } from '@mui/material';
+import { Box, Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
 
 interface ImagePreviewDialogProps {
   open: boolean;
@@ -21,7 +21,7 @@ export default function ImagePreviewDialog({
 }: ImagePreviewDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} fullScreen={fullscreen} maxWidth="md" fullWidth>
-      <DialogContent>
+      <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexWrap="nowrap">
           <Typography
             variant="h6"
@@ -47,7 +47,8 @@ export default function ImagePreviewDialog({
             </IconButton>
           </Box>
         </Box>
-
+      </DialogTitle>
+      <DialogContent>
         <img src={imageUrl} alt={title} style={{ width: '100%', maxHeight: '90vh', objectFit: 'contain' }} />
       </DialogContent>
     </Dialog>

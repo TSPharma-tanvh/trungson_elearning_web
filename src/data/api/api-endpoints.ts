@@ -48,6 +48,7 @@ interface CategoryEndpoints {
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 
 interface EnrollmentCriteriaEndpoints {
@@ -110,6 +111,21 @@ interface FileResourcesEndpoints {
   getById: DynamicEndpoint;
 }
 
+interface EmployeeEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  getHrm: StaticEndpoint;
+  syncHrm: StaticEndpoint;
+  delete: DynamicEndpoint;
+}
+interface UserPathProgressEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+  enroll: StaticEndpoint;
+}
+
 // Main type containing all endpoint categories
 interface EndpointDefinitions {
   identity: IdentityEndpoints;
@@ -128,6 +144,8 @@ interface EndpointDefinitions {
   questions: QuestionEndpoints;
   answers: AnswerEndpoints;
   fileResources: FileResourcesEndpoints;
+  employee: EmployeeEndpoints;
+  userPathProgress: UserPathProgressEndpoints;
 }
 
 //endpoint values
@@ -172,6 +190,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `Category/GetCategory/${id}`,
     create: 'Category/CreateCategory',
     update: 'Category/UpdateCategory',
+    delete: (id: string) => `Category/DeleteCategory/${id}`,
   },
   enrollment: {
     getAll: 'EnrollmentCriteria/GetEnrollmentCriteria',
@@ -225,6 +244,20 @@ const endpoints: EndpointDefinitions = {
   fileResources: {
     getAll: 'Resource/GetFileResources',
     getById: (id: string) => `Resource/GetFileResourcesById/${id}`,
+  },
+  employee: {
+    getAll: 'Employee/GetEmployees',
+    getById: (id: string) => `Employee/GetEmployeeInfoById/${id}`,
+    getHrm: 'Employee/GetEmployeeFromHrm',
+    syncHrm: 'Employee/SaveEmployeeFromHrm',
+    delete: (id: string) => `Employee/DeleteEmployee/${id}`,
+  },
+  userPathProgress: {
+    getAll: 'UserPathProgress/GetUserPathProgress',
+    getById: (id: string) => `UserPathProgress/GetUserPathProgressById/${id}`,
+    create: 'UserPathProgress/CreateUserPathProgress',
+    update: 'UserPathProgress/UpdateUserPathProgress',
+    enroll: 'UserPathProgress/EnrollUserListToPath',
   },
 };
 

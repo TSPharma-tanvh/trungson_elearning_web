@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
-import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
-import { CourseUsecase } from '@/domain/usecases/courses/course-usecase';
-import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
-import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
+import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
+import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
+import { EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
+import { useEmployeeSelectLoader } from '@/presentation/hooks/employee/use-employee-select-loader';
+import { useEmployeeSelectDebounce } from '@/presentation/hooks/employee/user-course-select-debounce';
 import {
   DisplayTypeDisplayNames,
   DisplayTypeEnum,
@@ -46,8 +46,8 @@ import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
-interface CourseSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
-  courseUsecase: CourseUsecase | null;
+interface EmployeeSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+  employeeUsecase: EmployeeUsecase | null;
   value: string;
   onChange: (value: string) => void;
   label?: string;
@@ -56,52 +56,37 @@ interface CourseSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'o
 }
 
 const filterOptions = {
-  courseType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
+  employeeType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
 };
 
-export function CourseSelectDialog({
-  courseUsecase,
+export function EmployeeSelectDialog({
+  employeeUsecase,
   value,
   onChange,
-  label = 'Courses',
+  label = 'Employees',
   disabled = false,
   pathID,
   ...selectProps
-}: CourseSelectDialogProps) {
+}: EmployeeSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useCourseSelectDebounce(localSearchText, 300);
-  const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
+  const debouncedSearchText = useEmployeeSelectDebounce(localSearchText, 300);
+  const [selectedEmployeeMap, setSelectedEmployeeMap] = useState<Record<string, EmployeeResponse>>({});
 
-  const {
-    courses,
-    loadingCourses,
-    pageNumber,
-    totalPages,
-    setSearchText,
-    courseType,
-    displayType,
-    scheduleStatus,
-    disableStatus,
-    setCourseType,
-    setDisplayType,
-    setScheduleStatus,
-    setDisableStatus,
-    listRef,
-    loadCourses,
-  } = useCourseSelectLoader({
-    courseUsecase,
-    isOpen: dialogOpen,
-    pathID: '',
-    searchText: debouncedSearchText,
-  });
+  const { employees, loadingEmployees, pageNumber, totalPages, setSearchText, listRef, loadEmployees } =
+    useEmployeeSelectLoader({
+      employeeUsecase,
+      isOpen: dialogOpen,
+
+      searchText: debouncedSearchText,
+    });
 
   const isFull = isSmallScreen || isFullscreen;
 
@@ -122,15 +107,11 @@ export function CourseSelectDialog({
 
   const handleClearFilters = () => {
     setLocalSearchText('');
-    setCourseType(undefined);
-    setDisplayType(undefined);
-    setScheduleStatus(undefined);
-    setDisableStatus(undefined);
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (courseUsecase && !loadingCourses) {
-      loadCourses(newPage, true);
+    if (employeeUsecase && !loadingEmployees) {
+      loadEmployees(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -147,58 +128,58 @@ export function CourseSelectDialog({
   }, [value]);
 
   useEffect(() => {
-    if (courseUsecase && value) {
-      const fetchSelectedCourses = async () => {
+    if (employeeUsecase && value) {
+      const fetchSelectedEmployees = async () => {
         try {
-          const request = new GetCourseRequest({ pathID });
-          const result = await courseUsecase.getCourseListInfo(request);
-          const newMap = { ...selectedCourseMap };
+          const request = new GetEmployeeRequest({});
+          const result = await employeeUsecase.getEmployeeListInfo(request);
+          const newMap = { ...selectedEmployeeMap };
           let updated = false;
-          for (const course of result.courses) {
-            if (!newMap[course.id]) {
-              newMap[course.id] = course;
+          for (const employee of result.employees) {
+            if (!newMap[employee.id ?? '']) {
+              newMap[employee.id ?? ''] = employee;
               updated = true;
             }
           }
           if (updated) {
-            setSelectedCourseMap(newMap);
+            setSelectedEmployeeMap(newMap);
           }
         } catch (error) {
-          console.error('Error fetching selected courses:', error);
+          console.error('Error fetching selected employees:', error);
         }
       };
-      fetchSelectedCourses();
+      fetchSelectedEmployees();
     }
-  }, [courseUsecase, value, pathID, selectedCourseMap]);
+  }, [employeeUsecase, value, pathID, selectedEmployeeMap]);
 
   useEffect(() => {
     if (dialogOpen) {
-      const newMap = { ...selectedCourseMap };
+      const newMap = { ...selectedEmployeeMap };
       let updated = false;
-      for (const course of courses) {
-        if (course.id && !newMap[course.id]) {
-          newMap[course.id] = course;
+      for (const employee of employees) {
+        if (employee.id && !newMap[employee.id]) {
+          newMap[employee.id] = employee;
           updated = true;
         }
       }
       if (updated) {
-        setSelectedCourseMap(newMap);
+        setSelectedEmployeeMap(newMap);
       }
     }
-  }, [courses, dialogOpen, selectedCourseMap]);
+  }, [employees, dialogOpen, selectedEmployeeMap]);
 
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="course-select-label">{label}</InputLabel>
+        <InputLabel id="employee-select-label">{label}</InputLabel>
         <Select
-          labelId="course-select-label"
+          labelId="employee-select-label"
           value={value}
           input={
             <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedCourseMap[selected]?.name || 'No Course Selected'}
+          renderValue={(selected) => selectedEmployeeMap[selected]?.name || 'No Employee Selected'}
           open={false}
           {...selectProps}
         />
@@ -207,7 +188,7 @@ export function CourseSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Course</Typography>
+            <Typography variant="h6">Select Employee</Typography>
             <Box>
               <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
@@ -217,24 +198,24 @@ export function CourseSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search employees..." />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Course Type</InputLabel>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Employee Type</InputLabel>
               <Select
-                value={courseType !== undefined ? String(courseType) : ''}
+                value={employeeType !== undefined ? String(employeeType) : ''}
                 onChange={(e: SelectChangeEvent<string>) =>
-                  setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
+                  setEmployeeType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
                 }
-                label="Course Type"
+                label="Employee Type"
               >
-                {filterOptions.courseType.map((opt) => (
+                {filterOptions.employeeType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
                     {opt != null ? LearningModeDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               Clear Filters
             </Button>
@@ -243,25 +224,25 @@ export function CourseSelectDialog({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {courses.map((course) => (
+            {employees.map((employee) => (
               <MenuItem
-                key={course.id}
-                value={course.id}
-                selected={localValue === course.id}
-                onClick={() => setLocalValue(course.id)}
+                key={employee.id}
+                value={employee.id}
+                selected={localValue === employee.id}
+                onClick={() => setLocalValue(employee.id ?? '')}
               >
-                <Checkbox checked={localValue === course.id} />
-                <ListItemText primary={course.name} />
+                <Checkbox checked={localValue === employee.id} />
+                <ListItemText primary={employee.name} />
               </MenuItem>
             ))}
-            {loadingCourses && (
+            {loadingEmployees && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
             )}
-            {!loadingCourses && courses.length === 0 && (
+            {!loadingEmployees && employees.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No courses found
+                No employees found
               </Typography>
             )}
           </Box>

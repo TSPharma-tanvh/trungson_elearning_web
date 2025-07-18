@@ -1,27 +1,25 @@
 'use client';
 
 import React from 'react';
-import { CreateCategoryRequest } from '@/domain/models/category/request/create-category-request';
-import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
-import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
+import { SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
+import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { ArrowsClockwise, Plus } from '@phosphor-icons/react';
 
-import { CreateCategoryDialog } from '@/presentation/components/dashboard/management/category/category-create-form';
-import { CategoryFilters } from '@/presentation/components/dashboard/management/category/category-filter';
-import CategoryTable from '@/presentation/components/dashboard/management/category/category-table';
+import { EmployeeFilters } from '@/presentation/components/dashboard/management/employee/employee-filter';
+import EmployeeTable from '@/presentation/components/dashboard/management/employee/employee-table';
 
 export default function Page(): React.JSX.Element {
-  const { categoryUsecase } = useDI();
+  const { employeeUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
-  const [filters, setFilters] = React.useState<GetCategoryRequest>(
-    new GetCategoryRequest({ pageNumber: 1, pageSize: 10 })
+  const [filters, setFilters] = React.useState<GetEmployeeRequest>(
+    new GetEmployeeRequest({ pageNumber: 1, pageSize: 10 })
   );
-  const [categorys, setCategories] = React.useState<CategoryDetailResponse[]>([]);
+  const [employee, setEmployee] = React.useState<EmployeeResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
 
@@ -30,24 +28,24 @@ export default function Page(): React.JSX.Element {
 
   const fetchCategories = React.useCallback(async () => {
     try {
-      const request = new GetCategoryRequest({
+      const request = new GetEmployeeRequest({
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { categories, totalRecords } = await categoryUsecase.getCategoryList(request);
-      setCategories(categories);
+      const { employees, totalRecords } = await employeeUsecase.getEmployeeListInfo(request);
+      setEmployee(employees);
       setTotalCount(totalRecords);
     } catch (error) {
-      setCategories([]);
+      setEmployee([]);
     }
-  }, [filters, page, rowsPerPage, categoryUsecase]);
+  }, [filters, page, rowsPerPage, employeeUsecase]);
 
   React.useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
-  const handleFilter = (newFilters: GetCategoryRequest) => {
+  const handleFilter = (newFilters: GetEmployeeRequest) => {
     setFilters(newFilters);
     setPage(0);
   };
@@ -62,9 +60,9 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateCategory = async (request: CreateCategoryRequest) => {
+  const syncFromHrm = async (request: SyncEmployeeFromHrmRequest) => {
     try {
-      await categoryUsecase.createCategory(request);
+      await employeeUsecase.syncEmployeeFromHrm(request);
       setShowCreateDialog(false);
       await fetchCategories();
     } catch (error) {
@@ -72,20 +70,20 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleEditCategory = async (request: UpdateCategoryRequest) => {
-    try {
-      await categoryUsecase.updateCategory(request);
-      await fetchCategories();
-    } catch (error) {
-      console.error('Failed to update category path:', error);
-    }
-  };
+  // const handleEditEmployee = async (request: UpdateEmployeeRequest) => {
+  //   try {
+  //     await employeeUsecase.updateEmployee(request);
+  //     await fetchCategories();
+  //   } catch (error) {
+  //     console.error('Failed to update category path:', error);
+  //   }
+  // };
 
   const handleDeleteCategories = async (ids: string[]) => {
     try {
       setDeleteLoading(true);
       for (const id of ids) {
-        const response = await categoryUsecase.deleteCategory(id);
+        const response = await employeeUsecase.deleteEmployee(id);
         if (!response) {
           throw new Error(`Failed to delete path with ID: ${id}`);
         }
@@ -104,36 +102,33 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Category
+            Employee
           </Typography>
         </Stack>
         <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+          startIcon={<ArrowsClockwise fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => {
+            const request = new SyncEmployeeFromHrmRequest({
+              username: '',
+              password: '',
+            });
+            syncFromHrm(request);
+          }}
         >
-          Add
+          Sync From HRM
         </Button>
       </Stack>
-      <CategoryFilters onFilter={handleFilter} />
-      <CategoryTable
-        rows={categorys}
+      <EmployeeFilters onFilter={handleFilter} />
+      <EmployeeTable
+        rows={employee}
         count={totalCount}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
-        onDeleteCategories={handleDeleteCategories}
-        onEditCategory={handleEditCategory}
-      ></CategoryTable>
-
-      <CreateCategoryDialog
-        onSubmit={handleCreateCategory}
-        disabled={false}
-        loading={false}
-        open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
-      />
+        onDeleteEmployees={handleDeleteCategories}
+      ></EmployeeTable>
     </Stack>
   );
 }

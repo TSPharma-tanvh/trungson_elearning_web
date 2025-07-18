@@ -27,6 +27,7 @@ import {
 } from '@mui/material';
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 
+import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
@@ -51,14 +52,20 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
 
   useEffect(() => {
     if (category && open) {
+      const categoryValue =
+        typeof category.category === 'string'
+          ? CategoryEnum[category.category as keyof typeof CategoryEnum]
+          : category.category;
+
       const newFormData = new UpdateCategoryRequest({
         id: category.id || '',
         categoryName: category.categoryName || '',
         description: category.description || undefined,
-        category: CategoryEnum.Path,
+        category: categoryValue,
         thumbnailID: category.thumbnail?.id || undefined,
         isDeleteOldThumbnail: false,
       });
+
       setFormData(newFormData);
     }
   }, [category, open, fileUsecase]);
@@ -174,6 +181,24 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                 onChange={(value) => handleChange('description', value)}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<CategoryEnum>
+                label="Enrollment Criteria Type"
+                value={formData.category ?? CategoryEnum.Path}
+                onChange={(val) => handleChange('category', val)}
+                options={[
+                  { value: CategoryEnum.Path, label: 'Lộ trình' },
+                  { value: CategoryEnum.Course, label: 'Khóa học' },
+                  { value: CategoryEnum.Lesson, label: 'Bài học' },
+                  { value: CategoryEnum.Class, label: 'Lớp học' },
+                  { value: CategoryEnum.Quiz, label: 'Bài kiểm tra' },
+                  { value: CategoryEnum.Question, label: 'Câu hỏi' },
+                  { value: CategoryEnum.Answer, label: 'Câu trả lời' },
+                  { value: CategoryEnum.Criteria, label: 'Tiêu chí' },
+                ]}
               />
             </Grid>
 

@@ -38,6 +38,19 @@ export class EmployeeResponse {
   employeeReturn?: number;
   teamName?: string;
   teamCode?: string;
+  userId?: string;
+  titleOfCourtesy?: string;
+  birthDate?: string;
+  hireDate?: string;
+  homePhone?: string;
+  extension?: string;
+  photo?: string;
+  notes?: string;
+  reportsTo?: number;
+
+  constructor(init?: Partial<EmployeeResponse>) {
+    Object.assign(this, init);
+  }
 
   static fromJSON(json: any): EmployeeResponse {
     const dto = new EmployeeResponse();

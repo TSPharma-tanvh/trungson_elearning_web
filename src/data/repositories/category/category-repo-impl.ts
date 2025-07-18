@@ -20,7 +20,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch user info');
+      throw new Error(error?.message || 'Failed to fetch category info');
     }
   }
 
@@ -37,7 +37,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch user info');
+      throw new Error(error?.message || 'Failed to fetch category info');
     }
   }
 
@@ -82,6 +82,21 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       return apiResponse;
     } catch (error: any) {
       throw new Error(error?.message || 'Failed to fetch course info');
+    }
+  }
+
+  async deleteCategory(id: string): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.delete<ApiResponse>(apiEndpoints.category.delete(id));
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch category info');
     }
   }
 }

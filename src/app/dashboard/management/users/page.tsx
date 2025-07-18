@@ -8,10 +8,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Copy } from '@phosphor-icons/react/dist/ssr';
-import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
-import { Plus, Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
-import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
 import { AddUserDialog } from '@/presentation/components/dashboard/management/users/add-user-dialog';
 import { UsersFilters } from '@/presentation/components/dashboard/management/users/users-filters';

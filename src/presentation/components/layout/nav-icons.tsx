@@ -15,6 +15,7 @@ import {
   File,
   GearSix,
   GraduationCap,
+  IdentificationCard,
   LineSegments,
   ListChecks,
   Notification,
@@ -69,4 +70,5 @@ export const navIcons = {
   userQuiz: ListChecks,
   criteria: UsersThree,
   category: BookmarkSimple,
+  employee: IdentificationCard,
 } as Record<string, Icon>;

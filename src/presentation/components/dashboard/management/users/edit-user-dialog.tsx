@@ -44,6 +44,8 @@ import {
   Phone,
 } from '@phosphor-icons/react';
 
+import { EmployeeSelectDialog } from '@/presentation/components/shared/management/employee/employee-select';
+
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
 
 interface EditUserDialogProps {
@@ -64,8 +66,8 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
   const [showPassword, setShowPassword] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
 
-  const roleUsecase = useDI().roleUseCase;
-  const { roleOptions, loadMoreRoles, hasMore, loading } = useRoleOptions(roleUsecase);
+  const { roleUseCase, employeeUsecase } = useDI();
+  const { roleOptions, loadMoreRoles, hasMore, loading } = useRoleOptions(roleUseCase);
   const listRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
@@ -216,6 +218,15 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                     </InputAdornment>
                   ),
                 }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <EmployeeSelectDialog
+                employeeUsecase={employeeUsecase}
+                value={formData.employeeId ?? ''}
+                onChange={(value: string) => handleChange('employeeId', value)}
+                disabled={isSubmitting}
               />
             </Grid>
 

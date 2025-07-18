@@ -14,7 +14,12 @@ export default function CustomFieldTypography({
   ...typographyProps
 }: CustomFieldTypographyProps) {
   return (
-    <Typography variant="body2" color="text.secondary" {...typographyProps}>
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      {...typographyProps}
+      sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}
+    >
       {children ?? (value != null ? String(value) : fallback)}
     </Typography>
   );
