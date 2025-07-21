@@ -38,7 +38,7 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';
-import { EnrollmentSelect } from '@/presentation/components/shared/enrollment/enrollment-select';
+import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface EditPathDialogProps {
@@ -284,7 +284,7 @@ export function UpdatePathFormDialog({ open, path: path, onClose, onSubmit }: Ed
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <EnrollmentSelect
+              <EnrollmentMultiSelect
                 enrollmentUsecase={enrollUsecase}
                 categoryEnum={CategoryEnum.Path}
                 value={

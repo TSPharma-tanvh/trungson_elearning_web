@@ -33,7 +33,7 @@ import { CustomDateTimePicker } from '@/presentation/components/core/picker/cust
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
-import { EnrollmentSelect } from '@/presentation/components/shared/enrollment/enrollment-select';
+import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
@@ -384,7 +384,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <EnrollmentSelect
+              <EnrollmentMultiSelect
                 enrollmentUsecase={enrollUsecase}
                 categoryEnum={CategoryEnum.Quiz}
                 value={

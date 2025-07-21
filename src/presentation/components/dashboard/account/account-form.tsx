@@ -92,7 +92,7 @@ export function AccountForm(): React.JSX.Element {
     }
   };
 
-  const avatarUrl = thumbnailPreview ?? user?.thumbnail?.resourceUrl ?? '/assets/avatar.png';
+  const avatarUrl = thumbnailPreview ?? user?.thumbnail?.resourceUrl ?? user?.employee?.avatar;
 
   return (
     <form onSubmit={handleSubmit}>

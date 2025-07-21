@@ -33,7 +33,9 @@ import { RoleRepositoryImpl } from '@/data/repositories/role/role-repo-impl';
 import { UserRepositoryImpl } from '@/data/repositories/user/user-repo-impl';
 
 import { EmployeeRepoImpl } from './data/repositories/employee/employee-repo-impl';
+import { UserCourseProgressRepoImpl } from './data/repositories/progress/user-course-progress-repo-impl';
 import { EmployeeUsecase } from './domain/usecases/employee/employee-usecase';
+import { UserCourseProgressUsecase } from './domain/usecases/progress/user-course-progress-usecase';
 
 export class DependencyContainer {
   // Repository instances
@@ -87,6 +89,7 @@ export class DependencyContainer {
 
   //progress
   public userPathProgressRepo = new UserPathProgressRepoImpl();
+  public userCourseProgressRepo = new UserCourseProgressRepoImpl();
 
   /// Use cases
   public sendNotificationUseCase = new SendNotificationUseCase(this.notificationRepo);
@@ -138,6 +141,7 @@ export class DependencyContainer {
 
   //progress
   public userPathProgressUsecase = new UserPathProgressUsecase(this.userPathProgressRepo);
+  public userCourseProgressUsecase = new UserCourseProgressUsecase(this.userCourseProgressRepo);
 }
 
 // Export a singleton container

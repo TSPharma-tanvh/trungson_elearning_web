@@ -37,6 +37,7 @@ interface CustomTableProps<T> {
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDelete: (ids: string[]) => Promise<void>;
   actionMenuItems: { label: string; onClick: (row: T) => void }[];
+  deleteConfirmHeaderTitle?: string;
 }
 
 export function CustomTable<T>({
@@ -51,6 +52,7 @@ export function CustomTable<T>({
   onRowsPerPageChange,
   onDelete,
   actionMenuItems,
+  deleteConfirmHeaderTitle = 'Delete Selected',
 }: CustomTableProps<T>) {
   const rowIds = React.useMemo(() => rows.map(getRowId), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
@@ -128,7 +130,7 @@ export function CustomTable<T>({
               variant="contained"
               onClick={() => handleOpenDeleteDialog(Array.from(selected))}
             >
-              Delete Selected ({selected.size})
+              {deleteConfirmHeaderTitle} ({selected.size})
             </Button>
           </Box>
         )}

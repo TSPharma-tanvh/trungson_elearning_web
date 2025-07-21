@@ -1,0 +1,95 @@
+import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { ApiResponse } from '@/domain/models/core/api-response';
+import { CreateUserCourseProgressRequest } from '@/domain/models/user-course/request/create-user-course-progress-request';
+import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
+import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
+import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
+import { UserCourseProgressRepository } from '@/domain/repositories/progress/user-course-progress-repository';
+
+import { apiClient } from '@/data/api/api-client';
+import { apiEndpoints } from '@/data/api/api-endpoints';
+
+export class UserCourseProgressRepoImpl implements UserCourseProgressRepository {
+  async getUserCourseProgressListInfo(request: GetUserCourseProgressRequest): Promise<ApiPaginationResponse> {
+    try {
+      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.userCourseProgress.getAll, {
+        params: request.toJSON(),
+      });
+
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch userCourseProgress info');
+    }
+  }
+
+  async getUserCourseProgressById(id: string): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.get<ApiResponse>(apiEndpoints.userCourseProgress.getById(id));
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch userCourseProgress info');
+    }
+  }
+
+  async createUserCourseProgress(request: CreateUserCourseProgressRequest): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.post<ApiResponse>(apiEndpoints.userCourseProgress.create, request.toJSON());
+
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to create userCourseProgress');
+    }
+  }
+
+  async updateUserCourseProgress(request: UpdateUserCourseProgressRequest): Promise<ApiResponse> {
+    try {
+      const formData = request.toJSON();
+
+      const response = await apiClient.put<ApiResponse>(apiEndpoints.userCourseProgress.update, formData);
+
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch userCourseProgress info');
+    }
+  }
+
+  async enrollUserListToCourse(request: EnrollUserListToCourseRequest): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.post<ApiResponse>(apiEndpoints.userCourseProgress.enroll, request.toJSON());
+
+      const apiResponse = response.data;
+
+      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to create userCourseProgress');
+    }
+  }
+}

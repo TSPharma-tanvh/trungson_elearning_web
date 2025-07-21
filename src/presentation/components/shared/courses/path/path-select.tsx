@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
-import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
-import { EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
-import { useEmployeeSelectLoader } from '@/presentation/hooks/employee/use-employee-select-loader';
-import { useEmployeeSelectDebounce } from '@/presentation/hooks/employee/user-course-select-debounce';
+import { useEffect, useState } from 'react';
+import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
+import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
+import { PathUsecase } from '@/domain/usecases/path/path-usecase';
+import { usePathSelectDebounce } from '@/presentation/hooks/path/use-path-select-debounce';
+import { usePathSelectLoader } from '@/presentation/hooks/path/use-path-select-loader';
 import {
   DisplayTypeDisplayNames,
   DisplayTypeEnum,
@@ -16,7 +16,7 @@ import {
   StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book, BookOutlined, Info, InfoOutlined, Visibility } from '@mui/icons-material';
+import { Book, BookOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -45,10 +45,9 @@ import {
 import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
-import EmployeeDetailForm from '@/presentation/components/dashboard/management/employee/employee-detail-form';
 
-interface EmployeeSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
-  employeeUsecase: EmployeeUsecase | null;
+interface PathSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+  pathUsecase: PathUsecase | null;
   value: string;
   onChange: (value: string) => void;
   label?: string;
@@ -57,39 +56,54 @@ interface EmployeeSelectDialogProps extends Omit<SelectProps<string>, 'value' | 
 }
 
 const filterOptions = {
-  employeeType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
+  pathType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
 };
 
-export function EmployeeSelectDialog({
-  employeeUsecase,
+export function PathSelectDialog({
+  pathUsecase,
   value,
   onChange,
-  label = 'Employees',
+  label = 'Paths',
   disabled = false,
   pathID,
   ...selectProps
-}: EmployeeSelectDialogProps) {
+}: PathSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useEmployeeSelectDebounce(localSearchText, 300);
-  const [selectedEmployeeMap, setSelectedEmployeeMap] = useState<Record<string, EmployeeResponse>>({});
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [selectedEmployee, setSelectedEmployee] = React.useState<EmployeeResponse | null>(null);
+  const debouncedSearchText = usePathSelectDebounce(localSearchText, 300);
+  const [selectedPathMap, setSelectedPathMap] = useState<Record<string, CoursePathResponse>>({});
 
-  const { employees, loadingEmployees, pageNumber, totalPages, setSearchText, listRef, loadEmployees } =
-    useEmployeeSelectLoader({
-      employeeUsecase,
-      isOpen: dialogOpen,
-
-      searchText: debouncedSearchText,
-    });
+  const {
+    paths,
+    loadingPaths,
+    hasMore,
+    isSelectOpen,
+    pageNumber,
+    totalPages,
+    listRef,
+    setIsSelectOpen,
+    setSearchText,
+    setStatus: setPathType,
+    setDisplayType,
+    searchText,
+    status,
+    displayType,
+    disableStatus,
+    loadPaths,
+  } = usePathSelectLoader({
+    pathUsecase,
+    isOpen: dialogOpen,
+    // status: initialPathType,
+    // displayType: initialScheduleStatus,
+    searchText: debouncedSearchText,
+  });
 
   const isFull = isSmallScreen || isFullscreen;
 
@@ -110,11 +124,15 @@ export function EmployeeSelectDialog({
 
   const handleClearFilters = () => {
     setLocalSearchText('');
+    setPathType(undefined);
+    setDisplayType(undefined);
+    // setScheduleStatus(undefined);
+    // setDisableStatus(undefined);
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (employeeUsecase && !loadingEmployees) {
-      loadEmployees(newPage, true);
+    if (pathUsecase && !loadingPaths) {
+      loadPaths(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -131,58 +149,58 @@ export function EmployeeSelectDialog({
   }, [value]);
 
   useEffect(() => {
-    if (employeeUsecase && value) {
-      const fetchSelectedEmployees = async () => {
+    if (pathUsecase && value) {
+      const fetchSelectedPaths = async () => {
         try {
-          const request = new GetEmployeeRequest({});
-          const result = await employeeUsecase.getEmployeeListInfo(request);
-          const newMap = { ...selectedEmployeeMap };
+          const request = new GetPathRequest({});
+          const result = await pathUsecase.getPathListInfo(request);
+          const newMap = { ...selectedPathMap };
           let updated = false;
-          for (const employee of result.employees) {
-            if (!newMap[employee.id ?? '']) {
-              newMap[employee.id ?? ''] = employee;
+          for (const pathData of result.path) {
+            if (!newMap[pathData.id ?? '']) {
+              newMap[pathData.id ?? ''] = pathData;
               updated = true;
             }
           }
           if (updated) {
-            setSelectedEmployeeMap(newMap);
+            setSelectedPathMap(newMap);
           }
         } catch (error) {
-          console.error('Error fetching selected employees:', error);
+          console.error('Error fetching selected paths:', error);
         }
       };
-      fetchSelectedEmployees();
+      fetchSelectedPaths();
     }
-  }, [employeeUsecase, value, pathID, selectedEmployeeMap]);
+  }, [pathUsecase, value, pathID, selectedPathMap]);
 
   useEffect(() => {
     if (dialogOpen) {
-      const newMap = { ...selectedEmployeeMap };
+      const newMap = { ...selectedPathMap };
       let updated = false;
-      for (const employee of employees) {
-        if (employee.id && !newMap[employee.id]) {
-          newMap[employee.id] = employee;
+      for (const path of paths) {
+        if (path.id && !newMap[path.id]) {
+          newMap[path.id] = path;
           updated = true;
         }
       }
       if (updated) {
-        setSelectedEmployeeMap(newMap);
+        setSelectedPathMap(newMap);
       }
     }
-  }, [employees, dialogOpen, selectedEmployeeMap]);
+  }, [paths, dialogOpen, selectedPathMap]);
 
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="employee-select-label">{label}</InputLabel>
+        <InputLabel id="path-select-label">{label}</InputLabel>
         <Select
-          labelId="employee-select-label"
+          labelId="path-select-label"
           value={value}
           input={
             <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedEmployeeMap[selected]?.name || 'No Employee Selected'}
+          renderValue={(selected) => selectedPathMap[selected]?.name || 'No Path Selected'}
           open={false}
           {...selectProps}
         />
@@ -191,7 +209,7 @@ export function EmployeeSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Employee</Typography>
+            <Typography variant="h6">Select Path</Typography>
             <Box>
               <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
@@ -201,8 +219,24 @@ export function EmployeeSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search employees..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search paths..." />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Path Type</InputLabel>
+              {/* <Select
+                value={pathType !== undefined ? String(pathType) : ''}
+                onChange={(e: SelectChangeEvent<string>) =>
+                  setPathType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
+                }
+                label="Path Type"
+              >
+                {filterOptions.pathType.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {opt != null ? LearningModeDisplayNames[opt] : 'All'}
+                  </MenuItem>
+                ))}
+              </Select> */}
+            </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               Clear Filters
             </Button>
@@ -211,36 +245,25 @@ export function EmployeeSelectDialog({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {employees.map((employee) => (
+            {paths.map((path) => (
               <MenuItem
-                key={employee.id}
-                value={employee.id}
-                selected={localValue === employee.id}
-                onClick={() => setLocalValue(employee.id ?? '')}
+                key={path.id}
+                value={path.id}
+                selected={localValue === path.id}
+                onClick={() => setLocalValue(path.id ?? '')}
               >
-                <Checkbox checked={localValue === employee.id} />
-                <ListItemText primary={employee.name} />
-                <IconButton
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedEmployee(employee);
-                    setViewOpen(true);
-                  }}
-                  aria-label="Show Details"
-                >
-                  <InfoOutlined />
-                </IconButton>
+                <Checkbox checked={localValue === path.id} />
+                <ListItemText primary={path.name} />
               </MenuItem>
             ))}
-            {loadingEmployees && (
+            {loadingPaths && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
             )}
-            {!loadingEmployees && employees.length === 0 && (
+            {!loadingPaths && paths.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No employees found
+                No paths found
               </Typography>
             )}
           </Box>
@@ -265,14 +288,6 @@ export function EmployeeSelectDialog({
             </Button>
           </Box>
         </DialogActions>
-
-        {selectedEmployee && (
-          <EmployeeDetailForm
-            open={viewOpen}
-            employeeId={selectedEmployee.id ?? null}
-            onClose={() => setViewOpen(false)}
-          />
-        )}
       </Dialog>
     </>
   );

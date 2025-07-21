@@ -66,6 +66,11 @@ export enum UserQuizProgressEnum {
   Fail = 3,
 }
 
+export enum ApproveStatusEnum {
+  Approve = 0,
+  Reject = 1,
+}
+
 export class CoreEnumUtils {
   static getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
     if (!enumObj) return [];

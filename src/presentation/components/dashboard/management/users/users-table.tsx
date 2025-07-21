@@ -176,7 +176,9 @@ export default function UsersTable({
                     }}
                   />
                 </TableCell>
+                <TableCell>ID</TableCell>
                 <TableCell>User</TableCell>
+                <TableCell>Employee ID</TableCell>
                 <TableCell>Phone Number</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Roles</TableCell>
@@ -196,8 +198,9 @@ export default function UsersTable({
                   <TableRow hover key={row.id} selected={isItemSelected}>
                     <TableCell padding="checkbox">
                       <Checkbox checked={isItemSelected} onChange={() => handleSelectOne(row.id)} />
-                    </TableCell>
-                    <TableCell>
+                    </TableCell>{' '}
+                    <TableCell sx={{ width: '10%' }}>{row.id}</TableCell>
+                    <TableCell sx={{ width: '25%' }}>
                       <Stack direction="row" alignItems="center" spacing={2}>
                         <Avatar src={row.thumbnail?.resourceUrl}>{row.firstName?.[0]}</Avatar>
                         <Box>
@@ -209,7 +212,8 @@ export default function UsersTable({
                           </Typography>
                         </Box>
                       </Stack>
-                    </TableCell>
+                    </TableCell>{' '}
+                    <TableCell sx={{ width: '6%' }}>{row.employeeId}</TableCell>
                     <TableCell>{row.phoneNumber}</TableCell>
                     <TableCell>{row.email}</TableCell>
                     <TableCell>{row.roles?.join(', ')}</TableCell>

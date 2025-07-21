@@ -2,11 +2,25 @@ import React from 'react';
 import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
 import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { MoreVert } from '@mui/icons-material';
-import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { UserProgressEnum } from '@/utils/enum/core-enum';
+import {
+  Autorenew,
+  CancelOutlined,
+  CheckCircleOutline,
+  DataUsage,
+  HourglassEmpty,
+  MoreVert,
+  NotStarted,
+  NotStartedOutlined,
+} from '@mui/icons-material';
+import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
+import { CheckCircle, XCircle } from '@phosphor-icons/react';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
+
+import UserPathProgressDetailForm from './user-path-progress-detail-form';
+import { UpdateUserPathProgressFormDialog } from './user-path-progress-update-form';
 
 interface UserPathProgressTableProps {
   rows: UserPathProgressDetailResponse[];
@@ -55,6 +69,30 @@ export default function UserPathProgressTable({
     setPendingDeleteId(null);
     setDialogOpen(false);
   };
+  const renderStatus = (status: string) => {
+    switch (status) {
+      case UserProgressEnum[UserProgressEnum.NotStarted]:
+        return (
+          <Tooltip title="Not Started">
+            <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
+          </Tooltip>
+        );
+      case UserProgressEnum[UserProgressEnum.Ongoing]:
+        return (
+          <Tooltip title="In Progress">
+            <DataUsage sx={{ color: 'var(--mui-palette-secondary-main)' }} />
+          </Tooltip>
+        );
+      case UserProgressEnum[UserProgressEnum.Done]:
+        return (
+          <Tooltip title="Completed">
+            <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
+          </Tooltip>
+        );
+      default:
+        return <span>Unknown</span>;
+    }
+  };
 
   return (
     <>
@@ -67,6 +105,7 @@ export default function UserPathProgressTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteUserPathProgresss}
+        deleteConfirmHeaderTitle="Mark done"
         actionMenuItems={[
           {
             label: 'View Details',
@@ -83,7 +122,7 @@ export default function UserPathProgressTable({
             },
           },
           {
-            label: 'Delete',
+            label: 'Mark done',
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -91,42 +130,135 @@ export default function UserPathProgressTable({
         ]}
         renderHeader={() => (
           <>
+            <TableCell>ID</TableCell>
             <TableCell>Path Name</TableCell>
-            <TableCell>User Name</TableCell>
-            <TableCell>Progress</TableCell>
-            <TableCell>Start Time</TableCell>
-            <TableCell>End Time</TableCell>
+            <TableCell>User Id</TableCell>
+            <TableCell>Employee Id</TableCell>
+            <TableCell>Full Name</TableCell>
+            <TableCell>Gender</TableCell>
+            <TableCell>progress</TableCell>
+            <TableCell>startDate</TableCell>
+            <TableCell>endDate</TableCell>
             <TableCell>Status</TableCell>
-          </>
-        )}
-        renderRow={(row, isSelected, onSelect, onActionClick) => (
-          <>
-            <TableCell>
-              <Stack direction="row" alignItems="center" spacing={2}>
-                <Box>
-                  <Typography variant="subtitle2" noWrap>
-                    {row.id}
-                  </Typography>
-                </Box>
-              </Stack>
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              current Position Name
             </TableCell>
-            <TableCell>{row.coursePath?.name}</TableCell>
-            <TableCell>{row.user?.userName}</TableCell>
-            <TableCell>{row.progress}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromString(row.startDate ?? '')}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromString(row.endDate ?? '')}</TableCell>
-            <TableCell>{row.status}</TableCell>
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              current Position State Name
+            </TableCell>
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              current Department Name
+            </TableCell>
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              current Position State Name
+            </TableCell>
 
-            <TableCell align="right">
-              <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
-                <MoreVert />
-              </IconButton>
-            </TableCell>
+            <TableCell>cityName</TableCell>
           </>
         )}
+        renderRow={(row, isSelected, onSelect, onActionClick) => {
+          return (
+            <>
+              <TableCell
+                sx={{
+                  minWidth: 150,
+                  whiteSpace: 'normal',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {row.id}
+              </TableCell>
+
+              <TableCell sx={{ width: '15%' }}>{row.coursePath?.name}</TableCell>
+
+              <TableCell
+                sx={{
+                  minWidth: 150,
+                  whiteSpace: 'normal',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {row.user?.id}
+              </TableCell>
+
+              <TableCell
+                sx={{
+                  minWidth: 150,
+                  whiteSpace: 'normal',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {row.user?.employee?.id ?? ''}
+              </TableCell>
+
+              <TableCell sx={{ width: '10%' }}>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <Avatar
+                    src={
+                      row.user?.employee?.avatar != null ? row.user?.employee?.avatar : row.user?.thumbnail?.resourceUrl
+                    }
+                  >
+                    {row.user?.employee?.name?.[0]}
+                  </Avatar>
+                  <Box>
+                    <Typography variant="subtitle2" noWrap>
+                      {row.user?.employee?.name}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </TableCell>
+
+              <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
+
+              <TableCell>{row.progress}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateFromString(row.startDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateFromString(row.endDate ?? '')}</TableCell>
+              <TableCell align="center">{renderStatus(row.status)}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentDepartmentName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
+              <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
+
+              <TableCell align="right">
+                <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+                  <MoreVert />
+                </IconButton>
+              </TableCell>
+            </>
+          );
+        }}
       />
 
-      {/* {editUserPathProgressData && (
+      {editUserPathProgressData && (
         <UpdateUserPathProgressFormDialog
           open={editOpen}
           data={editUserPathProgressData}
@@ -141,10 +273,10 @@ export default function UserPathProgressTable({
       {editUserPathProgressData && (
         <UserPathProgressDetailForm
           open={viewOpen}
-          courseId={editUserPathProgressData.id ?? null}
+          userPathProgressId={editUserPathProgressData.id ?? null}
           onClose={() => setViewOpen(false)}
         />
-      )} */}
+      )}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

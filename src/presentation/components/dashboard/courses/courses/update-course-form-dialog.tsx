@@ -35,7 +35,7 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
 import { LessonSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-select';
-import { EnrollmentSelect } from '@/presentation/components/shared/enrollment/enrollment-select';
+import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface EditCourseDialogProps {
@@ -254,7 +254,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <EnrollmentSelect
+              <EnrollmentMultiSelect
                 enrollmentUsecase={enrollUsecase}
                 categoryEnum={CategoryEnum.Course}
                 value={

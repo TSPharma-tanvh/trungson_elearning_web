@@ -184,7 +184,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <CustomSelectDropDown<CategoryEnum>
                 label="Enrollment Criteria Type"
                 value={formData.category ?? CategoryEnum.Path}

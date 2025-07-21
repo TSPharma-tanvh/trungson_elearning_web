@@ -45,7 +45,7 @@ interface EnrollmentSelectProps extends Omit<SelectProps<string[]>, 'value' | 'o
   disabled?: boolean;
   categoryEnum: CategoryEnum;
 }
-export function EnrollmentSelect({
+export function EnrollmentMultiSelect({
   enrollmentUsecase,
   value,
   onChange,

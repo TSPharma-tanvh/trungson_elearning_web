@@ -80,7 +80,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
   async deleteEmployee(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.delete<ApiResponse>(apiEndpoints.employee.getById(id));
+      const response = await apiClient.delete<ApiResponse>(apiEndpoints.employee.delete(id));
       const apiResponse = response.data;
 
       if (!apiResponse || !apiResponse.isSuccessStatusCode) {

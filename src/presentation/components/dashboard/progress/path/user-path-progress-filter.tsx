@@ -48,7 +48,7 @@ export function UserPathProgressFilters({
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search course" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search progress" />
 
         {/* Status */}
         <CustomSelectFilter<UserProgressEnum>

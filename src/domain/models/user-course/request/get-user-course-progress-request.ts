@@ -1,0 +1,38 @@
+import { UserProgressEnum } from '@/utils/enum/core-enum';
+
+export class GetUserCourseProgressRequest {
+  userID?: string;
+  coursesID?: string;
+  progress?: number;
+  startDate?: Date;
+  endDate?: Date;
+  lastAccess?: Date;
+  status!: UserProgressEnum; // required
+  searchText?: string;
+  pageNumber: number = 1;
+  pageSize: number = 10;
+
+  constructor(init?: Partial<GetUserCourseProgressRequest>) {
+    Object.assign(this, init);
+  }
+
+  static fromJSON(data: any): GetUserCourseProgressRequest {
+    return new GetUserCourseProgressRequest(data);
+  }
+
+  toJSON(): any {
+    return { ...this };
+  }
+
+  toFormData(): FormData {
+    const formData = new FormData();
+    Object.entries(this).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => formData.append(key, v));
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+    return formData;
+  }
+}

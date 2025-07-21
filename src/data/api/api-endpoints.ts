@@ -126,6 +126,14 @@ interface UserPathProgressEndpoints {
   enroll: StaticEndpoint;
 }
 
+interface UserCourseProgressEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+  enroll: StaticEndpoint;
+}
+
 // Main type containing all endpoint categories
 interface EndpointDefinitions {
   identity: IdentityEndpoints;
@@ -146,6 +154,7 @@ interface EndpointDefinitions {
   fileResources: FileResourcesEndpoints;
   employee: EmployeeEndpoints;
   userPathProgress: UserPathProgressEndpoints;
+  userCourseProgress: UserCourseProgressEndpoints;
 }
 
 //endpoint values
@@ -255,9 +264,16 @@ const endpoints: EndpointDefinitions = {
   userPathProgress: {
     getAll: 'UserPathProgress/GetUserPathProgress',
     getById: (id: string) => `UserPathProgress/GetUserPathProgressById/${id}`,
-    create: 'UserPathProgress/CreateUserPathProgress',
-    update: 'UserPathProgress/UpdateUserPathProgress',
+    create: 'UserPathProgress/CreateUserPath',
+    update: 'UserPathProgress/UpdateUserPath',
     enroll: 'UserPathProgress/EnrollUserListToPath',
+  },
+  userCourseProgress: {
+    getAll: 'UserCourseProgress/GetUserCourseProgress',
+    getById: (id: string) => `UserCourseProgress/GetUserCourseProgressById/${id}`,
+    create: 'UserCourseProgress/CreateUserCourse',
+    update: 'UserCourseProgress/UpdateUserCourse',
+    enroll: 'UserCourseProgress/EnrollUserListToCourse',
   },
 };
 

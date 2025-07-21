@@ -10,6 +10,7 @@ export class UserPathProgressDetailResponse {
   endDate?: string;
   lastAccess?: string;
   status: string = '';
+  enrollmentID?: string;
   coursePath?: CoursePathResponse;
   user?: UserDetailResponse;
 
@@ -23,7 +24,6 @@ export class UserPathProgressDetailResponse {
       coursePath: data.coursePath ? CoursePathResponse.fromJson(data.coursePath) : undefined,
       user: data.user ? UserDetailResponse.fromJSON(data.user) : undefined,
     });
-
     return dto;
   }
 

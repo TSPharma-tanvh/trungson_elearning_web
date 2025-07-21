@@ -71,7 +71,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
   const listRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
-    if (user) {
+    if (open && user) {
       setFormData(
         new UpdateUserInfoRequest({
           userName: user.userName,
@@ -86,12 +86,14 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
       );
       setPreviewUrl(user.thumbnail?.resourceUrl || null);
       setConfirmPassword('');
-    } else {
+    }
+
+    if (!open) {
       setFormData(new UpdateUserInfoRequest());
       setPreviewUrl(null);
       setConfirmPassword('');
     }
-  }, [user]);
+  }, [open, user]);
 
   useEffect(() => {
     if (!open) {
@@ -129,15 +131,12 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
     }
   };
 
-  if (!user) return null;
-
   const selectedRoles = formData.roles?.split(',') ?? [];
 
-  // Define icon style for bold, filled, and gray appearance
   const iconStyle = {
     size: 20,
     weight: 'fill' as const,
-    color: '#616161', // Medium-dark gray color
+    color: '#616161',
   };
 
   return (
@@ -163,11 +162,11 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {user.id}
+            ID: {user?.id ?? ''}
           </Typography>
 
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 label="User Name"
                 value={formData.userName || ''}
@@ -227,24 +226,6 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 value={formData.employeeId ?? ''}
                 onChange={(value: string) => handleChange('employeeId', value)}
                 disabled={isSubmitting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Employee ID"
-                value={formData.employeeId || ''}
-                onChange={(e) => handleChange('employeeId', e.target.value)}
-                fullWidth
-                disabled={isSubmitting}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BagSimple {...iconStyle} />
-                    </InputAdornment>
-                  ),
-                }}
               />
             </Grid>
 

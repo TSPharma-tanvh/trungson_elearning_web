@@ -6,7 +6,7 @@ import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request
 import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { UserPathProgressDetailListResult } from '@/domain/models/user-path/response/user-path-progress-detail-result';
 import { UserPathProgressRepository } from '@/domain/repositories/progress/user-path-progress-repository';
-import { StatusEnum } from '@/utils/enum/core-enum';
+import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserPathProgressUsecase {
   constructor(private readonly userPathProgressRepo: UserPathProgressRepository) {}
@@ -61,7 +61,7 @@ export class UserPathProgressUsecase {
   async deleteUserPathProgress(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateUserPathProgressRequest({
       id: id ?? '',
-      status: StatusEnum[StatusEnum.Deleted],
+      status: UserProgressEnum[UserProgressEnum.Done],
     });
 
     var result = await this.userPathProgressRepo.updateUserPathProgress(newFormData);

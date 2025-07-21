@@ -129,7 +129,7 @@ export function CreateCategoryDialog({ disabled = false, onSubmit, loading = fal
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <CustomSelectDropDown<CategoryEnum>
                 label="Enrollment Criteria Type"
                 value={form.category ?? CategoryEnum.Path}
@@ -147,8 +147,6 @@ export function CreateCategoryDialog({ disabled = false, onSubmit, loading = fal
                 ]}
               />
             </Grid>
-
-            
 
             <Grid item xs={12}>
               <CustomButton label="Tạo mới" onClick={() => onSubmit(form)} loading={loading} disabled={disabled} />

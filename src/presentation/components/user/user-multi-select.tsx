@@ -35,19 +35,19 @@ import { useTheme } from '@mui/material/styles';
 import { CustomSearchInput } from '../core/text-field/custom-search-input';
 import { ViewUserDialog } from '../dashboard/management/users/view-user-detail-dialog';
 
-interface UserSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+interface UserSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   userUsecase: UserUsecase | null;
-  value: string;
-  onChange: (value: string) => void;
+  value: string[]; // changed from string to string[]
+  onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
 }
 
-export function UserSelectDialog({
+export function UserMultiSelectDialog({
   userUsecase,
   value,
   onChange,
-  label = 'User',
+  label = 'Users',
   disabled = false,
   ...selectProps
 }: UserSelectDialogProps) {
@@ -55,7 +55,7 @@ export function UserSelectDialog({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [localValue, setLocalValue] = useState<string>(value);
+  const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useUserSelectDebounce(localSearchText, 300);
   const [selectedUserMap, setSelectedUserMap] = useState<Record<string, UserResponse>>({});
@@ -93,6 +93,10 @@ export function UserSelectDialog({
     }
   };
 
+  const handleToggle = (userId: string) => {
+    setLocalValue((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]));
+  };
+
   useEffect(() => {
     setSearchText(debouncedSearchText);
   }, [debouncedSearchText, setSearchText]);
@@ -102,7 +106,7 @@ export function UserSelectDialog({
   }, [value]);
 
   useEffect(() => {
-    if (userUsecase && value) {
+    if (userUsecase && value.length) {
       const fetchSelectedUsers = async () => {
         setLoading(true);
         try {
@@ -149,7 +153,8 @@ export function UserSelectDialog({
         <InputLabel id="user-select-label">{label}</InputLabel>
         <Select
           labelId="user-select-label"
-          value={loading ? '' : value || ''}
+          multiple
+          value={loading ? [] : value || []}
           input={
             <OutlinedInput
               label={label}
@@ -157,12 +162,15 @@ export function UserSelectDialog({
             />
           }
           onClick={handleOpen}
-          renderValue={() =>
+          renderValue={(selected) =>
             loading
               ? 'Loading...'
-              : selectedUserMap[value]
-                ? `${selectedUserMap[value].firstName} ${selectedUserMap[value].lastName}`
-                : 'Select User'
+              : selected
+                  .map((id) => {
+                    const user = selectedUserMap[id];
+                    return user ? `${user.firstName} ${user.lastName}` : id;
+                  })
+                  .join(', ')
           }
           open={false}
           {...selectProps}
@@ -178,7 +186,7 @@ export function UserSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm">
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography mb={1}>Select User</Typography>
+            <Typography mb={1}>Select Users</Typography>
             <Box>
               <IconButton onClick={() => setIsFullscreen((prev) => !prev)}>
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
@@ -193,31 +201,34 @@ export function UserSelectDialog({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ listStyle: 'none', p: 0 }}>
-            {users.map((user) => (
-              <MenuItem key={user.id} selected={localValue === user.id} onClick={() => setLocalValue(user.id)}>
-                <Checkbox checked={localValue === user.id} />
-                <ListItemText
-                  primary={`${user.firstName} ${user.lastName}`}
-                  sx={{
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    flex: 1,
-                    mr: 1,
-                  }}
-                />
-                <Button
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedUser(user);
-                    setViewOpen(true);
-                  }}
-                >
-                  Show Detail
-                </Button>
-              </MenuItem>
-            ))}
+            {users.map((user) => {
+              const isSelected = localValue.includes(user.id);
+              return (
+                <MenuItem key={user.id} selected={isSelected} onClick={() => handleToggle(user.id)}>
+                  <Checkbox checked={isSelected} />
+                  <ListItemText
+                    primary={`${user.firstName} ${user.lastName}`}
+                    sx={{
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      flex: 1,
+                      mr: 1,
+                    }}
+                  />
+                  <Button
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedUser(user);
+                      setViewOpen(true);
+                    }}
+                  >
+                    Show Detail
+                  </Button>
+                </MenuItem>
+              );
+            })}
           </Box>
         </DialogContent>
 

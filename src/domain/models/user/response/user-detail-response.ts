@@ -19,15 +19,12 @@ export class UserDetailResponse {
   constructor(init?: Partial<UserDetailResponse>) {
     Object.assign(this, init);
   }
-
   static fromJSON(data: any): UserDetailResponse {
-    const dto = new UserDetailResponse({
+    return new UserDetailResponse({
       ...data,
       thumbnail: data.thumbnail ? FileResourcesResponse.fromJson(data.thumbnail) : undefined,
       employee: data.employee ? EmployeeResponse.fromJSON(data.employee) : undefined,
     });
-
-    return dto;
   }
 
   toJSON(): any {

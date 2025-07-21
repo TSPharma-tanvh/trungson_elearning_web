@@ -42,7 +42,7 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { EnrollmentSelect } from '@/presentation/components/shared/enrollment/enrollment-select';
+import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
@@ -357,7 +357,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <EnrollmentSelect
+              <EnrollmentMultiSelect
                 enrollmentUsecase={enrollUsecase}
                 categoryEnum={CategoryEnum.Class}
                 value={

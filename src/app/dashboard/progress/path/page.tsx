@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { CreateUserPathProgressRequest } from '@/domain/models/user-path/request/create-user-path-progress-request';
+import { EnrollUserListToPathRequest } from '@/domain/models/user-path/request/enroll-user-list-to-path-request';
 import { GetUserPathProgressRequest } from '@/domain/models/user-path/request/get-user-path-progress-request';
 import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
 import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
@@ -9,6 +10,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import { CreateUserPathProgressDialog } from '@/presentation/components/dashboard/progress/path/user-path-progress-create';
 import { UserPathProgressFilters } from '@/presentation/components/dashboard/progress/path/user-path-progress-filter';
 import UserPathProgressTable from '@/presentation/components/dashboard/progress/path/user-path-progress-table';
 
@@ -61,9 +63,9 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateUserPathProgress = async (request: CreateUserPathProgressRequest) => {
+  const handleCreateUserPathProgress = async (request: EnrollUserListToPathRequest) => {
     try {
-      await userPathProgressUsecase.createUserPathProgress(request);
+      await userPathProgressUsecase.enrollUserPathProgress(request);
       setShowCreateDialog(false);
       await fetchUserPathProgresss();
     } catch (error) {
@@ -103,7 +105,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            User Path Progresss
+            User Path Progress
           </Typography>
         </Stack>
         <Button
@@ -111,7 +113,7 @@ export default function Page(): React.JSX.Element {
           variant="contained"
           onClick={() => setShowCreateDialog(true)}
         >
-          Add
+          Enroll Users
         </Button>
       </Stack>
       <UserPathProgressFilters onFilter={handleFilter} />
@@ -126,13 +128,13 @@ export default function Page(): React.JSX.Element {
         onEditUserPathProgress={handleEditUserPathProgress}
       ></UserPathProgressTable>
 
-      {/* <CreateUserPathProgressDialog
+      <CreateUserPathProgressDialog
         onSubmit={handleCreateUserPathProgress}
         disabled={false}
         loading={false}
         open={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}
-      /> */}
+      />
     </Stack>
   );
 }
