@@ -10,6 +10,10 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import { CreateUserCourseProgressDialog } from '@/presentation/components/dashboard/progress/course/user-course-progress-create';
+import { UserCourseProgressFilters } from '@/presentation/components/dashboard/progress/course/user-course-progress-filter';
+import UserCourseProgressTable from '@/presentation/components/dashboard/progress/course/user-course-progress-table';
+
 export default function Page(): React.JSX.Element {
   const { userCourseProgressUsecase } = useDI();
 
@@ -112,7 +116,7 @@ export default function Page(): React.JSX.Element {
           Enroll Users
         </Button>
       </Stack>
-      {/* <UserCourseProgressFilters onFilter={handleFilter} />
+      <UserCourseProgressFilters onFilter={handleFilter} />
       <UserCourseProgressTable
         rows={userCourseProgress}
         count={totalCount}
@@ -130,7 +134,7 @@ export default function Page(): React.JSX.Element {
         loading={false}
         open={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}
-      /> */}
+      />
     </Stack>
   );
 }

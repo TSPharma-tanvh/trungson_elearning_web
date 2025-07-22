@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
-import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
+import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
+import { UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { UserProgressEnum } from '@/utils/enum/core-enum';
 import {
@@ -19,32 +19,32 @@ import { CheckCircle, XCircle } from '@phosphor-icons/react';
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
-import UserPathProgressDetailForm from './user-path-progress-detail-form';
-import { UpdateUserPathProgressFormDialog } from './user-path-progress-update-form';
+import UserCourseProgressDetailForm from './user-course-progress-detail-form';
+import { UpdateUserCourseProgressFormDialog } from './user-course-progress-update-form';
 
-interface UserPathProgressTableProps {
-  rows: UserPathProgressDetailResponse[];
+interface UserCourseProgressTableProps {
+  rows: UserCourseProgressResponse[];
   count: number;
   page: number;
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteUserPathProgresss: (ids: string[]) => Promise<void>;
-  onEditUserPathProgress: (data: UpdateUserPathProgressRequest) => Promise<void>;
+  onDeleteUserCourseProgresss: (ids: string[]) => Promise<void>;
+  onEditUserCourseProgress: (data: UpdateUserCourseProgressRequest) => Promise<void>;
 }
 
-export default function UserPathProgressTable({
+export default function UserCourseProgressTable({
   rows,
   count,
   page,
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteUserPathProgresss,
-  onEditUserPathProgress,
-}: UserPathProgressTableProps) {
+  onDeleteUserCourseProgresss,
+  onEditUserCourseProgress,
+}: UserCourseProgressTableProps) {
   const [editOpen, setEditOpen] = React.useState(false);
-  const [editUserPathProgressData, setEditUserPathProgressData] = React.useState<UserPathProgressDetailResponse | null>(
+  const [editUserCourseProgressData, setEditUserCourseProgressData] = React.useState<UserCourseProgressResponse | null>(
     null
   );
   const [viewOpen, setViewOpen] = React.useState(false);
@@ -59,7 +59,7 @@ export default function UserPathProgressTable({
 
   const handleConfirmDelete = async () => {
     if (pendingDeleteId) {
-      await onDeleteUserPathProgresss([pendingDeleteId]);
+      await onDeleteUserCourseProgresss([pendingDeleteId]);
       setPendingDeleteId(null);
     }
     setDialogOpen(false);
@@ -96,7 +96,7 @@ export default function UserPathProgressTable({
 
   return (
     <>
-      <CustomTable<UserPathProgressDetailResponse>
+      <CustomTable<UserCourseProgressResponse>
         rows={rows}
         count={count}
         page={page}
@@ -104,20 +104,20 @@ export default function UserPathProgressTable({
         getRowId={(row) => row.id!}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
-        onDelete={onDeleteUserPathProgresss}
+        onDelete={onDeleteUserCourseProgresss}
         deleteConfirmHeaderTitle="Mark done"
         actionMenuItems={[
           {
             label: 'View Details',
             onClick: (row) => {
-              setEditUserPathProgressData(row);
+              setEditUserCourseProgressData(row);
               setViewOpen(true);
             },
           },
           {
             label: 'Edit',
             onClick: (row) => {
-              setEditUserPathProgressData(row);
+              setEditUserCourseProgressData(row);
               setEditOpen(true);
             },
           },
@@ -131,14 +131,24 @@ export default function UserPathProgressTable({
         renderHeader={() => (
           <>
             <TableCell>ID</TableCell>
-            <TableCell>Path Name</TableCell>
+            <TableCell>Course Name</TableCell>
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              Path Id
+            </TableCell>
             <TableCell>User Name</TableCell>
             <TableCell>Full Name</TableCell>
             <TableCell>Gender</TableCell>
-            <TableCell>progress</TableCell>
+            <TableCell>Progress</TableCell>
             <TableCell>startDate</TableCell>
             <TableCell>endDate</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell>Progress Status</TableCell>
             <TableCell
               sx={{
                 minWidth: 100,
@@ -196,7 +206,16 @@ export default function UserPathProgressTable({
                 {row.id}
               </TableCell>
 
-              <TableCell sx={{ width: '15%' }}>{row.coursePath?.name}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.courses?.name}</TableCell>
+              <TableCell
+                sx={{
+                  minWidth: 150,
+                  whiteSpace: 'normal',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {row.courses?.coursePath?.name}
+              </TableCell>
 
               <TableCell
                 sx={{
@@ -247,22 +266,22 @@ export default function UserPathProgressTable({
         }}
       />
 
-      {editUserPathProgressData && (
-        <UpdateUserPathProgressFormDialog
+      {editUserCourseProgressData && (
+        <UpdateUserCourseProgressFormDialog
           open={editOpen}
-          data={editUserPathProgressData}
+          data={editUserCourseProgressData}
           onClose={() => setEditOpen(false)}
           onSubmit={async (updatedData) => {
-            await onEditUserPathProgress(updatedData);
+            await onEditUserCourseProgress(updatedData);
             setEditOpen(false);
           }}
         />
       )}
 
-      {editUserPathProgressData && (
-        <UserPathProgressDetailForm
+      {editUserCourseProgressData && (
+        <UserCourseProgressDetailForm
           open={viewOpen}
-          userPathProgressId={editUserPathProgressData.id ?? null}
+          userCourseProgressId={editUserCourseProgressData.id ?? null}
           onClose={() => setViewOpen(false)}
         />
       )}

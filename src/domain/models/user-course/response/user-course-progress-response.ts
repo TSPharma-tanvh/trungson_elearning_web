@@ -1,4 +1,6 @@
+import { EnrollmentResponse } from '../../class/response/enrollment-response';
 import { CourseDetailResponse } from '../../courses/response/course-detail-response';
+import { UserDetailResponse } from '../../user/response/user-detail-response';
 
 export class UserCourseProgressResponse {
   id: string = '';
@@ -9,7 +11,10 @@ export class UserCourseProgressResponse {
   endDate?: string;
   lastAccess?: string;
   status: string = '';
+  enrollmentID?: string;
+  enrollment?: EnrollmentResponse;
   courses?: CourseDetailResponse;
+  user?: UserDetailResponse;
 
   constructor(init?: Partial<UserCourseProgressResponse>) {
     Object.assign(this, init);
@@ -19,6 +24,8 @@ export class UserCourseProgressResponse {
     return new UserCourseProgressResponse({
       ...data,
       courses: data.courses ? CourseDetailResponse.fromJSON(data.courses) : undefined,
+      user: data.user ? UserDetailResponse.fromJSON(data.user) : undefined,
+      enrollment: data.enrollment ? EnrollmentResponse.fromJson(data.user) : undefined,
     });
   }
 
@@ -26,6 +33,7 @@ export class UserCourseProgressResponse {
     return {
       ...this,
       courses: this.courses?.toJSON(),
+      user: this.user?.toJSON(),
     };
   }
 

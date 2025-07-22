@@ -178,7 +178,7 @@ export default function UsersTable({
                 </TableCell>
                 <TableCell>ID</TableCell>
                 <TableCell>User</TableCell>
-                <TableCell>Employee ID</TableCell>
+                <TableCell>Employee Name</TableCell>
                 <TableCell>Phone Number</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Roles</TableCell>
@@ -213,7 +213,7 @@ export default function UsersTable({
                         </Box>
                       </Stack>
                     </TableCell>{' '}
-                    <TableCell sx={{ width: '6%' }}>{row.employeeId}</TableCell>
+                    <TableCell sx={{ width: '15%' }}>{row.employee?.name}</TableCell>
                     <TableCell>{row.phoneNumber}</TableCell>
                     <TableCell>{row.email}</TableCell>
                     <TableCell>{row.roles?.join(', ')}</TableCell>

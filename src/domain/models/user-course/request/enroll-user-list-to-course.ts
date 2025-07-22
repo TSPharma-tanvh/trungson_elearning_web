@@ -1,39 +1,58 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+import { ApproveStatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+
 export class EnrollUserListToCourseRequest {
-  userIDs!: string[];
+  userIDs: string[] = [];
   courseID?: string;
   progress?: number;
-  startDate?: string;
-  endDate?: string;
-  lastAccess?: string;
-  status!: string;
+  startDate?: Date;
+  endDate?: Date;
+  lastAccess?: Date;
+  status!: UserProgressEnum;
   enrollmentCriteriaID?: string;
   userID?: string;
   approvedBy?: string;
-  approvedAt?: string;
+  approvedAt?: Date;
   rejectedReason?: string;
-  enrollStatus?: string;
+  enrollStatus?: ApproveStatusEnum;
 
   constructor(init?: Partial<EnrollUserListToCourseRequest>) {
     Object.assign(this, init);
   }
 
-  static fromJSON(data: any): EnrollUserListToCourseRequest {
-    return new EnrollUserListToCourseRequest(data);
+  static fromJSON(json: any): EnrollUserListToCourseRequest {
+    return new EnrollUserListToCourseRequest({
+      userIDs: json.userIDs ?? [],
+      courseID: json.courseID,
+      progress: json.progress,
+      startDate: json.startDate ? new Date(json.startDate) : undefined,
+      endDate: json.endDate ? new Date(json.endDate) : undefined,
+      lastAccess: json.lastAccess ? new Date(json.lastAccess) : undefined,
+      status: json.status,
+      enrollmentCriteriaID: json.enrollmentCriteriaID,
+      userID: json.userID,
+      approvedBy: json.approvedBy,
+      approvedAt: json.approvedAt ? new Date(json.approvedAt) : undefined,
+      rejectedReason: json.rejectedReason,
+      enrollStatus: json.enrollStatus,
+    });
   }
 
   toJSON(): any {
-    return { ...this };
-  }
-
-  toFormData(): FormData {
-    const formData = new FormData();
-    Object.entries(this).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((v) => formData.append(key, v));
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, value.toString());
-      }
-    });
-    return formData;
+    return {
+      userIDs: this.userIDs,
+      courseID: this.courseID,
+      progress: this.progress,
+      startDate: DateTimeUtils.formatISODateToString(this.startDate),
+      endDate: DateTimeUtils.formatISODateToString(this.endDate),
+      lastAccess: this.lastAccess?.toISOString(),
+      status: this.status,
+      enrollmentCriteriaID: this.enrollmentCriteriaID,
+      userID: this.userID,
+      approvedBy: this.approvedBy,
+      approvedAt: this.approvedAt?.toISOString(),
+      rejectedReason: this.rejectedReason,
+      enrollStatus: this.enrollStatus,
+    };
   }
 }

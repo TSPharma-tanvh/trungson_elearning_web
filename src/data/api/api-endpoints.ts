@@ -134,6 +134,13 @@ interface UserCourseProgressEndpoints {
   enroll: StaticEndpoint;
 }
 
+interface UserLessonProgressEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+}
+
 // Main type containing all endpoint categories
 interface EndpointDefinitions {
   identity: IdentityEndpoints;
@@ -155,6 +162,7 @@ interface EndpointDefinitions {
   employee: EmployeeEndpoints;
   userPathProgress: UserPathProgressEndpoints;
   userCourseProgress: UserCourseProgressEndpoints;
+  userLessonProgress: UserLessonProgressEndpoints;
 }
 
 //endpoint values
@@ -274,6 +282,12 @@ const endpoints: EndpointDefinitions = {
     create: 'UserCourseProgress/CreateUserCourse',
     update: 'UserCourseProgress/UpdateUserCourse',
     enroll: 'UserCourseProgress/EnrollUserListToCourse',
+  },
+  userLessonProgress: {
+    getAll: 'UserLessonProgress/GetUserLessonProgress',
+    getById: (id: string) => `UserLessonProgress/GetUserLessonProgressById/${id}`,
+    create: 'UserLessonProgress/CreateUserLesson',
+    update: 'UserLessonProgress/UpdateUserLesson',
   },
 };
 

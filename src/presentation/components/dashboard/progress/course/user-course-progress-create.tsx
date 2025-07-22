@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { EnrollUserListToPathRequest } from '@/domain/models/user-path/request/enroll-user-list-to-path-request';
+import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { ApproveStatusEnum, CategoryEnum, UserProgressEnum } from '@/utils/enum/core-enum';
@@ -23,30 +23,30 @@ import {
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
-import { PathSelectDialog } from '@/presentation/components/shared/courses/path/path-select';
+import { CourseSelectDialog } from '@/presentation/components/shared/courses/courses/courses-select';
 import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
 interface Props {
   disabled?: boolean;
-  onSubmit: (data: EnrollUserListToPathRequest) => void;
+  onSubmit: (data: EnrollUserListToCourseRequest) => void;
   loading?: boolean;
   open: boolean;
   onClose: () => void;
 }
 
-export function CreateUserPathProgressDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { userUsecase, pathUseCase, enrollUsecase } = useDI();
+  const { userUsecase, courseUsecase, enrollUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
 
-  const [form, setForm] = useState<EnrollUserListToPathRequest>(
-    new EnrollUserListToPathRequest({
+  const [form, setForm] = useState<EnrollUserListToCourseRequest>(
+    new EnrollUserListToCourseRequest({
       userID: '',
-      pathID: '',
+      courseID: '',
       progress: 0,
       startDate: new Date(),
       endDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
@@ -55,8 +55,11 @@ export function CreateUserPathProgressDialog({ disabled = false, onSubmit, loadi
     })
   );
 
-  const handleChange = <K extends keyof EnrollUserListToPathRequest>(key: K, value: EnrollUserListToPathRequest[K]) => {
-    setForm((prev) => new EnrollUserListToPathRequest({ ...prev, [key]: value }));
+  const handleChange = <K extends keyof EnrollUserListToCourseRequest>(
+    key: K,
+    value: EnrollUserListToCourseRequest[K]
+  ) => {
+    setForm((prev) => new EnrollUserListToCourseRequest({ ...prev, [key]: value }));
   };
 
   useEffect(() => {
@@ -88,7 +91,7 @@ export function CreateUserPathProgressDialog({ disabled = false, onSubmit, loadi
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create UserPathProgress
+          Create UserCourseProgress
         </Typography>
         <Box>
           <IconButton onClick={() => setFullScreen((prev) => !prev)}>
@@ -135,10 +138,10 @@ export function CreateUserPathProgressDialog({ disabled = false, onSubmit, loadi
             </Grid> */}
 
             <Grid item xs={12}>
-              <PathSelectDialog
-                pathUsecase={pathUseCase}
-                value={form.pathID ?? ''}
-                onChange={(value: string) => handleChange('pathID', value)}
+              <CourseSelectDialog
+                courseUsecase={courseUsecase}
+                value={form.courseID ?? ''}
+                onChange={(value: string) => handleChange('courseID', value)}
                 disabled={false}
               />
             </Grid>
@@ -158,7 +161,7 @@ export function CreateUserPathProgressDialog({ disabled = false, onSubmit, loadi
                 value={form.enrollmentCriteriaID ?? ''}
                 onChange={(value: string) => handleChange('enrollmentCriteriaID', value)}
                 disabled={false}
-                categoryEnum={CategoryEnum.Path}
+                categoryEnum={CategoryEnum.Course}
               />
             </Grid>
 

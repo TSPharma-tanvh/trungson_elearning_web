@@ -7,7 +7,7 @@ export class GetUserCourseProgressRequest {
   startDate?: Date;
   endDate?: Date;
   lastAccess?: Date;
-  status!: UserProgressEnum; // required
+  status!: string; // required
   searchText?: string;
   pageNumber: number = 1;
   pageSize: number = 10;

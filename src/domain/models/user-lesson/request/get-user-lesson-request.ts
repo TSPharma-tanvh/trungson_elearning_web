@@ -1,0 +1,46 @@
+export class GetUserLessonProgressRequest {
+  userID?: string;
+  lessonID?: string;
+  progress?: number;
+  startDate?: Date;
+  endDate?: Date;
+  lastAccess?: Date;
+  status!: string;
+  searchText?: string;
+  pageNumber: number = 1;
+  pageSize: number = 10;
+
+  constructor(init?: Partial<GetUserLessonProgressRequest>) {
+    Object.assign(this, init);
+  }
+
+  static fromJSON(json: any): GetUserLessonProgressRequest {
+    const dto = new GetUserLessonProgressRequest();
+    dto.userID = json.userID;
+    dto.lessonID = json.lessonID;
+    dto.progress = json.progress;
+    dto.startDate = json.startDate ? new Date(json.startDate) : undefined;
+    dto.endDate = json.endDate ? new Date(json.endDate) : undefined;
+    dto.lastAccess = json.lastAccess ? new Date(json.lastAccess) : undefined;
+    dto.status = json.status;
+    dto.searchText = json.searchText;
+    dto.pageNumber = json.pageNumber ?? 1;
+    dto.pageSize = json.pageSize ?? 10;
+    return dto;
+  }
+
+  toJSON(): any {
+    return {
+      userID: this.userID,
+      lessonID: this.lessonID,
+      progress: this.progress,
+      startDate: this.startDate?.toISOString(),
+      endDate: this.endDate?.toISOString(),
+      lastAccess: this.lastAccess?.toISOString(),
+      status: this.status,
+      searchText: this.searchText,
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
+    };
+  }
+}

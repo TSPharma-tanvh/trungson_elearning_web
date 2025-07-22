@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
-import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
+import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
+import { UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
@@ -41,58 +41,57 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { PathSelectDialog } from '@/presentation/components/shared/courses/path/path-select';
 import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
 import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 import { UserSelectDialog } from '@/presentation/components/user/user-select';
 
-interface EditUserPathProgressDialogProps {
+interface EditUserCourseProgressDialogProps {
   open: boolean;
-  data: UserPathProgressDetailResponse | null;
+  data: UserCourseProgressResponse | null;
   onClose: () => void;
-  onSubmit: (data: UpdateUserPathProgressRequest) => void;
+  onSubmit: (data: UpdateUserCourseProgressRequest) => void;
 }
 
-export function UpdateUserPathProgressFormDialog({
+export function UpdateUserCourseProgressFormDialog({
   open,
-  data: userPathProgress,
+  data: userCourseProgress,
   onClose,
   onSubmit,
-}: EditUserPathProgressDialogProps) {
+}: EditUserCourseProgressDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { userUsecase, pathUseCase, enrollUsecase } = useDI();
+  const { userUsecase, courseUsecase, enrollUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
-  const [formData, setFormData] = useState<UpdateUserPathProgressRequest>(new UpdateUserPathProgressRequest({}));
+  const [formData, setFormData] = useState<UpdateUserCourseProgressRequest>(new UpdateUserCourseProgressRequest({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
 
   useEffect(() => {
-    if (userPathProgress && open) {
-      const newFormData = new UpdateUserPathProgressRequest({
-        id: userPathProgress.id || '',
-        userID: userPathProgress.userID || '',
-        pathID: userPathProgress.pathID || '',
-        progress: userPathProgress.progress || undefined,
-        startDate: userPathProgress.startDate || '',
-        endDate: userPathProgress.endDate || '',
-        lastAccess: userPathProgress.lastAccess || '',
-        status: userPathProgress.status || '',
-        enrollmentID: userPathProgress.enrollmentID || '',
+    if (userCourseProgress && open) {
+      const newFormData = new UpdateUserCourseProgressRequest({
+        id: userCourseProgress.id || undefined,
+        userID: userCourseProgress.userID || undefined,
+        // courseId: userCourseProgress.courseID || '',
+        progress: userCourseProgress.progress || undefined,
+        startDate: userCourseProgress.startDate || undefined,
+        endDate: userCourseProgress.endDate || undefined,
+        lastAccess: userCourseProgress.lastAccess || undefined,
+        status: userCourseProgress.status || undefined,
+        enrollmentCriteriaID: userCourseProgress.enrollment?.enrollmentCriteriaID || undefined,
       });
       setFormData(newFormData);
     }
-  }, [userPathProgress, open, userUsecase, pathUseCase, enrollUsecase]);
+  }, [userCourseProgress, open, userUsecase, courseUsecase, enrollUsecase]);
 
-  const handleChange = <K extends keyof UpdateUserPathProgressRequest>(
+  const handleChange = <K extends keyof UpdateUserCourseProgressRequest>(
     field: K,
-    value: UpdateUserPathProgressRequest[K]
+    value: UpdateUserCourseProgressRequest[K]
   ) => {
-    setFormData((prev) => new UpdateUserPathProgressRequest({ ...prev, [field]: value }));
+    setFormData((prev) => new UpdateUserCourseProgressRequest({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
@@ -101,8 +100,8 @@ export function UpdateUserPathProgressFormDialog({
       await onSubmit(formData);
       onClose();
     } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+      console.error('Error updating course:', error);
+      CustomSnackBar.showSnackbar('Failed to update course', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -125,13 +124,13 @@ export function UpdateUserPathProgressFormDialog({
     { value: DisplayTypeEnum.Private, label: 'Private' },
   ];
 
-  if (!userPathProgress) return null;
+  if (!userCourseProgress) return null;
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update UserPathProgress
+          Update UserCourseProgress
         </Typography>
         <Box>
           <IconButton onClick={() => setFullScreen((prev) => !prev)}>
@@ -146,15 +145,15 @@ export function UpdateUserPathProgressFormDialog({
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {userPathProgress?.id}
+            ID: {userCourseProgress?.id}
           </Typography>
 
           <Grid container spacing={2}>
             {/* <Grid item xs={12}>
-              <PathSelectDialog
-                pathUsecase={pathUseCase}
-                value={formData.pathID ?? ''}
-                onChange={(value: string) => handleChange('pathID', value)}
+              <CourseSelectDialog
+                courseUsecase={courseUseCase}
+                value={formData.courseID ?? ''}
+                onChange={(value: string) => handleChange('courseID', value)}
                 disabled={false}
               />
             </Grid>
@@ -174,7 +173,7 @@ export function UpdateUserPathProgressFormDialog({
                 value={formData.enrollmentID ?? ''}
                 onChange={(value: string) => handleChange('enrollmentID', value)}
                 disabled={false}
-                categoryEnum={CategoryEnum.Path}
+                categoryEnum={CategoryEnum.Course}
               />
             </Grid> */}
 
