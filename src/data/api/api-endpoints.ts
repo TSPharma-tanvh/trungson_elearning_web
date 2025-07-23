@@ -140,6 +140,12 @@ interface UserLessonProgressEndpoints {
   create: StaticEndpoint;
   update: StaticEndpoint;
 }
+interface UserQuizProgressEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+}
 
 // Main type containing all endpoint categories
 interface EndpointDefinitions {
@@ -163,6 +169,7 @@ interface EndpointDefinitions {
   userPathProgress: UserPathProgressEndpoints;
   userCourseProgress: UserCourseProgressEndpoints;
   userLessonProgress: UserLessonProgressEndpoints;
+  userQuizProgress: UserQuizProgressEndpoints;
 }
 
 //endpoint values
@@ -288,6 +295,12 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `UserLessonProgress/GetUserLessonProgressById/${id}`,
     create: 'UserLessonProgress/CreateUserLesson',
     update: 'UserLessonProgress/UpdateUserLesson',
+  },
+  userQuizProgress: {
+    getAll: 'UserQuizProgress/GetUserQuizProgress',
+    getById: (id: string) => `UserQuizProgress/GetUserQuizProgressById/${id}`,
+    create: 'UserQuizProgress/AssignUsers',
+    update: 'UserQuizProgress/EditAssignUsers',
   },
 };
 

@@ -9,6 +9,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import { CreateUserLessonProgressDialog } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-create';
 import { UserLessonProgressFilters } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-filter';
 import UserLessonProgressTable from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-table';
 
@@ -126,13 +127,13 @@ export default function Page(): React.JSX.Element {
         onEditUserLessonProgress={handleEditUserLessonProgress}
       ></UserLessonProgressTable>
 
-      {/* <CreateUserLessonProgressDialog
+      <CreateUserLessonProgressDialog
         onSubmit={handleCreateUserLessonProgress}
         disabled={false}
         loading={false}
         open={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}
-      /> */}
+      />
     </Stack>
   );
 }

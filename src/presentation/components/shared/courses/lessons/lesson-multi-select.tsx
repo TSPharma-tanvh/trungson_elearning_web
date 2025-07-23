@@ -46,10 +46,10 @@ import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
-interface LessonSingleSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+interface LessonMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   lessonUsecase: LessonUsecase;
-  value: string;
-  onChange: (value: string) => void;
+  value: string[];
+  onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
   pathID?: string;
@@ -62,7 +62,7 @@ const filterOptions = {
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
 };
 
-export function LessonSingleSelectDialog({
+export function LessonMultiSelectDialog({
   lessonUsecase,
   value,
   onChange,
@@ -70,12 +70,12 @@ export function LessonSingleSelectDialog({
   disabled = false,
   pathID,
   ...selectProps
-}: LessonSingleSelectDialogProps) {
+}: LessonMultiSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [localValue, setLocalValue] = useState<string>(value);
+  const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useLessonSelectDebounce(localSearchText, 300);
   const [selectedLessonMap, setSelectedLessonMap] = useState<Record<string, LessonDetailResponse>>({});
@@ -201,7 +201,9 @@ export function LessonSingleSelectDialog({
             <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedLessonMap[selected]?.name || 'No Course Selected'}
+          renderValue={(selected) =>
+            selected.map((id: string) => selectedLessonMap[id]?.name || id).join(', ') || 'No Lessons Selected'
+          }
           open={false}
           {...selectProps}
         />
@@ -293,7 +295,15 @@ export function LessonSingleSelectDialog({
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
             {lessons.map((lesson) => (
-              <MenuItem key={lesson.id} value={lesson.id} onClick={() => setLocalValue(lesson.id ?? '')}>
+              <MenuItem
+                key={lesson.id}
+                value={lesson.id}
+                onClick={() =>
+                  setLocalValue((prev) =>
+                    prev.includes(lesson.id!) ? prev.filter((id) => id !== lesson.id!) : [...prev, lesson.id!]
+                  )
+                }
+              >
                 <Checkbox checked={localValue.includes(lesson.id!)} />
                 <ListItemText primary={lesson.name} />
               </MenuItem>

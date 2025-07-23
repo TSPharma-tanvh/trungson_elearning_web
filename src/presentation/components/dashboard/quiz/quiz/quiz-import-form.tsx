@@ -30,7 +30,7 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
-import { QuizSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-select';
+import { QuizSingleSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 
 interface Props {
   disabled?: boolean;
@@ -243,7 +243,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
 
             <Grid item xs={12}>
-              <QuizSelectDialog
+              <QuizSingleSelectDialog
                 quizUsecase={quizUsecase}
                 value={form.quizID}
                 onChange={(value) => handleChange('quizID', value ?? '')}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
-import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
+import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
+import { UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
@@ -41,58 +41,53 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { PathSelectDialog } from '@/presentation/components/shared/courses/path/path-select';
 import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
 import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 import { UserSelectDialog } from '@/presentation/components/user/user-select';
 
-interface EditUserPathProgressDialogProps {
+interface EditUserLessonProgressDialogProps {
   open: boolean;
-  data: UserPathProgressDetailResponse | null;
+  data: UserLessonProgressDetailResponse | null;
   onClose: () => void;
-  onSubmit: (data: UpdateUserPathProgressRequest) => void;
+  onSubmit: (data: UpdateUserLessonRequest) => void;
 }
 
-export function UpdateUserPathProgressFormDialog({
+export function UpdateUserLessonProgressFormDialog({
   open,
-  data: userPathProgress,
+  data: userLessonProgress,
   onClose,
   onSubmit,
-}: EditUserPathProgressDialogProps) {
+}: EditUserLessonProgressDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { userUsecase, pathUseCase, enrollUsecase } = useDI();
+  const { userUsecase, lessonUsecase, enrollUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
-  const [formData, setFormData] = useState<UpdateUserPathProgressRequest>(new UpdateUserPathProgressRequest({}));
+  const [formData, setFormData] = useState<UpdateUserLessonRequest>(new UpdateUserLessonRequest({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
 
   useEffect(() => {
-    if (userPathProgress && open) {
-      const newFormData = new UpdateUserPathProgressRequest({
-        id: userPathProgress.id || undefined,
-        userID: userPathProgress.userID || undefined,
-        pathID: userPathProgress.pathID || undefined,
-        progress: userPathProgress.progress || undefined,
-        startDate: userPathProgress.startDate || undefined,
-        endDate: userPathProgress.endDate || undefined,
-        lastAccess: userPathProgress.lastAccess || undefined,
-        status: userPathProgress.status || undefined,
-        enrollmentID: userPathProgress.enrollmentID || undefined,
+    if (userLessonProgress && open) {
+      const newFormData = new UpdateUserLessonRequest({
+        id: userLessonProgress.id || undefined,
+        userID: userLessonProgress.userID || undefined,
+        lessonID: userLessonProgress.lessonID || undefined,
+        progress: userLessonProgress.progress || undefined,
+        startDate: userLessonProgress.startDate || undefined,
+        endDate: userLessonProgress.endDate || undefined,
+        lastAccess: userLessonProgress.lastAccess || undefined,
+        status: userLessonProgress.status || undefined,
       });
       setFormData(newFormData);
     }
-  }, [userPathProgress, open, userUsecase, pathUseCase, enrollUsecase]);
+  }, [userLessonProgress, open, userUsecase, lessonUsecase, enrollUsecase]);
 
-  const handleChange = <K extends keyof UpdateUserPathProgressRequest>(
-    field: K,
-    value: UpdateUserPathProgressRequest[K]
-  ) => {
-    setFormData((prev) => new UpdateUserPathProgressRequest({ ...prev, [field]: value }));
+  const handleChange = <K extends keyof UpdateUserLessonRequest>(field: K, value: UpdateUserLessonRequest[K]) => {
+    setFormData((prev) => new UpdateUserLessonRequest({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
@@ -101,8 +96,8 @@ export function UpdateUserPathProgressFormDialog({
       await onSubmit(formData);
       onClose();
     } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+      console.error('Error updating lesson:', error);
+      CustomSnackBar.showSnackbar('Failed to update lesson', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -125,13 +120,13 @@ export function UpdateUserPathProgressFormDialog({
     { value: DisplayTypeEnum.Private, label: 'Private' },
   ];
 
-  if (!userPathProgress) return null;
+  if (!userLessonProgress) return null;
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update UserPathProgress
+          Update UserLessonProgress
         </Typography>
         <Box>
           <IconButton onClick={() => setFullScreen((prev) => !prev)}>
@@ -146,15 +141,15 @@ export function UpdateUserPathProgressFormDialog({
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {userPathProgress?.id}
+            ID: {userLessonProgress?.id}
           </Typography>
 
           <Grid container spacing={2}>
             {/* <Grid item xs={12}>
-              <PathSelectDialog
-                pathUsecase={pathUseCase}
-                value={formData.pathID ?? ''}
-                onChange={(value: string) => handleChange('pathID', value)}
+              <LessonSelectDialog
+                lessonUsecase={lessonUsecase}
+                value={formData.lessonID ?? ''}
+                onChange={(value: string) => handleChange('lessonID', value)}
                 disabled={false}
               />
             </Grid>
@@ -174,7 +169,7 @@ export function UpdateUserPathProgressFormDialog({
                 value={formData.enrollmentID ?? ''}
                 onChange={(value: string) => handleChange('enrollmentID', value)}
                 disabled={false}
-                categoryEnum={CategoryEnum.Path}
+                categoryEnum={CategoryEnum.Lesson}
               />
             </Grid> */}
 
@@ -182,7 +177,7 @@ export function UpdateUserPathProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={formData.startDate ? DateTimeUtils.formatISODateToString(formData.startDate) : undefined}
-                onChange={(value) => handleChange('startDate', value)}
+                onChange={(value) => handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value))}
                 disabled={false}
               />
             </Grid>
@@ -191,7 +186,7 @@ export function UpdateUserPathProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={formData.endDate ? DateTimeUtils.formatISODateToString(formData.endDate) : undefined}
-                onChange={(value) => handleChange('endDate', value)}
+                onChange={(value) => handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value))}
                 disabled={false}
               />
             </Grid>
@@ -200,7 +195,7 @@ export function UpdateUserPathProgressFormDialog({
               {' '}
               <CustomSelectDropDown<string>
                 label="Trạng thái"
-                value={formData.status}
+                value={formData.status ?? ''}
                 onChange={(val) => handleChange('status', val)}
                 disabled={false}
                 options={[

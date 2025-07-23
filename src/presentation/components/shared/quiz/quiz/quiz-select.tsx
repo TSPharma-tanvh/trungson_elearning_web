@@ -42,7 +42,7 @@ interface QuizSingleSelectDialogProps extends Omit<SelectProps<string>, 'value' 
   disabled?: boolean;
 }
 
-export function QuizSelectDialog({
+export function QuizSingleSelectDialog({
   quizUsecase,
   value,
   onChange,

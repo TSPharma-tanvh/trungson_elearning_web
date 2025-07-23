@@ -34,7 +34,7 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { LessonSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-select';
+import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
 import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
@@ -245,7 +245,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               />
             </Grid>
             <Grid item xs={12}>
-              <LessonSelectDialog
+              <LessonMultiSelectDialog
                 lessonUsecase={lessonUsecase}
                 value={formData.lessonIds ? formData.lessonIds.split(',').filter((id) => id) : []}
                 onChange={(value: string[]) => handleChange('lessonIds', value.join(','))}

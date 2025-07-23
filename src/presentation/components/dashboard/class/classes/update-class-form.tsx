@@ -34,6 +34,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Article, Calendar, Image as ImageIcon, Note, QrCode, Tag } from '@phosphor-icons/react';
+import { Clock } from '@phosphor-icons/react/dist/ssr';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -306,7 +307,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                   handleChange('minuteLate', numericValue);
                 }}
                 disabled={isSubmitting}
-                icon={<QrCode {...iconStyle} />}
+                icon={<Clock {...iconStyle} />}
                 inputMode="numeric"
                 onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }))}
               />

@@ -161,7 +161,7 @@ export function UserSelectDialog({
             loading
               ? 'Loading...'
               : selectedUserMap[value]
-                ? `${selectedUserMap[value].firstName} ${selectedUserMap[value].lastName}`
+                ? `${selectedUserMap[value]?.employee?.name} (${selectedUserMap[value].userName})`
                 : 'Select User'
           }
           open={false}
@@ -169,7 +169,7 @@ export function UserSelectDialog({
         >
           {Object.values(selectedUserMap).map((user) => (
             <MenuItem key={user.id} value={user.id}>
-              {`${user.firstName} ${user.lastName}`}
+              {`${user?.employee?.name} (${user.userName})`}
             </MenuItem>
           ))}
         </Select>
@@ -197,7 +197,7 @@ export function UserSelectDialog({
               <MenuItem key={user.id} selected={localValue === user.id} onClick={() => setLocalValue(user.id)}>
                 <Checkbox checked={localValue === user.id} />
                 <ListItemText
-                  primary={`${user.firstName} ${user.lastName}`}
+                  primary={`${user?.employee?.name} (${user.userName})`}
                   sx={{
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',

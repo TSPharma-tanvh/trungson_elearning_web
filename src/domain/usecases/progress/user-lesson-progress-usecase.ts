@@ -57,7 +57,7 @@ export class UserLessonProgressUsecase {
   async deleteUserLessonProgress(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateUserLessonRequest({
       id: id,
-      status: UserProgressEnum.Done,
+      status: UserProgressEnum[UserProgressEnum.Done],
     });
 
     var result = await this.userLessonProgressRepo.updateUserLessonProgress(newFormData);

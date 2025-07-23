@@ -1,17 +1,23 @@
 import React from 'react';
-import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
-import { UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
+import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
+import { UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { UserProgressEnum } from '@/utils/enum/core-enum';
+import { UserProgressEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
 import {
   Autorenew,
   CancelOutlined,
+  CheckBox,
   CheckCircleOutline,
   DataUsage,
   HourglassEmpty,
+  IndeterminateCheckBox,
   MoreVert,
   NotStarted,
   NotStartedOutlined,
+  ThumbDown,
+  ThumbDownOutlined,
+  ThumbUp,
+  ThumbUpOutlined,
 } from '@mui/icons-material';
 import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
 import { CheckCircle, XCircle } from '@phosphor-icons/react';
@@ -19,33 +25,33 @@ import { CheckCircle, XCircle } from '@phosphor-icons/react';
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
-import UserLessonProgressDetailForm from './user-lesson-progress-detail-form';
-import { UpdateUserLessonProgressFormDialog } from './user-lesson-progress-update-form';
+import { UpdateUserQuizProgressFormDialog } from './user-quiz-update-form';
 
-interface UserLessonProgressTableProps {
-  rows: UserLessonProgressDetailResponse[];
+interface UserQuizProgressTableProps {
+  rows: UserQuizProgressDetailResponse[];
   count: number;
   page: number;
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteUserLessonProgresss: (ids: string[]) => Promise<void>;
-  onEditUserLessonProgress: (data: UpdateUserLessonRequest) => Promise<void>;
+  onDeleteUserQuizProgresss: (ids: string[]) => Promise<void>;
+  onEditUserQuizProgress: (data: UpdateUserQuizRequest) => Promise<void>;
 }
 
-export default function UserLessonProgressTable({
+export default function UserQuizProgressTable({
   rows,
   count,
   page,
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteUserLessonProgresss,
-  onEditUserLessonProgress,
-}: UserLessonProgressTableProps) {
+  onDeleteUserQuizProgresss,
+  onEditUserQuizProgress,
+}: UserQuizProgressTableProps) {
   const [editOpen, setEditOpen] = React.useState(false);
-  const [editUserLessonProgressData, setEditUserLessonProgressData] =
-    React.useState<UserLessonProgressDetailResponse | null>(null);
+  const [editUserQuizProgressData, setEditUserQuizProgressData] = React.useState<UserQuizProgressDetailResponse | null>(
+    null
+  );
   const [viewOpen, setViewOpen] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
 
@@ -58,7 +64,7 @@ export default function UserLessonProgressTable({
 
   const handleConfirmDelete = async () => {
     if (pendingDeleteId) {
-      await onDeleteUserLessonProgresss([pendingDeleteId]);
+      await onDeleteUserQuizProgresss([pendingDeleteId]);
       setPendingDeleteId(null);
     }
     setDialogOpen(false);
@@ -68,24 +74,31 @@ export default function UserLessonProgressTable({
     setPendingDeleteId(null);
     setDialogOpen(false);
   };
+
   const renderStatus = (status: string) => {
     switch (status) {
-      case UserProgressEnum[UserProgressEnum.NotStarted]:
+      case UserQuizProgressEnum[UserQuizProgressEnum.NotStarted]:
         return (
           <Tooltip title="Not Started">
             <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
           </Tooltip>
         );
-      case UserProgressEnum[UserProgressEnum.Ongoing]:
+      case UserQuizProgressEnum[UserQuizProgressEnum.Doing]:
         return (
           <Tooltip title="In Progress">
             <DataUsage sx={{ color: 'var(--mui-palette-secondary-main)' }} />
           </Tooltip>
         );
-      case UserProgressEnum[UserProgressEnum.Done]:
+      case UserQuizProgressEnum[UserQuizProgressEnum.Pass]:
         return (
-          <Tooltip title="Completed">
-            <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
+          <Tooltip title="Pass">
+            <ThumbUpOutlined sx={{ color: 'var(--mui-palette-primary-main)' }} />
+          </Tooltip>
+        );
+      case UserQuizProgressEnum[UserQuizProgressEnum.Fail]:
+        return (
+          <Tooltip title="Fail">
+            <ThumbDownOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
           </Tooltip>
         );
       default:
@@ -95,7 +108,7 @@ export default function UserLessonProgressTable({
 
   return (
     <>
-      <CustomTable<UserLessonProgressDetailResponse>
+      <CustomTable<UserQuizProgressDetailResponse>
         rows={rows}
         count={count}
         page={page}
@@ -103,20 +116,20 @@ export default function UserLessonProgressTable({
         getRowId={(row) => row.id!}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
-        onDelete={onDeleteUserLessonProgresss}
+        onDelete={onDeleteUserQuizProgresss}
         deleteConfirmHeaderTitle="Mark done"
         actionMenuItems={[
           {
             label: 'View Details',
             onClick: (row) => {
-              setEditUserLessonProgressData(row);
+              setEditUserQuizProgressData(row);
               setViewOpen(true);
             },
           },
           {
             label: 'Edit',
             onClick: (row) => {
-              setEditUserLessonProgressData(row);
+              setEditUserQuizProgressData(row);
               setEditOpen(true);
             },
           },
@@ -130,11 +143,11 @@ export default function UserLessonProgressTable({
         renderHeader={() => (
           <>
             <TableCell>ID</TableCell>
-            <TableCell>Lesson Name</TableCell>
+            <TableCell>Quiz Name</TableCell>
             <TableCell>User Name</TableCell>
             <TableCell>Full Name</TableCell>
             <TableCell>Gender</TableCell>
-            <TableCell>progress</TableCell>
+            <TableCell>Score</TableCell>
             <TableCell>startDate</TableCell>
             <TableCell>endDate</TableCell>
             <TableCell>Status</TableCell>
@@ -195,7 +208,15 @@ export default function UserLessonProgressTable({
                 {row.id}
               </TableCell>
 
-              <TableCell sx={{ width: '15%' }}>{row.lessons?.name}</TableCell>
+              <TableCell
+                sx={{
+                  minWidth: 150,
+                  whiteSpace: 'normal',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {row.quiz?.title}
+              </TableCell>
 
               <TableCell
                 sx={{
@@ -226,11 +247,13 @@ export default function UserLessonProgressTable({
 
               <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
 
-              <TableCell>{row.progress}</TableCell>
-              <TableCell>{row.startDate ? DateTimeUtils.formatISODateFromDate(row.startDate) : ''}</TableCell>
-              <TableCell>{row.endDate ? DateTimeUtils.formatISODateFromDate(row.endDate) : ''}</TableCell>
+              <TableCell>{row.score}</TableCell>
+              <TableCell>{row.startedAt ? DateTimeUtils.formatISODateFromDate(row.startedAt) : ''}</TableCell>
+              <TableCell>{row.completedAt ? DateTimeUtils.formatISODateFromDate(row.completedAt) : ''}</TableCell>
 
-              <TableCell align="center">{renderStatus(row.status)}</TableCell>
+              <TableCell align="center">
+                {row.progressStatus != null ? renderStatus(row.progressStatus.toString()) : ''}
+              </TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentDepartmentName ?? ''}</TableCell>
@@ -247,25 +270,25 @@ export default function UserLessonProgressTable({
         }}
       />
 
-      {editUserLessonProgressData && (
-        <UpdateUserLessonProgressFormDialog
+      {editUserQuizProgressData && (
+        <UpdateUserQuizProgressFormDialog
           open={editOpen}
-          data={editUserLessonProgressData}
+          data={editUserQuizProgressData}
           onClose={() => setEditOpen(false)}
           onSubmit={async (updatedData) => {
-            await onEditUserLessonProgress(updatedData);
+            await onEditUserQuizProgress(updatedData);
             setEditOpen(false);
           }}
         />
       )}
 
-      {editUserLessonProgressData && (
-        <UserLessonProgressDetailForm
+      {/* {editUserQuizProgressData && (
+        <UserQuizProgressDetailForm
           open={viewOpen}
-          userLessonProgressId={editUserLessonProgressData.id ?? null}
+          userQuizProgressId={editUserQuizProgressData.id ?? null}
           onClose={() => setViewOpen(false)}
         />
-      )}
+      )} */}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

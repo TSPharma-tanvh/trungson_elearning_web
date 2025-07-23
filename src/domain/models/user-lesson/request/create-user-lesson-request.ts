@@ -7,7 +7,7 @@ export class CreateUserLessonRequest {
   startDate?: Date;
   endDate?: Date;
   lastAccess?: Date;
-  status!: UserProgressEnum;
+  status!: string;
 
   constructor(init?: Partial<CreateUserLessonRequest>) {
     Object.assign(this, init);
