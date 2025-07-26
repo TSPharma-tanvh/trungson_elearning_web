@@ -1,10 +1,10 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
-import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
+import { type GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
 import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
-import { UserQuizProgressDetailListResult } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-result';
-import { UserQuizProgressRepository } from '@/domain/repositories/progress/user-quiz-progress-repository';
+import { type UserQuizProgressDetailListResult } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-result';
+import { type UserQuizProgressRepository } from '@/domain/repositories/progress/user-quiz-progress-repository';
 import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserQuizProgressUsecase {
@@ -32,9 +32,9 @@ export class UserQuizProgressUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.userQuizProgressRepo.getUserQuizProgressById(id);
+    const result = await this.userQuizProgressRepo.getUserQuizProgressById(id);
 
-    var userResponse = UserQuizProgressDetailResponse.fromJson(result.result);
+    const userResponse = UserQuizProgressDetailResponse.fromJson(result.result);
 
     return userResponse;
   }
@@ -46,18 +46,19 @@ export class UserQuizProgressUsecase {
   }
 
   async updateUserQuizProgress(request: UpdateUserQuizRequest): Promise<ApiResponse> {
-    var result = await this.userQuizProgressRepo.updateUserQuizProgress(request);
+    const result = await this.userQuizProgressRepo.updateUserQuizProgress(request);
 
     return result;
   }
 
-  async deleteUserQuizProgress(id: string[]): Promise<ApiResponse> {
+  async deleteUserQuizProgress(userId: string, quizId: string): Promise<ApiResponse> {
     const newFormData = new UpdateUserQuizRequest({
-      userIDs: id,
-      progressStatus: UserProgressEnum.Done,
+      userID: userId,
+      quizID: quizId,
+      activeStatus: StatusEnum.Deleted,
     });
 
-    var result = await this.userQuizProgressRepo.updateUserQuizProgress(newFormData);
+    const result = await this.userQuizProgressRepo.updateUserQuizProgress(newFormData);
 
     return result;
   }

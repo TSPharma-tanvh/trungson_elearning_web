@@ -65,12 +65,12 @@ export const navItems = [
         href: paths.dashboard.userLessonProgress,
         icon: 'userLesson',
       },
-      {
-        key: 'classProgress',
-        title: 'User Class Progress',
-        href: paths.dashboard.userClassProgress,
-        icon: 'userClass',
-      },
+      // {
+      //   key: 'classProgress',
+      //   title: 'User Class Progress',
+      //   href: paths.dashboard.userClassProgress,
+      //   icon: 'userClass',
+      // },
       {
         key: 'quizProgress',
         title: 'User Quiz Progress',

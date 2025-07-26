@@ -1,5 +1,5 @@
 import React from 'react';
-import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
+import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
@@ -139,7 +139,7 @@ export default function EmployeeTable({
             </TableCell>
 
             <TableCell align="right">
-              <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+              <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
                 <MoreVert />
               </IconButton>
             </TableCell>
@@ -147,13 +147,11 @@ export default function EmployeeTable({
         )}
       />
 
-      {editEmployeeData && (
-        <EmployeeDetailForm
+      {editEmployeeData ? <EmployeeDetailForm
           open={viewOpen}
           employeeId={editEmployeeData.id ?? null}
-          onClose={() => setViewOpen(false)}
-        />
-      )}
+          onClose={() => { setViewOpen(false); }}
+        /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

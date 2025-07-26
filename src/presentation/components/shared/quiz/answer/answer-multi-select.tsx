@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
-import { AnswerResponse } from '@/domain/models/answer/response/answer-response';
-import { AnswerUsecase } from '@/domain/usecases/answer/answer-usecase';
+import { type AnswerResponse } from '@/domain/models/answer/response/answer-response';
+import { type AnswerUsecase } from '@/domain/usecases/answer/answer-usecase';
 import { useAnswerSelectLoader } from '@/presentation/hooks/answer/use-answer-select-loader';
 import { useAnswerSelectDebounce } from '@/presentation/hooks/answer/use-question-select-debounce';
-import { Book, BookOutlined } from '@mui/icons-material';
+import { Book } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -26,17 +25,16 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
 import AnswerInformationForm from './answer-information-form';
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface AnswerMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   answerUsecase: AnswerUsecase | null;
@@ -65,23 +63,12 @@ export function AnswerMultiSelectDialog({
   const [selectedAnswer, setSelectedAnswer] = React.useState<AnswerResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
 
-  const {
-    answers,
-    loadingAnswers,
-    hasMore,
-    isSelectOpen,
-    pageNumber,
-    totalPages,
-    listRef,
-    setIsSelectOpen,
-    setSearchText,
-    searchText,
-    loadAnswers,
-  } = useAnswerSelectLoader({
-    answerUsecase,
-    isOpen: dialogOpen,
-    searchText: debouncedSearchText,
-  });
+  const { answers, loadingAnswers, pageNumber, totalPages, listRef, setSearchText, loadAnswers } =
+    useAnswerSelectLoader({
+      answerUsecase,
+      isOpen: dialogOpen,
+      searchText: debouncedSearchText,
+    });
 
   const isFull = isSmallScreen || isFullscreen;
 
@@ -106,7 +93,7 @@ export function AnswerMultiSelectDialog({
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (answerUsecase && !loadingAnswers) {
-      loadAnswers(newPage, true);
+      void loadAnswers(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -144,11 +131,12 @@ export function AnswerMultiSelectDialog({
             setSelectedAnswerMap(newMap);
           }
         } catch (error) {
-          console.error('Error fetching selected answers:', error);
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         }
       };
 
-      fetchSelectedAnswers();
+      void fetchSelectedAnswers();
     }
   }, [answerUsecase, value, selectedAnswerMap]);
 
@@ -193,7 +181,12 @@ export function AnswerMultiSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Answers</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -215,11 +208,11 @@ export function AnswerMultiSelectDialog({
               <MenuItem
                 key={answer.id}
                 value={answer.id}
-                onClick={() =>
+                onClick={() => {
                   setLocalValue((prev) =>
                     prev.includes(answer.id ?? '') ? prev.filter((id) => id !== answer.id) : [...prev, answer.id ?? '']
-                  )
-                }
+                  );
+                }}
               >
                 <Checkbox checked={localValue.includes(answer.id ?? '')} />
                 <ListItemText
@@ -245,11 +238,11 @@ export function AnswerMultiSelectDialog({
                 </Button>
               </MenuItem>
             ))}
-            {loadingAnswers && (
+            {loadingAnswers ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
-            )}
+            ) : null}
             {!loadingAnswers && answers.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 No answers found
@@ -279,13 +272,15 @@ export function AnswerMultiSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedAnswer && (
+      {selectedAnswer ? (
         <AnswerInformationForm
           open={viewOpen}
           answerId={selectedAnswer?.id ?? null}
-          onClose={() => setViewOpen(false)}
+          onClose={() => {
+            setViewOpen(false);
+          }}
         />
-      )}
+      ) : null}
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
-import { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
+import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
@@ -41,7 +41,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateEnrollmentCriteriaRequest>(new UpdateEnrollmentCriteriaRequest({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fieldValidations, setFieldValidations] = useState<{ [key: string]: boolean }>({});
+  const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (enrollment && open) {
@@ -70,7 +70,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const allValid = Object.values(fieldValidations).every((v) => v !== false);
+      const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
@@ -106,7 +106,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
           Update Enrollment
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -126,7 +126,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
               <CustomTextField
                 label="Name"
                 value={formData.name}
-                onChange={(value) => handleChange('name', value)}
+                onChange={(value) => { handleChange('name', value); }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -136,7 +136,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
               <CustomTextField
                 label="Detail"
                 value={formData.desc}
-                onChange={(value) => handleChange('desc', value)}
+                onChange={(value) => { handleChange('desc', value); }}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
@@ -153,7 +153,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
                 disabled={isSubmitting}
                 icon={<QrCode {...iconStyle} />}
                 inputMode="numeric"
-                onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }))}
+                onValidationChange={(isValid) => { setFieldValidations((prev) => ({ ...prev, minuteLate: isValid })); }}
               />
             </Grid>
 
@@ -161,7 +161,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
               <CustomSelectDropDown
                 label="Status"
                 value={formData.enrollmentStatus ?? ''}
-                onChange={(value) => handleChange('enrollmentStatus', value as StatusEnum)}
+                onChange={(value) => { handleChange('enrollmentStatus', value); }}
                 disabled={isSubmitting}
                 options={statusOptions}
               />

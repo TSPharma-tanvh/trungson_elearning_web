@@ -9,7 +9,7 @@ export class UserPathProgressDetailResponse {
   startDate?: string;
   endDate?: string;
   lastAccess?: string;
-  status: string = '';
+  status = '';
   enrollmentID?: string;
   coursePath?: CoursePathResponse;
   user?: UserDetailResponse;

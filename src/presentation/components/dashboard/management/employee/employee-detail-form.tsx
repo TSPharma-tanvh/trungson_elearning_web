@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
+import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -105,7 +105,7 @@ export default function EmployeeDetailForm({ open, employeeId, onClose }: Props)
           console.error('Error fetching course details:', error);
           setEmployee(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, employeeId, employeeUsecase]);
 
@@ -120,7 +120,7 @@ export default function EmployeeDetailForm({ open, employeeId, onClose }: Props)
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Employee Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -140,11 +140,11 @@ export default function EmployeeDetailForm({ open, employeeId, onClose }: Props)
 
       <ImagePreviewDialog
         open={imagePreviewOpen}
-        onClose={() => setImagePreviewOpen(false)}
+        onClose={() => { setImagePreviewOpen(false); }}
         imageUrl={employee?.avatar || ''}
         title={employee?.name || 'Avatar'}
         fullscreen={imageFullscreen}
-        onToggleFullscreen={() => setImageFullscreen((prev) => !prev)}
+        onToggleFullscreen={() => { setImageFullscreen((prev) => !prev); }}
       />
     </Dialog>
   );

@@ -1,9 +1,9 @@
 import { CourseResponse } from '../../courses/response/course-response';
 
 export class EnrollmentCriteriaCourseRelation {
-  id: string = '';
-  enrollmentCriteriaID: string = '';
-  courseID: string = '';
+  id = '';
+  enrollmentCriteriaID = '';
+  courseID = '';
   course?: CourseResponse;
 
   constructor(init?: Partial<EnrollmentCriteriaCourseRelation>) {

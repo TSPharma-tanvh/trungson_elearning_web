@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { UserResponse } from '@/domain/models/user/response/user-response';
+import { type UserResponse } from '@/domain/models/user/response/user-response';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -11,11 +11,11 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-type Props = {
+interface Props {
   user: UserResponse | null;
   onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   thumbnailPreview?: string | null;
-};
+}
 
 export function AccountInfo({ user, onUpload, thumbnailPreview }: Props): React.JSX.Element {
   const avatarUrl = thumbnailPreview ?? user?.thumbnail?.resourceUrl ?? '/assets/avatar.png';

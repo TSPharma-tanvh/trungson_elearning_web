@@ -2,21 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
-import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { ClassUsecase } from '@/domain/usecases/class/class-usecase';
+import { type ClassResponse } from '@/domain/models/class/response/class-response';
+import { type ClassUsecase } from '@/domain/usecases/class/class-usecase';
 import { useClassSelectDebounce } from '@/presentation/hooks/class/use-class-select-debounce';
 import { useClassSelectLoader } from '@/presentation/hooks/class/use-class-select-loader';
 import {
-  DisplayTypeDisplayNames,
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
-  ScheduleStatusDisplayNames,
   ScheduleStatusEnum,
-  StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book, BookOutlined } from '@mui/icons-material';
+import { Book } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -36,16 +33,16 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
+  type SelectChangeEvent,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import { CustomSearchInput } from '../../core/text-field/custom-search-input';
-import ClassDetailForm from '../../dashboard/class/classes/class-detail-form';
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
+import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
+import ClassDetailForm from '@/presentation/components/dashboard/class/classes/class-detail-form';
 
 interface ClassSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   classUsecase: ClassUsecase | null;
@@ -84,27 +81,18 @@ export function ClassSelectDialog({
   const [scheduleStatus, setScheduleStatus] = useState<ScheduleStatusEnum | undefined>(undefined);
   const [viewOpen, setViewOpen] = React.useState(false);
   const [selectedClass, setSelectedClass] = React.useState<ClassResponse | null>(null);
-  const {
-    classes,
-    loadingClasses,
-    pageNumber,
-    totalPages,
-    setSearchText,
-    setClassType: setLoaderClassType,
-    setScheduleStatus: setLoaderScheduleStatus,
-    listRef,
-    loadClasses,
-  } = useClassSelectLoader({
-    classUsecase,
-    isOpen: dialogOpen,
-    classType,
-    scheduleStatus,
-    searchText: debouncedSearchText,
-  });
+  const { classes, loadingClasses, pageNumber, totalPages, setSearchText, listRef, loadClasses } = useClassSelectLoader(
+    {
+      classUsecase,
+      isOpen: dialogOpen,
+      classType,
+      scheduleStatus,
+      searchText: debouncedSearchText,
+    }
+  );
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Handlers
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
   };
@@ -127,14 +115,13 @@ export function ClassSelectDialog({
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (classUsecase && !loadingClasses) {
-      loadClasses(newPage, true);
+      void loadClasses(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
     }
   };
 
-  // Effects
   useEffect(() => {
     setSearchText(debouncedSearchText);
   }, [debouncedSearchText, setSearchText]);
@@ -151,7 +138,6 @@ export function ClassSelectDialog({
           const result = await classUsecase.getClassListInfo(request);
           const newMap = { ...selectedClassMap };
           let updated = false;
-          // result.class is the correct property, not result.courses
           for (const cls of result.class) {
             if (!newMap[cls.id]) {
               newMap[cls.id] = cls;
@@ -161,11 +147,12 @@ export function ClassSelectDialog({
           if (updated) {
             setSelectedClassMap(newMap);
           }
-        } catch (error) {
-          console.error('Error fetching selected classes:', error);
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         }
       };
-      fetchSelectedClasses();
+      void fetchSelectedClasses();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classUsecase, value, pathID]);
@@ -209,7 +196,12 @@ export function ClassSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Class</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -223,14 +215,14 @@ export function ClassSelectDialog({
               <InputLabel>Class Type</InputLabel>
               <Select
                 value={classType !== undefined ? String(classType) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setClassType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setClassType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                }}
                 label="Class Type"
               >
                 {filterOptions.courseType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? LearningModeDisplayNames[opt] : 'All'}
+                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select>
@@ -248,7 +240,9 @@ export function ClassSelectDialog({
                 key={cls.id}
                 value={cls.id}
                 selected={localValue === cls.id}
-                onClick={() => setLocalValue(cls.id)}
+                onClick={() => {
+                  setLocalValue(cls.id);
+                }}
               >
                 <Checkbox checked={localValue === cls.id} />
                 <ListItemText
@@ -273,11 +267,11 @@ export function ClassSelectDialog({
                 </Button>
               </MenuItem>
             ))}
-            {loadingClasses && (
+            {loadingClasses ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
-            )}
+            ) : null}
             {!loadingClasses && classes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 No classes found
@@ -307,9 +301,15 @@ export function ClassSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedClass && (
-        <ClassDetailForm open={viewOpen} classId={selectedClass?.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedClass ? (
+        <ClassDetailForm
+          open={viewOpen}
+          classId={selectedClass?.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

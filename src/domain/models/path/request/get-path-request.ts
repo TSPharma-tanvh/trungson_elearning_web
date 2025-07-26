@@ -1,4 +1,4 @@
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { type DisplayTypeEnum, type StatusEnum } from '@/utils/enum/path-enum';
 
 export class GetPathRequest {
   name?: string;
@@ -11,8 +11,8 @@ export class GetPathRequest {
   status?: StatusEnum;
   displayType?: DisplayTypeEnum;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetPathRequest>) {
     Object.assign(this, init);

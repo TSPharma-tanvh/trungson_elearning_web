@@ -1,11 +1,11 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
 import { EnrollmentCriteriaResponse } from '@/domain/models/criteria/response/enrollment-criteria-response';
-import { CreateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/create-enrollment-criteria-request';
-import { GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/get-enrollment-criteria-request';
+import { type CreateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/create-enrollment-criteria-request';
+import { type GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/get-enrollment-criteria-request';
 import { UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
 import { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
-import { EnrollmentCriteriaListResult } from '@/domain/models/enrollment/response/enrollment-criteria-result';
-import { EnrollmentCriteriaRepository } from '@/domain/repositories/enrollment/enrollment-criteria-repository';
+import { type EnrollmentCriteriaListResult } from '@/domain/models/enrollment/response/enrollment-criteria-result';
+import { type EnrollmentCriteriaRepository } from '@/domain/repositories/enrollment/enrollment-criteria-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class EnrollmentUsecase {
@@ -33,9 +33,9 @@ export class EnrollmentUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.enrollRepo.getEnrollmentById(id);
+    const result = await this.enrollRepo.getEnrollmentById(id);
 
-    var userResponse = EnrollmentCriteriaDetailResponse.fromJson(result.result);
+    const userResponse = EnrollmentCriteriaDetailResponse.fromJson(result.result);
 
     return userResponse;
   }

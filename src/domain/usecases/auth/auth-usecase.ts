@@ -1,8 +1,8 @@
-import { resourceLimits } from 'worker_threads';
+import { resourceLimits } from 'node:worker_threads';
 
-import { LoginRequest } from '@/domain/models/auth/request/login-request';
+import { type LoginRequest } from '@/domain/models/auth/request/login-request';
 import { LoginResponse } from '@/domain/models/auth/response/login-response';
-import { AuthRepository } from '@/domain/repositories/auth/auth-repository';
+import { type AuthRepository } from '@/domain/repositories/auth/auth-repository';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 
@@ -17,9 +17,9 @@ export class SignInUseCase {
     if (!request.userName || !request.password) {
       throw new Error('Username and password are required.');
     }
-    var result = await this.authRepo.login(request);
+    const result = await this.authRepo.login(request);
 
-    var loginResponse = LoginResponse.fromJSON(result.result);
+    const loginResponse = LoginResponse.fromJSON(result.result);
 
     StoreLocalManager.saveIfValid(AppStrings.ACCESS_TOKEN, loginResponse.token);
     StoreLocalManager.saveIfValid(AppStrings.REFRESH_TOKEN, loginResponse.refreshToken);

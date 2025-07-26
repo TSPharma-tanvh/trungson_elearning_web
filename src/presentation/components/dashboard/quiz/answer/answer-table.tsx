@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
-import { AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
+import { type UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
+import { type AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Cancel, CheckCircle, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
@@ -127,7 +127,7 @@ export default function AnswerTable({
             <TableCell>{row.status}</TableCell>
 
             <TableCell align="right">
-              <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+              <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
                 <MoreVert />
               </IconButton>
             </TableCell>
@@ -135,21 +135,17 @@ export default function AnswerTable({
         )}
       />
 
-      {editAnswerData && (
-        <UpdateAnswerFormDialog
+      {editAnswerData ? <UpdateAnswerFormDialog
           open={editOpen}
           data={editAnswerData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditAnswer(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {editAnswerData && (
-        <AnswerDetailForm open={viewOpen} answerId={editAnswerData.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {editAnswerData ? <AnswerDetailForm open={viewOpen} answerId={editAnswerData.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

@@ -1,4 +1,4 @@
-import { CategoryEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum } from '@/utils/enum/core-enum';
 
 export class CreateQuizFromExcelRequest {
   excelFile!: File;

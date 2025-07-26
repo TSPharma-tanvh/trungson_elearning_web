@@ -1,7 +1,7 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
-import { FileResourceRepository } from '@/domain/repositories/file/file-resources-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
+import { type FileResourceRepository } from '@/domain/repositories/file/file-resources-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -14,7 +14,7 @@ export class FileResourceRepositoryImpl implements FileResourceRepository {
 
     const apiResponse = response.data;
 
-    if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+    if (!apiResponse?.isSuccessStatusCode) {
       throw new Error(apiResponse?.message || 'Unknown API error');
     }
 
@@ -29,7 +29,7 @@ export class FileResourceRepositoryImpl implements FileResourceRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.fileResources.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

@@ -23,7 +23,7 @@ export function EnrollmentFilters({
     const request = new GetEnrollmentCriteriaRequest({
       searchText: searchText || undefined,
       disableStatus: status,
-      targetType: targetType,
+      targetType,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -55,7 +55,7 @@ export function EnrollmentFilters({
         <CustomSelectFilter<StatusEnum>
           label="Status"
           value={status}
-          onChange={(val) => setStatus(val)}
+          onChange={(val) => { setStatus(val); }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
@@ -63,7 +63,7 @@ export function EnrollmentFilters({
         <CustomSelectFilter<CategoryEnum>
           label="Display Type"
           value={targetType}
-          onChange={(val) => setTargetType(val)}
+          onChange={(val) => { setTargetType(val); }}
           options={CoreEnumUtils.getEnumOptions(CategoryEnum)}
         />
 

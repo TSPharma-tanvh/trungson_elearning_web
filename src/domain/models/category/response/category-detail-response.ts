@@ -1,4 +1,4 @@
-import { CategoryEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum } from '@/utils/enum/core-enum';
 
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
 

@@ -1,9 +1,9 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
-import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
-import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
-import { UserLessonProgressRepository } from '@/domain/repositories/progress/user-lesson-progress-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
+import { type GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
+import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
+import { type UserLessonProgressRepository } from '@/domain/repositories/progress/user-lesson-progress-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -17,7 +17,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -32,7 +32,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
       const response = await apiClient.get<ApiResponse>(apiEndpoints.userLessonProgress.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -48,7 +48,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -66,7 +66,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

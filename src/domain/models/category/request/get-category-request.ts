@@ -3,8 +3,8 @@ export class GetCategoryRequest {
   category?: string;
   createdFrom?: string;
   createdTo?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetCategoryRequest>) {
     Object.assign(this, init);

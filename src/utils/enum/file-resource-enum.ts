@@ -5,16 +5,14 @@ export enum FileResourceEnum {
   Other = 'Other',
 }
 
-export class FileResourceEnumUtils {
-  static getFileResourceEnum(contentType: string): FileResourceEnum {
+export const FileResourceEnumUtils = {
+  getFileResourceEnum(contentType: string): FileResourceEnum {
     if (contentType.startsWith('image/')) {
       return FileResourceEnum.Image;
     }
-
     if (contentType.startsWith('video/')) {
       return FileResourceEnum.Video;
     }
-
     if (
       contentType.startsWith('application/pdf') ||
       contentType.startsWith('application/msword') ||
@@ -22,11 +20,10 @@ export class FileResourceEnumUtils {
     ) {
       return FileResourceEnum.Document;
     }
-
     return FileResourceEnum.Other;
-  }
+  },
 
-  static getContentTypeByEnum(type: FileResourceEnum): string {
+  getContentTypeByEnum(type: FileResourceEnum): string {
     switch (type) {
       case FileResourceEnum.Image:
         return 'image';
@@ -37,5 +34,5 @@ export class FileResourceEnumUtils {
       default:
         return '';
     }
-  }
-}
+  },
+};

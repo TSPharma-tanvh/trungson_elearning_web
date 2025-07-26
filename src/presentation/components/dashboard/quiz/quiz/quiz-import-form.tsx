@@ -3,28 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, DisplayTypeEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
-import { Article, Calendar, Clock, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { Image as ImageIcon, Tag } from '@phosphor-icons/react';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
-import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
@@ -46,7 +32,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { categoryUsecase, quizUsecase } = useDI();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [fieldValidations, setFieldValidations] = useState<{ [key: string]: boolean }>({});
+  const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
 
   const [form, setForm] = useState<CreateQuizFromExcelRequest>(
     new CreateQuizFromExcelRequest({
@@ -94,7 +80,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
       return;
     }
 
-    handleChange('excelFile', file as File);
+    handleChange('excelFile', file);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
     } else {
@@ -105,7 +91,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const allValid = Object.values(fieldValidations).every((v) => v !== false);
+      const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
@@ -149,7 +135,9 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
   useEffect(() => {
@@ -170,7 +158,11 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
           Import Quiz
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -208,7 +200,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CustomTextField
                 label="Point to Pass"
                 inputMode="numeric"
-                required={true}
+                required
                 value={form.scoreToPass?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : 0;
@@ -216,7 +208,9 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
-                onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }))}
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
+                }}
               />
             </Grid>
 
@@ -225,7 +219,9 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                 categoryUsecase={categoryUsecase}
                 value={form.questionCategoryID}
                 label="Question category"
-                onChange={(value) => handleChange('questionCategoryID', value)}
+                onChange={(value) => {
+                  handleChange('questionCategoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Question}
                 disabled={isSubmitting}
               />
@@ -236,7 +232,9 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                 categoryUsecase={categoryUsecase}
                 value={form.answerCategoryID}
                 label="Answer category"
-                onChange={(value) => handleChange('answerCategoryID', value)}
+                onChange={(value) => {
+                  handleChange('answerCategoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Answer}
                 disabled={isSubmitting}
               />
@@ -246,7 +244,9 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               <QuizSingleSelectDialog
                 quizUsecase={quizUsecase}
                 value={form.quizID}
-                onChange={(value) => handleChange('quizID', value ?? '')}
+                onChange={(value) => {
+                  handleChange('quizID', value ?? '');
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -261,7 +261,13 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                 startIcon={<ImageIcon {...iconStyle} />}
               >
                 Upload File
-                <input type="file" hidden onChange={(e) => handleFileUpload(e.target.files?.[0] || null)} />
+                <input
+                  type="file"
+                  hidden
+                  onChange={(e) => {
+                    handleFileUpload(e.target.files?.[0] || null);
+                  }}
+                />
               </Button>
             </Grid>
             {form.excelFile ? (
@@ -275,9 +281,13 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                     <Button
                       variant="text"
                       fullWidth
-                      onClick={() =>
-                        handleFilePreview(URL.createObjectURL(form.excelFile), form.excelFile.name, form.excelFile.type)
-                      }
+                      onClick={() => {
+                        handleFilePreview(
+                          URL.createObjectURL(form.excelFile),
+                          form.excelFile.name,
+                          form.excelFile.type
+                        );
+                      }}
                       sx={{
                         justifyContent: 'flex-start',
                         textAlign: 'left',
@@ -307,29 +317,37 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
         </Box>
       </DialogContent>
 
-      {filePreviewData?.url && (
+      {filePreviewData?.url ? (
         <>
           {filePreviewData.type?.includes('image') ? (
             <ImagePreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               imageUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : filePreviewData.type?.includes('video') ? (
             <VideoPreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               videoUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : null}
         </>
-      )}
+      ) : null}
     </Dialog>
   );
 }

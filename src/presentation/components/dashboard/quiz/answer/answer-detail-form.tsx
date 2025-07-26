@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
+import { type AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -34,9 +34,9 @@ interface Props {
 
 function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailResponse; fullScreen: boolean }) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<{ [id: string]: boolean }>({});
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
-  const toggleExpand = (id: string) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggleExpand = (id: string) => { setExpanded((prev) => ({ ...prev, [id]: !prev[id] })); };
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -84,7 +84,7 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
                   title={`Relation ${index + 1}`}
                   action={
                     <IconButton
-                      onClick={() => toggleExpand(relId)}
+                      onClick={() => { toggleExpand(relId); }}
                       sx={{
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s',
@@ -113,16 +113,14 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
         </Box>
       )}
 
-      {previewImage && (
-        <ImagePreviewDialog
+      {previewImage ? <ImagePreviewDialog
           open
-          onClose={() => setPreviewImage(null)}
+          onClose={() => { setPreviewImage(null); }}
           imageUrl={previewImage}
           title="Image Preview"
           fullscreen={fullScreen}
           onToggleFullscreen={() => {}}
-        />
-      )}
+        /> : null}
     </Box>
   );
 }
@@ -143,7 +141,7 @@ export default function AnswerDetailForm({ open, answerId, onClose }: Props) {
           console.error('Failed to load answer', err);
           setAnswer(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, answerId]);
 
@@ -154,7 +152,7 @@ export default function AnswerDetailForm({ open, answerId, onClose }: Props) {
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6">Answer Information</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

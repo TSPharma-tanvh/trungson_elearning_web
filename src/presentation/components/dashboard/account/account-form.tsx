@@ -130,7 +130,7 @@ export function AccountForm(): React.JSX.Element {
                       id="first-name"
                       label="First name"
                       value={formData.firstName || ''}
-                      onChange={(e) => handleChange('firstName', e.target.value)}
+                      onChange={(e) => { handleChange('firstName', e.target.value); }}
                     />
                   </FormControl>
                 </Grid>
@@ -141,7 +141,7 @@ export function AccountForm(): React.JSX.Element {
                       id="last-name"
                       label="Last name"
                       value={formData.lastName || ''}
-                      onChange={(e) => handleChange('lastName', e.target.value)}
+                      onChange={(e) => { handleChange('lastName', e.target.value); }}
                     />
                   </FormControl>
                 </Grid>
@@ -152,7 +152,7 @@ export function AccountForm(): React.JSX.Element {
                       id="email"
                       label="Email"
                       value={formData.email || ''}
-                      onChange={(e) => handleChange('email', e.target.value)}
+                      onChange={(e) => { handleChange('email', e.target.value); }}
                     />
                   </FormControl>
                 </Grid>
@@ -164,7 +164,7 @@ export function AccountForm(): React.JSX.Element {
                       id="phoneNumber"
                       label="Phone Number"
                       value={formData.phoneNumber || ''}
-                      onChange={(e) => handleChange('phoneNumber', e.target.value)}
+                      onChange={(e) => { handleChange('phoneNumber', e.target.value); }}
                     />
                   </FormControl>
                 </Grid>

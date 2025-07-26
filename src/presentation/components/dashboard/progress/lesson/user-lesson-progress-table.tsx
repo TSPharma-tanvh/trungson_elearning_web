@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
-import { UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
+import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
+import { type UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { UserProgressEnum } from '@/utils/enum/core-enum';
 import {
@@ -238,7 +238,7 @@ export default function UserLessonProgressTable({
               <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
 
               <TableCell align="right">
-                <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+                <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
                   <MoreVert />
                 </IconButton>
               </TableCell>
@@ -247,25 +247,21 @@ export default function UserLessonProgressTable({
         }}
       />
 
-      {editUserLessonProgressData && (
-        <UpdateUserLessonProgressFormDialog
+      {editUserLessonProgressData ? <UpdateUserLessonProgressFormDialog
           open={editOpen}
           data={editUserLessonProgressData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditUserLessonProgress(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {editUserLessonProgressData && (
-        <UserLessonProgressDetailForm
+      {editUserLessonProgressData ? <UserLessonProgressDetailForm
           open={viewOpen}
           userLessonProgressId={editUserLessonProgressData.id ?? null}
-          onClose={() => setViewOpen(false)}
-        />
-      )}
+          onClose={() => { setViewOpen(false); }}
+        /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

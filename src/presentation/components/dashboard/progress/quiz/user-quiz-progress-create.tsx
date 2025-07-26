@@ -45,7 +45,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fieldValidations, setFieldValidations] = useState<{ [key: string]: boolean }>({});
+  const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
   const [form, setForm] = useState<CreateUserQuizRequest>(
     new CreateUserQuizRequest({
       userID: '',
@@ -85,13 +85,13 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
+    return () => { window.removeEventListener('resize', updateRows); };
   }, [fullScreen]);
 
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const allValid = Object.values(fieldValidations).every((v) => v !== false);
+      const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
@@ -114,7 +114,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
           Create UserQuizProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -152,7 +152,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <QuizSingleSelectDialog
                 quizUsecase={quizUsecase}
                 value={form.quizID ?? ''}
-                onChange={(value: string | null) => handleChange('quizID', value ?? '')}
+                onChange={(value: string | null) => { handleChange('quizID', value ?? ''); }}
                 disabled={false}
               />
             </Grid>
@@ -161,7 +161,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <UserMultiSelectDialog
                 userUsecase={userUsecase}
                 value={form.userIDs ? form.userIDs : []}
-                onChange={(value: string[]) => handleChange('userIDs', value)}
+                onChange={(value: string[]) => { handleChange('userIDs', value); }}
                 disabled={false}
               />
             </Grid>
@@ -170,7 +170,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <EnrollmentSingleSelect
                 enrollmentUsecase={enrollUsecase}
                 value={form.enrollmentCriteriaID ?? ''}
-                onChange={(value: string) => handleChange('enrollmentCriteriaID', value)}
+                onChange={(value: string) => { handleChange('enrollmentCriteriaID', value); }}
                 disabled={false}
                 categoryEnum={CategoryEnum.Quiz}
               />
@@ -180,7 +180,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={form.customStartTime ? DateTimeUtils.formatISODateToString(form.customStartTime) : undefined}
-                onChange={(value) => handleChange('customStartTime', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => { handleChange('customStartTime', DateTimeUtils.parseLocalDateTimeString(value)); }}
                 disabled={disabled}
               />
             </Grid>
@@ -189,7 +189,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={form.customEndTime ? DateTimeUtils.formatISODateToString(form.customEndTime) : undefined}
-                onChange={(value) => handleChange('customEndTime', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => { handleChange('customEndTime', DateTimeUtils.parseLocalDateTimeString(value)); }}
                 disabled={disabled}
               />
             </Grid>
@@ -211,7 +211,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <CustomSelectDropDown<UserProgressEnum>
                 label="Trạng thái"
                 value={form.progressStatus ?? ''}
-                onChange={(val) => handleChange('progressStatus', val)}
+                onChange={(val) => { handleChange('progressStatus', val); }}
                 disabled={disabled}
                 options={[
                   { value: UserProgressEnum.NotStarted, label: 'Chưa bắt đầu' },
@@ -225,7 +225,7 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <CustomSelectDropDown<ApproveStatusEnum>
                 label="Trạng thái duyệt"
                 value={form.enrollStatus ?? ''}
-                onChange={(val) => handleChange('enrollStatus', val)}
+                onChange={(val) => { handleChange('enrollStatus', val); }}
                 disabled={disabled}
                 options={[
                   { value: ApproveStatusEnum.Approve, label: 'Chấp nhận' },
@@ -239,13 +239,13 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
                 <CustomTextField
                   label="Lý do từ chối"
                   value={form.rejectedReason ?? ''}
-                  onChange={(val) => handleChange('rejectedReason', val)}
+                  onChange={(val) => { handleChange('rejectedReason', val); }}
                   disabled={disabled}
                   multiline
-                  required={form.enrollStatus === ApproveStatusEnum.Reject ? true : false}
+                  required={form.enrollStatus === ApproveStatusEnum.Reject}
                   rows={3}
                   onValidationChange={(isValid) =>
-                    setFieldValidations((prev) => ({ ...prev, rejectedReason: isValid }))
+                    { setFieldValidations((prev) => ({ ...prev, rejectedReason: isValid })); }
                   }
                 />
               </Grid>

@@ -314,8 +314,8 @@
 //   );
 // }
 import React from 'react';
-import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
-import { ClassResponse } from '@/domain/models/class/response/class-response';
+import { type UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
+import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
@@ -383,7 +383,7 @@ export default function ClassTable({
   };
 
   const handleDelete = (row: ClassResponse) => {
-    onDeleteClass([row.id!]);
+    onDeleteClass([row.id]);
   };
 
   return (
@@ -393,7 +393,7 @@ export default function ClassTable({
         count={count}
         page={page}
         rowsPerPage={rowsPerPage}
-        getRowId={(row) => row.id!}
+        getRowId={(row) => row.id}
         renderHeader={() => (
           <>
             <TableCell>Name</TableCell>
@@ -453,19 +453,17 @@ export default function ClassTable({
         ]}
       />
 
-      {editClassData && (
-        <UpdateClassFormDialog
+      {editClassData ? <UpdateClassFormDialog
           open={editOpen}
           classes={editClassData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditClass(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {selectedRow && <ClassDetailForm open={viewOpen} classId={selectedRow.id} onClose={() => setViewOpen(false)} />}
+      {selectedRow ? <ClassDetailForm open={viewOpen} classId={selectedRow.id} onClose={() => { setViewOpen(false); }} /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

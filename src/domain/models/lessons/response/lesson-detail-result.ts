@@ -1,4 +1,4 @@
-import { LessonDetailResponse } from './lesson-detail-response';
+import { type LessonDetailResponse } from './lesson-detail-response';
 
 export interface LessonDetailListResult {
   Lessons: LessonDetailResponse[];

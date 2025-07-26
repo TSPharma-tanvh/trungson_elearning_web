@@ -1,4 +1,4 @@
-import { RoleResponse } from './role-response';
+import { type RoleResponse } from './role-response';
 
 export interface UserRoleResult {
   roles: RoleResponse[];

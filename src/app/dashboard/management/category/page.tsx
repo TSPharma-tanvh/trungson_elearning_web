@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CreateCategoryRequest } from '@/domain/models/category/request/create-category-request';
+import { type CreateCategoryRequest } from '@/domain/models/category/request/create-category-request';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
-import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { type UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
+import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -110,7 +110,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -125,14 +125,14 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteCategories={handleDeleteCategories}
         onEditCategory={handleEditCategory}
-      ></CategoryTable>
+       />
 
       <CreateCategoryDialog
         onSubmit={handleCreateCategory}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
-import { UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
+import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
@@ -133,7 +133,7 @@ export function UpdateUserCourseProgressFormDialog({
           Update UserCourseProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -181,7 +181,7 @@ export function UpdateUserCourseProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={formData.startDate ? DateTimeUtils.formatISODateToString(formData.startDate) : undefined}
-                onChange={(value) => handleChange('startDate', value)}
+                onChange={(value) => { handleChange('startDate', value); }}
                 disabled={false}
               />
             </Grid>
@@ -190,7 +190,7 @@ export function UpdateUserCourseProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={formData.endDate ? DateTimeUtils.formatISODateToString(formData.endDate) : undefined}
-                onChange={(value) => handleChange('endDate', value)}
+                onChange={(value) => { handleChange('endDate', value); }}
                 disabled={false}
               />
             </Grid>
@@ -200,7 +200,7 @@ export function UpdateUserCourseProgressFormDialog({
               <CustomSelectDropDown<string>
                 label="Trạng thái"
                 value={formData.status}
-                onChange={(val) => handleChange('status', val)}
+                onChange={(val) => { handleChange('status', val); }}
                 disabled={false}
                 options={[
                   { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'Chưa bắt đầu' },

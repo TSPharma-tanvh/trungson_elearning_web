@@ -54,7 +54,7 @@ export function ClassTeacherFilters({
         <OutlinedInput
           size="small"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => { setSearchText(e.target.value); }}
           fullWidth
           placeholder="Search course"
           startAdornment={
@@ -70,7 +70,7 @@ export function ClassTeacherFilters({
           <InputLabel>Status</InputLabel>
           <Select
             value={status ?? ''}
-            onChange={(e) => setStatus(e.target.value === '' ? undefined : e.target.value)}
+            onChange={(e) => { setStatus(e.target.value === '' ? undefined : e.target.value); }}
             label="Status"
           >
             <MenuItem value="">All</MenuItem>

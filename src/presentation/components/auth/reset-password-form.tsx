@@ -35,13 +35,13 @@ export function ResetPasswordForm(): React.JSX.Element {
     async (values: Values): Promise<void> => {
       setIsPending(true);
 
-      const { error } = await authClient.resetPassword(values);
+      // const { error } = await authClient.resetPassword(values);
 
-      if (error) {
-        setError('root', { type: 'server', message: error });
-        setIsPending(false);
-        return;
-      }
+      // if (error) {
+      //   setError('root', { type: 'server', message: error });
+      //   setIsPending(false);
+      //   return;
+      // }
 
       setIsPending(false);
 

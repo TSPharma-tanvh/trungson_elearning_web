@@ -3,7 +3,7 @@
 import React from 'react';
 import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
 import { SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
-import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
+import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { ArrowsClockwise, Plus } from '@phosphor-icons/react';
@@ -128,7 +128,7 @@ export default function Page(): React.JSX.Element {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteEmployees={handleDeleteCategories}
-      ></EmployeeTable>
+       />
     </Stack>
   );
 }

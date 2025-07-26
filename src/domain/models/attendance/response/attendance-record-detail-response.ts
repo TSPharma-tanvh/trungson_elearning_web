@@ -2,7 +2,7 @@ import { ClassResponse } from '../../class/response/class-response';
 import { UserResponse } from '../../user/response/user-response';
 
 export class AttendanceRecordDetailResponse {
-  id: string = '';
+  id = '';
   userID?: string;
   levelID?: string;
   classID?: string;

@@ -7,11 +7,11 @@ export class CreateClassRequest {
   qrCodeURL?: string;
   startAt!: Date;
   endAt!: Date;
-  minuteLate: number = 10;
+  minuteLate = 10;
   enrollmentCriteriaIDs?: string;
-  classType: number = 0;
+  classType = 0;
   meetingLink?: string;
-  scheduleStatus: number = 0;
+  scheduleStatus = 0;
   categoryID?: string;
   thumbnailID?: string;
   resourceIDs?: string;
@@ -127,7 +127,7 @@ export class CreateClassRequest {
     if (this.enrollmentCourseIDs) fd.append('EnrollmentCourseIDs', this.enrollmentCourseIDs);
     if (this.thumbnail) fd.append('Thumbnail', this.thumbnail);
     if (this.resources) {
-      this.resources.forEach((r) => fd.append('Resources', r, r.name));
+      this.resources.forEach((r) => { fd.append('Resources', r, r.name); });
     }
 
     return fd;

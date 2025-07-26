@@ -1,13 +1,13 @@
 import { ClassResponse } from '../../class/response/class-response';
 import { CourseDetailResponse } from '../../courses/response/course-detail-response';
-import { UserResponse } from '../../user/response/user-response';
+import { UserDetailResponse } from '../../user/response/user-detail-response';
 
 export class ClassTeacherResponse {
-  id: string = '';
+  id = '';
   userID?: string;
   description?: string;
   status?: string;
-  user?: UserResponse;
+  user?: UserDetailResponse;
   courses?: CourseDetailResponse[];
   classes?: ClassResponse[];
   createdDateTime!: string;
@@ -23,7 +23,7 @@ export class ClassTeacherResponse {
       userID: json.userID ?? json.UserID,
       description: json.description ?? json.Description,
       status: json.status ?? json.Status,
-      user: json.user ? UserResponse.fromJSON(json.user) : undefined,
+      user: json.user ? UserDetailResponse.fromJSON(json.user) : undefined,
       courses: Array.isArray(json.courses) ? json.courses.map((c: any) => CourseDetailResponse.fromJSON(c)) : undefined,
       classes: Array.isArray(json.classes) ? json.classes.map((cl: any) => ClassResponse.fromJson(cl)) : undefined,
       createdDateTime: json.createdDateTime ?? json.CreatedDateTime ?? '',

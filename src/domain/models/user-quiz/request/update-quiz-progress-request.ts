@@ -1,14 +1,17 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { StatusEnum, UserProgressEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { type StatusEnum, UserProgressEnum, type UserQuizProgressEnum } from '@/utils/enum/core-enum';
 
 export class UpdateUserQuizRequest {
+  userID!: string;
   quizID!: string;
-  userIDs!: string[];
-  assignedAt?: Date;
-  startAt?: Date;
-  completedAt?: Date;
   progressStatus?: UserQuizProgressEnum;
   activeStatus?: StatusEnum;
+  deviceInfo?: string;
+  deviceId?: string;
+  deviceName?: string;
+  assignedAt?: Date;
+  startedAt?: Date;
+  completedAt?: Date;
   score?: number;
   attempts?: number;
 
@@ -18,13 +21,16 @@ export class UpdateUserQuizRequest {
 
   static fromJson(json: any): UpdateUserQuizRequest {
     const dto = new UpdateUserQuizRequest();
+    dto.userID = json.userID;
     dto.quizID = json.quizID;
-    dto.userIDs = json.userIDs ?? [];
-    dto.assignedAt = json.assignedAt ? new Date(json.assignedAt) : undefined;
-    dto.startAt = json.startAt ? new Date(json.startAt) : undefined;
-    dto.completedAt = json.completedAt ? new Date(json.completedAt) : undefined;
     dto.progressStatus = json.progressStatus;
     dto.activeStatus = json.activeStatus;
+    dto.deviceInfo = json.deviceInfo;
+    dto.deviceId = json.deviceId;
+    dto.deviceName = json.deviceName;
+    dto.assignedAt = json.assignedAt ? new Date(json.assignedAt) : undefined;
+    dto.startedAt = json.startedAt ? new Date(json.startedAt) : undefined;
+    dto.completedAt = json.completedAt ? new Date(json.completedAt) : undefined;
     dto.score = json.score;
     dto.attempts = json.attempts;
     return dto;
@@ -32,35 +38,18 @@ export class UpdateUserQuizRequest {
 
   toJson(): any {
     return {
+      userID: this.userID,
       quizID: this.quizID,
-      userIDs: this.userIDs,
-      assignedAt: this.assignedAt != null ? DateTimeUtils.formatISODateToString(this.assignedAt) : null,
-      startAt: this.startAt != null ? DateTimeUtils.formatISODateToString(this.startAt) : null,
-      completedAt: this.completedAt != null ? DateTimeUtils.formatISODateToString(this.completedAt) : null,
       progressStatus: this.progressStatus,
       activeStatus: this.activeStatus,
+      deviceInfo: this.deviceInfo,
+      deviceId: this.deviceId,
+      deviceName: this.deviceName,
+      assignedAt: this.assignedAt?.toISOString(),
+      startedAt: this.startedAt?.toISOString(),
+      completedAt: this.completedAt?.toISOString(),
       score: this.score,
       attempts: this.attempts,
     };
-  }
-
-  toFormData(): FormData {
-    const form = new FormData();
-    form.append('quizID', this.quizID);
-    this.userIDs.forEach((uid) => form.append('userIDs', uid));
-    if (this.assignedAt != null) {
-      form.append('assignedAt', DateTimeUtils.formatISODateToString(this.assignedAt));
-    }
-    if (this.startAt != null) {
-      form.append('startAt', DateTimeUtils.formatISODateToString(this.startAt));
-    }
-    if (this.completedAt != null) {
-      form.append('completedAt', DateTimeUtils.formatISODateToString(this.completedAt));
-    }
-    if (this.progressStatus != null) form.append('progressStatus', this.progressStatus.toString());
-    if (this.activeStatus != null) form.append('activeStatus', this.activeStatus.toString());
-    if (this.score != null) form.append('score', this.score.toString());
-    if (this.attempts != null) form.append('attempts', this.attempts.toString());
-    return form;
   }
 }

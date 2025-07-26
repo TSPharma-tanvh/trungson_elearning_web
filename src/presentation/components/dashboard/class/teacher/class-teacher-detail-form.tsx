@@ -1,7 +1,7 @@
-import { error } from 'console';
+import { error } from 'node:console';
 
 import { useEffect, useState } from 'react';
-import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
+import { type ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -48,7 +48,7 @@ export default function ClassTeacherDetailForm({ open, classId: teacherId, onClo
           console.error('Error fetching teacher details:', error);
           setTeacher(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, teacherId, classTeacherUsecase]);
 
@@ -57,7 +57,7 @@ export default function ClassTeacherDetailForm({ open, classId: teacherId, onClo
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Teacher Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -91,7 +91,7 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
   const renderCourses = () => {
     if (!teacher.courses || teacher.courses.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
+    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (lessonId: string) => {
       setExpandedLessons((prev) => ({
@@ -119,7 +119,7 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
                 title={course.name ?? `Lesson ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(lessonId)}
+                    onClick={() => { toggleExpanded(lessonId); }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -157,7 +157,7 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
   const renderClasses = () => {
     if (!teacher.classes || teacher.classes.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
+    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (lessonId: string) => {
       setExpandedLessons((prev) => ({
@@ -185,7 +185,7 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
                 title={classData.className ?? `Lesson ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(lessonId)}
+                    onClick={() => { toggleExpanded(lessonId); }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',

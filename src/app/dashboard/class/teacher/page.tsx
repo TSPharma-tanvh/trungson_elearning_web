@@ -6,10 +6,10 @@ import { CreateClassRequest } from '@/domain/models/class/request/create-class-r
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
+import { type CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
 import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
-import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
-import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
+import { type UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
+import { type ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
@@ -132,7 +132,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -147,7 +147,7 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteTeachers={handleDeleteTeachers}
         onEditTeacher={handleEditTeacher}
-      ></TeacherTable>
+       />
 
       {/* <AddCustomerDialog
         open={showForm}
@@ -162,7 +162,7 @@ export default function Page(): React.JSX.Element {
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

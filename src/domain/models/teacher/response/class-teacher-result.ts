@@ -1,4 +1,4 @@
-import { ClassTeacherResponse } from './class-teacher-response';
+import { type ClassTeacherResponse } from './class-teacher-response';
 
 export interface ClassTeacherListResult {
   teachers: ClassTeacherResponse[];

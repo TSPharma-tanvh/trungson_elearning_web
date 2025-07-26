@@ -1,11 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
-import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
+import { type CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
+import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
-import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
-import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
+import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -125,7 +125,7 @@ export default function Page(): React.JSX.Element {
             <Button
               color="inherit"
               startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}
-              onClick={() => setShowImportDialog(true)}
+              onClick={() => { setShowImportDialog(true); }}
             >
               Import Questions to Quiz
             </Button>
@@ -138,7 +138,7 @@ export default function Page(): React.JSX.Element {
           <Button
             startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
-            onClick={() => setShowCreateDialog(true)}
+            onClick={() => { setShowCreateDialog(true); }}
           >
             Add
           </Button>
@@ -154,14 +154,14 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteQuizs={handleDeleteQuizs}
         onEditQuiz={handleEditQuiz}
-      ></QuizTable>
+       />
 
       <CreateQuizDialog
         onSubmit={handleCreateQuiz}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
 
       <ImportQuizDialog
@@ -169,7 +169,7 @@ export default function Page(): React.JSX.Element {
         disabled={false}
         loading={false}
         open={showImportDialog}
-        onClose={() => setShowImportDialog(false)}
+        onClose={() => { setShowImportDialog(false); }}
       />
     </Stack>
   );

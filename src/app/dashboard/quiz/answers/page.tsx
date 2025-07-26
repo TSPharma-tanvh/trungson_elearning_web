@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
+import { type CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
 import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
-import { UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
-import { AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
+import { type UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
+import { type AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -110,7 +110,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -126,12 +126,12 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteAnswers={handleDeleteAnswers}
         onEditAnswer={handleEditAnswer}
-      ></AnswerTable>
+       />
 
       <CreateAnswerForm
         onSubmit={handleCreateAnswer}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

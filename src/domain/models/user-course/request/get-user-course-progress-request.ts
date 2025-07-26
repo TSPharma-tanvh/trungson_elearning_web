@@ -9,8 +9,8 @@ export class GetUserCourseProgressRequest {
   lastAccess?: Date;
   status!: string; // required
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetUserCourseProgressRequest>) {
     Object.assign(this, init);
@@ -28,7 +28,7 @@ export class GetUserCourseProgressRequest {
     const formData = new FormData();
     Object.entries(this).forEach(([key, value]) => {
       if (Array.isArray(value)) {
-        value.forEach((v) => formData.append(key, v));
+        value.forEach((v) => { formData.append(key, v); });
       } else if (value !== undefined && value !== null) {
         formData.append(key, value.toString());
       }

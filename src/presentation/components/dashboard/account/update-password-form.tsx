@@ -56,7 +56,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
                 name="oldPassword"
                 type="password"
                 value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
+                onChange={(e) => { setOldPassword(e.target.value); }}
               />
             </FormControl>
             <FormControl fullWidth>
@@ -66,7 +66,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
                 name="newPassword"
                 type="password"
                 value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
+                onChange={(e) => { setNewPassword(e.target.value); }}
               />
             </FormControl>
             <FormControl fullWidth>
@@ -76,7 +76,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
                 name="confirmPassword"
                 type="password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) => { setConfirmPassword(e.target.value); }}
               />
             </FormControl>
           </Stack>

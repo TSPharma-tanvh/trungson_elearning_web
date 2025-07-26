@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
 
 interface FilterSelectProps<T> {
   label: string;
@@ -24,14 +24,14 @@ export function CustomSelectFilter<T extends string | number | boolean>({
   withAllOption = true,
   allLabel = 'All',
 }: FilterSelectProps<T>): React.JSX.Element {
-  const handleChange = (e: SelectChangeEvent<string>) => {
+  const handleChange = (e: SelectChangeEvent) => {
     const val = e.target.value;
-    if (val === '') return onChange(undefined);
+    if (val === '') { onChange(undefined); return; }
 
     const isBool = typeof options[0].value === 'boolean';
     const isNumber = typeof options[0].value === 'number';
 
-    const castedValue = isBool ? (val === 'true' ? true : false) : isNumber ? Number(val) : val;
+    const castedValue = isBool ? (val === 'true') : isNumber ? Number(val) : val;
 
     onChange(castedValue as T);
   };
@@ -73,11 +73,9 @@ export function CustomSelectFilter<T extends string | number | boolean>({
           },
         }}
       >
-        {withAllOption && (
-          <MenuItem value="">
+        {withAllOption ? <MenuItem value="">
             <span style={{ color: 'var(--mui-palette-primary-main)' }}>{allLabel}</span>
-          </MenuItem>
-        )}
+          </MenuItem> : null}
         {options.map((opt) => (
           <MenuItem
             key={String(opt.value)}

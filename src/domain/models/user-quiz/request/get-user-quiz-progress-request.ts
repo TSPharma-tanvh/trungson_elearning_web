@@ -1,4 +1,4 @@
-import { StatusEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { type StatusEnum, type UserQuizProgressEnum } from '@/utils/enum/core-enum';
 
 export class GetUserQuizProgressRequest {
   assignedAt?: Date;
@@ -11,8 +11,8 @@ export class GetUserQuizProgressRequest {
   progressStatus?: UserQuizProgressEnum;
   activeStatus?: StatusEnum;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetUserQuizProgressRequest>) {
     Object.assign(this, init);

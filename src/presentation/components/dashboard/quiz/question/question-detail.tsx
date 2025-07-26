@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
+import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -52,7 +50,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
   const renderAnswers = () => {
     if (!question.answers || question.answers.length === 0) return null;
 
-    const [expandedAnswers, setExpandedAnswers] = useState<{ [key: string]: boolean }>({});
+    const [expandedAnswers, setExpandedAnswers] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (lessonId: string) => {
       setExpandedAnswers((prev) => ({
@@ -86,7 +84,9 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
                 }}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(lessonId)}
+                    onClick={() => {
+                      toggleExpanded(lessonId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -143,12 +143,14 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
                       mb: 1,
                     }}
                   >
-                    {isImage && (
+                    {isImage ? (
                       <Box
                         component="img"
                         src={res.resourceUrl}
                         alt={res.name}
-                        onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                        onClick={() => {
+                          setPreviewUrl(res.resourceUrl ?? '');
+                        }}
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -159,9 +161,9 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
                           cursor: 'pointer',
                         }}
                       />
-                    )}
+                    ) : null}
 
-                    {isVideo && (
+                    {isVideo ? (
                       <Box
                         sx={{
                           position: 'absolute',
@@ -173,9 +175,9 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
                       >
                         <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
                       </Box>
-                    )}
+                    ) : null}
 
-                    {isOther && (
+                    {isOther ? (
                       <Box
                         sx={{
                           position: 'absolute',
@@ -191,7 +193,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
                       >
                         <Typography variant="body2">No preview</Typography>
                       </Box>
-                    )}
+                    ) : null}
                   </Box>
 
                   <Typography variant="body2" noWrap>
@@ -203,16 +205,20 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
           </Grid>
 
           {/* Preview image modal */}
-          {previewUrl && (
+          {previewUrl ? (
             <ImagePreviewDialog
               open={Boolean(previewUrl)}
-              onClose={() => setPreviewUrl(null)}
+              onClose={() => {
+                setPreviewUrl(null);
+              }}
               imageUrl={previewUrl}
               title="Image Preview"
               fullscreen={previewFullScreen}
-              onToggleFullscreen={() => setPreviewFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setPreviewFullScreen((prev) => !prev);
+              }}
             />
-          )}
+          ) : null}
         </CardContent>
       </Card>
     );
@@ -283,7 +289,9 @@ export default function QuestionDetailForm({ open, questionId, onClose }: Props)
           console.error('Error fetching question details:', error);
           setQuestion(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, questionId, questionUsecase]);
 
@@ -294,7 +302,11 @@ export default function QuestionDetailForm({ open, questionId, onClose }: Props)
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Question Information</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

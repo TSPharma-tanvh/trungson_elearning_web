@@ -1,15 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
-import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import React, { useEffect, useState } from 'react';
+import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
+import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
 import { useEnrollmentSelectLoader } from '@/presentation/hooks/enrollment/use-enrollment-select-loader';
-import { CategoryEnum, StatusEnum, StatusEnumUtils } from '@/utils/enum/core-enum';
+import { StatusEnum, StatusEnumUtils, type CategoryEnum } from '@/utils/enum/core-enum';
 import { Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Button,
@@ -20,21 +19,19 @@ import {
   FormControl,
   IconButton,
   InputLabel,
-  List,
-  ListItem,
   ListItemText,
   MenuItem,
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
   useTheme,
+  type SelectChangeEvent,
+  type SelectProps,
 } from '@mui/material';
 
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 
 interface EnrollmentSelectProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
@@ -92,8 +89,9 @@ export function EnrollmentMultiSelect({
             const detail = await enrollmentUsecase.getEnrollmentById(id);
             newMap[id] = detail;
             updated = true;
-          } catch (err) {
-            console.error(`Failed to load enrollment ID ${id}`, err);
+          } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'An error has occurred.';
+            CustomSnackBar.showSnackbar(message, 'error');
           }
         }
       }
@@ -101,27 +99,31 @@ export function EnrollmentMultiSelect({
       if (updated) setSelectedEnrollmentMap(newMap);
     };
 
-    if (value.length > 0) fetch();
+    if (value.length > 0) void fetch();
   }, [value, enrollmentUsecase]);
 
-  // Keep localValue in sync on prop change
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
 
-  const handleOpen = () => !disabled && setDialogOpen(true);
+  const handleOpen = () => {
+    if (!disabled) {
+      setDialogOpen(true);
+    }
+  };
+
   const handleClose = () => {
     setDialogOpen(false);
-    setLocalValue(value); // Reset
+    setLocalValue(value);
   };
+
   const handleSave = () => {
     onChange(localValue);
-    console.error(localValue);
     setDialogOpen(false);
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
-    loadEnrollments(newPage);
+    void loadEnrollments(newPage);
     listRef.current?.scrollTo(0, 0);
   };
 
@@ -154,7 +156,12 @@ export function EnrollmentMultiSelect({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Enrollment Criteria</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen(!isFullscreen);
+                }}
+                size="small"
+              >
                 {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -177,14 +184,14 @@ export function EnrollmentMultiSelect({
               <InputLabel>Disable Status</InputLabel>
               <Select
                 value={disableStatus !== undefined ? String(disableStatus) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setDisableStatus(e.target.value !== '' ? (Number(e.target.value) as StatusEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setDisableStatus(e.target.value !== '' ? (Number(e.target.value) as StatusEnum) : undefined);
+                }}
                 label="Disable Status"
               >
                 {[undefined, StatusEnum.Enable, StatusEnum.Disable].map((opt) => (
                   <MenuItem key={opt ?? 'all'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'All'}
+                    {opt !== undefined ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'All'}
                   </MenuItem>
                 ))}
               </Select>
@@ -212,11 +219,11 @@ export function EnrollmentMultiSelect({
             );
           })}
 
-          {loadingEnrollments && (
+          {loadingEnrollments ? (
             <Typography variant="body2" sx={{ p: 2 }}>
               Loading...
             </Typography>
-          )}
+          ) : null}
           {!loadingEnrollments && enrollments.length === 0 && (
             <Typography variant="body2" sx={{ p: 2 }}>
               No enrollment criteria found

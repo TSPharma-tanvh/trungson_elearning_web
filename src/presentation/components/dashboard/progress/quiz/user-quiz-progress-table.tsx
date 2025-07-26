@@ -1,14 +1,19 @@
 import React from 'react';
-import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
-import { UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
+import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
+import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { UserProgressEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { ActiveEnum, StatusEnum, UserProgressEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
 import {
   Autorenew,
+  Cancel,
   CancelOutlined,
+  Check,
   CheckBox,
   CheckCircleOutline,
+  Close,
   DataUsage,
+  Delete,
+  DeleteOutline,
   HourglassEmpty,
   IndeterminateCheckBox,
   MoreVert,
@@ -25,6 +30,7 @@ import { CheckCircle, XCircle } from '@phosphor-icons/react';
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
+import UserQuizProgressDetailForm from './user-quiz-progress-detail';
 import { UpdateUserQuizProgressFormDialog } from './user-quiz-update-form';
 
 interface UserQuizProgressTableProps {
@@ -34,7 +40,7 @@ interface UserQuizProgressTableProps {
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteUserQuizProgresss: (ids: string[]) => Promise<void>;
+  onDeleteUserQuizProgress: (id: string, quizId: string) => Promise<void>;
   onEditUserQuizProgress: (data: UpdateUserQuizRequest) => Promise<void>;
 }
 
@@ -45,7 +51,7 @@ export default function UserQuizProgressTable({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteUserQuizProgresss,
+  onDeleteUserQuizProgress,
   onEditUserQuizProgress,
 }: UserQuizProgressTableProps) {
   const [editOpen, setEditOpen] = React.useState(false);
@@ -64,7 +70,10 @@ export default function UserQuizProgressTable({
 
   const handleConfirmDelete = async () => {
     if (pendingDeleteId) {
-      await onDeleteUserQuizProgresss([pendingDeleteId]);
+      const matchedRow = rows.find((row) => row.id === pendingDeleteId);
+      if (matchedRow?.quizId) {
+        await onDeleteUserQuizProgress(matchedRow.userId ?? '', matchedRow.quizId);
+      }
       setPendingDeleteId(null);
     }
     setDialogOpen(false);
@@ -75,7 +84,7 @@ export default function UserQuizProgressTable({
     setDialogOpen(false);
   };
 
-  const renderStatus = (status: string) => {
+  const renderProgressStatus = (status: string) => {
     switch (status) {
       case UserQuizProgressEnum[UserQuizProgressEnum.NotStarted]:
         return (
@@ -106,6 +115,32 @@ export default function UserQuizProgressTable({
     }
   };
 
+  const renderActiveStatus = (status: string) => {
+    switch (status) {
+      case StatusEnum[StatusEnum.Enable]:
+        return (
+          <Tooltip title="Not Started">
+            <Check sx={{ color: 'var(--mui-palette-primary-main)' }} />
+          </Tooltip>
+        );
+      case StatusEnum[StatusEnum.Disable]:
+        return (
+          <Tooltip title="Not Started">
+            <Close sx={{ color: 'var(--mui-palette-secondary-main)' }} />
+          </Tooltip>
+        );
+      case StatusEnum[StatusEnum.Deleted]:
+        return (
+          <Tooltip title="Not Started">
+            <DeleteOutline sx={{ color: 'var(--mui-palette-error-main)' }} />
+          </Tooltip>
+        );
+
+      default:
+        return <span>Unknown</span>;
+    }
+  };
+
   return (
     <>
       <CustomTable<UserQuizProgressDetailResponse>
@@ -116,8 +151,15 @@ export default function UserQuizProgressTable({
         getRowId={(row) => row.id!}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
-        onDelete={onDeleteUserQuizProgresss}
-        deleteConfirmHeaderTitle="Mark done"
+        onDelete={async (ids) => {
+          for (const id of ids) {
+            const matchedRow = rows.find((row) => row.id === id);
+            if (matchedRow?.quizId) {
+              await onDeleteUserQuizProgress(matchedRow.userId ?? '', matchedRow.quizId);
+            }
+          }
+        }}
+        deleteConfirmHeaderTitle="Delete"
         actionMenuItems={[
           {
             label: 'View Details',
@@ -134,7 +176,7 @@ export default function UserQuizProgressTable({
             },
           },
           {
-            label: 'Mark done',
+            label: 'Delete',
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -150,7 +192,8 @@ export default function UserQuizProgressTable({
             <TableCell>Score</TableCell>
             <TableCell>startDate</TableCell>
             <TableCell>endDate</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell>Progress Status</TableCell>
+            <TableCell>Active Status</TableCell>
             <TableCell
               sx={{
                 minWidth: 100,
@@ -252,7 +295,11 @@ export default function UserQuizProgressTable({
               <TableCell>{row.completedAt ? DateTimeUtils.formatISODateFromDate(row.completedAt) : ''}</TableCell>
 
               <TableCell align="center">
-                {row.progressStatus != null ? renderStatus(row.progressStatus.toString()) : ''}
+                {row.progressStatus != null ? renderProgressStatus(row.progressStatus) : ''}
+              </TableCell>
+
+              <TableCell align="center">
+                {row.activeStatus != null ? renderActiveStatus(row.activeStatus) : ''}
               </TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
@@ -261,7 +308,7 @@ export default function UserQuizProgressTable({
               <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
 
               <TableCell align="right">
-                <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+                <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
                   <MoreVert />
                 </IconButton>
               </TableCell>
@@ -270,25 +317,21 @@ export default function UserQuizProgressTable({
         }}
       />
 
-      {editUserQuizProgressData && (
-        <UpdateUserQuizProgressFormDialog
+      {editUserQuizProgressData ? <UpdateUserQuizProgressFormDialog
           open={editOpen}
           data={editUserQuizProgressData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditUserQuizProgress(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {/* {editUserQuizProgressData && (
-        <UserQuizProgressDetailForm
+      {editUserQuizProgressData ? <UserQuizProgressDetailForm
           open={viewOpen}
           userQuizProgressId={editUserQuizProgressData.id ?? null}
-          onClose={() => setViewOpen(false)}
-        />
-      )} */}
+          onClose={() => { setViewOpen(false); }}
+        /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

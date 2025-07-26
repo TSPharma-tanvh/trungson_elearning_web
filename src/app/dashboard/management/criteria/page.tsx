@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CreateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/create-enrollment-criteria-request';
+import { type CreateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/create-enrollment-criteria-request';
 import { GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/get-enrollment-criteria-request';
-import { UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
-import { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
+import { type UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
+import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -110,7 +110,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -125,14 +125,14 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteEnrollments={handleDeleteEnrollments}
         onEditEnrollment={handleEditEnrollment}
-      ></EnrollmentTable>
+       />
 
       <CreateEnrollmentDialog
         onSubmit={handleCreateEnrollment}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

@@ -1,11 +1,11 @@
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
-import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
+import { type GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
-import { LessonDetailListResult } from '@/domain/models/lessons/response/lesson-detail-result';
-import { LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
+import { type LessonDetailListResult } from '@/domain/models/lessons/response/lesson-detail-result';
+import { type LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class LessonUsecase {
@@ -33,9 +33,9 @@ export class LessonUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.lessonRepo.getLessonById(id);
+    const result = await this.lessonRepo.getLessonById(id);
 
-    var userResponse = LessonDetailResponse.fromJSON(result.result);
+    const userResponse = LessonDetailResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -47,7 +47,7 @@ export class LessonUsecase {
   }
 
   async updateLesson(request: UpdateLessonRequest): Promise<ApiResponse> {
-    var result = await this.lessonRepo.updateLesson(request);
+    const result = await this.lessonRepo.updateLesson(request);
 
     return result;
   }
@@ -58,7 +58,7 @@ export class LessonUsecase {
       status: StatusEnum.Deleted,
     });
 
-    var result = await this.lessonRepo.updateLesson(newFormData);
+    const result = await this.lessonRepo.updateLesson(newFormData);
 
     return result;
   }

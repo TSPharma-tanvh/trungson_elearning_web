@@ -1,8 +1,8 @@
-import { CategoryEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { type CategoryEnum } from '@/utils/enum/core-enum';
+import { type DisplayTypeEnum, type StatusEnum } from '@/utils/enum/path-enum';
 
 export class UpdateCoursePathRequest {
-  id: string = '';
+  id = '';
   name?: string;
   detail?: string;
   isRequired?: boolean;

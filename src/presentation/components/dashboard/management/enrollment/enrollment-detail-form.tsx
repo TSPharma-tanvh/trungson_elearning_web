@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
+import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -39,7 +39,7 @@ function EnrollmentDetails({
   enrollment: EnrollmentCriteriaDetailResponse;
   fullScreen: boolean;
 }) {
-  const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({});
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
   const toggleExpanded = (sectionId: string) => {
     setExpandedSections((prev) => ({
@@ -167,7 +167,7 @@ function EnrollmentDetails({
                 title={enroll.id ?? `Enrollment ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(enrollId)}
+                    onClick={() => { toggleExpanded(enrollId); }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -220,7 +220,7 @@ function EnrollmentDetails({
                 title={courseEnroll.course?.name ?? `Course Enrollment ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(courseEnrollId)}
+                    onClick={() => { toggleExpanded(courseEnrollId); }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -237,13 +237,11 @@ function EnrollmentDetails({
                     {renderField('ID', courseEnroll.id)}
                     {renderField('Enrollment Criteria ID', courseEnroll.enrollmentCriteriaID)}
                     {renderField('Course ID', courseEnroll.courseID)}
-                    {courseEnroll.course && (
-                      <>
+                    {courseEnroll.course ? <>
                         {renderField('Course Name', courseEnroll.course.name)}
                         {renderField('Course ID', courseEnroll.course.id)}
                         {/* Add other fields from CourseResponse if available */}
-                      </>
-                    )}
+                      </> : null}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -304,7 +302,7 @@ export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: Pr
           console.error('Error fetching enrollment details:', error);
           setEnrollment(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, enrollmentId, enrollUsecase]);
 
@@ -315,7 +313,7 @@ export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: Pr
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Enrollment Criteria Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

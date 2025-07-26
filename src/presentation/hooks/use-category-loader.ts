@@ -1,9 +1,12 @@
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { CategoryResponse } from '@/domain/models/category/response/category-response';
-import { CategoryListResult } from '@/domain/models/category/response/category-result';
-import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
-import { CategoryEnum, CategoryEnumUtils } from '@/utils/enum/core-enum';
+import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { type CategoryListResult } from '@/domain/models/category/response/category-result';
+import { type CategoryUsecase } from '@/domain/usecases/category/category-usecase';
+import { CategoryEnumUtils, type CategoryEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '../components/core/snack-bar/custom-snack-bar';
 
 interface UseCategoryLoaderProps {
   categoryUsecase: CategoryUsecase | null;
@@ -12,7 +15,7 @@ interface UseCategoryLoaderProps {
 }
 
 interface CategoryLoaderState {
-  categories: CategoryResponse[];
+  categories: CategoryDetailResponse[];
   loadingCategories: boolean;
   hasMore: boolean;
   isSelectOpen: boolean;
@@ -30,7 +33,7 @@ export function useCategoryLoader({
   isOpen,
   categoryEnum,
 }: UseCategoryLoaderProps): CategoryLoaderState {
-  const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -41,7 +44,7 @@ export function useCategoryLoader({
 
   const [searchText, setSearchText] = useState('');
 
-  const loadCategories = async (page: number, reset: boolean = false) => {
+  const loadCategories = async (page: number, reset = false) => {
     if (!categoryUsecase || loadingCategories || !isOpen) return;
 
     setLoadingCategories(true);
@@ -52,13 +55,13 @@ export function useCategoryLoader({
         category: CategoryEnumUtils.getCategoryKeyFromValue(categoryEnum),
         pageNumber: page,
         pageSize: 10,
-        searchText: searchText,
+        searchText,
       });
 
       const result: CategoryListResult = await categoryUsecase.getCategoryList(request);
 
       if (isOpen) {
-        setCategories((prev) => (reset || page === 1 ? result.categories : result.categories));
+        setCategories(() => (reset || page === 1 ? result.categories : result.categories));
         setHasMore(
           result.categories.length > 0 &&
             result.totalRecords > (reset ? 0 : categories.length + result.categories.length)
@@ -67,7 +70,8 @@ export function useCategoryLoader({
         setTotalPages(Math.ceil(result.totalRecords / 10));
       }
     } catch (error) {
-      console.error('Error loading categories:', error);
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingCategories(false);
     }
@@ -79,7 +83,7 @@ export function useCategoryLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadCategories(1, true);
+      void loadCategories(1, true);
       setIsSelectOpen(false);
     }
 

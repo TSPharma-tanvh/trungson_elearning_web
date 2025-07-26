@@ -1,4 +1,4 @@
-import { CoursePathResponse } from './course-path-response';
+import { type CoursePathResponse } from './course-path-response';
 
 export interface CoursePathResult {
   path: CoursePathResponse[];

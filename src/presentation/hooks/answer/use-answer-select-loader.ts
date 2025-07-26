@@ -1,9 +1,17 @@
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
-import { AnswerResponse } from '@/domain/models/answer/response/answer-response';
-import { AnswerDetailListResult } from '@/domain/models/answer/response/course-detail-result';
-import { AnswerUsecase } from '@/domain/usecases/answer/answer-usecase';
-import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type AnswerResponse } from '@/domain/models/answer/response/answer-response';
+import { type AnswerDetailListResult } from '@/domain/models/answer/response/course-detail-result';
+import { type AnswerUsecase } from '@/domain/usecases/answer/answer-usecase';
+import {
+  type DisplayTypeEnum,
+  type LearningModeEnum,
+  type ScheduleStatusEnum,
+  type StatusEnum,
+} from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseAnswerSelectLoaderProps {
   answerUsecase: AnswerUsecase | null;
@@ -45,7 +53,7 @@ export function useAnswerSelectLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadAnswers = async (page: number, reset: boolean = false) => {
+  const loadAnswers = async (page: number, reset = false) => {
     if (!answerUsecase || loadingAnswers || !isOpen) return;
 
     setLoadingAnswers(true);
@@ -66,7 +74,8 @@ export function useAnswerSelectLoader({
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading courses:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load courses.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingAnswers(false);
     }
@@ -78,7 +87,7 @@ export function useAnswerSelectLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadAnswers(1, true);
+      void loadAnswers(1, true);
     }
 
     return () => {

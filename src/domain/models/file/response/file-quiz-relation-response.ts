@@ -1,4 +1,4 @@
-import { FileResourcesResponse } from '../../file/response/file-resources-response';
+import { FileResourcesResponse } from "./file-resources-response";
 
 export class FileQuizRelationResponse {
   id?: string;

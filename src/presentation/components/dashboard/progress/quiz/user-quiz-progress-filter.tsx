@@ -54,7 +54,7 @@ export function UserQuizProgressFilters({
         <CustomSelectFilter<UserQuizProgressEnum>
           label="Status"
           value={status}
-          onChange={(val) => setStatus(val)}
+          onChange={(val) => { setStatus(val); }}
           options={CoreEnumUtils.getEnumOptions(UserQuizProgressEnum)}
         />
 

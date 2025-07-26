@@ -1,5 +1,5 @@
-import { LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { type LearningModeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
+import { type DisplayTypeEnum, type StatusEnum } from '@/utils/enum/path-enum';
 
 export class GetCourseRequest {
   pathID?: string;
@@ -15,8 +15,8 @@ export class GetCourseRequest {
   endTimeFrom?: Date;
   endTimeTo?: Date;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetCourseRequest>) {
     Object.assign(this, init);

@@ -1,4 +1,4 @@
-import { UserQuizProgressDetailResponse } from './user-quiz-progress-detail-response';
+import { type UserQuizProgressDetailResponse } from './user-quiz-progress-detail-response';
 
 export interface UserQuizProgressDetailListResult {
   progress: UserQuizProgressDetailResponse[];

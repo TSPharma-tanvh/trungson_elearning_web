@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, DisplayTypeEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -32,7 +32,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fieldValidations, setFieldValidations] = useState<{ [key: string]: boolean }>({});
+  const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
 
   const [form, setForm] = useState<CreateQuizRequest>(
     new CreateQuizRequest({
@@ -54,7 +54,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const allValid = Object.values(fieldValidations).every((v) => v !== false);
+      const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
@@ -98,7 +98,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
   useEffect(() => {
@@ -126,7 +128,11 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
         </Typography>
 
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -164,7 +170,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CustomTextField
                 label="Tên bài kiểm tra"
                 value={form.title}
-                onChange={(val) => handleChange('title', val)}
+                onChange={(val) => {
+                  handleChange('title', val);
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -173,7 +181,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CustomTextField
                 label="Chi tiết"
                 value={form.description}
-                onChange={(val) => handleChange('description', val)}
+                onChange={(val) => {
+                  handleChange('description', val);
+                }}
                 disabled={disabled}
                 multiline
                 rows={detailRows}
@@ -190,7 +200,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={form.startTime?.toISOString()}
-                onChange={(val) => handleChange('startTime', new Date(val))}
+                onChange={(val) => {
+                  handleChange('startTime', new Date(val));
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -199,7 +211,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={form.endTime?.toISOString()}
-                onChange={(val) => handleChange('endTime', new Date(val))}
+                onChange={(val) => {
+                  handleChange('endTime', new Date(val));
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -208,7 +222,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CustomSelectDropDown<StatusEnum>
                 label="Trạng thái"
                 value={form.status!}
-                onChange={(val) => handleChange('status', val)}
+                onChange={(val) => {
+                  handleChange('status', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: StatusEnum.Enable, label: 'Kích hoạt' },
@@ -220,8 +236,10 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<QuizTypeEnum>
                 label="Kiểu kiểm tra"
-                value={form.type!}
-                onChange={(val) => handleChange('type', val)}
+                value={form.type}
+                onChange={(val) => {
+                  handleChange('type', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: QuizTypeEnum.LessonQuiz, label: 'Kiểm tra sau khi học' },
@@ -234,20 +252,24 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CustomTextField
                 label="Time"
                 value={form.time}
-                required={true}
-                onChange={(value) => handleChange('time', value)}
+                required
+                onChange={(value) => {
+                  handleChange('time', value);
+                }}
                 disabled={isSubmitting}
                 inputMode="text"
                 pattern="^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$"
                 patternError="hh:mm:ss"
                 icon={<Clock {...iconStyle} />}
-                onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }))}
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomTextField
                 label="maxCapacity"
-                required={true}
+                required
                 value={form.maxCapacity?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
@@ -256,13 +278,15 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 disabled={isSubmitting}
                 inputMode="numeric"
                 icon={<Clock {...iconStyle} />}
-                onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }))}
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomTextField
                 label="maxAttempts"
-                required={true}
+                required
                 value={form.maxAttempts?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
@@ -271,14 +295,18 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 disabled={isSubmitting}
                 inputMode="numeric"
                 icon={<Clock {...iconStyle} />}
-                onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }))}
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.categoryID}
-                onChange={(value) => handleChange('categoryID', value)}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
               />
@@ -288,7 +316,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               <QuestionMultiSelectDialog
                 questionUsecase={questionUsecase}
                 value={form.questionIDs ? form.questionIDs.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => handleChange('questionIDs', value.join(','))}
+                onChange={(value: string[]) => {
+                  handleChange('questionIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>

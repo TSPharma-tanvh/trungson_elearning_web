@@ -6,7 +6,7 @@ import { CoursePathResponse } from '../../path/response/course-path-response';
 import { ClassTeacherResponse } from '../../teacher/response/class-teacher-response';
 
 export class CourseDetailResponse {
-  id: string = '';
+  id = '';
   pathId?: string;
   coursePath?: CoursePathResponse;
   detail?: string;

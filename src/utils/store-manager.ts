@@ -8,7 +8,7 @@ const StoreLocalManager = {
         localStorage.setItem(key, str);
       }
     } catch (err) {
-      console.error('Failed to save to localStorage:', err);
+      // console.error('Failed to save to localStorage:', err);
     }
   },
 
@@ -19,7 +19,7 @@ const StoreLocalManager = {
       }
       return null;
     } catch (err) {
-      console.error('Failed to read from localStorage:', err);
+      // console.error('Failed to read from localStorage:', err);
       return null;
     }
   },
@@ -30,7 +30,7 @@ const StoreLocalManager = {
         localStorage.removeItem(key);
       }
     } catch (err) {
-      console.error('Failed to remove from localStorage:', err);
+      // console.error('Failed to remove from localStorage:', err);
     }
   },
 
@@ -40,7 +40,7 @@ const StoreLocalManager = {
         localStorage.clear();
       }
     } catch (err) {
-      console.error('Failed to clear localStorage:', err);
+      // console.error('Failed to clear localStorage:', err);
     }
   },
 

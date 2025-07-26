@@ -2,7 +2,7 @@ export class AnswerResponse {
   id?: string;
   questionID?: string;
   answerText?: string;
-  isCorrect: boolean = false;
+  isCorrect = false;
   categoryID?: string;
   thumbnailID?: string;
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
-import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
+import { type ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { ActiveEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
@@ -82,7 +82,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
           Update Teacher
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -97,7 +97,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <UserSelectDialog
               userUsecase={userUsecase}
               value={formData.userID ?? ''}
-              onChange={(val) => handleChange('userID', val)}
+              onChange={(val) => { handleChange('userID', val); }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -106,7 +106,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <CustomTextField
               label="Mô tả"
               value={formData.description || ''}
-              onChange={(val) => handleChange('description', val)}
+              onChange={(val) => { handleChange('description', val); }}
               multiline
               rows={detailRows}
               disabled={false}
@@ -117,7 +117,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <CourseMultiSelectDialog
               courseUsecase={courseUsecase}
               value={formData.courseID ? formData.courseID.split(',').filter((id) => id) : []}
-              onChange={(value: string[]) => handleChange('courseID', value.join(','))}
+              onChange={(value: string[]) => { handleChange('courseID', value.join(',')); }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -126,15 +126,15 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <ClassMultiSelectDialog
               classUsecase={classUsecase}
               value={formData.classID ? formData.classID.split(',').filter((id) => id) : []}
-              onChange={(val) => handleChange('classID', val.join(','))}
+              onChange={(val) => { handleChange('classID', val.join(',')); }}
               disabled={isSubmitting}
             />
           </Grid>
           <Grid item xs={12}>
             <CustomSelectDropDown<string>
               label="Trạng thái"
-              value={formData.status!}
-              onChange={(val) => handleChange('status', val)}
+              value={formData.status}
+              onChange={(val) => { handleChange('status', val); }}
               options={[
                 { value: ActiveEnum[ActiveEnum.Active], label: 'Kích hoạt' },
                 { value: ActiveEnum[ActiveEnum.Inactive], label: 'Tạm khóa' },

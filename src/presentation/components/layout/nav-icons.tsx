@@ -20,7 +20,6 @@ import {
   ListChecks,
   Notification,
   QuestionMark,
-  SealQuestion,
   Student,
   UserGear,
   UsersThree,

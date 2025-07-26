@@ -1,8 +1,8 @@
-import { LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { type LearningModeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
+import { type DisplayTypeEnum, type StatusEnum } from '@/utils/enum/path-enum';
 
 export class CourseResponse {
-  id: string = '';
+  id = '';
   pathId?: string;
   detail?: string;
   isRequired?: boolean;

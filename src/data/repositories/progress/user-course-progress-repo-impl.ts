@@ -1,10 +1,10 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateUserCourseProgressRequest } from '@/domain/models/user-course/request/create-user-course-progress-request';
-import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
-import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
-import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
-import { UserCourseProgressRepository } from '@/domain/repositories/progress/user-course-progress-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateUserCourseProgressRequest } from '@/domain/models/user-course/request/create-user-course-progress-request';
+import { type EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
+import { type GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
+import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
+import { type UserCourseProgressRepository } from '@/domain/repositories/progress/user-course-progress-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -18,7 +18,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -33,7 +33,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
       const response = await apiClient.get<ApiResponse>(apiEndpoints.userCourseProgress.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -49,7 +49,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -67,7 +67,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -83,7 +83,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

@@ -14,7 +14,7 @@ export function RoleSelect() {
 
     const { scrollTop, scrollHeight, clientHeight } = listRef.current;
     if (scrollTop + clientHeight >= scrollHeight - 10) {
-      loadMoreRoles();
+      void loadMoreRoles();
     }
   }, [loadMoreRoles, hasMore, loading]);
 
@@ -37,11 +37,11 @@ export function RoleSelect() {
           {option.label}
         </MenuItem>
       ))}
-      {loading && (
+      {loading ? (
         <Box textAlign="center" py={1}>
           <CircularProgress size={20} />
         </Box>
-      )}
+      ) : null}
     </Select>
   );
 }

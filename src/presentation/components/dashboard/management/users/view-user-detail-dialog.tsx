@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
-import { UserResponse } from '@/domain/models/user/response/user-response';
+import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
+import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -38,11 +38,11 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
   const EMPLOYEE_FIELDS: { label: string; value: (e: EmployeeResponse) => any }[] = [
     { label: 'Full Name', value: (e) => `${e.firstName ?? ''} ${e.lastName ?? ''}` },
     { label: 'Title', value: (e) => e.title },
-    { label: 'Level', value: (e) => e.level },
+    { label: 'Level', value: (e) => e.levelId },
     { label: 'Level ID', value: (e) => e.levelId },
     { label: 'Code', value: (e) => e.code },
     { label: 'Gender', value: (e) => e.gender },
-    { label: 'Phone Number', value: (e) => e.phoneNumber },
+    { label: 'Phone Number', value: (e) => e.homePhone },
     { label: 'Email', value: (e) => e.mail },
     { label: 'Bank', value: (e) => e.bank },
     { label: 'Bank Number', value: (e) => e.bankNumber },
@@ -75,7 +75,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
         .catch((err) => {
           console.error('Failed to fetch user detail:', err);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, userId, userUsecase]);
 
@@ -93,7 +93,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
       >
         <Typography variant="h6">User Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -217,8 +217,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
             </Grid>
 
             {/* Employee Info */}
-            {user.employee && (
-              <>
+            {user.employee ? <>
                 <Grid item xs={12}>
                   <Divider sx={{ my: 2 }} />
                   <Typography variant="h6">Employee Info</Typography>
@@ -247,8 +246,7 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
                     </Grid>
                   );
                 })}
-              </>
-            )}
+              </> : null}
           </Grid>
         )}
       </DialogContent>

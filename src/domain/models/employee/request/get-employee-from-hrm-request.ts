@@ -1,11 +1,11 @@
 export class GetEmployeeFromHrmRequest {
   username?: string;
   password?: string;
-  page: number = 1;
-  pageSize: number = 100;
+  page = 1;
+  pageSize = 100;
   staticDate?: Date;
   employeeReturn?: number;
-  status: string = 'on';
+  status = 'on';
 
   constructor(init?: Partial<GetEmployeeFromHrmRequest>) {
     Object.assign(this, init);

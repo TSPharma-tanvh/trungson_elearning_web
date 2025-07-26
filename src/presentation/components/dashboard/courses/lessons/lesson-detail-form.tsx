@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -32,7 +32,7 @@ interface Props {
   onClose: () => void;
 }
 
-function LessonDetails({ lesson: lesson, fullScreen }: { lesson: LessonDetailResponse; fullScreen: boolean }) {
+function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; fullScreen: boolean }) {
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -69,7 +69,7 @@ function LessonDetails({ lesson: lesson, fullScreen }: { lesson: LessonDetailRes
   const renderQuizzes = () => {
     if (!lesson.quizzes || lesson.quizzes.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
+    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (lessonId: string) => {
       setExpandedLessons((prev) => ({
@@ -97,7 +97,7 @@ function LessonDetails({ lesson: lesson, fullScreen }: { lesson: LessonDetailRes
                 title={quiz.title ?? `Quiz ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(lessonId)}
+                    onClick={() => { toggleExpanded(lessonId); }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -131,7 +131,7 @@ function LessonDetails({ lesson: lesson, fullScreen }: { lesson: LessonDetailRes
   const renderUserProgress = () => {
     if (!lesson.userLessonProgress || lesson.userLessonProgress.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
+    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (lessonId: string) => {
       setExpandedLessons((prev) => ({
@@ -159,7 +159,7 @@ function LessonDetails({ lesson: lesson, fullScreen }: { lesson: LessonDetailRes
                 title={progress.id ?? `Quiz ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(lessonId)}
+                    onClick={() => { toggleExpanded(lessonId); }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -241,7 +241,7 @@ export default function LessonDetailForm({ open, lessonId, onClose }: Props) {
           console.error('Error fetching Lesson details:', error);
           setLesson(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, lessonId, lessonUsecase]);
 
@@ -252,7 +252,7 @@ export default function LessonDetailForm({ open, lessonId, onClose }: Props) {
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Lesson Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

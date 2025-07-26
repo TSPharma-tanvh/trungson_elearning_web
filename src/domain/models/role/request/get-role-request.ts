@@ -2,8 +2,8 @@ export class GetRoleRequest {
   id?: string;
   name?: string;
   isActive?: boolean;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetRoleRequest>) {
     Object.assign(this, init);

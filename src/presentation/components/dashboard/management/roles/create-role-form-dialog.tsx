@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
-import { PermissionResponse } from '@/domain/models/role/response/permission-reponse';
+import { type PermissionResponse } from '@/domain/models/role/response/permission-reponse';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import {
   Box,
@@ -93,11 +93,11 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
         <DialogTitle>Create Role</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={2}>
-            <TextField required label="Role Name" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
+            <TextField required label="Role Name" value={name} onChange={(e) => { setName(e.target.value); }} fullWidth />
             <TextField
               label="Description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => { setDescription(e.target.value); }}
               fullWidth
               multiline
               rows={3}
@@ -108,7 +108,7 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
                 labelId="permission-select-label"
                 multiple
                 value={selectedPermissions}
-                onChange={(e) => setSelectedPermissions(e.target.value as string[])}
+                onChange={(e) => { setSelectedPermissions(e.target.value as string[]); }}
                 input={<OutlinedInput label="Permissions" />}
                 renderValue={(selected) => selected.join(', ')}
               >

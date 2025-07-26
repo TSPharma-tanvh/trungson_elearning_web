@@ -6,7 +6,7 @@ export class FileResourcesResponse {
   status?: string;
   tagID?: string;
   name?: string;
-  size: number = 0;
+  size = 0;
 
   constructor(init?: Partial<FileResourcesResponse>) {
     Object.assign(this, init);

@@ -7,11 +7,11 @@ import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-le
 export class LessonDetailResponse {
   id?: string;
   courseID?: string;
-  name: string = '';
+  name = '';
   detail?: string;
-  enablePlay: boolean = false;
-  status: string = '';
-  lessonType: string = '';
+  enablePlay = false;
+  status = '';
+  lessonType = '';
   enrollmentCriteriaID?: string;
   categoryID?: string;
   thumbnailID?: string;

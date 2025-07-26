@@ -1,9 +1,9 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
-import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
-import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
-import { PathRepository } from '@/domain/repositories/path/path-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
+import { type GetPathRequest } from '@/domain/models/path/request/get-path-request';
+import { type UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
+import { type PathRepository } from '@/domain/repositories/path/path-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -17,7 +17,7 @@ export class PathRepoImpl implements PathRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -32,7 +32,7 @@ export class PathRepoImpl implements PathRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.path.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -52,7 +52,7 @@ export class PathRepoImpl implements PathRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -74,7 +74,7 @@ export class PathRepoImpl implements PathRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GetRoleRequest } from '@/domain/models/role/request/get-role-request';
-import { RoleResponse } from '@/domain/models/role/response/role-response';
-import { RoleUsecase } from '@/domain/usecases/role/role-usecase';
+import { type RoleResponse } from '@/domain/models/role/response/role-response';
+import { type RoleUsecase } from '@/domain/usecases/role/role-usecase';
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -32,7 +32,6 @@ export function useRoleOptions(roleUsecase: RoleUsecase) {
         setPage((prev) => prev + 1);
       }
     } catch (error) {
-      console.error('Error loading roles:', error);
       setHasMore(false);
     } finally {
       setLoading(false);
@@ -40,10 +39,8 @@ export function useRoleOptions(roleUsecase: RoleUsecase) {
     }
   }, [page, loading, hasMore, roleUsecase]);
 
-  // Initial load
   useEffect(() => {
-    loadMoreRoles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    void loadMoreRoles();
   }, []);
 
   return {

@@ -1,22 +1,18 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
-import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { ClassUsecase } from '@/domain/usecases/class/class-usecase';
+import { type ClassResponse } from '@/domain/models/class/response/class-response';
+import { type ClassUsecase } from '@/domain/usecases/class/class-usecase';
 import { useClassSelectDebounce } from '@/presentation/hooks/class/use-class-select-debounce';
 import { useClassSelectLoader } from '@/presentation/hooks/class/use-class-select-loader';
 import {
-  DisplayTypeDisplayNames,
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
-  ScheduleStatusDisplayNames,
   ScheduleStatusEnum,
-  StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book, BookOutlined } from '@mui/icons-material';
+import { Book } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -36,14 +32,14 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
+  type SelectChangeEvent,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import ClassDetailForm from '@/presentation/components/dashboard/class/classes/class-detail-form';
 
@@ -69,7 +65,6 @@ export function ClassMultiSelectDialog({
   onChange,
   label = 'Classes',
   disabled = false,
-  pathID,
   ...selectProps
 }: ClassMultiSelectDialogProps) {
   const theme = useTheme();
@@ -85,27 +80,18 @@ export function ClassMultiSelectDialog({
   const [viewOpen, setViewOpen] = React.useState(false);
   const [selectedClass, setSelectedClass] = React.useState<ClassResponse | null>(null);
 
-  const {
-    classes,
-    loadingClasses,
-    pageNumber,
-    totalPages,
-    setSearchText,
-    setClassType: setLoaderClassType,
-    setScheduleStatus: setLoaderScheduleStatus,
-    listRef,
-    loadClasses,
-  } = useClassSelectLoader({
-    classUsecase,
-    isOpen: dialogOpen,
-    classType,
-    scheduleStatus,
-    searchText: debouncedSearchText,
-  });
+  const { classes, loadingClasses, pageNumber, totalPages, setSearchText, listRef, loadClasses } = useClassSelectLoader(
+    {
+      classUsecase,
+      isOpen: dialogOpen,
+      classType,
+      scheduleStatus,
+      searchText: debouncedSearchText,
+    }
+  );
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Handlers
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
   };
@@ -128,14 +114,13 @@ export function ClassMultiSelectDialog({
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (classUsecase && !loadingClasses) {
-      loadClasses(newPage, true);
+      void loadClasses(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
     }
   };
 
-  // Effects
   useEffect(() => {
     setSearchText(debouncedSearchText);
   }, [debouncedSearchText, setSearchText]);
@@ -165,12 +150,13 @@ export function ClassMultiSelectDialog({
           if (updated) {
             setSelectedClassMap(newMap);
           }
-        } catch (error) {
-          console.error('Error fetching selected classes:', error);
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         }
       };
 
-      fetchSelectedClasses();
+      void fetchSelectedClasses();
     }
   }, [classUsecase, value]);
 
@@ -219,7 +205,12 @@ export function ClassMultiSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Class</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -233,14 +224,14 @@ export function ClassMultiSelectDialog({
               <InputLabel>Class Type</InputLabel>
               <Select
                 value={classType !== undefined ? String(classType) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setClassType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setClassType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                }}
                 label="Class Type"
               >
                 {filterOptions.courseType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? LearningModeDisplayNames[opt] : 'All'}
+                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select>
@@ -287,11 +278,11 @@ export function ClassMultiSelectDialog({
                 </Button>
               </MenuItem>
             ))}
-            {loadingClasses && (
+            {loadingClasses ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
-            )}
+            ) : null}
             {!loadingClasses && classes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 No classes found
@@ -321,9 +312,15 @@ export function ClassMultiSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedClass && (
-        <ClassDetailForm open={viewOpen} classId={selectedClass?.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedClass ? (
+        <ClassDetailForm
+          open={viewOpen}
+          classId={selectedClass?.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

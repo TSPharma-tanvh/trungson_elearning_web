@@ -1,10 +1,10 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
-import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
+import { type GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
 import { UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
 import { QuestionResponse } from '@/domain/models/question/response/question-response';
-import { QuestionListResult } from '@/domain/models/question/response/question-result';
-import { QuestionRepository } from '@/domain/repositories/question/question-repository';
+import { type QuestionListResult } from '@/domain/models/question/response/question-result';
+import { type QuestionRepository } from '@/domain/repositories/question/question-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class QuestionUsecase {
@@ -32,9 +32,9 @@ export class QuestionUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.courseRepo.getQuestionById(id);
+    const result = await this.courseRepo.getQuestionById(id);
 
-    var userResponse = QuestionResponse.fromJSON(result.result);
+    const userResponse = QuestionResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -46,7 +46,7 @@ export class QuestionUsecase {
   }
 
   async updateQuestion(request: UpdateQuestionRequest): Promise<ApiResponse> {
-    var result = await this.courseRepo.updateQuestion(request);
+    const result = await this.courseRepo.updateQuestion(request);
 
     return result;
   }
@@ -57,7 +57,7 @@ export class QuestionUsecase {
       status: StatusEnum.Deleted,
     });
 
-    var result = await this.courseRepo.updateQuestion(newFormData);
+    const result = await this.courseRepo.updateQuestion(newFormData);
 
     return result;
   }

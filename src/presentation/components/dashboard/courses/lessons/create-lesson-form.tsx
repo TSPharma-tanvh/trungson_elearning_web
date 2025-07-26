@@ -63,7 +63,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
+    return () => { window.removeEventListener('resize', updateRows); };
   }, [fullScreen]);
 
   const handleSubmit = () => {
@@ -93,7 +93,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Tạo mới bài học</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -108,7 +108,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
             <CustomTextField
               label="Tên bài học"
               value={form.name}
-              onChange={(val) => handleChange('name', val)}
+              onChange={(val) => { handleChange('name', val); }}
               disabled={disabled}
             />
           </Grid>
@@ -117,7 +117,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
             <CustomTextField
               label="Chi tiết"
               value={form.detail}
-              onChange={(val) => handleChange('detail', val)}
+              onChange={(val) => { handleChange('detail', val); }}
               disabled={disabled}
               multiline
               rows={detailRows}
@@ -133,7 +133,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
             <CustomTextField
               label="Video Document No"
               value={form.videoDocumentNo}
-              onChange={(val) => handleChange('videoDocumentNo', val)}
+              onChange={(val) => { handleChange('videoDocumentNo', val); }}
               disabled={disabled}
               icon={<VideoCamera size={20} />}
             />
@@ -142,7 +142,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
             <CustomTextField
               label="Video Prefix Name"
               value={form.videoPrefixName}
-              onChange={(val) => handleChange('videoPrefixName', val)}
+              onChange={(val) => { handleChange('videoPrefixName', val); }}
               disabled={disabled}
               icon={<VideoCamera size={20} />}
             />
@@ -170,11 +170,9 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
               />
             </Button>
           </Grid>
-          {videoPreviewUrl && (
-            <Grid item xs={12}>
+          {videoPreviewUrl ? <Grid item xs={12}>
               <CustomVideoPlayer src={videoPreviewUrl} fullscreen={fullScreen} />
-            </Grid>
-          )}
+            </Grid> : null}
 
           {/* Thumbnail Upload */}
           <Grid item xs={12}>
@@ -184,7 +182,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
             <CustomTextField
               label="Thumbnail Document No"
               value={form.thumbDocumentNo}
-              onChange={(val) => handleChange('thumbDocumentNo', val)}
+              onChange={(val) => { handleChange('thumbDocumentNo', val); }}
               disabled={disabled}
               icon={<ImageIcon size={20} />}
             />
@@ -193,7 +191,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
             <CustomTextField
               label="Thumbnail Prefix Name"
               value={form.thumbPrefixName}
-              onChange={(val) => handleChange('thumbPrefixName', val)}
+              onChange={(val) => { handleChange('thumbPrefixName', val); }}
               disabled={disabled}
               icon={<ImageIcon size={20} />}
             />
@@ -221,8 +219,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
               />
             </Button>
           </Grid>
-          {thumbnailPreviewUrl && (
-            <Grid item xs={12}>
+          {thumbnailPreviewUrl ? <Grid item xs={12}>
               <Box
                 sx={{
                   width: fullScreen ? 400 : 200,
@@ -243,8 +240,7 @@ export function CreateLessonDialog({ disabled = false, onSubmit, loading = false
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </Box>
-            </Grid>
-          )}
+            </Grid> : null}
 
           <Grid item xs={12}>
             <CustomButton label="Tạo mới" onClick={handleSubmit} loading={loading} disabled={disabled} />

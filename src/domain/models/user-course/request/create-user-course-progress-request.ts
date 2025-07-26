@@ -1,4 +1,4 @@
-import { ApproveStatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { type ApproveStatusEnum, type UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class CreateUserCourseProgressRequest {
   userID?: string;

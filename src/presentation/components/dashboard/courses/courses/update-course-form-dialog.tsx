@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
-import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
@@ -98,7 +98,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .then((file) => { setPreviewUrl(file.resourceUrl || null); })
             .catch((error) => {
               console.error('Error fetching thumbnail:', error);
               setPreviewUrl(null);
@@ -173,7 +173,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           Update Course
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -193,7 +193,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomTextField
                 label="Name"
                 value={formData.name}
-                onChange={(value) => handleChange('name', value)}
+                onChange={(value) => { handleChange('name', value); }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -203,7 +203,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomTextField
                 label="Detail"
                 value={formData.detail}
-                onChange={(value) => handleChange('detail', value)}
+                onChange={(value) => { handleChange('detail', value); }}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
@@ -213,7 +213,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomDateTimePicker
                 label="Start Time"
                 value={formData.startTime}
-                onChange={(value) => handleChange('startTime', value)}
+                onChange={(value) => { handleChange('startTime', value); }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -222,7 +222,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomDateTimePicker
                 label="End Time"
                 value={formData.endTime}
-                onChange={(value) => handleChange('endTime', value)}
+                onChange={(value) => { handleChange('endTime', value); }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -230,7 +230,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomSelectDropDown
                 label="Status"
                 value={formData.disableStatus ?? ''}
-                onChange={(value) => handleChange('disableStatus', value as StatusEnum)}
+                onChange={(value) => { handleChange('disableStatus', value); }}
                 disabled={isSubmitting}
                 options={statusOptions}
               />
@@ -239,7 +239,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomSelectDropDown
                 label="Display Type"
                 value={formData.displayType ?? ''}
-                onChange={(value) => handleChange('displayType', value as DisplayTypeEnum)}
+                onChange={(value) => { handleChange('displayType', value); }}
                 disabled={isSubmitting}
                 options={displayTypeOptions}
               />
@@ -248,7 +248,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <LessonMultiSelectDialog
                 lessonUsecase={lessonUsecase}
                 value={formData.lessonIds ? formData.lessonIds.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => handleChange('lessonIds', value.join(','))}
+                onChange={(value: string[]) => { handleChange('lessonIds', value.join(',')); }}
                 disabled={isSubmitting}
                 pathID={formData.id}
               />
@@ -260,7 +260,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 value={
                   formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
                 }
-                onChange={(value: string[]) => handleChange('enrollmentCriteriaIDs', value.join(','))}
+                onChange={(value: string[]) => { handleChange('enrollmentCriteriaIDs', value.join(',')); }}
                 disabled={isSubmitting}
                 label="Enrollment Criteria"
               />
@@ -269,7 +269,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
-                onChange={(value) => handleChange('categoryID', value)}
+                onChange={(value) => { handleChange('categoryID', value); }}
                 categoryEnum={CategoryEnum.Course}
                 disabled={isSubmitting}
               />
@@ -279,7 +279,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
                 value={formData.teacherID ?? ''}
-                onChange={(value) => handleChange('teacherID', value)}
+                onChange={(value) => { handleChange('teacherID', value); }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -319,7 +319,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -328,7 +328,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -346,7 +346,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => { handleFileUpload(e.target.files?.[0] || null); }}
                       />
                     </Button>
                   </Grid>
@@ -354,8 +354,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!formData.isRequired}
-                          onChange={(e) => handleChange('isRequired', e.target.checked)}
+                          checked={Boolean(formData.isRequired)}
+                          onChange={(e) => { handleChange('isRequired', e.target.checked); }}
                           disabled={isSubmitting}
                         />
                       }
@@ -366,16 +366,15 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!formData.isDeleteOldThumbnail}
-                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          checked={Boolean(formData.isDeleteOldThumbnail)}
+                          onChange={(e) => { handleChange('isDeleteOldThumbnail', e.target.checked); }}
                           disabled={isSubmitting}
                         />
                       }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl && (
-                    <Grid item xs={12}>
+                  {previewUrl ? <Grid item xs={12}>
                       <Box
                         sx={{
                           width: fullScreen ? 400 : 200,
@@ -396,8 +395,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
-                    </Grid>
-                  )}
+                    </Grid> : null}
                 </Grid>
               )}
             </Grid>

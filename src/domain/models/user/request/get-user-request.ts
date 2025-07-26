@@ -6,8 +6,8 @@ export class GetUserRequest {
   lastName?: string;
   roles?: string[] = [];
   searchTerm?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetUserRequest>) {
     Object.assign(this, init);
@@ -48,7 +48,7 @@ export class GetUserRequest {
     if (this.email) form.append('email', this.email);
     if (this.firstName) form.append('firstName', this.firstName);
     if (this.lastName) form.append('lastName', this.lastName);
-    if (this.roles?.length) this.roles.forEach((role) => form.append('roles', role));
+    if (this.roles?.length) this.roles.forEach((role) => { form.append('roles', role); });
     if (this.searchTerm) form.append('searchTerm', this.searchTerm);
     form.append('pageNumber', String(this.pageNumber));
     form.append('pageSize', String(this.pageSize));

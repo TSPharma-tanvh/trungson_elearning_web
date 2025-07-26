@@ -3,14 +3,14 @@ import { CourseDetailResponse } from '../../courses/response/course-detail-respo
 import { UserDetailResponse } from '../../user/response/user-detail-response';
 
 export class UserCourseProgressResponse {
-  id: string = '';
+  id = '';
   userID?: string;
   courseID?: string;
   progress?: number;
   startDate?: string;
   endDate?: string;
   lastAccess?: string;
-  status: string = '';
+  status = '';
   enrollmentID?: string;
   enrollment?: EnrollmentResponse;
   courses?: CourseDetailResponse;

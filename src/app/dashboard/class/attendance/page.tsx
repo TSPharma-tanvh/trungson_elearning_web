@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { CreateClassRequest } from '@/domain/models/class/request/create-class-request';
+import { type CreateClassRequest } from '@/domain/models/class/request/create-class-request';
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
-import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
-import { ClassResponse } from '@/domain/models/class/response/class-response';
+import { type UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
+import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -124,7 +124,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -144,7 +144,7 @@ export default function Page(): React.JSX.Element {
           onRowsPerPageChange={handleRowsPerPageChange}
           onDeleteClass={handleDeleteClasss}
           onEditClass={handleEditClass}
-        ></ClassTable>
+         />
       </Stack>
 
       {/* <AddCustomerDialog
@@ -160,7 +160,7 @@ export default function Page(): React.JSX.Element {
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
-import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
+import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import {
@@ -46,7 +46,7 @@ export default function QuizTable({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteQuizs: onDeleteQuizs,
+  onDeleteQuizs,
   onEditQuiz,
 }: QuizTableProps) {
   const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
@@ -78,7 +78,7 @@ export default function QuizTable({
     setSelectedRow(row);
   };
 
-  const handleMenuClose = () => setAnchorEl(null);
+  const handleMenuClose = () => { setAnchorEl(null); };
 
   const handleOpenDeleteDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -106,7 +106,7 @@ export default function QuizTable({
       <Card>
         {selected.size > 0 && (
           <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button color="error" variant="outlined" onClick={() => handleOpenDeleteDialog(Array.from(selected))}>
+            <Button color="error" variant="outlined" onClick={() => { handleOpenDeleteDialog(Array.from(selected)); }}>
               Delete Selected ({selected.size})
             </Button>
           </Box>
@@ -139,7 +139,7 @@ export default function QuizTable({
                 return (
                   <TableRow key={row.id} selected={isItemSelected} hover>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => handleSelectOne(row.id!)} />
+                      <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id!); }} />
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" alignItems="center" spacing={2}>
@@ -162,7 +162,7 @@ export default function QuizTable({
                     <TableCell>{row.scheduleStatus}</TableCell>
                     <TableCell>{row.displayType}</TableCell> */}
                     <TableCell align="right">
-                      <IconButton onClick={(event) => handleMenuClick(event, row)}>
+                      <IconButton onClick={(event) => { handleMenuClick(event, row); }}>
                         <MoreVert />
                       </IconButton>
                     </TableCell>
@@ -223,21 +223,17 @@ export default function QuizTable({
         </MenuList>
       </Popover>
 
-      {editQuizData && (
-        <UpdateQuizFormDialog
+      {editQuizData ? <UpdateQuizFormDialog
           open={editOpen}
           data={editQuizData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditQuiz(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {selectedRow && (
-        <QuizDetailForm open={viewOpen} courseId={selectedRow?.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedRow ? <QuizDetailForm open={viewOpen} quizId={selectedRow?.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}

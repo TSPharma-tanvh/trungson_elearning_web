@@ -1,9 +1,11 @@
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
-import { UserListResult } from '@/domain/models/user/response/user-list-result';
-import { UserResponse } from '@/domain/models/user/response/user-response';
-import { UserUsecase } from '@/domain/usecases/user/user-usecase';
-import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type UserListResult } from '@/domain/models/user/response/user-list-result';
+import { type UserResponse } from '@/domain/models/user/response/user-response';
+import { type UserUsecase } from '@/domain/usecases/user/user-usecase';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseUserSelectLoaderProps {
   userUsecase: UserUsecase | null;
@@ -45,7 +47,7 @@ export function useUserSelectLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadUsers = async (page: number, reset: boolean = false) => {
+  const loadUsers = async (page: number, reset = false) => {
     if (!userUsecase || loadingUsers || !isOpen) return;
 
     setLoadingUsers(true);
@@ -53,7 +55,7 @@ export function useUserSelectLoader({
 
     try {
       const request = new GetUserRequest({
-        roles: roles,
+        roles,
         searchTerm: searchText || undefined,
         pageNumber: page,
         pageSize: 10,
@@ -67,7 +69,8 @@ export function useUserSelectLoader({
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading Users:', error);
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingUsers(false);
     }
@@ -79,7 +82,7 @@ export function useUserSelectLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadUsers(1, true);
+      void loadUsers(1, true);
     }
 
     return () => {

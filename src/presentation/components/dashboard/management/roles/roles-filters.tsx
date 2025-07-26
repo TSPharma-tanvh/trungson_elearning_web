@@ -41,7 +41,7 @@ export function RolesFilters({ onFilter }: { onFilter: (filters: GetRoleRequest)
         <OutlinedInput
           size="small"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => { setName(e.target.value); }}
           fullWidth
           placeholder="Search Name"
           startAdornment={

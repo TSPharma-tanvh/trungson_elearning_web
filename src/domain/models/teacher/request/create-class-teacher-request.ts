@@ -3,7 +3,7 @@ export class CreateClassTeacherRequest {
   description?: string;
   courseID?: string;
   classID?: string;
-  status: string = 'Active';
+  status = 'Active';
 
   constructor(init?: Partial<CreateClassTeacherRequest>) {
     Object.assign(this, init);

@@ -1,9 +1,9 @@
-import { CreateCategoryRequest } from '@/domain/models/category/request/create-category-request';
-import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CategoryRepository } from '@/domain/repositories/category/category-repository';
+import { type CreateCategoryRequest } from '@/domain/models/category/request/create-category-request';
+import { type GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
+import { type UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CategoryRepository } from '@/domain/repositories/category/category-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -14,7 +14,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.category.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -31,7 +31,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       });
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -52,7 +52,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -75,7 +75,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -90,7 +90,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       const response = await apiClient.delete<ApiResponse>(apiEndpoints.category.delete(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

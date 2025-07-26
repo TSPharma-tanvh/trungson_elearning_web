@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
-import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
@@ -84,7 +84,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .then((file) => { setPreviewUrl(file.resourceUrl || null); })
             .catch((error) => {
               console.error('Error fetching thumbnail:', error);
               setPreviewUrl(null);
@@ -148,7 +148,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
           Update Category
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -168,7 +168,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
               <CustomTextField
                 label="Name"
                 value={formData.categoryName ?? ''}
-                onChange={(value) => handleChange('categoryName', value)}
+                onChange={(value) => { handleChange('categoryName', value); }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -178,7 +178,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
               <CustomTextField
                 label="Detail"
                 value={formData.description ?? 'z'}
-                onChange={(value) => handleChange('description', value)}
+                onChange={(value) => { handleChange('description', value); }}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
@@ -188,7 +188,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
               <CustomSelectDropDown<CategoryEnum>
                 label="Enrollment Criteria Type"
                 value={formData.category ?? CategoryEnum.Path}
-                onChange={(val) => handleChange('category', val)}
+                onChange={(val) => { handleChange('category', val); }}
                 options={[
                   { value: CategoryEnum.Path, label: 'Lộ trình' },
                   { value: CategoryEnum.Course, label: 'Khóa học' },
@@ -237,7 +237,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo ?? ''}
-                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -246,7 +246,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName ?? ''}
-                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -264,7 +264,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => { handleFileUpload(e.target.files?.[0] || null); }}
                       />
                     </Button>
                   </Grid>
@@ -273,16 +273,15 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!formData.isDeleteOldThumbnail}
-                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          checked={Boolean(formData.isDeleteOldThumbnail)}
+                          onChange={(e) => { handleChange('isDeleteOldThumbnail', e.target.checked); }}
                           disabled={isSubmitting}
                         />
                       }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl && (
-                    <Grid item xs={12}>
+                  {previewUrl ? <Grid item xs={12}>
                       <Box
                         sx={{
                           width: fullScreen ? 400 : 200,
@@ -303,8 +302,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
-                    </Grid>
-                  )}
+                    </Grid> : null}
                 </Grid>
               )}
             </Grid>

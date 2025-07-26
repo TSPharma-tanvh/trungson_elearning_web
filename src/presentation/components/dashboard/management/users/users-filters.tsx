@@ -74,7 +74,7 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
         <OutlinedInput
           size="small"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => { setSearchTerm(e.target.value); }}
           fullWidth
           placeholder="Search User"
           startAdornment={
@@ -102,7 +102,7 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
             multiple
             labelId="role-select-label"
             value={roles}
-            onChange={(e) => setRoles(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+            onChange={(e) => { setRoles(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value); }}
             input={<OutlinedInput label="Roles" />}
             renderValue={(selected) =>
               selected.length === 0 ? (
@@ -152,11 +152,9 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
                 />
               </MenuItem>
             ))}
-            {loading && (
-              <Box textAlign="center" py={1}>
+            {loading ? <Box textAlign="center" py={1}>
                 <CircularProgress size={20} />
-              </Box>
-            )}
+              </Box> : null}
           </Select>
         </FormControl>
 

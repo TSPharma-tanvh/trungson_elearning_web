@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
-import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
+import { type UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
+import { type UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { UserProgressEnum } from '@/utils/enum/core-enum';
 import {
@@ -238,7 +238,7 @@ export default function UserPathProgressTable({
               <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
 
               <TableCell align="right">
-                <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+                <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
                   <MoreVert />
                 </IconButton>
               </TableCell>
@@ -247,25 +247,21 @@ export default function UserPathProgressTable({
         }}
       />
 
-      {editUserPathProgressData && (
-        <UpdateUserPathProgressFormDialog
+      {editUserPathProgressData ? <UpdateUserPathProgressFormDialog
           open={editOpen}
           data={editUserPathProgressData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditUserPathProgress(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {editUserPathProgressData && (
-        <UserPathProgressDetailForm
+      {editUserPathProgressData ? <UserPathProgressDetailForm
           open={viewOpen}
           userPathProgressId={editUserPathProgressData.id ?? null}
-          onClose={() => setViewOpen(false)}
-        />
-      )}
+          onClose={() => { setViewOpen(false); }}
+        /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

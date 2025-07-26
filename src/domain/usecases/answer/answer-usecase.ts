@@ -1,10 +1,10 @@
-import { CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
-import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
+import { type CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
+import { type GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
 import { UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
 import { AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
-import { AnswerDetailListResult } from '@/domain/models/answer/response/course-detail-result';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { AnswerRepository } from '@/domain/repositories/answer/answer-repository';
+import { type AnswerDetailListResult } from '@/domain/models/answer/response/course-detail-result';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type AnswerRepository } from '@/domain/repositories/answer/answer-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class AnswerUsecase {
@@ -32,9 +32,9 @@ export class AnswerUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.answerRepo.getAnswerById(id);
+    const result = await this.answerRepo.getAnswerById(id);
 
-    var userResponse = AnswerDetailResponse.fromJSON(result.result);
+    const userResponse = AnswerDetailResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -46,7 +46,7 @@ export class AnswerUsecase {
   }
 
   async updateAnswer(request: UpdateAnswerRequest): Promise<ApiResponse> {
-    var result = await this.answerRepo.updateAnswer(request);
+    const result = await this.answerRepo.updateAnswer(request);
 
     return result;
   }
@@ -57,7 +57,7 @@ export class AnswerUsecase {
       status: StatusEnum.Deleted,
     });
 
-    var result = await this.answerRepo.updateAnswer(newFormData);
+    const result = await this.answerRepo.updateAnswer(newFormData);
 
     return result;
   }

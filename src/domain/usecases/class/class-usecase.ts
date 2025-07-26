@@ -1,10 +1,10 @@
-import { CreateClassRequest } from '@/domain/models/class/request/create-class-request';
-import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
+import { type CreateClassRequest } from '@/domain/models/class/request/create-class-request';
+import { type GetClassRequest } from '@/domain/models/class/request/get-class-request';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { ClassListResult } from '@/domain/models/class/response/class-result';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { ClassRepository } from '@/domain/repositories/class/class-repository';
+import { type ClassListResult } from '@/domain/models/class/response/class-result';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type ClassRepository } from '@/domain/repositories/class/class-repository';
 import { ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 export class ClassUsecase {
@@ -32,9 +32,9 @@ export class ClassUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.ClassRepo.getClassById(id);
+    const result = await this.ClassRepo.getClassById(id);
 
-    var userResponse = ClassResponse.fromJson(result.result);
+    const userResponse = ClassResponse.fromJson(result.result);
 
     return userResponse;
   }
@@ -46,7 +46,7 @@ export class ClassUsecase {
   }
 
   async updateClass(request: UpdateClassRequest): Promise<ApiResponse> {
-    var result = await this.ClassRepo.updateClass(request);
+    const result = await this.ClassRepo.updateClass(request);
 
     return result;
   }
@@ -56,7 +56,7 @@ export class ClassUsecase {
       id: id ?? '',
       scheduleStatus: ScheduleStatusEnum.Cancelled,
     });
-    var result = await this.ClassRepo.updateClass(newFormData);
+    const result = await this.ClassRepo.updateClass(newFormData);
     return result;
   }
 }

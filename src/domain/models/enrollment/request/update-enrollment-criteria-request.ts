@@ -1,7 +1,7 @@
-import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateEnrollmentCriteriaRequest {
-  id: string = '';
+  id = '';
   name?: string;
   desc?: string;
   enrollmentStatus?: StatusEnum;

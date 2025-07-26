@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CourseResponse } from '@/domain/models/courses/response/course-response';
-import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
+import { type CourseResponse } from '@/domain/models/courses/response/course-response';
+import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -200,7 +200,7 @@ export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) 
               title={enroll.name ?? `Enrollment #${index + 1}`}
               action={
                 <IconButton
-                  onClick={() => toggleExpanded(enroll.id)}
+                  onClick={() => { toggleExpanded(enroll.id); }}
                   sx={{
                     transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s',
@@ -263,7 +263,7 @@ function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
         title={course.name ?? 'Unnamed Course'}
         action={
           <IconButton
-            onClick={() => setExpanded(!expanded)}
+            onClick={() => { setExpanded(!expanded); }}
             sx={{
               transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 0.2s',
@@ -332,7 +332,7 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Pr
           console.error('Error fetching course path details:', error);
           setCoursePath(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, coursePathId, pathUseCase]);
 
@@ -343,7 +343,7 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Pr
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', pr: 1 }}>
         <Typography variant="h6">Course Path Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

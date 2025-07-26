@@ -1,9 +1,9 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
-import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
-import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
-import { UserQuizProgressRepository } from '@/domain/repositories/progress/user-quiz-progress-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
+import { type GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
+import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
+import { type UserQuizProgressRepository } from '@/domain/repositories/progress/user-quiz-progress-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -17,7 +17,7 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -32,7 +32,7 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.userQuizProgress.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -48,7 +48,7 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -66,7 +66,7 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

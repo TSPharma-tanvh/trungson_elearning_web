@@ -1,9 +1,8 @@
 import React from 'react';
-import { UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
-import { DateTimeUtils } from '@/utils/date-time-utils';
+import { type UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
+import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { MoreVert } from '@mui/icons-material';
-import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -64,7 +63,7 @@ export default function QuestionTable({
         count={count}
         page={page}
         rowsPerPage={rowsPerPage}
-        getRowId={(row) => row.id!}
+        getRowId={(row) => row.id}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteQuestions}
@@ -124,7 +123,11 @@ export default function QuestionTable({
             <TableCell>{row.totalAnswer}</TableCell>
 
             <TableCell align="right">
-              <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+              <IconButton
+                onClick={(e) => {
+                  onActionClick(e as React.MouseEvent<HTMLElement>);
+                }}
+              >
                 <MoreVert />
               </IconButton>
             </TableCell>
@@ -132,25 +135,29 @@ export default function QuestionTable({
         )}
       />
 
-      {editQuestionData && (
+      {editQuestionData ? (
         <UpdateQuestionFormDialog
           open={editOpen}
           data={editQuestionData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditQuestion(updatedData);
             setEditOpen(false);
           }}
         />
-      )}
+      ) : null}
 
-      {editQuestionData && (
+      {editQuestionData ? (
         <QuestionDetailForm
           open={viewOpen}
           questionId={editQuestionData.id ?? null}
-          onClose={() => setViewOpen(false)}
+          onClose={() => {
+            setViewOpen(false);
+          }}
         />
-      )}
+      ) : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

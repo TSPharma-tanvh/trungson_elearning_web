@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { InputAdornment, OutlinedInput, SxProps, Theme } from '@mui/material';
+import { InputAdornment, OutlinedInput, type SxProps, type Theme } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
 
 interface SearchInputProps {
@@ -23,7 +23,7 @@ export const CustomSearchFilter: React.FC<SearchInputProps> = ({
     <OutlinedInput
       size="small"
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => { onChange(e.target.value); }}
       placeholder={placeholder}
       fullWidth
       startAdornment={

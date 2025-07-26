@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
-import { QuestionUsecase } from '@/domain/usecases/question/question-usecase';
+import { type QuestionResponse } from '@/domain/models/question/response/question-response';
+import { type QuestionUsecase } from '@/domain/usecases/question/question-usecase';
 import { useQuestionSelectDebounce } from '@/presentation/hooks/question/use-question-select-debounce';
 import { useQuestionSelectLoader } from '@/presentation/hooks/question/use-question-select-loader';
-import { Book, BookOutlined } from '@mui/icons-material';
+import { Book } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -26,14 +25,13 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
 import QuestionInformationForm from './question-information-form';
@@ -65,23 +63,12 @@ export function QuestionMultiSelectDialog({
   const [selectedQuestion, setSelectedQuestion] = React.useState<QuestionResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
 
-  const {
-    questions,
-    loadingQuestions,
-    hasMore,
-    isSelectOpen,
-    pageNumber,
-    totalPages,
-    listRef,
-    setIsSelectOpen,
-    setSearchText,
-    searchText,
-    loadQuestions,
-  } = useQuestionSelectLoader({
-    questionUsecase,
-    isOpen: dialogOpen,
-    searchText: debouncedSearchText,
-  });
+  const { questions, loadingQuestions, pageNumber, totalPages, listRef, setSearchText, loadQuestions } =
+    useQuestionSelectLoader({
+      questionUsecase,
+      isOpen: dialogOpen,
+      searchText: debouncedSearchText,
+    });
 
   const isFull = isSmallScreen || isFullscreen;
 
@@ -106,7 +93,7 @@ export function QuestionMultiSelectDialog({
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (questionUsecase && !loadingQuestions) {
-      loadQuestions(newPage, true);
+      void loadQuestions(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -144,11 +131,12 @@ export function QuestionMultiSelectDialog({
             setSelectedQuestionMap(newMap);
           }
         } catch (error) {
-          console.error('Error fetching selected questions:', error);
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         }
       };
 
-      fetchSelectedQuestions();
+      void fetchSelectedQuestions();
     }
   }, [questionUsecase, value]);
 
@@ -194,7 +182,12 @@ export function QuestionMultiSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Questions</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -216,11 +209,11 @@ export function QuestionMultiSelectDialog({
               <MenuItem
                 key={question.id}
                 value={question.id}
-                onClick={() =>
+                onClick={() => {
                   setLocalValue((prev) =>
                     prev.includes(question.id) ? prev.filter((id) => id !== question.id) : [...prev, question.id]
-                  )
-                }
+                  );
+                }}
               >
                 <Checkbox checked={localValue.includes(question.id)} />
                 <ListItemText
@@ -245,11 +238,11 @@ export function QuestionMultiSelectDialog({
                 </Button>
               </MenuItem>
             ))}
-            {loadingQuestions && (
+            {loadingQuestions ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
-            )}
+            ) : null}
             {!loadingQuestions && questions.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 No questions found
@@ -279,13 +272,15 @@ export function QuestionMultiSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedQuestion && (
+      {selectedQuestion ? (
         <QuestionInformationForm
           open={viewOpen}
           questionId={selectedQuestion?.id ?? null}
-          onClose={() => setViewOpen(false)}
+          onClose={() => {
+            setViewOpen(false);
+          }}
         />
-      )}
+      ) : null}
     </>
   );
 }

@@ -29,7 +29,7 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
   const handleFilter = () => {
     const request = new GetLessonRequest({
       searchText: searchText || undefined,
-      status: status,
+      status,
       lessonType: lessonsType,
       pageNumber: 1,
       pageSize: 10,
@@ -50,7 +50,7 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
         <OutlinedInput
           size="small"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => { setSearchText(e.target.value); }}
           fullWidth
           placeholder="Search lesson"
           startAdornment={
@@ -67,7 +67,7 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
           <Select
             value={lessonsType !== undefined ? lessonsType.toString() : ''}
             onChange={(e) =>
-              setLessonsType(e.target.value === '' ? undefined : (Number(e.target.value) as LearningModeEnum))
+              { setLessonsType(e.target.value === '' ? undefined : (Number(e.target.value) as LearningModeEnum)); }
             }
             label="Type"
           >
@@ -82,7 +82,7 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
           <InputLabel>Status</InputLabel>
           <Select
             value={status !== undefined ? status.toString() : ''}
-            onChange={(e) => setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum))}
+            onChange={(e) => { setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum)); }}
             label="Status"
           >
             <MenuItem value="">All</MenuItem>

@@ -48,7 +48,7 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
         <CustomSelectFilter<CategoryEnum>
           label="Category"
           value={categoryValue}
-          onChange={(val) => setCategoryValue(val)}
+          onChange={(val) => { setCategoryValue(val); }}
           options={CoreEnumUtils.getEnumOptions(CategoryEnum)}
         />
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
-import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
+import { type UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
+import { type ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import {
@@ -47,10 +47,10 @@ export default function TeacherTable({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteTeachers: onDeleteTeachers,
+  onDeleteTeachers,
   onEditTeacher,
 }: TeacherTableProps) {
-  const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
+  const rowIds = React.useMemo(() => rows.map((r) => r.id), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = React.useState<ClassTeacherResponse | null>(null);
@@ -79,7 +79,7 @@ export default function TeacherTable({
     setSelectedRow(row);
   };
 
-  const handleMenuClose = () => setAnchorEl(null);
+  const handleMenuClose = () => { setAnchorEl(null); };
 
   const handleOpenDeleteDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -88,7 +88,7 @@ export default function TeacherTable({
 
   const handleConfirmDelete = async () => {
     const userIdsToDelete = rows
-      .filter((row) => idsToDelete.includes(row.id!))
+      .filter((row) => idsToDelete.includes(row.id))
       .map((row) => row.userID ?? row.userID ?? '');
 
     await onDeleteTeachers(idsToDelete, userIdsToDelete);
@@ -111,7 +111,7 @@ export default function TeacherTable({
       <Card>
         {selected.size > 0 && (
           <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button color="error" variant="outlined" onClick={() => handleOpenDeleteDialog(Array.from(selected))}>
+            <Button color="error" variant="outlined" onClick={() => { handleOpenDeleteDialog(Array.from(selected)); }}>
               Delete Selected ({selected.size})
             </Button>
           </Box>
@@ -141,11 +141,11 @@ export default function TeacherTable({
 
             <TableBody>
               {rows.map((row) => {
-                const isItemSelected = isSelected(row.id!);
+                const isItemSelected = isSelected(row.id);
                 return (
                   <TableRow key={row.id} selected={isItemSelected} hover>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => handleSelectOne(row.id!)} />
+                      <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id); }} />
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" alignItems="center" spacing={2}>
@@ -166,7 +166,7 @@ export default function TeacherTable({
                     <TableCell>{DateTimeUtils.formatISODateFromString(row.createdDateTime)}</TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromString(row.updatedDateTime ?? '')}</TableCell>
                     <TableCell align="right">
-                      <IconButton onClick={(event) => handleMenuClick(event, row)}>
+                      <IconButton onClick={(event) => { handleMenuClick(event, row); }}>
                         <MoreVert />
                       </IconButton>
                     </TableCell>
@@ -227,21 +227,17 @@ export default function TeacherTable({
         </MenuList>
       </Popover>
 
-      {editTeacherData && (
-        <UpdateClassTeacherFormDialog
+      {editTeacherData ? <UpdateClassTeacherFormDialog
           open={editOpen}
           data={editTeacherData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditTeacher(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {selectedRow && (
-        <ClassTeacherDetailForm open={viewOpen} classId={selectedRow?.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedRow ? <ClassTeacherDetailForm open={viewOpen} classId={selectedRow?.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}

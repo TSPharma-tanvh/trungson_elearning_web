@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import type * as React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
-import { LessonDetailListResult } from '@/domain/models/lessons/response/lesson-detail-result';
-import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
-import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import type { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import type { LessonDetailListResult } from '@/domain/models/lessons/response/lesson-detail-result';
+import type { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
+import type { LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseLessonSelectLoaderProps {
   lessonUsecase: LessonUsecase | null;
@@ -24,8 +27,6 @@ interface LessonSelectLoaderState {
   setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setLessonType: React.Dispatch<React.SetStateAction<LearningModeEnum | undefined>>;
-  setDisplayType: React.Dispatch<React.SetStateAction<DisplayTypeEnum | undefined>>;
-  setScheduleStatus: React.Dispatch<React.SetStateAction<ScheduleStatusEnum | undefined>>;
   setDisableStatus: React.Dispatch<React.SetStateAction<StatusEnum | undefined>>;
   searchText: string;
   lessonType: LearningModeEnum | undefined;
@@ -51,40 +52,41 @@ export function useLessonSelectLoader({
   const [lessonType, setLessonType] = useState<LearningModeEnum | undefined>(initialLessonType);
   const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(initialDisableStatus);
 
-  const [displayType, setDisplayType] = useState<DisplayTypeEnum | undefined>();
-  const [scheduleStatus, setScheduleStatus] = useState<ScheduleStatusEnum | undefined>();
-
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadLessons = async (page: number, reset: boolean = false) => {
-    if (!lessonUsecase || loadingLessons || !isOpen) return;
+  const loadLessons = useCallback(
+    async (page: number, reset = false): Promise<void> => {
+      if (!lessonUsecase || loadingLessons || !isOpen) return;
 
-    setLoadingLessons(true);
-    abortControllerRef.current = new AbortController();
+      setLoadingLessons(true);
+      abortControllerRef.current = new AbortController();
 
-    try {
-      const request = new GetLessonRequest({
-        name: searchText || undefined,
-        status: disableStatus,
-        lessonType: lessonType,
-        pageNumber: page,
-        pageSize: 10,
-      });
+      try {
+        const request = new GetLessonRequest({
+          name: searchText || undefined,
+          status: disableStatus,
+          lessonType,
+          pageNumber: page,
+          pageSize: 10,
+        });
 
-      const result: LessonDetailListResult = await lessonUsecase.getLessonListInfo(request);
-      if (isOpen) {
-        setLessons((prev) => (reset || page === 1 ? result.Lessons : [...prev, ...result.Lessons]));
-        setHasMore(result.Lessons.length > 0 && result.totalRecords > lessons.length + result.Lessons.length);
-        setTotalPages(Math.ceil(result.totalRecords / 10));
-        setPageNumber(page);
+        const result: LessonDetailListResult = await lessonUsecase.getLessonListInfo(request);
+        if (isOpen) {
+          setLessons((prev) => (reset || page === 1 ? result.Lessons : [...prev, ...result.Lessons]));
+          setHasMore(result.Lessons.length > 0 && result.totalRecords > lessons.length + result.Lessons.length);
+          setTotalPages(Math.ceil(result.totalRecords / 10));
+          setPageNumber(page);
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to load lessons.';
+        CustomSnackBar.showSnackbar(message, 'error');
+      } finally {
+        if (isOpen) setLoadingLessons(false);
       }
-    } catch (error) {
-      console.error('Error loading Lessons:', error);
-    } finally {
-      if (isOpen) setLoadingLessons(false);
-    }
-  };
+    },
+    [lessonUsecase, loadingLessons, isOpen, searchText, disableStatus, lessonType, lessons.length]
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -92,7 +94,7 @@ export function useLessonSelectLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadLessons(1, true);
+      void loadLessons(1, true);
     }
 
     return () => {
@@ -104,7 +106,7 @@ export function useLessonSelectLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen, searchText, disableStatus, lessonType]);
+  }, [isOpen, searchText, disableStatus, lessonType, loadLessons]);
 
   return {
     lessons,
@@ -117,8 +119,6 @@ export function useLessonSelectLoader({
     setIsSelectOpen,
     setSearchText,
     setLessonType,
-    setDisplayType,
-    setScheduleStatus,
     setDisableStatus,
     searchText,
     lessonType,

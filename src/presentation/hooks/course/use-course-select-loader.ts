@@ -1,9 +1,12 @@
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
-import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
-import { CourseDetailListResult } from '@/domain/models/courses/response/course-detail-result';
-import { CourseUsecase } from '@/domain/usecases/courses/course-usecase';
-import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { type CourseDetailListResult } from '@/domain/models/courses/response/course-detail-result';
+import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
+import { type DisplayTypeEnum, type LearningModeEnum, type ScheduleStatusEnum, type StatusEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseCourseSelectLoaderProps {
   courseUsecase: CourseUsecase | null;
@@ -62,7 +65,7 @@ export function useCourseSelectLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadCourses = async (page: number, reset: boolean = false) => {
+  const loadCourses = async (page: number, reset = false) => {
     if (!courseUsecase || loadingCourses || !isOpen) return;
 
     setLoadingCourses(true);
@@ -88,7 +91,8 @@ export function useCourseSelectLoader({
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading courses:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load courses.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingCourses(false);
     }
@@ -100,7 +104,7 @@ export function useCourseSelectLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadCourses(1, true);
+      void loadCourses(1, true);
     }
 
     return () => {

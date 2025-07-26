@@ -5,8 +5,8 @@ export class UserDetailResponse {
   id!: string;
   userName?: string;
   email?: string;
-  firstName: string = '';
-  lastName: string = '';
+  firstName = '';
+  lastName = '';
   phoneNumber?: string;
   isActive?: boolean;
   employeeId?: string;

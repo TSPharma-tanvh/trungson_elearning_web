@@ -1,4 +1,4 @@
-import { CategoryEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, type LearningModeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateLessonRequest {
   id!: string;

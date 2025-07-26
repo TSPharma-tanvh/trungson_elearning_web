@@ -1,4 +1,4 @@
-import { CategoryEnum, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, type DisplayTypeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class CreateCoursePathRequest {
   name?: string;

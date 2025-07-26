@@ -1,4 +1,4 @@
-import { QuizResponse } from './quiz-response';
+import { type QuizResponse } from './quiz-response';
 
 export interface QuizListResult {
   quizzes: QuizResponse[];

@@ -1,7 +1,7 @@
 // src/data/repositories/NotificationRepoImpl.ts
-import { NotificationEntity } from '@/domain/models/Notification';
+import { type NotificationEntity } from '@/domain/models/Notification';
 
-import { NotificationRepository } from '../../domain/repositories/NotificationRepository';
+import { type NotificationRepository } from '../../domain/repositories/NotificationRepository';
 import { apiClient } from '../api/api-client';
 import { apiEndpoints } from '../api/api-endpoints';
 

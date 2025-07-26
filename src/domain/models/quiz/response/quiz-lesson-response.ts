@@ -2,7 +2,7 @@ export class QuizLessonResponse {
   id?: string;
   title?: string;
   description?: string;
-  status: string = '';
+  status = '';
   startTime?: string;
   endTime?: string;
   totalScore?: number;

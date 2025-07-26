@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
-import { Box, Button, Card, FormControl, FormLabel, Slider, Stack, TextField, Typography } from '@mui/material';
+import { Button, Card, Stack } from '@mui/material';
 
 import { CustomRangeSlider } from '@/presentation/components/core/custom-range-slider';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';

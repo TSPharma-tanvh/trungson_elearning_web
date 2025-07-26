@@ -1,10 +1,10 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
-import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
+import { type GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
-import { CourseDetailListResult } from '@/domain/models/courses/response/course-detail-result';
-import { CourseRepository } from '@/domain/repositories/courses/course-repository';
+import { type CourseDetailListResult } from '@/domain/models/courses/response/course-detail-result';
+import { type CourseRepository } from '@/domain/repositories/courses/course-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class CourseUsecase {
@@ -32,9 +32,9 @@ export class CourseUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.courseRepo.getCourseById(id);
+    const result = await this.courseRepo.getCourseById(id);
 
-    var userResponse = CourseDetailResponse.fromJSON(result.result);
+    const userResponse = CourseDetailResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -46,7 +46,7 @@ export class CourseUsecase {
   }
 
   async updateCourse(request: UpdateCourseRequest): Promise<ApiResponse> {
-    var result = await this.courseRepo.updateCourse(request);
+    const result = await this.courseRepo.updateCourse(request);
 
     return result;
   }
@@ -57,7 +57,7 @@ export class CourseUsecase {
       disableStatus: StatusEnum.Deleted,
     });
 
-    var result = await this.courseRepo.updateCourse(newFormData);
+    const result = await this.courseRepo.updateCourse(newFormData);
 
     return result;
   }

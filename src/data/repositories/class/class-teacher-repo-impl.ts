@@ -1,9 +1,9 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
-import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
-import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
-import { ClassTeacherRepository } from '@/domain/repositories/class/class-teacher-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
+import { type GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
+import { type UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
+import { type ClassTeacherRepository } from '@/domain/repositories/class/class-teacher-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -17,7 +17,7 @@ export class ClassTeacherRepoImpl implements ClassTeacherRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -32,7 +32,7 @@ export class ClassTeacherRepoImpl implements ClassTeacherRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.classTeacher.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -48,7 +48,7 @@ export class ClassTeacherRepoImpl implements ClassTeacherRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -66,7 +66,7 @@ export class ClassTeacherRepoImpl implements ClassTeacherRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

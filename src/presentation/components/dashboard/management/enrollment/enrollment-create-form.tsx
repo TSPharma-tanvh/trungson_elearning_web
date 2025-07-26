@@ -63,7 +63,7 @@ export function CreateEnrollmentDialog({ disabled = false, onSubmit, loading = f
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
+    return () => { window.removeEventListener('resize', updateRows); };
   }, [fullScreen]);
 
   return (
@@ -73,7 +73,7 @@ export function CreateEnrollmentDialog({ disabled = false, onSubmit, loading = f
           Create Enrollment
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -111,7 +111,7 @@ export function CreateEnrollmentDialog({ disabled = false, onSubmit, loading = f
               <CustomTextField
                 label="Tên khóa học"
                 value={form.name}
-                onChange={(val) => handleChange('name', val)}
+                onChange={(val) => { handleChange('name', val); }}
                 disabled={disabled}
               />
             </Grid>
@@ -120,7 +120,7 @@ export function CreateEnrollmentDialog({ disabled = false, onSubmit, loading = f
               <CustomTextField
                 label="Chi tiết"
                 value={form.desc}
-                onChange={(val) => handleChange('desc', val)}
+                onChange={(val) => { handleChange('desc', val); }}
                 disabled={disabled}
                 multiline
                 rows={detailRows}
@@ -136,8 +136,8 @@ export function CreateEnrollmentDialog({ disabled = false, onSubmit, loading = f
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
                 label="Trạng thái"
-                value={form.enrollmentStatus!}
-                onChange={(val) => handleChange('enrollmentStatus', val)}
+                value={form.enrollmentStatus}
+                onChange={(val) => { handleChange('enrollmentStatus', val); }}
                 disabled={disabled}
                 options={[
                   { value: StatusEnum.Enable, label: 'Kích hoạt' },
@@ -151,7 +151,7 @@ export function CreateEnrollmentDialog({ disabled = false, onSubmit, loading = f
               <CustomSelectDropDown<CategoryEnum>
                 label="Enrollment Criteria Type"
                 value={form.enrollmentCriteriaType ?? CategoryEnum.Path}
-                onChange={(val) => handleChange('enrollmentCriteriaType', val)}
+                onChange={(val) => { handleChange('enrollmentCriteriaType', val); }}
                 disabled={disabled}
                 options={[
                   { value: CategoryEnum.Path, label: 'Lộ trình' },
@@ -166,7 +166,7 @@ export function CreateEnrollmentDialog({ disabled = false, onSubmit, loading = f
               />
             </Grid>
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => onSubmit(form)} loading={loading} disabled={disabled} />
+              <CustomButton label="Tạo mới" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
             </Grid>
           </Grid>
         </Box>

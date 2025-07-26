@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
-import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { type UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
+import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
@@ -116,7 +116,7 @@ export default function CategoryTable({
             <TableCell>{row.category}</TableCell>
 
             <TableCell align="right">
-              <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+              <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
                 <MoreVert />
               </IconButton>
             </TableCell>
@@ -124,25 +124,21 @@ export default function CategoryTable({
         )}
       />
 
-      {editCategoryData && (
-        <UpdateCategoryFormDialog
+      {editCategoryData ? <UpdateCategoryFormDialog
           open={editOpen}
           data={editCategoryData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditCategory(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {editCategoryData && (
-        <CategoryDetailForm
+      {editCategoryData ? <CategoryDetailForm
           open={viewOpen}
           categoryId={editCategoryData.id ?? null}
-          onClose={() => setViewOpen(false)}
-        />
-      )}
+          onClose={() => { setViewOpen(false); }}
+        /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

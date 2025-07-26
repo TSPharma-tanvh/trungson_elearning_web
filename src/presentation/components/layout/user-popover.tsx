@@ -1,7 +1,7 @@
 import * as React from 'react';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/navigation';
-import { UserResponse } from '@/domain/models/user/response/user-response';
+import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { useUser } from '@/presentation/hooks/use-user';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';

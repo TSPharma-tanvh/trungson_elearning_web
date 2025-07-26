@@ -1,4 +1,4 @@
-import { FileResourcesResponse } from "./file-resources-response";
+import { type FileResourcesResponse } from "./file-resources-response";
 
 export interface FileResourceListResult {
   files: FileResourcesResponse[];

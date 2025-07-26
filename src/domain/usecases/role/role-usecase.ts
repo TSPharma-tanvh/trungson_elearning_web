@@ -1,12 +1,12 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
-import { GetRoleRequest } from '@/domain/models/role/request/get-role-request';
-import { UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
+import { type GetRoleRequest } from '@/domain/models/role/request/get-role-request';
+import { type UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
 import { PermissionResponse } from '@/domain/models/role/response/permission-reponse';
 import { RoleResponse } from '@/domain/models/role/response/role-response';
-import { UserRoleResult } from '@/domain/models/role/response/role-result';
-import { RoleRepository } from '@/domain/repositories/role/role-repository';
+import { type UserRoleResult } from '@/domain/models/role/response/role-result';
+import { type RoleRepository } from '@/domain/repositories/role/role-repository';
 
 export class RoleUsecase {
   constructor(private readonly roleRepo: RoleRepository) {}

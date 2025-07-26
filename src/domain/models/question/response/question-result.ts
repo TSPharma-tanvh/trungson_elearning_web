@@ -1,4 +1,4 @@
-import { QuestionResponse } from './question-response';
+import { type QuestionResponse } from './question-response';
 
 export interface QuestionListResult {
   questions: QuestionResponse[];

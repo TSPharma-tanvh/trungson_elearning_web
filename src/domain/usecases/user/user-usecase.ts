@@ -1,11 +1,11 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
-import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
-import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
-import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
-import { UserListResult } from '@/domain/models/user/response/user-list-result';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
+import { type GetUserRequest } from '@/domain/models/user/request/get-user-request';
+import { type RegisterRequestModel } from '@/domain/models/user/request/register-request';
+import { type UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
+import { type UserListResult } from '@/domain/models/user/response/user-list-result';
 import { UserResponse } from '@/domain/models/user/response/user-response';
-import { UserRepository } from '@/domain/repositories/user/user-repository';
+import { type UserRepository } from '@/domain/repositories/user/user-repository';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 
@@ -13,15 +13,15 @@ export class UserUsecase {
   constructor(private readonly userRepo: UserRepository) {}
 
   async getUserInfo(): Promise<UserResponse> {
-    var userId = StoreLocalManager.getLocalData(AppStrings.USER_ID);
+    const userId = StoreLocalManager.getLocalData(AppStrings.USER_ID);
 
     if (userId === null || userId === undefined || userId.trim() === '') {
       throw new Error('User ID is missing.');
     }
 
-    var result = await this.userRepo.getUserDetailInfo(userId);
+    const result = await this.userRepo.getUserDetailInfo(userId);
 
-    var userResponse = UserResponse.fromJSON(result.result);
+    const userResponse = UserResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -31,9 +31,9 @@ export class UserUsecase {
       throw new Error('User ID is missing.');
     }
 
-    var result = await this.userRepo.getUserDetailInfo(id);
+    const result = await this.userRepo.getUserDetailInfo(id);
 
-    var userResponse = UserResponse.fromJSON(result.result);
+    const userResponse = UserResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -43,7 +43,7 @@ export class UserUsecase {
       throw new Error('User ID is missing.');
     }
 
-    var result = await this.userRepo.updateUserInfo(id, request);
+    const result = await this.userRepo.updateUserInfo(id, request);
 
     return result;
   }
@@ -66,7 +66,7 @@ export class UserUsecase {
   }
 
   async changePassword(request: ChangePasswordRequest): Promise<ApiResponse> {
-    var userId = StoreLocalManager.getLocalData(AppStrings.USER_ID);
+    const userId = StoreLocalManager.getLocalData(AppStrings.USER_ID);
 
     if (userId === null || userId === undefined || userId.trim() === '') {
       throw new Error('User ID is missing.');
@@ -77,7 +77,7 @@ export class UserUsecase {
   }
 
   async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
-    var result = await this.userRepo.registerUser(request);
+    const result = await this.userRepo.registerUser(request);
 
     return result;
   }

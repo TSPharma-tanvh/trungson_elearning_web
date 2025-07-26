@@ -7,7 +7,7 @@ import { FileResourcesResponse } from '../../file/response/file-resources-respon
 
 export class QuestionResponse {
   id!: string;
-  questionText: string = '';
+  questionText = '';
   questionType!: string;
   point!: number;
   canShuffle!: boolean;

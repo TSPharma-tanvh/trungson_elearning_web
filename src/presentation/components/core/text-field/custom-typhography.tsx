@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, TypographyProps } from '@mui/material';
+import { Typography, type TypographyProps } from '@mui/material';
 
 interface CustomFieldTypographyProps extends Omit<TypographyProps, 'children'> {
   value?: string | number | boolean | null;

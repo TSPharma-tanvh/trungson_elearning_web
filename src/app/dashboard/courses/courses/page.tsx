@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
+import { type CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
-import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
-import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -108,7 +108,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -123,14 +123,14 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteCourses={handleDeleteCourses}
         onEditCourse={handleEditCourse}
-      ></CourseTable>
+       />
 
       <CreateCourseDialog
         onSubmit={handleCreateCourse}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

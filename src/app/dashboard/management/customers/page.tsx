@@ -146,7 +146,7 @@ export default function Page(): React.JSX.Element {
           <Button
             startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
-            onClick={() => setShowForm(true)}
+            onClick={() => { setShowForm(true); }}
           >
             Add
           </Button>
@@ -162,7 +162,7 @@ export default function Page(): React.JSX.Element {
 
       <AddCustomerDialog
         open={showForm}
-        onClose={() => setShowForm(false)}
+        onClose={() => { setShowForm(false); }}
         onSubmit={(data) => {
           setShowForm(false);
         }}

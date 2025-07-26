@@ -1,9 +1,12 @@
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
-import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
-import { CoursePathResult } from '@/domain/models/path/response/course-path-result';
-import { PathUsecase } from '@/domain/usecases/path/path-usecase';
-import { ActiveEnum, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import type { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
+import type { CoursePathResult } from '@/domain/models/path/response/course-path-result';
+import type { PathUsecase } from '@/domain/usecases/path/path-usecase';
+import { ActiveEnum, DisplayTypeEnum, type StatusEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UsePathSelectLoaderProps {
   pathUsecase: PathUsecase | null;
@@ -39,11 +42,11 @@ export function usePathSelectLoader({
   displayType: initialScheduleStatus,
   searchText: initialSearchText = '',
 }: UsePathSelectLoaderProps): PathSelectLoaderState {
-  const [classes, setPathes] = useState<CoursePathResponse[]>([]);
+  const [classes, setPaths] = useState<CoursePathResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingPathes, setLoadingPathes] = useState(false);
+  const [loadingPaths, setLoadingPaths] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [searchText, setSearchText] = useState(initialSearchText);
   const [status, setPathType] = useState<StatusEnum | undefined>(initialPathType);
@@ -51,10 +54,10 @@ export function usePathSelectLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadPaths = async (page: number, reset: boolean = false) => {
-    if (!pathUsecase || loadingPathes || !isOpen) return;
+  const loadPaths = async (page: number, reset = false) => {
+    if (!pathUsecase || loadingPaths || !isOpen) return;
 
-    setLoadingPathes(true);
+    setLoadingPaths(true);
     abortControllerRef.current = new AbortController();
 
     try {
@@ -68,31 +71,32 @@ export function usePathSelectLoader({
 
       const result: CoursePathResult = await pathUsecase.getPathListInfo(request);
       if (isOpen) {
-        setPathes((prev) => (reset || page === 1 ? result.path : [...prev, ...result.path]));
+        setPaths((prev) => (reset || page === 1 ? result.path : [...prev, ...result.path]));
         setHasMore(result.path.length > 0 && result.totalRecords > classes.length + result.path.length);
         setTotalPages(Math.ceil(result.totalRecords / 10));
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading classes:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load path.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
-      if (isOpen) setLoadingPathes(false);
+      if (isOpen) setLoadingPaths(false);
     }
   };
 
   useEffect(() => {
     if (isOpen) {
-      setPathes([]);
+      setPaths([]);
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadPaths(1, true);
+      void loadPaths(1, true);
     }
 
     return () => {
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
-      setPathes([]);
+      setPaths([]);
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
@@ -102,7 +106,7 @@ export function usePathSelectLoader({
 
   return {
     paths: classes,
-    loadingPaths: loadingPathes,
+    loadingPaths,
     hasMore,
     isSelectOpen,
     pageNumber,

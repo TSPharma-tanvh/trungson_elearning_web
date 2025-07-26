@@ -1,13 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { CategoryResponse } from '@/domain/models/category/response/category-response';
-import { CategoryListResult } from '@/domain/models/category/response/category-result';
-import { EnrollmentCriteriaResponse } from '@/domain/models/criteria/response/enrollment-criteria-response';
+import type * as React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/get-enrollment-criteria-request';
-import { EnrollmentCriteriaListResult } from '@/domain/models/enrollment/response/enrollment-criteria-result';
-import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
-import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
-import { CategoryEnum, CategoryEnumUtils } from '@/utils/enum/core-enum';
+import type { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
+import type { EnrollmentCriteriaListResult } from '@/domain/models/enrollment/response/enrollment-criteria-result';
+import type { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import type { CategoryEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '../components/core/snack-bar/custom-snack-bar';
 
 interface UseEnrollmentLoaderProps {
   categoryUsecase: EnrollmentUsecase | null;
@@ -16,7 +15,7 @@ interface UseEnrollmentLoaderProps {
 }
 
 interface CategoryLoaderState {
-  categories: EnrollmentCriteriaResponse[];
+  categories: EnrollmentCriteriaDetailResponse[];
   loadingCategories: boolean;
   hasMore: boolean;
   isSelectOpen: boolean;
@@ -32,7 +31,7 @@ export function useEnrollmentLoader({
   isOpen,
   categoryEnum,
 }: UseEnrollmentLoaderProps): CategoryLoaderState {
-  const [categories, setCategories] = useState<EnrollmentCriteriaResponse[]>([]);
+  const [categories, setCategories] = useState<EnrollmentCriteriaDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(false);
@@ -42,44 +41,62 @@ export function useEnrollmentLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadCategories = async (page: number) => {
-    if (!categoryUsecase || loadingCategories || !isOpen) {
-      console.error('CategoryUsecase missing or already loading:', { categoryUsecase, loadingCategories, isOpen });
-      return;
-    }
+  const loadCategories = useCallback(
+    async (page: number): Promise<void> => {
+      if (!categoryUsecase || loadingCategories || !isOpen) {
+        return;
+      }
 
-    setLoadingCategories(true);
-    abortControllerRef.current = new AbortController();
-    try {
-      const request = new GetEnrollmentCriteriaRequest({
-        targetType: CategoryEnumUtils.getCategoryKeyFromValue(categoryEnum), // Use dynamic categoryEnum
-        pageNumber: page,
-        pageSize: 10,
-      });
-      const result: EnrollmentCriteriaListResult = await categoryUsecase.getEnrollmentList(request);
-      if (isOpen) {
-        setCategories((prev) => (page === 1 ? result.enrollments : [...prev, ...result.enrollments]));
-        setHasMore(
-          result.enrollments.length > 0 && result.totalRecords > categories.length + result.enrollments.length
-        );
-        setPageNumber(page);
+      setLoadingCategories(true);
+      abortControllerRef.current = new AbortController();
+
+      try {
+        const request = new GetEnrollmentCriteriaRequest({
+          targetType: categoryEnum,
+          pageNumber: page,
+          pageSize: 10,
+        });
+
+        const result: EnrollmentCriteriaListResult = await categoryUsecase.getEnrollmentList(request);
+
+        if (isOpen) {
+          const enrollments = result.enrollments.filter(
+            (item): item is EnrollmentCriteriaDetailResponse =>
+              typeof item === 'object' &&
+              item !== null &&
+              'targetType' in item &&
+              typeof (item as EnrollmentCriteriaDetailResponse).toJson === 'function'
+          );
+
+          setCategories((prev) => (page === 1 ? enrollments : [...prev, ...enrollments]));
+
+          setHasMore(
+            result.enrollments.length > 0 &&
+              result.totalRecords > (page === 1 ? 0 : categories.length + result.enrollments.length)
+          );
+
+          setPageNumber(page);
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'An unknown error occurred';
+        CustomSnackBar.showSnackbar(message, 'error');
+      } finally {
+        if (isOpen) {
+          setLoadingCategories(false);
+        }
       }
-    } catch (error) {
-      console.error('Error loading categories:', error);
-    } finally {
-      if (isOpen) {
-        setLoadingCategories(false);
-      }
-    }
-  };
+    },
+    [categoryUsecase, loadingCategories, isOpen, categoryEnum, categories.length]
+  );
 
   useEffect(() => {
     if (isOpen) {
-      loadCategories(1);
+      void loadCategories(1);
       if (!initialRenderDone) {
-        setIsSelectOpen(false); //Select menu to open automatically
+        setIsSelectOpen(false);
       }
     }
+
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -92,12 +109,12 @@ export function useEnrollmentLoader({
       setIsSelectOpen(false);
       setInitialRenderDone(false);
     };
-  }, [isOpen, categoryEnum]);
+  }, [isOpen, categoryEnum, loadCategories, initialRenderDone]);
 
   useEffect(() => {
     if (loadingCategories || !hasMore || hasOverflow || !isOpen) return;
 
-    const checkOverflow = () => {
+    const checkOverflow = (): void => {
       if (!isOpen) return;
 
       if (!initialRenderDone) {
@@ -105,36 +122,38 @@ export function useEnrollmentLoader({
         setIsSelectOpen(false);
       }
 
-      if (listRef.current) {
-        const { scrollHeight, clientHeight } = listRef.current;
+      const listElement = listRef.current;
+      if (listElement) {
+        const { scrollHeight, clientHeight } = listElement;
         const isOverflowing = scrollHeight > clientHeight;
         setHasOverflow(isOverflowing);
-        console.log('Overflow check:', { scrollHeight, clientHeight, isOverflowing, pageNumber });
 
         if (!isOverflowing && hasMore) {
-          loadCategories(pageNumber + 1);
+          void loadCategories(pageNumber + 1);
         }
       }
     };
 
     const timer = setTimeout(checkOverflow, 100);
+
     const resizeObserver = new ResizeObserver(checkOverflow);
-    if (listRef.current) {
-      resizeObserver.observe(listRef.current);
+    const currentListRef = listRef.current;
+    if (currentListRef) {
+      resizeObserver.observe(currentListRef);
     }
 
     return () => {
       clearTimeout(timer);
-      if (listRef.current) {
-        resizeObserver.unobserve(listRef.current);
+      if (currentListRef) {
+        resizeObserver.unobserve(currentListRef);
       }
     };
-  }, [categories, loadingCategories, hasMore, hasOverflow, initialRenderDone, isOpen, pageNumber]);
+  }, [categories, loadingCategories, hasMore, hasOverflow, initialRenderDone, isOpen, pageNumber, loadCategories]);
 
-  const handleScroll = (event: React.UIEvent<HTMLUListElement>) => {
+  const handleScroll = (event: React.UIEvent<HTMLUListElement>): void => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
     if (scrollTop + clientHeight >= scrollHeight - 5 && hasMore && !loadingCategories && isOpen) {
-      loadCategories(pageNumber + 1);
+      void loadCategories(pageNumber + 1);
     }
   };
 

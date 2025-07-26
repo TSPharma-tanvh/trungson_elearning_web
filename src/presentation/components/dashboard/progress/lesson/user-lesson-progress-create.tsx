@@ -82,7 +82,7 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
+    return () => { window.removeEventListener('resize', updateRows); };
   }, [fullScreen]);
 
   return (
@@ -92,7 +92,7 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
           Create UserLessonProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -139,7 +139,7 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <LessonSingleSelectDialog
                 lessonUsecase={lessonUsecase}
                 value={form.lessonID ?? ''}
-                onChange={(value: string) => handleChange('lessonID', value)}
+                onChange={(value: string) => { handleChange('lessonID', value); }}
                 disabled={false}
               />
             </Grid>
@@ -148,7 +148,7 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <UserSelectDialog
                 userUsecase={userUsecase}
                 value={form.userID ? form.userID : ''}
-                onChange={(value: string) => handleChange('userID', value)}
+                onChange={(value: string) => { handleChange('userID', value); }}
                 disabled={false}
               />
             </Grid>
@@ -157,7 +157,7 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
-                onChange={(value) => handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => { handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value)); }}
                 disabled={disabled}
               />
             </Grid>
@@ -166,7 +166,7 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
-                onChange={(value) => handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => { handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value)); }}
                 disabled={disabled}
               />
             </Grid>
@@ -175,7 +175,7 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <CustomSelectDropDown<string>
                 label="Trạng thái"
                 value={form.status ?? ''}
-                onChange={(val) => handleChange('status', val)}
+                onChange={(val) => { handleChange('status', val); }}
                 disabled={disabled}
                 options={[
                   { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'Chưa bắt đầu' },
@@ -186,7 +186,7 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
             </Grid>
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => onSubmit(form)} loading={loading} disabled={disabled} />
+              <CustomButton label="Tạo mới" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
             </Grid>
           </Grid>
         </Box>

@@ -1,11 +1,11 @@
-import { StatusEnum } from '@/utils/enum/core-enum';
+import { type StatusEnum } from '@/utils/enum/core-enum';
 
 export class GetFileResourcesRequest {
   type?: string;
   status?: StatusEnum;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetFileResourcesRequest>) {
     Object.assign(this, init);

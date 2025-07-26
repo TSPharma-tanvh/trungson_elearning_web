@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { CategoryResponse } from '@/domain/models/category/response/category-response';
-import { CategoryUsecase } from '@/domain/usecases/category/category-usecase';
+import React, { useEffect, useState } from 'react';
+import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { type CategoryResponse } from '@/domain/models/category/response/category-response';
+import { type CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { useCategoryLoader } from '@/presentation/hooks/use-category-loader';
-import { CategoryEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum } from '@/utils/enum/core-enum';
 import { CategoryOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Button,
@@ -26,12 +26,12 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 
 interface CategorySelectDialogProps {
@@ -70,7 +70,7 @@ function CategorySelectDialog({
   useEffect(() => {
     if (open) {
       setSelected(value ?? null);
-      loadCategories(1, true);
+      // loadCategories(1, true);
     }
   }, [open]);
 
@@ -94,7 +94,11 @@ function CategorySelectDialog({
       <DialogTitle>
         Select Category
         <Box sx={{ position: 'absolute', right: 8, top: 8 }}>
-          <IconButton onClick={() => setFullScreen(!fullScreen)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen(!fullScreen);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -112,17 +116,24 @@ function CategorySelectDialog({
               No categories found
             </Typography>
           ) : (
-            categories.map((cat: CategoryResponse) => (
-              <ListItem button key={cat.id} selected={selected === cat.id} onClick={() => setSelected(cat.id)}>
+            categories.map((cat: CategoryDetailResponse) => (
+              <ListItem
+                button
+                key={cat.id}
+                selected={selected === cat.id}
+                onClick={() => {
+                  setSelected(cat.id ?? '');
+                }}
+              >
                 <ListItemText primary={cat.categoryName} />
               </ListItem>
             ))
           )}
-          {loadingCategories && (
+          {loadingCategories ? (
             <Box textAlign="center" py={1}>
               <CircularProgress size={20} />
             </Box>
-          )}
+          ) : null}
         </List>
       </Box>
 
@@ -193,14 +204,15 @@ export function CategorySelect({
           }),
         };
         setSelectedCategory(cat);
-      } catch (e) {
-        console.error('Failed to fetch category:', e);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        CustomSnackBar.showSnackbar(message, 'error');
       } finally {
         setLoaded(true);
       }
     };
 
-    fetchCategory();
+    void fetchCategory();
   }, [value, categoryUsecase, categories, loaded]);
 
   return (
@@ -210,7 +222,9 @@ export function CategorySelect({
         <Select
           labelId="category-select-label"
           value={value || ''}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+          }}
           input={
             <OutlinedInput
               label={label}
@@ -221,7 +235,7 @@ export function CategorySelect({
               }
             />
           }
-          renderValue={(selected) => selectedCategory?.categoryName || ''}
+          renderValue={() => selectedCategory?.categoryName || ''}
           open={false}
           displayEmpty
         >
@@ -233,7 +247,9 @@ export function CategorySelect({
 
       <CategorySelectDialog
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+        }}
         onSelect={(id: string) => {
           onChange(id);
           setOpen(false);

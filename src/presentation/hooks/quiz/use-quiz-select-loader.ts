@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type Dispatch, type RefObject, type SetStateAction } from 'react';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
-import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
-import { QuizListResult } from '@/domain/models/quiz/response/quiz-result';
-import { QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
-import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import type { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import type { QuizListResult } from '@/domain/models/quiz/response/quiz-result';
+import type { QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
+import type { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseQuizSelectLoaderProps {
   quizUsecase: QuizUsecase | null;
@@ -23,9 +25,9 @@ interface QuizSelectLoaderState {
   isSelectOpen: boolean;
   pageNumber: number;
   totalPages: number;
-  listRef: React.RefObject<HTMLUListElement>;
-  setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSearchText: React.Dispatch<React.SetStateAction<string>>;
+  listRef: RefObject<HTMLUListElement>;
+  setIsSelectOpen: Dispatch<SetStateAction<boolean>>;
+  setSearchText: Dispatch<SetStateAction<string>>;
   searchText: string;
   loadQuizzes: (page: number, reset?: boolean) => Promise<void>;
 }
@@ -36,21 +38,21 @@ export function useQuizSelectLoader({
   pathID,
   searchText: initialSearchText = '',
 }: UseQuizSelectLoaderProps): QuizSelectLoaderState {
-  const [courses, setQuizs] = useState<QuizResponse[]>([]);
+  const [quizzes, setQuizzes] = useState<QuizResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingQuizs, setLoadingQuizs] = useState(false);
+  const [loadingQuizzes, setLoadingQuizzes] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [searchText, setSearchText] = useState(initialSearchText);
 
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadQuizzes = async (page: number, reset: boolean = false) => {
-    if (!quizUsecase || loadingQuizs || !isOpen) return;
+  const loadQuizzes = async (page: number, reset = false): Promise<void> => {
+    if (!quizUsecase || loadingQuizzes || !isOpen) return;
 
-    setLoadingQuizs(true);
+    setLoadingQuizzes(true);
     abortControllerRef.current = new AbortController();
 
     try {
@@ -61,42 +63,44 @@ export function useQuizSelectLoader({
       });
 
       const result: QuizListResult = await quizUsecase.getQuizListInfo(request);
+
       if (isOpen) {
-        setQuizs((prev) => (reset || page === 1 ? result.quizzes : [...prev, ...result.quizzes]));
-        setHasMore(result.quizzes.length > 0 && result.totalRecords > courses.length + result.quizzes.length);
+        setQuizzes((prev) => (reset || page === 1 ? result.quizzes : [...prev, ...result.quizzes]));
+        setHasMore(result.quizzes.length > 0 && result.totalRecords > quizzes.length + result.quizzes.length);
         setTotalPages(Math.ceil(result.totalRecords / 10));
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading courses:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load quizzes.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
-      if (isOpen) setLoadingQuizs(false);
+      if (isOpen) setLoadingQuizzes(false);
     }
   };
 
   useEffect(() => {
     if (isOpen) {
-      setQuizs([]);
+      setQuizzes([]);
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadQuizzes(1, true);
+      void loadQuizzes(1, true);
     }
 
     return () => {
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
-      setQuizs([]);
+      setQuizzes([]);
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen, pathID, searchText]);
+  }, [isOpen, pathID, searchText, loadQuizzes]);
 
   return {
-    quizzes: courses,
-    loadingQuizzes: loadingQuizs,
+    quizzes,
+    loadingQuizzes,
     hasMore,
     isSelectOpen,
     pageNumber,
@@ -105,6 +109,6 @@ export function useQuizSelectLoader({
     setIsSelectOpen,
     setSearchText,
     searchText,
-    loadQuizzes: loadQuizzes,
+    loadQuizzes,
   };
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
-import { UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
+import { type UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
@@ -129,7 +129,7 @@ export function UpdateUserLessonProgressFormDialog({
           Update UserLessonProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -177,7 +177,7 @@ export function UpdateUserLessonProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={formData.startDate ? DateTimeUtils.formatISODateToString(formData.startDate) : undefined}
-                onChange={(value) => handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => { handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value)); }}
                 disabled={false}
               />
             </Grid>
@@ -186,7 +186,7 @@ export function UpdateUserLessonProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={formData.endDate ? DateTimeUtils.formatISODateToString(formData.endDate) : undefined}
-                onChange={(value) => handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => { handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value)); }}
                 disabled={false}
               />
             </Grid>
@@ -196,7 +196,7 @@ export function UpdateUserLessonProgressFormDialog({
               <CustomSelectDropDown<string>
                 label="Trạng thái"
                 value={formData.status ?? ''}
-                onChange={(val) => handleChange('status', val)}
+                onChange={(val) => { handleChange('status', val); }}
                 disabled={false}
                 options={[
                   { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'Chưa bắt đầu' },

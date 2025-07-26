@@ -71,56 +71,56 @@ export enum ApproveStatusEnum {
   Reject = 1,
 }
 
-export class CoreEnumUtils {
-  static getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
+export const CoreEnumUtils = {
+  getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
     if (!enumObj) return [];
     return Object.keys(enumObj).filter((key) => isNaN(Number(key)));
-  }
+  },
 
-  static getEnumOptions<T extends object, V = T[keyof T]>(enumObj: T): { label: string; value: V }[] {
+  getEnumOptions<T extends object, V = T[keyof T]>(enumObj: T): { label: string; value: V }[] {
     return this.getEnumKeys(enumObj).map((key) => ({
       label: key,
       value: enumObj[key as keyof T] as V,
     }));
-  }
-}
-export class CategoryEnumUtils {
-  static getCategoryKeys(): string[] {
+  },
+};
+export const CategoryEnumUtils = {
+  getCategoryKeys(): string[] {
     return Object.keys(CategoryEnum).filter((key) => isNaN(Number(key)));
-  }
+  },
 
-  static getCategoryOptions(): { label: string; value: CategoryEnum }[] {
+  getCategoryOptions(): { label: string; value: CategoryEnum }[] {
     return Object.keys(CategoryEnum)
       .filter((key) => isNaN(Number(key)))
       .map((key) => ({
         label: key,
         value: CategoryEnum[key as keyof typeof CategoryEnum],
       }));
-  }
+  },
 
-  static getCategoryKeyFromValue(value: CategoryEnum): string | undefined {
+  getCategoryKeyFromValue(value: CategoryEnum): string | undefined {
     return CategoryEnum[value];
-  }
-}
+  },
+};
 
-export class StatusEnumUtils {
-  static getStatusKeys(): string[] {
+export const StatusEnumUtils = {
+  getStatusKeys(): string[] {
     return Object.keys(StatusEnum).filter((key) => isNaN(Number(key)));
-  }
+  },
 
-  static getStatusOptions(): { label: string; value: StatusEnum }[] {
+  getStatusOptions(): { label: string; value: StatusEnum }[] {
     return Object.keys(StatusEnum)
       .filter((key) => isNaN(Number(key)))
       .map((key) => ({
         label: key,
         value: StatusEnum[key as keyof typeof StatusEnum],
       }));
-  }
+  },
 
-  static getStatusKeyFromValue(value: StatusEnum): string | undefined {
+  getStatusKeyFromValue(value: StatusEnum): string | undefined {
     return StatusEnum[value];
-  }
-}
+  },
+};
 
 export const LearningModeDisplayNames: Record<LearningModeEnum, string> = {
   [LearningModeEnum.Online]: 'Online',

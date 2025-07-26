@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { UserResponse } from '@/domain/models/user/response/user-response';
+import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { usePopover } from '@/presentation/hooks/use-popover';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
@@ -55,7 +55,7 @@ export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.J
     };
 
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    return () => { window.removeEventListener('storage', handleStorageChange); };
   }, []);
 
   return (
@@ -77,7 +77,7 @@ export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.J
         >
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
             <IconButton
-              onClick={() => setOpenNav(true)}
+              onClick={() => { setOpenNav(true); }}
               sx={{ display: { lg: 'none' } }}
               aria-label="Open Mobile Navigation"
             >
@@ -122,7 +122,7 @@ export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.J
         </Stack>
       </Box>
       <UserPopover anchorEl={userPopover.anchorRef.current} onClose={userPopover.handleClose} open={userPopover.open} />
-      <MobileNav onClose={() => setOpenNav(false)} open={openNav} />
+      <MobileNav onClose={() => { setOpenNav(false); }} open={openNav} />
     </React.Fragment>
   );
 }

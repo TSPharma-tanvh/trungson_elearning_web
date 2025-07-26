@@ -6,7 +6,7 @@ export class AnswerDetailResponse {
   id?: string;
   questionID?: string;
   answerText?: string;
-  isCorrect: boolean = false;
+  isCorrect = false;
   categoryID?: string;
   thumbnailID?: string;
   status?: string;

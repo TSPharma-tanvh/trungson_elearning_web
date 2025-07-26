@@ -8,8 +8,8 @@ export class GetAttendanceRecordsResponse {
   checkinTimeTo?: Date;
   status?: CheckinTimeEnum = CheckinTimeEnum.OnTime;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   static fromJSON(json: any): GetAttendanceRecordsResponse {
     const dto = new GetAttendanceRecordsResponse();

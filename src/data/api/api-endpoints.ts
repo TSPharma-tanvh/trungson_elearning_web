@@ -300,7 +300,7 @@ const endpoints: EndpointDefinitions = {
     getAll: 'UserQuizProgress/GetUserQuizProgress',
     getById: (id: string) => `UserQuizProgress/GetUserQuizProgressById/${id}`,
     create: 'UserQuizProgress/AssignUsers',
-    update: 'UserQuizProgress/EditAssignUsers',
+    update: 'UserQuizProgress/UpdateProgress',
   },
 };
 

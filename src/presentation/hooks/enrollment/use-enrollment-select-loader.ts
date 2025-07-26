@@ -1,11 +1,12 @@
-import { request } from 'http';
-
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/get-enrollment-criteria-request';
-import { EnrollmentCriteriaResponse } from '@/domain/models/enrollment/response/enrollment-criteria-response';
-import { EnrollmentCriteriaListResult } from '@/domain/models/enrollment/response/enrollment-criteria-result';
-import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
-import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, StatusEnum, StatusEnumUtils } from '@/utils/enum/core-enum';
+import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
+import { type EnrollmentCriteriaListResult } from '@/domain/models/enrollment/response/enrollment-criteria-result';
+import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import { type CategoryEnum, type StatusEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseEnrollmentSelectLoaderProps {
   enrollmentUsecase: EnrollmentUsecase | null;
@@ -15,7 +16,7 @@ interface UseEnrollmentSelectLoaderProps {
 }
 
 interface EnrollmentSelectLoaderState {
-  enrollments: EnrollmentCriteriaResponse[];
+  enrollments: EnrollmentCriteriaDetailResponse[];
   loadingEnrollments: boolean;
   hasMore: boolean;
   isSelectOpen: boolean;
@@ -36,7 +37,7 @@ export function useEnrollmentSelectLoader({
   categoryEnum,
   disableStatus: initialDisableStatus,
 }: UseEnrollmentSelectLoaderProps): EnrollmentSelectLoaderState {
-  const [enrollments, setEnrollments] = useState<EnrollmentCriteriaResponse[]>([]);
+  const [enrollments, setEnrollments] = useState<EnrollmentCriteriaDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -47,7 +48,7 @@ export function useEnrollmentSelectLoader({
   const abortControllerRef = useRef<AbortController | null>(null);
   const [searchText, setSearchText] = useState('');
 
-  const loadEnrollments = async (page: number, reset: boolean = false) => {
+  const loadEnrollments = async (page: number, reset = false) => {
     if (!enrollmentUsecase || loadingEnrollments || !isOpen) return;
 
     setLoadingEnrollments(true);
@@ -56,9 +57,9 @@ export function useEnrollmentSelectLoader({
 
     try {
       const request = new GetEnrollmentCriteriaRequest({
-        targetType: CategoryEnumUtils.getCategoryKeyFromValue(categoryEnum),
-        disableStatus: disableStatus !== undefined ? StatusEnumUtils.getStatusKeyFromValue(disableStatus) : undefined,
-        searchText: searchText,
+        targetType: categoryEnum,
+        disableStatus: disableStatus !== undefined ? disableStatus : undefined,
+        searchText,
         pageNumber: page,
         pageSize: 10,
       });
@@ -74,7 +75,8 @@ export function useEnrollmentSelectLoader({
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading courses:', error);
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingEnrollments(false);
     }
@@ -86,7 +88,8 @@ export function useEnrollmentSelectLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadEnrollments(1, true);
+      void loadEnrollments(1, true);
+      setIsSelectOpen(false);
     }
 
     return () => {

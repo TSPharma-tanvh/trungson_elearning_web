@@ -1,4 +1,4 @@
-import { CategoryDetailResponse } from './category-detail-response';
+import { type CategoryDetailResponse } from './category-detail-response';
 
 export interface CategoryListResult {
   categories: CategoryDetailResponse[];

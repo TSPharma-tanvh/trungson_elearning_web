@@ -1,5 +1,5 @@
 export class AttendanceRecordResponse {
-  id: string = '';
+  id = '';
   userID?: string;
   levelID?: string;
   classID?: string;

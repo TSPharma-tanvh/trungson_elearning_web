@@ -18,8 +18,8 @@ export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerReque
   const handleFilter = () => {
     const request = new GetAnswerRequest({
       searchText: searchText || undefined,
-      isCorrect: isCorrect,
-      status: status,
+      isCorrect,
+      status,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -62,7 +62,7 @@ export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerReque
         <CustomSelectFilter<StatusEnum>
           label="Status"
           value={status}
-          onChange={(val) => setStatus(val)}
+          onChange={(val) => { setStatus(val); }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 

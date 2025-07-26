@@ -37,11 +37,9 @@ export default function ImagePreviewDialog({
           </Typography>
 
           <Box display="flex" flexDirection="row" alignItems="center" flexShrink={0}>
-            {onToggleFullscreen && (
-              <IconButton onClick={onToggleFullscreen} title="Toggle Fullscreen">
+            {onToggleFullscreen ? <IconButton onClick={onToggleFullscreen} title="Toggle Fullscreen">
                 <FullscreenIcon />
-              </IconButton>
-            )}
+              </IconButton> : null}
             <IconButton onClick={onClose} title="Close">
               <CloseIcon />
             </IconButton>

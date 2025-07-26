@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type Dispatch, type RefObject, type SetStateAction } from 'react';
 import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
-import { QuestionListResult } from '@/domain/models/question/response/question-result';
-import { QuestionUsecase } from '@/domain/usecases/question/question-usecase';
-import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import type { QuestionResponse } from '@/domain/models/question/response/question-response';
+import type { QuestionListResult } from '@/domain/models/question/response/question-result';
+import type { QuestionUsecase } from '@/domain/usecases/question/question-usecase';
+import type { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseQuestionSelectLoaderProps {
   questionUsecase: QuestionUsecase | null;
@@ -22,9 +24,9 @@ interface QuestionSelectLoaderState {
   isSelectOpen: boolean;
   pageNumber: number;
   totalPages: number;
-  listRef: React.RefObject<HTMLUListElement>;
-  setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSearchText: React.Dispatch<React.SetStateAction<string>>;
+  listRef: RefObject<HTMLUListElement>;
+  setIsSelectOpen: Dispatch<SetStateAction<boolean>>;
+  setSearchText: Dispatch<SetStateAction<string>>;
   searchText: string;
   loadQuestions: (page: number, reset?: boolean) => Promise<void>;
 }
@@ -45,7 +47,7 @@ export function useQuestionSelectLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadQuestions = async (page: number, reset: boolean = false) => {
+  const loadQuestions = async (page: number, reset = false): Promise<void> => {
     if (!questionUsecase || loadingQuestions || !isOpen) return;
 
     setLoadingQuestions(true);
@@ -66,7 +68,8 @@ export function useQuestionSelectLoader({
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading courses:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load questions.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingQuestions(false);
     }
@@ -78,7 +81,7 @@ export function useQuestionSelectLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadQuestions(1, true);
+      void loadQuestions(1, true);
     }
 
     return () => {
@@ -90,7 +93,7 @@ export function useQuestionSelectLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen, searchText]);
+  }, [isOpen, searchText, loadQuestions]);
 
   return {
     questions,

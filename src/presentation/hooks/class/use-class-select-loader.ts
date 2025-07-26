@@ -1,9 +1,12 @@
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
-import { ClassResponse } from '@/domain/models/class/response/class-response';
-import { ClassListResult } from '@/domain/models/class/response/class-result';
-import { ClassUsecase } from '@/domain/usecases/class/class-usecase';
-import { DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type ClassResponse } from '@/domain/models/class/response/class-response';
+import { type ClassListResult } from '@/domain/models/class/response/class-result';
+import { type ClassUsecase } from '@/domain/usecases/class/class-usecase';
+import { type LearningModeEnum, type ScheduleStatusEnum, type StatusEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseClassSelectLoaderProps {
   classUsecase: ClassUsecase | null;
@@ -51,7 +54,7 @@ export function useClassSelectLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadClasses = async (page: number, reset: boolean = false) => {
+  const loadClasses = async (page: number, reset = false) => {
     if (!classUsecase || loadingClasses || !isOpen) return;
 
     setLoadingClasses(true);
@@ -72,7 +75,8 @@ export function useClassSelectLoader({
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading classes:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load class.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingClasses(false);
     }
@@ -84,7 +88,7 @@ export function useClassSelectLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadClasses(1, true);
+      void loadClasses(1, true);
     }
 
     return () => {

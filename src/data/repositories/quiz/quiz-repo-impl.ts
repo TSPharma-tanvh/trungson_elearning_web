@@ -1,10 +1,10 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
-import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
-import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
-import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
-import { QuizRepository } from '@/domain/repositories/quiz/quiz-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
+import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
+import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
+import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
+import { type QuizRepository } from '@/domain/repositories/quiz/quiz-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -18,7 +18,7 @@ export class QuizRepoImpl implements QuizRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -33,7 +33,7 @@ export class QuizRepoImpl implements QuizRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.quiz.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -54,7 +54,7 @@ export class QuizRepoImpl implements QuizRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -75,7 +75,7 @@ export class QuizRepoImpl implements QuizRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -98,7 +98,7 @@ export class QuizRepoImpl implements QuizRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

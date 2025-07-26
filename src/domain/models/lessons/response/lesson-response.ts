@@ -1,11 +1,11 @@
 export class LessonResponse {
   id?: string;
   courseID?: string;
-  name: string = '';
+  name = '';
   detail?: string;
-  enablePlay: boolean = false;
-  status: string = '';
-  lessonType: string = '';
+  enablePlay = false;
+  status = '';
+  lessonType = '';
   enrollmentCriteriaID?: string;
   categoryID?: string;
   thumbnailID?: string;

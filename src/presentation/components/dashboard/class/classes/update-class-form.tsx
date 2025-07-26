@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
-import { ClassResponse } from '@/domain/models/class/response/class-response';
+import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
   CategoryEnum,
-  CategoryEnumUtils,
   DisplayTypeEnum,
   LearningModeEnum,
   ScheduleStatusEnum,
@@ -33,7 +32,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, Calendar, Image as ImageIcon, Note, QrCode, Tag } from '@phosphor-icons/react';
+import { Article, Image as ImageIcon, QrCode, Tag } from '@phosphor-icons/react';
 import { Clock } from '@phosphor-icons/react/dist/ssr';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -75,7 +74,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
     type?: string;
   } | null>(null);
 
-  const [fieldValidations, setFieldValidations] = useState<{ [key: string]: boolean }>({});
+  const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (classes && open) {
@@ -106,14 +105,14 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
         resourceIDs:
           classes.fileClassRelation
             ?.map((item) => item.fileResources?.id)
-            .filter((id): id is string => !!id)
+            .filter((id): id is string => Boolean(id))
             .join(',') || undefined,
         categoryEnum: CategoryEnum.Class,
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
     }
-  }, [classes, open, fileUsecase]);
+  }, [classes, open]);
 
   useEffect(() => {
     if (
@@ -143,7 +142,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .then((file) => {
+              setPreviewUrl(file.resourceUrl || null);
+            })
             .catch((error) => {
               console.error('Error fetching thumbnail:', error);
               setPreviewUrl(null);
@@ -192,7 +193,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const allValid = Object.values(fieldValidations).every((v) => v !== false);
+      const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
@@ -200,9 +201,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
 
       await onSubmit(formData);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -251,7 +252,11 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
           Update Class
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -271,7 +276,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CustomTextField
                 label="Name"
                 value={formData.className}
-                onChange={(value) => handleChange('className', value)}
+                onChange={(value) => {
+                  handleChange('className', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -280,7 +287,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CustomTextField
                 label="Detail"
                 value={formData.classDetail}
-                onChange={(value) => handleChange('classDetail', value)}
+                onChange={(value) => {
+                  handleChange('classDetail', value);
+                }}
                 disabled={isSubmitting}
                 multiline
                 rows={3}
@@ -291,11 +300,15 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CustomTextField
                 label="qrCodeURL"
                 value={formData.qrCodeURL}
-                onChange={(value) => handleChange('qrCodeURL', value)}
+                onChange={(value) => {
+                  handleChange('qrCodeURL', value);
+                }}
                 disabled={isSubmitting}
                 icon={<QrCode {...iconStyle} />}
                 inputMode="url"
-                onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }))}
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -309,7 +322,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 disabled={isSubmitting}
                 icon={<Clock {...iconStyle} />}
                 inputMode="numeric"
-                onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }))}
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
+                }}
               />
             </Grid>
 
@@ -317,7 +332,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CustomDateTimePicker
                 label="Start Time"
                 value={formData.startAt ? DateTimeUtils.formatISODateToString(formData.startAt) : undefined}
-                onChange={(value) => handleChange('startAt', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => {
+                  handleChange('startAt', DateTimeUtils.parseLocalDateTimeString(value));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -326,7 +343,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CustomDateTimePicker
                 label="End Time"
                 value={formData.endAt ? DateTimeUtils.formatISODateToString(formData.endAt) : undefined}
-                onChange={(value) => handleChange('endAt', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => {
+                  handleChange('endAt', DateTimeUtils.parseLocalDateTimeString(value));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -335,7 +354,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CustomTimePicker
                 label="Select Duration"
                 value={formData.duration}
-                onChange={(value) => handleChange('duration', value)}
+                onChange={(value) => {
+                  handleChange('duration', value);
+                }}
                 disabled={false}
               />
             </Grid>
@@ -343,7 +364,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CustomSelectDropDown
                 label="classType"
                 value={formData.classType ?? ''}
-                onChange={(value) => handleChange('classType', value as LearningModeEnum)}
+                onChange={(value) => {
+                  handleChange('classType', value);
+                }}
                 disabled={isSubmitting}
                 options={classTypeOptions}
               />
@@ -352,7 +375,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CustomSelectDropDown
                 label="scheduleStatus"
                 value={formData.scheduleStatus ?? ''}
-                onChange={(value) => handleChange('scheduleStatus', value as ScheduleStatusEnum)}
+                onChange={(value) => {
+                  handleChange('scheduleStatus', value);
+                }}
                 disabled={isSubmitting}
                 options={scheduleStatusOptions}
               />
@@ -364,7 +389,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 value={
                   formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
                 }
-                onChange={(value: string[]) => handleChange('enrollmentCriteriaIDs', value.join(','))}
+                onChange={(value: string[]) => {
+                  handleChange('enrollmentCriteriaIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
                 label="Enrollment Criteria"
               />
@@ -373,7 +400,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
-                onChange={(value) => handleChange('categoryID', value)}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Class}
                 disabled={isSubmitting}
               />
@@ -383,22 +412,13 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
                 value={formData.teacherID ?? ''}
-                onChange={(value) => handleChange('teacherID', value)}
+                onChange={(value) => {
+                  handleChange('teacherID', value);
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={12}>
-              <FileResourceMultiSelect
-                fileUsecase={fileUsecase}
-                // type={FileResourceEnum.Image}
-                value={formData.resourceIDs ? formData.resourceIDs.split(',').filter((id) => id.trim() !== '') : []}
-                onChange={(ids) => handleChange('resourceIDs', ids.join(','))}
-                label="Select Files"
-                disabled={false}
-                showTypeSwitcher={true}
-                allowAllTypes={true}
-              />
-            </Grid> */}
+
             {/* Upload file resources */}
 
             <Grid item xs={12}>
@@ -423,7 +443,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
                   value={formData.resourceIDs?.split(',').filter(Boolean) ?? []}
-                  onChange={(ids) => handleChange('resourceIDs', ids.join(','))}
+                  onChange={(ids) => {
+                    handleChange('resourceIDs', ids.join(','));
+                  }}
                   label="Select Files"
                   disabled={false}
                   showTypeSwitcher
@@ -452,7 +474,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 </Button>
               </Grid>
             )}
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && (
+            {formData.resourceIDs && formData.resourceIDs.length > 0 ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   Selected Files
@@ -466,7 +488,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                         <Button
                           variant="text"
                           fullWidth
-                          onClick={() => handleFilePreview(file.resourceUrl ?? '', file.name, file.type)}
+                          onClick={() => {
+                            handleFilePreview(file.resourceUrl ?? '', file.name, file.type);
+                          }}
                           sx={{
                             justifyContent: 'flex-start',
                             textAlign: 'left',
@@ -482,7 +506,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                   })}
                 </Grid>
               </Grid>
-            )}
+            ) : null}
             {uploadedFiles.length > 0 && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
@@ -494,7 +518,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                       <Button
                         variant="text"
                         fullWidth
-                        onClick={() => handleFilePreview(URL.createObjectURL(file), file.name, file.type)}
+                        onClick={() => {
+                          handleFilePreview(URL.createObjectURL(file), file.name, file.type);
+                        }}
                         sx={{
                           justifyContent: 'flex-start',
                           textAlign: 'left',
@@ -549,7 +575,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -558,7 +586,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -576,7 +606,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -596,15 +628,17 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!formData.isDeleteOldThumbnail}
-                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          checked={Boolean(formData.isDeleteOldThumbnail)}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl && (
+                  {previewUrl ? (
                     <Grid item xs={12}>
                       <Box
                         sx={{
@@ -627,7 +661,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                         />
                       </Box>
                     </Grid>
-                  )}
+                  ) : null}
                 </Grid>
               )}
             </Grid>
@@ -666,29 +700,37 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
         </Box>
       </DialogActions>
 
-      {filePreviewData?.url && (
+      {filePreviewData?.url ? (
         <>
           {filePreviewData.type?.includes('image') ? (
             <ImagePreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               imageUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : filePreviewData.type?.includes('video') ? (
             <VideoPreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               videoUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : null}
         </>
-      )}
+      ) : null}
     </Dialog>
   );
 }

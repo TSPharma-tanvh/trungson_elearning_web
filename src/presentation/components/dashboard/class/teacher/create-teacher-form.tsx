@@ -66,7 +66,7 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
+    return () => { window.removeEventListener('resize', updateRows); };
   }, [fullScreen]);
 
   const handleSave = async () => {
@@ -91,7 +91,7 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Tạo lớp học</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -105,7 +105,7 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <UserSelectDialog
               userUsecase={userUsecase}
               value={form.userID ?? ''}
-              onChange={(val) => handleChange('userID', val)}
+              onChange={(val) => { handleChange('userID', val); }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -114,7 +114,7 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <CustomTextField
               label="Mô tả"
               value={form.description || ''}
-              onChange={(val) => handleChange('description', val)}
+              onChange={(val) => { handleChange('description', val); }}
               disabled={disabled}
               multiline
               rows={detailRows}
@@ -125,7 +125,7 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <CourseMultiSelectDialog
               courseUsecase={courseUsecase}
               value={form.courseID ? form.courseID.split(',').filter((id) => id) : []}
-              onChange={(value: string[]) => handleChange('courseID', value.join(','))}
+              onChange={(value: string[]) => { handleChange('courseID', value.join(',')); }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -134,7 +134,7 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <ClassMultiSelectDialog
               classUsecase={classUsecase}
               value={form.classID ? form.classID.split(',').filter((id) => id) : []}
-              onChange={(val) => handleChange('classID', val.join(','))}
+              onChange={(val) => { handleChange('classID', val.join(',')); }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -142,8 +142,8 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<string>
               label="Trạng thái"
-              value={form.status!}
-              onChange={(val) => handleChange('status', val)}
+              value={form.status}
+              onChange={(val) => { handleChange('status', val); }}
               disabled={disabled}
               options={[
                 { value: ActiveEnum[ActiveEnum.Active], label: 'Kích hoạt' },
@@ -153,7 +153,7 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
           </Grid>
 
           <Grid item xs={12}>
-            <CustomButton label="Tạo lớp" onClick={() => onSubmit(form)} loading={loading} disabled={disabled} />
+            <CustomButton label="Tạo lớp" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
           </Grid>
         </Grid>
       </DialogContent>

@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { EnrollmentCriteriaResponse } from '@/domain/models/criteria/response/enrollment-criteria-response';
-import { EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
-import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
+import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
 import { useEnrollmentSelectLoader } from '@/presentation/hooks/enrollment/use-enrollment-select-loader';
-import { CategoryEnum, StatusEnum, StatusEnumUtils } from '@/utils/enum/core-enum';
+import { StatusEnum, StatusEnumUtils, type CategoryEnum } from '@/utils/enum/core-enum';
 import { InfoOutlined, Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -26,13 +25,14 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
   Typography,
   useMediaQuery,
+  type SelectChangeEvent,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import EnrollmentDetailForm from '../../dashboard/management/enrollment/enrollment-detail-form';
 
@@ -64,7 +64,7 @@ export function EnrollmentSingleSelect({
     {}
   );
   const [viewOpen, setViewOpen] = React.useState(false);
-  const [selectedEnrollment, setSelectedEnrollment] = React.useState<EnrollmentCriteriaResponse | null>(null);
+  const [selectedEnrollment, setSelectedEnrollment] = React.useState<EnrollmentCriteriaDetailResponse | null>(null);
   const {
     enrollments,
     loadingEnrollments,
@@ -97,12 +97,13 @@ export function EnrollmentSingleSelect({
         try {
           const detail = await enrollmentUsecase.getEnrollmentById(value);
           setSelectedEnrollmentMap((prev) => ({ ...prev, [value]: detail }));
-        } catch (err) {
-          console.error(`Failed to load enrollment ID ${value}`, err);
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         }
       }
     };
-    fetch();
+    void fetch();
   }, [value, enrollmentUsecase]);
 
   const handleOpen = () => {
@@ -120,7 +121,7 @@ export function EnrollmentSingleSelect({
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
-    loadEnrollments(newPage);
+    void loadEnrollments(newPage);
     listRef.current?.scrollTo(0, 0);
   };
 
@@ -151,7 +152,12 @@ export function EnrollmentSingleSelect({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Enrollment Criteria</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen(!isFullscreen);
+                }}
+                size="small"
+              >
                 {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -162,7 +168,9 @@ export function EnrollmentSingleSelect({
 
           <CustomSearchInput
             value={localSearchText}
-            onChange={(val) => setLocalSearchText(val)}
+            onChange={(val) => {
+              setLocalSearchText(val);
+            }}
             placeholder="Search enrollment..."
           />
 
@@ -171,14 +179,14 @@ export function EnrollmentSingleSelect({
               <InputLabel>Disable Status</InputLabel>
               <Select
                 value={disableStatus !== undefined ? String(disableStatus) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setDisableStatus(e.target.value !== '' ? (Number(e.target.value) as StatusEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setDisableStatus(e.target.value !== '' ? (Number(e.target.value) as StatusEnum) : undefined);
+                }}
                 label="Disable Status"
               >
                 {[undefined, StatusEnum.Enable, StatusEnum.Disable].map((opt) => (
                   <MenuItem key={opt ?? 'all'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'All'}
+                    {opt !== undefined ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'All'}
                   </MenuItem>
                 ))}
               </Select>
@@ -196,7 +204,9 @@ export function EnrollmentSingleSelect({
                 key={item.id}
                 value={item.id}
                 selected={localValue === item.id}
-                onClick={() => setLocalValue(item.id)}
+                onClick={() => {
+                  setLocalValue(item.id);
+                }}
               >
                 <Checkbox checked={localValue === item.id} />
                 <ListItemText primary={item.name} />
@@ -214,11 +224,11 @@ export function EnrollmentSingleSelect({
               </MenuItem>
             ))}
 
-            {loadingEnrollments && (
+            {loadingEnrollments ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
-            )}
+            ) : null}
             {!loadingEnrollments && enrollments.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 No enrollment criteria found
@@ -248,13 +258,15 @@ export function EnrollmentSingleSelect({
         </DialogActions>
       </Dialog>
 
-      {selectedEnrollment && (
+      {selectedEnrollment ? (
         <EnrollmentDetailForm
           open={viewOpen}
           enrollmentId={selectedEnrollment.id ?? null}
-          onClose={() => setViewOpen(false)}
+          onClose={() => {
+            setViewOpen(false);
+          }}
         />
-      )}
+      ) : null}
     </>
   );
 }

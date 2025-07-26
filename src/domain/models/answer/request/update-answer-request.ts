@@ -1,7 +1,7 @@
-import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateAnswerRequest {
-  id: string = '';
+  id = '';
   questionID?: string;
   answerText?: string;
   isCorrect?: boolean;

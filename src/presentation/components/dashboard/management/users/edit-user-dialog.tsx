@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
-import { UserResponse } from '@/domain/models/user/response/user-response';
+import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { useRoleOptions } from '@/presentation/hooks/role/use-role-options';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import CloseIcon from '@mui/icons-material/Close';
@@ -151,7 +151,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
       >
         <Typography variant="h6">User Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -170,7 +170,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               <TextField
                 label="User Name"
                 value={formData.userName || ''}
-                onChange={(e) => handleChange('userName', e.target.value)}
+                onChange={(e) => { handleChange('userName', e.target.value); }}
                 fullWidth
                 disabled={isSubmitting}
                 InputLabelProps={{ shrink: true }}
@@ -188,7 +188,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               <TextField
                 label="First Name"
                 value={formData.firstName || ''}
-                onChange={(e) => handleChange('firstName', e.target.value)}
+                onChange={(e) => { handleChange('firstName', e.target.value); }}
                 fullWidth
                 disabled={isSubmitting}
                 InputLabelProps={{ shrink: true }}
@@ -206,7 +206,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               <TextField
                 label="Last Name"
                 value={formData.lastName || ''}
-                onChange={(e) => handleChange('lastName', e.target.value)}
+                onChange={(e) => { handleChange('lastName', e.target.value); }}
                 fullWidth
                 disabled={isSubmitting}
                 InputLabelProps={{ shrink: true }}
@@ -224,7 +224,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               <EmployeeSelectDialog
                 employeeUsecase={employeeUsecase}
                 value={formData.employeeId ?? ''}
-                onChange={(value: string) => handleChange('employeeId', value)}
+                onChange={(value: string) => { handleChange('employeeId', value); }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -236,7 +236,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   multiple
                   labelId="edit-role-select-label"
                   value={selectedRoles}
-                  onChange={(e) => handleChange('roles', (e.target.value as string[]).join(','))}
+                  onChange={(e) => { handleChange('roles', (e.target.value as string[]).join(',')); }}
                   input={<OutlinedInput label="Roles" />}
                   renderValue={(selected) =>
                     selected.length === 0
@@ -265,7 +265,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                           },
                         },
                         scrollbarWidth: 'thin',
-                        scrollbarColor: `${theme.palette.mode === 'dark' ? '#4A5568 #2D3748' : '#CBD5E0 #F7FAFC'}`,
+                        scrollbarColor: theme.palette.mode === 'dark' ? '#4A5568 #2D3748' : '#CBD5E0 #F7FAFC',
                       },
                     },
                     MenuListProps: {
@@ -280,11 +280,9 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                       <ListItemText primary={option.label} />
                     </MenuItem>
                   ))}
-                  {loading && (
-                    <Box textAlign="center" py={1}>
+                  {loading ? <Box textAlign="center" py={1}>
                       <CircularProgress size={20} />
-                    </Box>
-                  )}
+                    </Box> : null}
                 </Select>
               </FormControl>
             </Grid>
@@ -293,7 +291,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               <TextField
                 label="Phone Number"
                 value={formData.phoneNumber || ''}
-                onChange={(e) => handleChange('phoneNumber', e.target.value)}
+                onChange={(e) => { handleChange('phoneNumber', e.target.value); }}
                 fullWidth
                 disabled={isSubmitting}
                 InputLabelProps={{ shrink: true }}
@@ -311,7 +309,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               <TextField
                 label="Email"
                 value={formData.email || ''}
-                onChange={(e) => handleChange('email', e.target.value)}
+                onChange={(e) => { handleChange('email', e.target.value); }}
                 fullWidth
                 disabled={isSubmitting}
                 InputLabelProps={{ shrink: true }}
@@ -330,7 +328,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password || ''}
-                onChange={(e) => handleChange('password', e.target.value)}
+                onChange={(e) => { handleChange('password', e.target.value); }}
                 fullWidth
                 disabled={isSubmitting}
                 InputLabelProps={{ shrink: true }}
@@ -342,7 +340,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                      <IconButton onClick={() => { setShowPassword((prev) => !prev); }} edge="end">
                         {showPassword ? <EyeClosed {...iconStyle} /> : <Eye {...iconStyle} />}
                       </IconButton>
                     </InputAdornment>
@@ -356,10 +354,10 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 label="Confirm Password"
                 type={showPassword ? 'text' : 'password'}
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) => { setConfirmPassword(e.target.value); }}
                 fullWidth
                 disabled={isSubmitting}
-                error={!!formData.password && !!confirmPassword && formData.password !== confirmPassword}
+                error={Boolean(formData.password) && Boolean(confirmPassword) && formData.password !== confirmPassword}
                 helperText={
                   formData.password && confirmPassword && formData.password !== confirmPassword
                     ? 'Passwords do not match'
@@ -374,7 +372,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                      <IconButton onClick={() => { setShowPassword((prev) => !prev); }} edge="end">
                         {showPassword ? <EyeClosed {...iconStyle} /> : <Eye {...iconStyle} />}
                       </IconButton>
                     </InputAdornment>
@@ -387,8 +385,8 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={!!formData.isActive}
-                    onChange={(e) => handleChange('isActive', e.target.checked)}
+                    checked={Boolean(formData.isActive)}
+                    onChange={(e) => { handleChange('isActive', e.target.checked); }}
                     disabled={isSubmitting}
                   />
                 }
@@ -418,8 +416,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   }}
                 />
               </Button>
-              {previewUrl && (
-                <Box
+              {previewUrl ? <Box
                   sx={{
                     width: fullScreen ? 300 : 150,
                     height: fullScreen ? 300 : 150,
@@ -438,8 +435,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                     alt="Thumbnail Preview"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
-                </Box>
-              )}
+                </Box> : null}
             </Grid>
           </Grid>
         </Box>

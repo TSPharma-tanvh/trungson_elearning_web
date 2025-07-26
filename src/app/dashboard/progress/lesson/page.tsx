@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
+import { type CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
 import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
-import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
-import { UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
+import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
+import { type UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -110,7 +110,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Enroll Users
         </Button>
@@ -125,14 +125,14 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteUserLessonProgresss={handleDeleteUserLessonProgresss}
         onEditUserLessonProgress={handleEditUserLessonProgress}
-      ></UserLessonProgressTable>
+       />
 
       <CreateUserLessonProgressDialog
         onSubmit={handleCreateUserLessonProgress}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

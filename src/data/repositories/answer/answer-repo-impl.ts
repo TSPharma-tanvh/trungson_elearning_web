@@ -1,9 +1,9 @@
-import { CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
-import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
-import { UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { AnswerRepository } from '@/domain/repositories/answer/answer-repository';
+import { type CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
+import { type GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
+import { type UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type AnswerRepository } from '@/domain/repositories/answer/answer-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -17,7 +17,7 @@ export class AnswerRepoImpl implements AnswerRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -32,7 +32,7 @@ export class AnswerRepoImpl implements AnswerRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.answers.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -53,7 +53,7 @@ export class AnswerRepoImpl implements AnswerRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -76,7 +76,7 @@ export class AnswerRepoImpl implements AnswerRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

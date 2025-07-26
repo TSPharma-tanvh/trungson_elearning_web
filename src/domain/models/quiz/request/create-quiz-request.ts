@@ -1,17 +1,17 @@
-import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 export class CreateQuizRequest {
   lessonID?: string;
   levelID?: string;
-  canStartOver: boolean = false;
-  canShuffle: boolean = true;
-  isRequired: boolean = false;
+  canStartOver = false;
+  canShuffle = true;
+  isRequired = false;
   type: QuizTypeEnum = QuizTypeEnum.LessonQuiz;
   time!: string; // TimeSpan as string: "00:30:00"
   startTime?: Date;
   endTime?: Date;
   maxAttempts?: number;
-  title: string = '';
+  title = '';
   description?: string;
   questionIDs?: string;
   categoryID?: string;
@@ -64,7 +64,7 @@ export class CreateQuizRequest {
       } else if (value instanceof File) {
         formData.append(key, value);
       } else if (Array.isArray(value) && value[0] instanceof File) {
-        value.forEach((file: File) => formData.append('resources', file));
+        value.forEach((file: File) => { formData.append('resources', file); });
       } else {
         formData.append(key, String(value));
       }

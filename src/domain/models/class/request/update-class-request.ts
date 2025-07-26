@@ -1,5 +1,5 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { CategoryEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, type LearningModeEnum, type ScheduleStatusEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateClassRequest {
   id!: string;
@@ -139,7 +139,7 @@ export class UpdateClassRequest {
     appendIfExist('EnrollmentCourseIDs', this.enrollmentCourseIDs);
     if (this.thumbnail) fd.append('Thumbnail', this.thumbnail);
     if (this.resources) {
-      this.resources.forEach((f) => fd.append('Resources', f, f.name));
+      this.resources.forEach((f) => { fd.append('Resources', f, f.name); });
     }
 
     return fd;

@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
+import { type CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
 import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
-import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
-import { UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
+import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
+import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
 import { CreateUserQuizProgressDialog } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-create';
@@ -81,13 +81,13 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleDeleteUserQuizProgresss = async (ids: string[]) => {
+  const handleDeleteUserQuizProgress = async (id: string, quizId: string) => {
     try {
       setDeleteLoading(true);
 
-      const response = await userQuizProgressUsecase.deleteUserQuizProgress(ids);
+      const response = await userQuizProgressUsecase.deleteUserQuizProgress(id, quizId);
       if (!response) {
-        throw new Error(`Failed to delete lesson with ID: ${ids}`);
+        throw new Error(`Failed to delete lesson with ID: ${id}`);
       }
 
       await fetchUserQuizProgress();
@@ -110,7 +110,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Enroll Users
         </Button>
@@ -123,16 +123,16 @@ export default function Page(): React.JSX.Element {
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
-        onDeleteUserQuizProgresss={handleDeleteUserQuizProgresss}
+        onDeleteUserQuizProgress={handleDeleteUserQuizProgress}
         onEditUserQuizProgress={handleEditUserQuizProgress}
-      ></UserQuizProgressTable>
+       />
 
       <CreateUserQuizProgressDialog
         onSubmit={handleCreateUserQuizProgress}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

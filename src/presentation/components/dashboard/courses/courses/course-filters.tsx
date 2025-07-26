@@ -21,11 +21,11 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
   const handleFilter = () => {
     const request = new GetCourseRequest({
       searchText: searchText || undefined,
-      isRequired: isRequired,
+      isRequired,
       disableStatus: status,
-      courseType: courseType,
-      displayType: displayType,
-      scheduleStatus: scheduleStatus,
+      courseType,
+      displayType,
+      scheduleStatus,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -69,7 +69,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSelectFilter<LearningModeEnum>
           label="Type"
           value={courseType}
-          onChange={(val) => setCourseType(val)}
+          onChange={(val) => { setCourseType(val); }}
           options={CoreEnumUtils.getEnumOptions(LearningModeEnum)}
         />
 
@@ -77,7 +77,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSelectFilter<StatusEnum>
           label="Status"
           value={status}
-          onChange={(val) => setStatus(val)}
+          onChange={(val) => { setStatus(val); }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
@@ -85,7 +85,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSelectFilter<DisplayTypeEnum>
           label="Display Type"
           value={displayType}
-          onChange={(val) => setDisplayType(val)}
+          onChange={(val) => { setDisplayType(val); }}
           options={CoreEnumUtils.getEnumOptions(DisplayTypeEnum)}
         />
 
@@ -93,7 +93,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSelectFilter<ScheduleStatusEnum>
           label="Status"
           value={scheduleStatus}
-          onChange={(val) => setScheduleStatus(val)}
+          onChange={(val) => { setScheduleStatus(val); }}
           options={CoreEnumUtils.getEnumOptions(ScheduleStatusEnum)}
         />
 

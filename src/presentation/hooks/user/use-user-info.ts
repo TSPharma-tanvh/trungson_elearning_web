@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { UserResponse } from '@/domain/models/user/response/user-response';
+import type { UserResponse } from '@/domain/models/user/response/user-response';
 
 import { useDI } from '../use-dependency-container';
 
@@ -16,14 +16,14 @@ export function useUserInfo() {
         const result = await userUsecase.getUserInfo();
         setUser(result);
       } catch (error) {
-        console.error('Failed to load user info', error);
+        // console.error('Failed to load user info', error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadUser();
-  }, []);
+    void loadUser();
+  }, [userUsecase]);
 
   return { user, loading };
 }

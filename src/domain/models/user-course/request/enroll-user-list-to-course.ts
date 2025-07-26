@@ -1,5 +1,5 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ApproveStatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { type ApproveStatusEnum, type UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class EnrollUserListToCourseRequest {
   userIDs: string[] = [];

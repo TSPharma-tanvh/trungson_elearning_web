@@ -3,16 +3,12 @@
 import * as React from 'react';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Icon } from '@mui/material';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { ArrowSquareUpRight as ArrowSquareUpRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareUpRight';
 import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 import { CaretUp as CaretUpIcon } from '@phosphor-icons/react/dist/ssr/CaretUp';
-import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
@@ -121,7 +117,9 @@ function renderNavItems({
       acc.push(
         <Box key={key} sx={{ mb: 1 }}>
           <Box
-            onClick={() => toggleExpanded(key)}
+            onClick={() => {
+              toggleExpanded(key);
+            }}
             sx={{
               alignItems: 'center',
               borderRadius: 1,
@@ -135,7 +133,7 @@ function renderNavItems({
             }}
           >
             <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
-              {Icon ? <Icon fill={'var(--mui-palette-common-white)'} fontSize="var(--icon-fontSize-md)" /> : null}
+              {Icon ? <Icon fill="var(--mui-palette-common-white)" fontSize="var(--icon-fontSize-md)" /> : null}
             </Box>
             <Box sx={{ flex: '1 1 auto' }}>
               <Typography
@@ -183,7 +181,7 @@ interface NavItemProps extends Omit<NavItemConfig, 'items' | 'key'> {
 
 function NavItem({ disabled, external, href, icon, matcher, pathname, title }: NavItemProps): React.JSX.Element {
   const active = isNavItemActive({ disabled, external, href, matcher, pathname });
-  const Icon = icon ? navIcons[icon] : null;
+  const IconItem = icon ? navIcons[icon] : null;
 
   return (
     <li>
@@ -216,8 +214,8 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
         }}
       >
         <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
-          {Icon ? (
-            <Icon
+          {IconItem ? (
+            <IconItem
               fill={active ? 'var(--mui-palette-common-white)' : 'var(--mui-palette-common-white)'}
               fontSize="var(--icon-fontSize-md)"
               weight={active ? 'fill' : undefined}

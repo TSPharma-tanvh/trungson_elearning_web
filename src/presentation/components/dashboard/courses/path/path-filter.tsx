@@ -60,7 +60,7 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
         <OutlinedInput
           size="small"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => { setSearchText(e.target.value); }}
           fullWidth
           placeholder="Search path"
           startAdornment={
@@ -113,7 +113,7 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
           <InputLabel>Status</InputLabel>
           <Select
             value={status !== undefined ? status.toString() : ''}
-            onChange={(e) => setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum))}
+            onChange={(e) => { setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum)); }}
             label="Status"
             sx={{
               '& .MuiSelect-select': {
@@ -140,7 +140,7 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
             label="Display Type"
             value={displayType !== undefined ? displayType.toString() : ''}
             onChange={(e) =>
-              setDisplayType(e.target.value === '' ? undefined : (Number(e.target.value) as DisplayTypeEnum))
+              { setDisplayType(e.target.value === '' ? undefined : (Number(e.target.value) as DisplayTypeEnum)); }
             }
             sx={{
               '& .MuiSelect-select': {

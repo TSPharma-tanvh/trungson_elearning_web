@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import { InputAdornment, TextField, TextFieldProps } from '@mui/material';
+import { InputAdornment, TextField, type TextFieldProps } from '@mui/material';
 
 interface SearchInputProps extends Omit<TextFieldProps, 'onChange'> {
   value: string;
@@ -19,7 +19,7 @@ export function CustomSearchInput({
       fullWidth
       size={size}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => { onChange(e.target.value); }}
       placeholder={placeholder}
       InputProps={{
         startAdornment: (

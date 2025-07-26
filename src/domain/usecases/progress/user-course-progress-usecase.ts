@@ -1,11 +1,11 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateUserCourseProgressRequest } from '@/domain/models/user-course/request/create-user-course-progress-request';
-import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
-import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateUserCourseProgressRequest } from '@/domain/models/user-course/request/create-user-course-progress-request';
+import { type EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
+import { type GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
 import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
 import { UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
-import { UserCourseProgressResult } from '@/domain/models/user-course/response/user-course-progress-result';
-import { UserCourseProgressRepository } from '@/domain/repositories/progress/user-course-progress-repository';
+import { type UserCourseProgressResult } from '@/domain/models/user-course/response/user-course-progress-result';
+import { type UserCourseProgressRepository } from '@/domain/repositories/progress/user-course-progress-repository';
 import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserCourseProgressUsecase {
@@ -33,9 +33,9 @@ export class UserCourseProgressUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.userCourseProgressRepo.getUserCourseProgressById(id);
+    const result = await this.userCourseProgressRepo.getUserCourseProgressById(id);
 
-    var userResponse = UserCourseProgressResponse.fromJSON(result.result);
+    const userResponse = UserCourseProgressResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -47,7 +47,7 @@ export class UserCourseProgressUsecase {
   }
 
   async updateUserCourseProgress(request: UpdateUserCourseProgressRequest): Promise<ApiResponse> {
-    var result = await this.userCourseProgressRepo.updateUserCourseProgress(request);
+    const result = await this.userCourseProgressRepo.updateUserCourseProgress(request);
 
     return result;
   }
@@ -64,7 +64,7 @@ export class UserCourseProgressUsecase {
       status: UserProgressEnum[UserProgressEnum.Done],
     });
 
-    var result = await this.userCourseProgressRepo.updateUserCourseProgress(newFormData);
+    const result = await this.userCourseProgressRepo.updateUserCourseProgress(newFormData);
 
     return result;
   }

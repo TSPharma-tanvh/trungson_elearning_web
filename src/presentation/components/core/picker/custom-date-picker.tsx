@@ -43,7 +43,7 @@ export function CustomDateTimePicker({ label, value, onChange, disabled = false 
       label={label}
       value={value ? dayjs(value) : null}
       format="DD/MM/YYYY hh:mm A"
-      onChange={(newValue) => onChange(newValue ? dayjs(newValue).format('YYYY-MM-DDTHH:mm:ss') : '')}
+      onChange={(newValue) => { onChange(newValue ? dayjs(newValue).format('YYYY-MM-DDTHH:mm:ss') : ''); }}
       disabled={disabled}
       slots={{
         popper: StyledPopper,

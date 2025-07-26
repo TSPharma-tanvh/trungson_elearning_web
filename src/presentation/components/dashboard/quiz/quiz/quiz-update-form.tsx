@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
-import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
-import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, DisplayTypeEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -26,7 +25,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, Calendar, Clock, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
+import { Article, Clock, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -46,12 +45,6 @@ interface EditQuizDialogProps {
   onClose: () => void;
   onSubmit: (data: UpdateQuizRequest) => void;
 }
-
-const statusOptions = [
-  { value: StatusEnum.Enable, label: 'Enable' },
-  { value: StatusEnum.Disable, label: 'Disable' },
-  { value: StatusEnum.Deleted, label: 'Deleted' },
-];
 
 const typeOptions = [
   { value: QuizTypeEnum.ExamQuiz, label: 'ExamQuiz' },
@@ -104,7 +97,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
         resourceIDs:
           quiz.fileQuizRelation
             ?.map((item) => item.fileResources?.id)
-            .filter((id): id is string => !!id)
+            .filter((id): id is string => Boolean(id))
             .join(',') || undefined,
         categoryEnum: CategoryEnum.Quiz,
         canStartOver: quiz.canStartOver,
@@ -134,7 +127,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .then((file) => {
+              setPreviewUrl(file.resourceUrl || null);
+            })
             .catch((error) => {
               console.error('Error fetching thumbnail:', error);
               setPreviewUrl(null);
@@ -225,7 +220,11 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
           Update Quiz
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -245,7 +244,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomTextField
                 label="Name"
                 value={formData.title}
-                onChange={(value) => handleChange('title', value)}
+                onChange={(value) => {
+                  handleChange('title', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -255,7 +256,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomTextField
                 label="Detail"
                 value={formData.description}
-                onChange={(value) => handleChange('description', value)}
+                onChange={(value) => {
+                  handleChange('description', value);
+                }}
                 disabled={isSubmitting}
                 multiline
                 rows={3}
@@ -267,7 +270,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomDateTimePicker
                 label="Start Time"
                 value={formData.startTime?.toISOString()}
-                onChange={(value) => handleChange('startTime', new Date(value))}
+                onChange={(value) => {
+                  handleChange('startTime', new Date(value));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -276,7 +281,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomDateTimePicker
                 label="End Time"
                 value={formData.endTime?.toISOString()}
-                onChange={(value) => handleChange('endTime', new Date(value))}
+                onChange={(value) => {
+                  handleChange('endTime', new Date(value));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -284,13 +291,17 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomTextField
                 label="Time"
                 value={formData.time}
-                onChange={(value) => handleChange('time', value)}
+                onChange={(value) => {
+                  handleChange('time', value);
+                }}
                 disabled={isSubmitting}
                 inputMode="text"
                 pattern="^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$"
                 patternError="hh:mm:ss"
                 icon={<Clock {...iconStyle} />}
-                onValidationChange={(isValid) => console.log('Time is valid:', isValid)}
+                onValidationChange={(isValid) => {
+                  console.log('Time is valid:', isValid);
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -323,7 +334,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomSelectDropDown
                 label="Status"
                 value={formData.status ?? ''}
-                onChange={(value) => handleChange('status', value as StatusEnum)}
+                onChange={(value) => {
+                  handleChange('status', value);
+                }}
                 disabled={isSubmitting}
                 options={statusOptions}
               />
@@ -332,7 +345,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomSelectDropDown
                 label="Type"
                 value={formData.type ?? ''}
-                onChange={(value) => handleChange('type', value as QuizTypeEnum)}
+                onChange={(value) => {
+                  handleChange('type', value);
+                }}
                 disabled={isSubmitting}
                 options={typeOptions}
               />
@@ -342,7 +357,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomSelectDropDown
                 label="Can Start Over"
                 value={String(formData.canStartOver ?? '')}
-                onChange={(value) => handleChange('canStartOver', value === 'true')}
+                onChange={(value) => {
+                  handleChange('canStartOver', value === 'true');
+                }}
                 disabled={isSubmitting}
                 options={booleanOptions}
               />
@@ -351,7 +368,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomSelectDropDown
                 label="Can Shuffle"
                 value={String(formData.canShuffle ?? '')}
-                onChange={(value) => handleChange('canShuffle', value === 'true')}
+                onChange={(value) => {
+                  handleChange('canShuffle', value === 'true');
+                }}
                 disabled={isSubmitting}
                 options={booleanOptions}
               />
@@ -360,7 +379,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomSelectDropDown
                 label="Required"
                 value={String(formData.isRequired ?? '')}
-                onChange={(value) => handleChange('isRequired', value === 'true')}
+                onChange={(value) => {
+                  handleChange('isRequired', value === 'true');
+                }}
                 disabled={isSubmitting}
                 options={booleanOptions}
               />
@@ -369,7 +390,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomSelectDropDown
                 label="Auto Submitted"
                 value={String(formData.isAutoSubmitted ?? '')}
-                onChange={(value) => handleChange('isAutoSubmitted', value === 'true')}
+                onChange={(value) => {
+                  handleChange('isAutoSubmitted', value === 'true');
+                }}
                 disabled={isSubmitting}
                 options={booleanOptions}
               />
@@ -379,7 +402,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <QuestionMultiSelectDialog
                 questionUsecase={questionUsecase}
                 value={formData.questionIDs ? formData.questionIDs.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => handleChange('questionIDs', value.join(','))}
+                onChange={(value: string[]) => {
+                  handleChange('questionIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -390,7 +415,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 value={
                   formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
                 }
-                onChange={(value: string[]) => handleChange('enrollmentCriteriaIDs', value.join(','))}
+                onChange={(value: string[]) => {
+                  handleChange('enrollmentCriteriaIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
                 label="Enrollment Criteria"
               />
@@ -399,7 +426,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
-                onChange={(value) => handleChange('categoryID', value)}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
               />
@@ -438,7 +467,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
                   value={formData.resourceIDs?.split(',').filter(Boolean) ?? []}
-                  onChange={(ids) => handleChange('resourceIDs', ids.join(','))}
+                  onChange={(ids) => {
+                    handleChange('resourceIDs', ids.join(','));
+                  }}
                   label="Select Files"
                   disabled={false}
                   showTypeSwitcher
@@ -468,7 +499,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               </Grid>
             )}
 
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && (
+            {formData.resourceIDs && formData.resourceIDs.length > 0 ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   Selected Files
@@ -482,7 +513,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                         <Button
                           variant="text"
                           fullWidth
-                          onClick={() => handleFilePreview(file.resourceUrl ?? '', file.name, file.type)}
+                          onClick={() => {
+                            handleFilePreview(file.resourceUrl ?? '', file.name, file.type);
+                          }}
                           sx={{
                             justifyContent: 'flex-start',
                             textAlign: 'left',
@@ -498,7 +531,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                   })}
                 </Grid>
               </Grid>
-            )}
+            ) : null}
             {uploadedFiles.length > 0 && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
@@ -510,7 +543,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                       <Button
                         variant="text"
                         fullWidth
-                        onClick={() => handleFilePreview(URL.createObjectURL(file), file.name, file.type)}
+                        onClick={() => {
+                          handleFilePreview(URL.createObjectURL(file), file.name, file.type);
+                        }}
                         sx={{
                           justifyContent: 'flex-start',
                           textAlign: 'left',
@@ -566,7 +601,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -575,7 +612,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -593,7 +632,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -613,15 +654,17 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!formData.isDeleteOldThumbnail}
-                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          checked={Boolean(formData.isDeleteOldThumbnail)}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl && (
+                  {previewUrl ? (
                     <Grid item xs={12}>
                       <Box
                         sx={{
@@ -644,7 +687,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                         />
                       </Box>
                     </Grid>
-                  )}
+                  ) : null}
                 </Grid>
               )}
             </Grid>
@@ -683,29 +726,37 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
         </Box>
       </DialogActions>
 
-      {filePreviewData?.url && (
+      {filePreviewData?.url ? (
         <>
           {filePreviewData.type?.includes('image') ? (
             <ImagePreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               imageUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : filePreviewData.type?.includes('video') ? (
             <VideoPreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               videoUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : null}
         </>
-      )}
+      ) : null}
     </Dialog>
   );
 }

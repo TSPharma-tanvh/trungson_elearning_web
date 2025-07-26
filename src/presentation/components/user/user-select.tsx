@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
-import { UserResponse } from '@/domain/models/user/response/user-response';
-import { UserUsecase } from '@/domain/usecases/user/user-usecase';
+import { type UserResponse } from '@/domain/models/user/response/user-response';
+import { type UserUsecase } from '@/domain/usecases/user/user-usecase';
 import { useUserSelectDebounce } from '@/presentation/hooks/user/use-user-select-debounced';
 import { useUserSelectLoader } from '@/presentation/hooks/user/use-user-select-loader';
 import { AccountCircle } from '@mui/icons-material';
@@ -26,12 +26,13 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectProps,
   Typography,
   useMediaQuery,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import CustomSnackBar from '../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../core/text-field/custom-search-input';
 import { ViewUserDialog } from '../dashboard/management/users/view-user-detail-dialog';
 
@@ -88,7 +89,7 @@ export function UserSelectDialog({
 
   const handlePageChange = (_: unknown, newPage: number) => {
     if (userUsecase && !loadingUsers) {
-      loadUsers(newPage, true);
+      void loadUsers(newPage, true);
       listRef.current?.scrollTo(0, 0);
     }
   };
@@ -120,12 +121,13 @@ export function UserSelectDialog({
             setSelectedUserMap(newMap);
           }
         } catch (error) {
-          console.error('Error fetching selected users:', error);
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         } finally {
           setLoading(false);
         }
       };
-      fetchSelectedUsers();
+      void fetchSelectedUsers();
     } else {
       setLoading(false);
     }
@@ -180,7 +182,11 @@ export function UserSelectDialog({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography mb={1}>Select User</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)}>
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose}>
@@ -194,7 +200,13 @@ export function UserSelectDialog({
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ listStyle: 'none', p: 0 }}>
             {users.map((user) => (
-              <MenuItem key={user.id} selected={localValue === user.id} onClick={() => setLocalValue(user.id)}>
+              <MenuItem
+                key={user.id}
+                selected={localValue === user.id}
+                onClick={() => {
+                  setLocalValue(user.id);
+                }}
+              >
                 <Checkbox checked={localValue === user.id} />
                 <ListItemText
                   primary={`${user?.employee?.name} (${user.userName})`}
@@ -232,9 +244,15 @@ export function UserSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedUser && (
-        <ViewUserDialog open={viewOpen} userId={selectedUser?.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedUser ? (
+        <ViewUserDialog
+          open={viewOpen}
+          userId={selectedUser?.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

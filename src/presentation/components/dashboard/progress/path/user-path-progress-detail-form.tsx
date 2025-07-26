@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
+import { type UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -88,8 +88,7 @@ function UserPathProgressDetails({
         <CardContent>
           <Box key={user.id} sx={{ mb: 2 }}>
             {/* Avatar */}
-            {user.employee?.avatar && (
-              <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
+            {user.employee?.avatar ? <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar sx={{ width: 100, height: 100 }} src={user.employee?.avatar ?? user.thumbnail?.resourceUrl}>
                     {user.firstName?.[0]}
@@ -103,8 +102,7 @@ function UserPathProgressDetails({
                     </Typography>
                   </Box>
                 </Stack>
-              </Box>
-            )}
+              </Box> : null}
 
             <Grid container spacing={2}>
               {renderField('ID', user.id)}
@@ -171,7 +169,7 @@ export default function UserPathProgressDetailForm({ open, userPathProgressId, o
           console.error('Error fetching userPathProgress details:', error);
           setUserPathProgress(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, userPathProgressId, userPathProgressUsecase]);
 
@@ -182,7 +180,7 @@ export default function UserPathProgressDetailForm({ open, userPathProgressId, o
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">UserPathProgress Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

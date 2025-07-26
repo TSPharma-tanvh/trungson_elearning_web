@@ -1,4 +1,4 @@
-import { LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type LearningModeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class GetLessonRequest {
   name?: string;
@@ -8,8 +8,8 @@ export class GetLessonRequest {
   hasVideo?: boolean;
   enablePlay?: boolean;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetLessonRequest>) {
     Object.assign(this, init);

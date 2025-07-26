@@ -57,16 +57,16 @@ export default function Page(): React.JSX.Element {
                   <Switch checked={row.status} />
                 </TableCell>
                 <TableCell>
-                  <Button variant="outlined" onClick={(e) => handleClick(e, row.id)}>
+                  <Button variant="outlined" onClick={(e) => { handleClick(e, row.id); }}>
                     Hành động
                   </Button>
                   <Menu
                     anchorEl={anchorEls[row.id]}
                     open={Boolean(anchorEls[row.id])}
-                    onClose={() => handleClose(row.id)}
+                    onClose={() => { handleClose(row.id); }}
                   >
-                    <MenuItem onClick={() => handleClose(row.id)}>Sửa</MenuItem>
-                    <MenuItem onClick={() => handleClose(row.id)}>Xóa</MenuItem>
+                    <MenuItem onClick={() => { handleClose(row.id); }}>Sửa</MenuItem>
+                    <MenuItem onClick={() => { handleClose(row.id); }}>Xóa</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>

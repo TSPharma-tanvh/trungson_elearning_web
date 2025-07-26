@@ -3,8 +3,8 @@ export class GetClassTeacherRequest {
   status?: string;
   searchText?: string;
 
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetClassTeacherRequest>) {
     Object.assign(this, init);

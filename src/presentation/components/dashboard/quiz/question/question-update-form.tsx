@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
+import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, DisplayTypeEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -82,7 +82,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
         resourceIDs:
           question.fileQuestionRelation
             ?.map((item) => item.fileResourceId)
-            .filter((id): id is string => !!id)
+            .filter((id): id is string => Boolean(id))
             .join(',') || undefined,
         categoryEnum: CategoryEnum.Question,
         isDeleteOldThumbnail: false,
@@ -106,7 +106,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .then((file) => {
+              setPreviewUrl(file.resourceUrl || null);
+            })
             .catch((error) => {
               console.error('Error fetching thumbnail:', error);
               setPreviewUrl(null);
@@ -192,7 +194,11 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
           Update Question
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -212,7 +218,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               <CustomTextField
                 label="questionText"
                 value={formData.questionText}
-                onChange={(value) => handleChange('questionText', value)}
+                onChange={(value) => {
+                  handleChange('questionText', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -222,7 +230,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               <CustomSelectDropDown
                 label="Question Type"
                 value={formData.questionType ?? ''}
-                onChange={(value) => handleChange('questionType', value as QuestionEnum)}
+                onChange={(value) => {
+                  handleChange('questionType', value);
+                }}
                 disabled={isSubmitting}
                 options={questionOptions}
               />
@@ -231,7 +241,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               <CustomSelectDropDown
                 label="Status"
                 value={formData.status ?? 0}
-                onChange={(value) => handleChange('status', value as StatusEnum)}
+                onChange={(value) => {
+                  handleChange('status', value as StatusEnum);
+                }}
                 disabled={isSubmitting}
                 options={statusOptions}
               />
@@ -241,7 +253,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
-                onChange={(value) => handleChange('categoryID', value)}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Question}
                 disabled={isSubmitting}
               />
@@ -250,7 +264,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               <AnswerMultiSelectDialog
                 answerUsecase={answerUsecase}
                 value={formData.answerIDs ? formData.answerIDs.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => handleChange('answerIDs', value.join(','))}
+                onChange={(value: string[]) => {
+                  handleChange('answerIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -278,7 +294,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
                   value={formData.resourceIDs?.split(',').filter(Boolean) ?? []}
-                  onChange={(ids) => handleChange('resourceIDs', ids.join(','))}
+                  onChange={(ids) => {
+                    handleChange('resourceIDs', ids.join(','));
+                  }}
                   label="Select Files"
                   disabled={false}
                   showTypeSwitcher
@@ -308,7 +326,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               </Grid>
             )}
 
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && (
+            {formData.resourceIDs && formData.resourceIDs.length > 0 ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   Selected Files
@@ -322,7 +340,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                         <Button
                           variant="text"
                           fullWidth
-                          onClick={() => handleFilePreview(file.resourceUrl ?? '', file.name, file.type)}
+                          onClick={() => {
+                            handleFilePreview(file.resourceUrl ?? '', file.name, file.type);
+                          }}
                           sx={{
                             justifyContent: 'flex-start',
                             textAlign: 'left',
@@ -338,7 +358,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   })}
                 </Grid>
               </Grid>
-            )}
+            ) : null}
             {uploadedFiles.length > 0 && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
@@ -350,7 +370,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                       <Button
                         variant="text"
                         fullWidth
-                        onClick={() => handleFilePreview(URL.createObjectURL(file), file.name, file.type)}
+                        onClick={() => {
+                          handleFilePreview(URL.createObjectURL(file), file.name, file.type);
+                        }}
                         sx={{
                           justifyContent: 'flex-start',
                           textAlign: 'left',
@@ -397,7 +419,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   type={FileResourceEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
-                  onChange={(ids) => handleChange('thumbnailID', ids)}
+                  onChange={(ids) => {
+                    handleChange('thumbnailID', ids);
+                  }}
                   label="Thumbnail"
                   disabled={isSubmitting}
                 />
@@ -407,7 +431,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -416,7 +442,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -434,7 +462,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -454,15 +484,17 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!formData.isDeleteOldThumbnail}
-                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          checked={Boolean(formData.isDeleteOldThumbnail)}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl && (
+                  {previewUrl ? (
                     <Grid item xs={12}>
                       <Box
                         sx={{
@@ -485,7 +517,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                         />
                       </Box>
                     </Grid>
-                  )}
+                  ) : null}
                 </Grid>
               )}
             </Grid>
@@ -524,29 +556,37 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
         </Box>
       </DialogActions>
 
-      {filePreviewData?.url && (
+      {filePreviewData?.url ? (
         <>
           {filePreviewData.type?.includes('image') ? (
             <ImagePreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               imageUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : filePreviewData.type?.includes('video') ? (
             <VideoPreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               videoUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : null}
         </>
-      )}
+      ) : null}
     </Dialog>
   );
 }

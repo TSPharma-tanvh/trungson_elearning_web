@@ -2,20 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
-import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
-import { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
+import { type ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
+import { type ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
 import { useClassTeacherSelectLoader } from '@/presentation/hooks/teacher/use-class-teacher-loader';
 import { useClassTeacherSelectDebounce } from '@/presentation/hooks/teacher/use-teacher-select-debounce';
-import {
-  DisplayTypeDisplayNames,
-  DisplayTypeEnum,
-  LearningModeDisplayNames,
-  LearningModeEnum,
-  ScheduleStatusDisplayNames,
-  ScheduleStatusEnum,
-  StatusDisplayNames,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
+import { type LearningModeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { Book } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -36,13 +27,13 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
   Typography,
   useMediaQuery,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import ClassTeacherDetailForm from '@/presentation/components/dashboard/class/teacher/class-teacher-detail-form';
 
@@ -87,14 +78,12 @@ export function ClassTeacherSelectDialog({
 
   const {
     classes,
-    loadingClassTeacheres,
+    loadingClassTeachers: loadingClassTeacheres,
     pageNumber,
     totalPages,
     setSearchText,
-    setClassTeacherType: setLoaderClassTeacherType,
-    setScheduleStatus: setLoaderScheduleStatus,
     listRef,
-    loadClassTeacheres,
+    loadClassTeachers: loadClassTeacheres,
   } = useClassTeacherSelectLoader({
     classUsecase,
     isOpen: dialogOpen,
@@ -128,7 +117,7 @@ export function ClassTeacherSelectDialog({
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (classUsecase && !loadingClassTeacheres) {
-      loadClassTeacheres(newPage, true);
+      void loadClassTeacheres(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -162,13 +151,14 @@ export function ClassTeacherSelectDialog({
           if (updated) {
             setSelectedClassTeacherMap(newMap);
           }
-        } catch (error) {
-          console.error('Error fetching selected teachers:', error);
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         } finally {
           setLoading(false);
         }
       };
-      fetchSelectedClassTeachers();
+      void fetchSelectedClassTeachers();
     } else {
       setLoading(false);
     }
@@ -205,9 +195,9 @@ export function ClassTeacherSelectDialog({
             loading
               ? 'Loading...'
               : selectedClassTeacherMap[value]?.user
-                ? `${selectedClassTeacherMap[value].user.firstName ?? ''} ${
-                    selectedClassTeacherMap[value].user.lastName ?? ''
-                  }`.trim() || 'No Class Teacher Selected'
+                ? `${selectedClassTeacherMap[value].user.employee?.name ?? ''} (${
+                    selectedClassTeacherMap[value].user.userName ?? ''
+                  })`
                 : 'Select Teacher'
           }
           open={false}
@@ -215,7 +205,7 @@ export function ClassTeacherSelectDialog({
         >
           {Object.values(selectedClassTeacherMap).map((cls) => (
             <MenuItem key={cls.id} value={cls.id}>
-              {`${cls.user?.firstName ?? ''} ${cls.user?.lastName ?? ''}`.trim() || 'Unnamed Teacher'}
+              {`${cls.user?.employee?.name ?? ''} (${cls.user?.userName ?? ''})`}
             </MenuItem>
           ))}
         </Select>
@@ -226,7 +216,12 @@ export function ClassTeacherSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Class Teacher</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -271,11 +266,13 @@ export function ClassTeacherSelectDialog({
                   key={cls.id}
                   value={cls.id}
                   selected={localValue === cls.id}
-                  onClick={() => setLocalValue(cls.id)}
+                  onClick={() => {
+                    setLocalValue(cls.id);
+                  }}
                 >
                   <Checkbox checked={localValue === cls.id} />
                   <ListItemText
-                    primary={`${cls.user?.firstName ?? ''} ${cls.user?.lastName ?? ''}`.trim() || 'Unnamed Teacher'}
+                    primary={`${cls.user?.employee?.name ?? ''} (${cls.user?.userName ?? ''})`}
                     sx={{
                       overflow: 'hidden',
                       whiteSpace: 'nowrap',
@@ -321,13 +318,15 @@ export function ClassTeacherSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedClassTeacher && (
+      {selectedClassTeacher ? (
         <ClassTeacherDetailForm
           open={viewOpen}
           classId={selectedClassTeacher?.id ?? null}
-          onClose={() => setViewOpen(false)}
+          onClose={() => {
+            setViewOpen(false);
+          }}
         />
-      )}
+      ) : null}
     </>
   );
 }

@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
+import { type CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
 import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
-import { UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
+import { type UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
+import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -112,7 +112,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -127,14 +127,14 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteQuestions={handleDeleteQuestions}
         onEditQuestion={handleEditQuestion}
-      ></QuestionTable>
+       />
 
       <QuestionCreateForm
         onSubmit={handleCreateQuestion}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

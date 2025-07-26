@@ -1,10 +1,10 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateUserPathProgressRequest } from '@/domain/models/user-path/request/create-user-path-progress-request';
-import { EnrollUserListToPathRequest } from '@/domain/models/user-path/request/enroll-user-list-to-path-request';
-import { GetUserPathProgressRequest } from '@/domain/models/user-path/request/get-user-path-progress-request';
-import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
-import { UserPathProgressRepository } from '@/domain/repositories/progress/user-path-progress-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateUserPathProgressRequest } from '@/domain/models/user-path/request/create-user-path-progress-request';
+import { type EnrollUserListToPathRequest } from '@/domain/models/user-path/request/enroll-user-list-to-path-request';
+import { type GetUserPathProgressRequest } from '@/domain/models/user-path/request/get-user-path-progress-request';
+import { type UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
+import { type UserPathProgressRepository } from '@/domain/repositories/progress/user-path-progress-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -18,7 +18,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -33,7 +33,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.userPathProgress.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -49,7 +49,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -67,7 +67,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -83,7 +83,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

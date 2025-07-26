@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
+import { type CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
 import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
-import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
-import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
+import { type UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
+import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -28,15 +28,20 @@ export default function Page(): React.JSX.Element {
   const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [pathToEdit, setPathToEdit] = React.useState<CoursePathResponse | null>(null);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [pagination, setPagination] = React.useState({
+    filters: new GetPathRequest({ pageNumber: 1, pageSize: 10 }),
+    page: 0,
+    rowsPerPage: 10,
+  });
 
   const fetchPaths = React.useCallback(async () => {
     try {
-      const request = new GetPathRequest({
-        ...filters,
-        pageNumber: page + 1,
-        pageSize: rowsPerPage,
-      });
-      const { path, totalRecords } = await pathUseCase.getPathListInfo(request);
+      // const request = new GetPathRequest({
+      //   ...filters,
+      //   pageNumber: page + 1,
+      //   pageSize: rowsPerPage,
+      // });
+      const { path, totalRecords } = await pathUseCase.getPathListInfo(filters);
       setPaths(path);
       setTotalCount(totalRecords);
     } catch (error) {
@@ -49,8 +54,8 @@ export default function Page(): React.JSX.Element {
   }, [fetchPaths]);
 
   const handleFilter = (newFilters: GetPathRequest) => {
-    setFilters(newFilters);
     setPage(0);
+    setFilters(newFilters);
   };
 
   const handlePageChange = (_: unknown, newPage: number) => {
@@ -116,7 +121,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -132,16 +137,14 @@ export default function Page(): React.JSX.Element {
         onDeleteCoursePaths={handleDeletePaths}
         onEditCoursePath={handleEditCoursePath}
       />
-      {selectedPath && (
-        <CoursePathDetailForm
+      {selectedPath ? <CoursePathDetailForm
           open={showForm}
           coursePathId={selectedPath?.id ?? null}
           onClose={() => {
             setShowForm(false);
             setSelectedPath(null);
           }}
-        />
-      )}
+        /> : null}
       <UpdatePathFormDialog
         open={showUpdateDialog}
         path={pathToEdit}
@@ -156,7 +159,7 @@ export default function Page(): React.JSX.Element {
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

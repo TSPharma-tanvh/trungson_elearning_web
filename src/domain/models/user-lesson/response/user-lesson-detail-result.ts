@@ -1,4 +1,4 @@
-import { UserLessonProgressDetailResponse } from './user-lesson-detail-response';
+import { type UserLessonProgressDetailResponse } from './user-lesson-detail-response';
 
 export interface UserLessonProgressDetailListResult {
   progress: UserLessonProgressDetailResponse[];

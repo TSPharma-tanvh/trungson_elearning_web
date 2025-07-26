@@ -1,4 +1,4 @@
-import { QuizTypeEnum } from '@/utils/enum/core-enum';
+import { type QuizTypeEnum } from '@/utils/enum/core-enum';
 
 export class GetQuizRequest {
   lessonID?: string;
@@ -18,8 +18,8 @@ export class GetQuizRequest {
   hasLesson?: boolean;
   isAutoSubmitted?: boolean;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetQuizRequest>) {
     Object.assign(this, init);

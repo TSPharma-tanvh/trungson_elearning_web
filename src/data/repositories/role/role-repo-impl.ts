@@ -1,9 +1,9 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
-import { GetRoleRequest } from '@/domain/models/role/request/get-role-request';
-import { UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
-import { RoleRepository } from '@/domain/repositories/role/role-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
+import { type GetRoleRequest } from '@/domain/models/role/request/get-role-request';
+import { type UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
+import { type RoleRepository } from '@/domain/repositories/role/role-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -15,7 +15,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -33,7 +33,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -49,7 +49,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -65,7 +65,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -81,7 +81,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

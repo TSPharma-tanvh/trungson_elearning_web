@@ -1,8 +1,8 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
 
 export class GetEmployeeRequest {
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
   level?: string;
   hireDate?: Date;
   code?: string;

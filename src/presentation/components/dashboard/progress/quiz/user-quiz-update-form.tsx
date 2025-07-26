@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
-import { UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
+import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { DisplayTypeEnum, StatusEnum, UserProgressEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
@@ -50,15 +50,15 @@ export function UpdateUserQuizProgressFormDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
-  const [fieldValidations, setFieldValidations] = useState<{ [key: string]: boolean }>({});
+  const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (userQuizProgress && open) {
       const newFormData = new UpdateUserQuizRequest({
-        userIDs: userQuizProgress.userId != null ? [userQuizProgress.userId] : [],
+        userID: userQuizProgress.userId != null ? userQuizProgress.userId : '',
         quizID: userQuizProgress.quizId || undefined,
         score: userQuizProgress.score || undefined,
-        startAt: userQuizProgress.startedAt || undefined,
+        startedAt: userQuizProgress.startedAt || undefined,
         completedAt: userQuizProgress.completedAt || undefined,
         progressStatus:
           userQuizProgress.progressStatus != null
@@ -80,7 +80,7 @@ export function UpdateUserQuizProgressFormDialog({
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const allValid = Object.values(fieldValidations).every((v) => v !== false);
+      const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
@@ -121,7 +121,7 @@ export function UpdateUserQuizProgressFormDialog({
           Update UserQuizProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -168,8 +168,8 @@ export function UpdateUserQuizProgressFormDialog({
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
-                value={formData.startAt ? DateTimeUtils.formatISODateToString(formData.startAt) : undefined}
-                onChange={(value) => handleChange('startAt', DateTimeUtils.parseLocalDateTimeString(value))}
+                value={formData.startedAt ? DateTimeUtils.formatISODateToString(formData.startedAt) : undefined}
+                onChange={(value) => { handleChange('startedAt', DateTimeUtils.parseLocalDateTimeString(value)); }}
                 disabled={false}
               />
             </Grid>
@@ -178,7 +178,7 @@ export function UpdateUserQuizProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={formData.completedAt ? DateTimeUtils.formatISODateToString(formData.completedAt) : undefined}
-                onChange={(value) => handleChange('completedAt', DateTimeUtils.parseLocalDateTimeString(value))}
+                onChange={(value) => { handleChange('completedAt', DateTimeUtils.parseLocalDateTimeString(value)); }}
                 disabled={false}
               />
             </Grid>
@@ -188,7 +188,7 @@ export function UpdateUserQuizProgressFormDialog({
               <CustomSelectDropDown<UserQuizProgressEnum>
                 label="Trạng thái"
                 value={formData.progressStatus ?? ''}
-                onChange={(val) => handleChange('progressStatus', val)}
+                onChange={(val) => { handleChange('progressStatus', val); }}
                 disabled={false}
                 options={[
                   { value: UserQuizProgressEnum.NotStarted, label: 'Chưa bắt đầu' },
@@ -203,7 +203,7 @@ export function UpdateUserQuizProgressFormDialog({
               <CustomSelectDropDown<StatusEnum>
                 label="Trạng thái"
                 value={formData.activeStatus ?? ''}
-                onChange={(val) => handleChange('activeStatus', val)}
+                onChange={(val) => { handleChange('activeStatus', val); }}
                 disabled={false}
                 options={[
                   { value: StatusEnum.Enable, label: 'Kích hoạt' },
@@ -224,7 +224,7 @@ export function UpdateUserQuizProgressFormDialog({
                 disabled={isSubmitting}
                 icon={<ArrowClockwise {...iconStyle} />}
                 inputMode="numeric"
-                onValidationChange={(isValid) => setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }))}
+                onValidationChange={(isValid) => { setFieldValidations((prev) => ({ ...prev, minuteLate: isValid })); }}
               />
             </Grid>
           </Grid>

@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
+import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
-import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
+import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
@@ -106,7 +106,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Add
         </Button>
@@ -121,13 +121,13 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteLessonPaths={handleDeleteLessons}
         onEditLesson={handleEditLessonPath}
-      ></LessonTable>
+       />
       <CreateLessonDialog
         onSubmit={handleCreateLesson}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

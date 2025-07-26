@@ -1,18 +1,18 @@
 import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
-import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
+import { type GetPathRequest } from '@/domain/models/path/request/get-path-request';
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
-import { CoursePathResult } from '@/domain/models/path/response/course-path-result';
-import { PathRepository } from '@/domain/repositories/path/path-repository';
+import { type CoursePathResult } from '@/domain/models/path/response/course-path-result';
+import { type PathRepository } from '@/domain/repositories/path/path-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class PathUsecase {
   constructor(private readonly pathRepo: PathRepository) {}
 
   async getPathListInfo(request: GetPathRequest): Promise<CoursePathResult> {
-    var result = await this.pathRepo.getPathListInfo(request);
+    const result = await this.pathRepo.getPathListInfo(request);
 
     if (!result || !Array.isArray(result.result)) {
       throw new Error('Failed to load path list.');
@@ -33,9 +33,9 @@ export class PathUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.pathRepo.getPathDetailInfo(id);
+    const result = await this.pathRepo.getPathDetailInfo(id);
 
-    var userResponse = CoursePathResponse.fromJson(result.result);
+    const userResponse = CoursePathResponse.fromJson(result.result);
 
     return userResponse;
   }
@@ -47,7 +47,7 @@ export class PathUsecase {
   }
 
   async updatePathInfo(request: UpdateCoursePathRequest): Promise<ApiResponse> {
-    var result = await this.pathRepo.updatePath(request);
+    const result = await this.pathRepo.updatePath(request);
 
     return result;
   }
@@ -57,7 +57,7 @@ export class PathUsecase {
       id: id ?? '',
       status: StatusEnum.Deleted,
     });
-    var result = await this.pathRepo.updatePath(newFormData);
+    const result = await this.pathRepo.updatePath(newFormData);
 
     return result;
   }

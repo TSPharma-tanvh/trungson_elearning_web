@@ -18,7 +18,7 @@ export function registerEnqueueSnackbar(fn: (message: string, type?: SnackbarTyp
  * Show a snackbar. If provider not mounted yet, logs a warning.
  */
 const CustomSnackBar = {
-  showSnackbar: (message: string, type: SnackbarType = 'info', durationMs: number = 3000) => {
+  showSnackbar: (message: string, type: SnackbarType = 'info', durationMs = 3000) => {
     if (enqueueSnackbarFn) {
       enqueueSnackbarFn(message, type, durationMs);
     } else {

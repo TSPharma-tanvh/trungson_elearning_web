@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
 
 interface CustomFormControlSelectProps<T extends string | number> {
   label: string;
   value: T | '';
   onChange: (value: T) => void;
   disabled?: boolean;
-  options: Array<{ value: T; label: string }>;
+  options: { value: T; label: string }[];
 }
 
 export function CustomSelectDropDown<T extends string | number>({

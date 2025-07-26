@@ -1,12 +1,11 @@
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
-import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
-import { EmployeeListResult } from '@/domain/models/employee/response/employee-result';
-import { EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
+import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
+import { type EmployeeListResult } from '@/domain/models/employee/response/employee-result';
+import { type EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
 
-
-
-
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseEmployeeSelectLoaderProps {
   employeeUsecase: EmployeeUsecase | null;
@@ -44,7 +43,7 @@ export function useEmployeeSelectLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const loadEmployees = async (page: number, reset: boolean = false) => {
+  const loadEmployees = async (page: number, reset = false) => {
     if (!employeeUsecase || loadingEmployees || !isOpen) return;
 
     setLoadingEmployees(true);
@@ -65,7 +64,8 @@ export function useEmployeeSelectLoader({
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading employees:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load employees.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingEmployees(false);
     }
@@ -77,7 +77,7 @@ export function useEmployeeSelectLoader({
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadEmployees(1, true);
+      void loadEmployees(1, true);
     }
 
     return () => {

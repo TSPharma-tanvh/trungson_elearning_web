@@ -53,7 +53,7 @@ export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest
         <CustomSelectFilter<LearningModeEnum>
           label="Class Type"
           value={classType}
-          onChange={(val) => setClassType(val)}
+          onChange={(val) => { setClassType(val); }}
           options={CoreEnumUtils.getEnumOptions(LearningModeEnum)}
         />
 
@@ -61,7 +61,7 @@ export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest
         <CustomSelectFilter<ScheduleStatusEnum>
           label="Schedule Status"
           value={scheduleStatus}
-          onChange={(val) => setScheduleStatus(val)}
+          onChange={(val) => { setScheduleStatus(val); }}
           options={CoreEnumUtils.getEnumOptions(ScheduleStatusEnum)}
           minWidth={180}
         />

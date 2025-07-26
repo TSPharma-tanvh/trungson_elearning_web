@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
-import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
@@ -59,7 +59,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
   useEffect(() => {
     async function setupFormData() {
       if (lesson && open) {
-        let videoFile: File | undefined = undefined;
+        let videoFile: File | undefined;
 
         if (lesson.video?.resourceUrl && !formData.video) {
           const fetchedFile = await urlToFile(lesson.video.resourceUrl, lesson.video.name ?? '');
@@ -124,7 +124,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => setPreviewUrl(file.resourceUrl || null))
+            .then((file) => { setPreviewUrl(file.resourceUrl || null); })
             .catch((error) => {
               console.error('Error fetching thumbnail:', error);
               setPreviewUrl(null);
@@ -152,7 +152,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
         if (formData.videoID) {
           fileUsecase
             .getFileResouceById(formData.videoID)
-            .then((file) => setVideoPreviewUrl(file.resourceUrl || null))
+            .then((file) => { setVideoPreviewUrl(file.resourceUrl || null); })
             .catch((error) => {
               console.error('Error fetching video resource:', error);
               setVideoPreviewUrl(null);
@@ -217,7 +217,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
 
     try {
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Request timeout after 1 hour')), 3600000)
+        setTimeout(() => { reject(new Error('Request timeout after 1 hour')); }, 3600000)
       );
 
       await Promise.race([onSubmit(formData), timeoutPromise]);
@@ -276,7 +276,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
           Update Lesson
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -296,7 +296,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <CustomTextField
                 label="Name"
                 value={formData.name}
-                onChange={(value) => handleChange('name', value)}
+                onChange={(value) => { handleChange('name', value); }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -306,7 +306,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <CustomTextField
                 label="Detail"
                 value={formData.detail}
-                onChange={(value) => handleChange('detail', value)}
+                onChange={(value) => { handleChange('detail', value); }}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
@@ -315,7 +315,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <CustomSelectDropDown
                 label="Lesson Type"
                 value={formData.lessonType ?? ''}
-                onChange={(value) => handleChange('lessonType', value as LearningModeEnum)}
+                onChange={(value) => { handleChange('lessonType', value); }}
                 disabled={isSubmitting}
                 options={lessonTypeOptions}
               />
@@ -325,7 +325,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <QuizMultiSelectDialog
                 quizUsecase={quizUsecase}
                 value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
-                onChange={(val) => handleChange('quizIDs', val.join(','))}
+                onChange={(val) => { handleChange('quizIDs', val.join(',')); }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -346,7 +346,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
-                onChange={(value) => handleChange('categoryID', value)}
+                onChange={(value) => { handleChange('categoryID', value); }}
                 categoryEnum={CategoryEnum.Lesson}
                 disabled={isSubmitting}
               />
@@ -393,7 +393,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -402,7 +402,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -420,17 +420,17 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => { handleFileUpload(e.target.files?.[0] || null); }}
                       />
                     </Button>
                   </Grid>
-                  <Grid item xs={12}></Grid>
+                  <Grid item xs={12} />
                   <Grid item xs={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!formData.isDeleteOldThumbnail}
-                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          checked={Boolean(formData.isDeleteOldThumbnail)}
+                          onChange={(e) => { handleChange('isDeleteOldThumbnail', e.target.checked); }}
                           disabled={isSubmitting}
                         />
                       }
@@ -441,8 +441,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               )}
             </Grid>
 
-            {(previewUrl || lesson.thumbnail?.resourceUrl) && (
-              <Grid item xs={12}>
+            {(previewUrl || lesson.thumbnail?.resourceUrl) ? <Grid item xs={12}>
                 <Box
                   sx={{
                     width: fullScreen ? 400 : 200,
@@ -463,8 +462,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </Box>
-              </Grid>
-            )}
+              </Grid> : null}
 
             {/* Video */}
 
@@ -507,7 +505,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     <CustomTextField
                       label="Video Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => handleChange('thumbDocumentNo', value)}
+                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -516,7 +514,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     <CustomTextField
                       label="Video Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => handleChange('thumbPrefixName', value)}
+                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -534,18 +532,16 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                         type="file"
                         hidden
                         accept="video/*"
-                        onChange={(e) => handleVideoUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => { handleVideoUpload(e.target.files?.[0] || null); }}
                       />
                     </Button>
                   </Grid>
                 </Grid>
               )}
             </Grid>
-            {(videoPreviewUrl || lesson.video?.resourceUrl) && (
-              <Grid item xs={12}>
-                <CustomVideoPlayer src={videoPreviewUrl ?? lesson.video?.resourceUrl ?? ''} fullscreen={true} />
-              </Grid>
-            )}
+            {(videoPreviewUrl || lesson.video?.resourceUrl) ? <Grid item xs={12}>
+                <CustomVideoPlayer src={videoPreviewUrl ?? lesson.video?.resourceUrl ?? ''} fullscreen />
+              </Grid> : null}
           </Grid>
         </Box>
       </DialogContent>

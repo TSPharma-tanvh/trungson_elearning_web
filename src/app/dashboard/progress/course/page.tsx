@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { CreateUserCourseProgressRequest } from '@/domain/models/user-course/request/create-user-course-progress-request';
-import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
+import { type EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
-import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
-import { UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
+import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
+import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -111,7 +111,7 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => setShowCreateDialog(true)}
+          onClick={() => { setShowCreateDialog(true); }}
         >
           Enroll Users
         </Button>
@@ -126,14 +126,14 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteUserCourseProgresss={handleDeleteUserCourseProgresss}
         onEditUserCourseProgress={handleEditUserCourseProgress}
-      ></UserCourseProgressTable>
+       />
 
       <CreateUserCourseProgressDialog
         onSubmit={handleCreateUserCourseProgress}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => { setShowCreateDialog(false); }}
       />
     </Stack>
   );

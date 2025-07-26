@@ -1,4 +1,4 @@
-import { ClassResponse } from './class-response';
+import { type ClassResponse } from './class-response';
 
 export interface ClassListResult {
   class: ClassResponse[];

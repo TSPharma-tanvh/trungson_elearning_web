@@ -1,4 +1,4 @@
-import { AnswerDetailResponse } from './answer-detail-response';
+import { type AnswerDetailResponse } from './answer-detail-response';
 
 export interface AnswerDetailListResult {
   answers: AnswerDetailResponse[];

@@ -10,8 +10,8 @@ export class GetClassRequest {
   endAtTo?: Date;
   enrollmentCriteriaIDs?: string[];
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetClassRequest>) {
     Object.assign(this, init);

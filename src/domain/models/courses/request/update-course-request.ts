@@ -1,13 +1,13 @@
 import {
-  CategoryEnum,
-  DisplayTypeEnum,
-  LearningModeEnum,
-  ScheduleStatusEnum,
-  StatusEnum,
+  type CategoryEnum,
+  type DisplayTypeEnum,
+  type LearningModeEnum,
+  type ScheduleStatusEnum,
+  type StatusEnum,
 } from '@/utils/enum/core-enum';
 
 export class UpdateCourseRequest {
-  id: string = '';
+  id = '';
   pathID?: string;
   detail?: string;
   isRequired?: boolean;

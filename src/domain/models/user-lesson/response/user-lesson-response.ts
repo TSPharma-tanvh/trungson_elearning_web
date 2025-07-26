@@ -6,7 +6,7 @@ export class UserLessonResponse {
   startDate?: string;
   endDate?: string;
   lastAccess?: string;
-  status: string = '';
+  status = '';
 
   constructor(init?: Partial<UserLessonResponse>) {
     Object.assign(this, init);

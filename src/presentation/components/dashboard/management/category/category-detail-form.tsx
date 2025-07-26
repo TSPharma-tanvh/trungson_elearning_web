@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -82,7 +82,7 @@ export default function CategoryDetailForm({ open, categoryId, onClose }: Props)
           console.error('Error fetching category details:', error);
           setCategory(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, categoryId, categoryUsecase]);
 
@@ -95,7 +95,7 @@ export default function CategoryDetailForm({ open, categoryId, onClose }: Props)
           Category Details
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

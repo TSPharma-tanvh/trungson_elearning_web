@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
-import { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
+import { type FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
+import { type FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import { useResourceSelectLoader } from '@/presentation/hooks/file/file-resouce-select-loader';
-import { StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { type StatusEnum } from '@/utils/enum/core-enum';
+import { type FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import { Image as ImageIcon, InsertDriveFile, PlayArrow, Visibility } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -29,16 +29,16 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import ImagePreviewDialog from './image-preview-dialog';
 import VideoPreviewDialog from './video-preview-dialog';
 
-interface Props {
+interface FileResourceSelectProps {
   fileUsecase: FileResourcesUsecase;
   type: FileResourceEnum;
   status?: StatusEnum;
@@ -56,7 +56,7 @@ export function FileResourceSelect({
   onChange,
   label = 'File Resource',
   disabled = false,
-}: Props) {
+}: FileResourceSelectProps) {
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileResourcesResponse | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -72,14 +72,20 @@ export function FileResourceSelect({
 
   useEffect(() => {
     if (value && !selectedFile) {
-      fileUsecase.getFileResouceById(value).then(setSelectedFile).catch(console.error);
+      fileUsecase
+        .getFileResouceById(value)
+        .then(setSelectedFile)
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
+        });
     }
   }, [value]);
 
   useEffect(() => {
     if (open) {
       setSelectedId(value ?? null);
-      loadFileResources(1, true);
+      void loadFileResources(1, true);
     }
   }, [open]);
 
@@ -92,7 +98,7 @@ export function FileResourceSelect({
     }
   };
 
-  const handlePageChange = async (_: any, page: number) => {
+  const handlePageChange = async (_: unknown, page: number) => {
     await loadFileResources(page, true);
     if (listRef.current) {
       listRef.current.scrollTop = 0;
@@ -120,7 +126,9 @@ export function FileResourceSelect({
         <Select
           labelId="file-select-label"
           value={value || ''}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+          }}
           input={
             <OutlinedInput
               label={label}
@@ -138,7 +146,7 @@ export function FileResourceSelect({
                 </InputAdornment>
               }
               endAdornment={
-                selectedFile?.resourceUrl && (
+                selectedFile?.resourceUrl ? (
                   <InputAdornment position="end">
                     <IconButton
                       edge="end"
@@ -150,7 +158,7 @@ export function FileResourceSelect({
                       <Visibility fontSize="small" />
                     </IconButton>
                   </InputAdornment>
-                )
+                ) : null
               }
             />
           }
@@ -165,14 +173,30 @@ export function FileResourceSelect({
       </FormControl>
 
       {/* Dialog select list */}
-      <Dialog fullWidth maxWidth="sm" open={open} onClose={() => setOpen(false)} fullScreen={fullscreen}>
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        fullScreen={fullscreen}
+      >
         <DialogTitle>
           Select File Resource
           <Box sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <IconButton onClick={() => setFullscreen((prev) => !prev)}>
+            <IconButton
+              onClick={() => {
+                setFullscreen((prev) => !prev);
+              }}
+            >
               {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </IconButton>
-            <IconButton onClick={() => setOpen(false)}>
+            <IconButton
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
               <CloseIcon />
             </IconButton>
           </Box>
@@ -200,13 +224,20 @@ export function FileResourceSelect({
                 <ListItem
                   key={file.id}
                   selected={file.id === selectedId}
-                  onClick={() => setSelectedId(file.id ?? null)}
+                  onClick={() => {
+                    setSelectedId(file.id ?? null);
+                  }}
                   secondaryAction={
-                    file.resourceUrl && (
-                      <IconButton edge="end" onClick={() => handleViewFile(file)}>
+                    file.resourceUrl ? (
+                      <IconButton
+                        edge="end"
+                        onClick={() => {
+                          handleViewFile(file);
+                        }}
+                      >
                         <Visibility fontSize="small" />
                       </IconButton>
-                    )
+                    ) : null
                   }
                   button
                 >
@@ -229,11 +260,11 @@ export function FileResourceSelect({
               );
             })}
 
-            {loadingFiles && (
+            {loadingFiles ? (
               <Box textAlign="center" py={2}>
                 <CircularProgress size={24} />
               </Box>
-            )}
+            ) : null}
           </List>
         </DialogContent>
 
@@ -250,7 +281,13 @@ export function FileResourceSelect({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
             <Button onClick={handleConfirm} variant="contained">
               Confirm
             </Button>
@@ -259,28 +296,36 @@ export function FileResourceSelect({
       </Dialog>
 
       {/* Image Viewer */}
-      {selectedFile?.resourceUrl && selectedFile.type?.startsWith('image/') && (
+      {selectedFile?.resourceUrl && selectedFile.type?.startsWith('image/') ? (
         <ImagePreviewDialog
           open={previewImageOpen}
-          onClose={() => setPreviewImageOpen(false)}
+          onClose={() => {
+            setPreviewImageOpen(false);
+          }}
           imageUrl={selectedFile.resourceUrl}
           title={selectedFile.name}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => setFullscreen((prev) => !prev)}
+          onToggleFullscreen={() => {
+            setFullscreen((prev) => !prev);
+          }}
         />
-      )}
+      ) : null}
 
       {/* Video Viewer */}
-      {selectedFile?.resourceUrl && selectedFile.type?.startsWith('video/') && (
+      {selectedFile?.resourceUrl && selectedFile.type?.startsWith('video/') ? (
         <VideoPreviewDialog
           open={previewVideoOpen}
-          onClose={() => setPreviewVideoOpen(false)}
+          onClose={() => {
+            setPreviewVideoOpen(false);
+          }}
           videoUrl={selectedFile.resourceUrl}
           title={selectedFile.name}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => setFullscreen((prev) => !prev)}
+          onToggleFullscreen={() => {
+            setFullscreen((prev) => !prev);
+          }}
         />
-      )}
+      ) : null}
     </>
   );
 }

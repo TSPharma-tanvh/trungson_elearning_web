@@ -1,22 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
-import { CoursePathResponse } from '@/domain/models/path/response/course-path-response';
-import { PathUsecase } from '@/domain/usecases/path/path-usecase';
+import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
+import { type PathUsecase } from '@/domain/usecases/path/path-usecase';
 import { usePathSelectDebounce } from '@/presentation/hooks/path/use-path-select-debounce';
 import { usePathSelectLoader } from '@/presentation/hooks/path/use-path-select-loader';
-import {
-  DisplayTypeDisplayNames,
-  DisplayTypeEnum,
-  LearningModeDisplayNames,
-  LearningModeEnum,
-  ScheduleStatusDisplayNames,
-  ScheduleStatusEnum,
-  StatusDisplayNames,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
-import { Book, BookOutlined } from '@mui/icons-material';
+import { Book } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -36,14 +26,13 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
 interface PathSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
@@ -54,13 +43,6 @@ interface PathSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onC
   disabled?: boolean;
   pathID?: string;
 }
-
-const filterOptions = {
-  pathType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
-  displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
-  scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
-  disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
-};
 
 export function PathSelectDialog({
   pathUsecase,
@@ -83,31 +65,22 @@ export function PathSelectDialog({
   const {
     paths,
     loadingPaths,
-    hasMore,
-    isSelectOpen,
     pageNumber,
     totalPages,
     listRef,
-    setIsSelectOpen,
     setSearchText,
     setStatus: setPathType,
     setDisplayType,
-    searchText,
-    status,
-    displayType,
-    disableStatus,
     loadPaths,
   } = usePathSelectLoader({
     pathUsecase,
     isOpen: dialogOpen,
-    // status: initialPathType,
-    // displayType: initialScheduleStatus,
+
     searchText: debouncedSearchText,
   });
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Handlers
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
   };
@@ -132,7 +105,7 @@ export function PathSelectDialog({
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (pathUsecase && !loadingPaths) {
-      loadPaths(newPage, true);
+      void loadPaths(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -165,11 +138,12 @@ export function PathSelectDialog({
           if (updated) {
             setSelectedPathMap(newMap);
           }
-        } catch (error) {
-          console.error('Error fetching selected paths:', error);
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         }
       };
-      fetchSelectedPaths();
+      void fetchSelectedPaths();
     }
   }, [pathUsecase, value, pathID, selectedPathMap]);
 
@@ -211,7 +185,12 @@ export function PathSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Path</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -250,17 +229,19 @@ export function PathSelectDialog({
                 key={path.id}
                 value={path.id}
                 selected={localValue === path.id}
-                onClick={() => setLocalValue(path.id ?? '')}
+                onClick={() => {
+                  setLocalValue(path.id ?? '');
+                }}
               >
                 <Checkbox checked={localValue === path.id} />
                 <ListItemText primary={path.name} />
               </MenuItem>
             ))}
-            {loadingPaths && (
+            {loadingPaths ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
-            )}
+            ) : null}
             {!loadingPaths && paths.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 No paths found

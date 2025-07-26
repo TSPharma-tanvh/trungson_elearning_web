@@ -3,7 +3,7 @@ import { Checkbox, FormControlLabel, FormGroup, FormLabel, Stack } from '@mui/ma
 
 const categories = ['Retail', 'Wholesale', 'Online', 'Pharmacy', 'Clinic'];
 
-export function CategoryMultiCheckForm({ onChange }: { onChange: (field: string, value: any) => void }) {
+export function CategoryMultiCheckForm({ onChange }: { onChange: (field: string, value: unknown) => void }) {
   const [selected, setSelected] = React.useState<string[]>([]);
 
   const handleToggle = (category: string) => {
@@ -20,7 +20,14 @@ export function CategoryMultiCheckForm({ onChange }: { onChange: (field: string,
         {categories.map((category) => (
           <FormControlLabel
             key={category}
-            control={<Checkbox checked={selected.includes(category)} onChange={() => handleToggle(category)} />}
+            control={
+              <Checkbox
+                checked={selected.includes(category)}
+                onChange={() => {
+                  handleToggle(category);
+                }}
+              />
+            }
             label={category}
           />
         ))}

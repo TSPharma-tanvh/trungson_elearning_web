@@ -1,9 +1,9 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { GetEmployeeFromHrmRequest } from '@/domain/models/employee/request/get-employee-from-hrm-request';
-import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
-import { SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
-import { EmployeeRepository } from '@/domain/repositories/employee/employee-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type GetEmployeeFromHrmRequest } from '@/domain/models/employee/request/get-employee-from-hrm-request';
+import { type GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
+import { type SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
+import { type EmployeeRepository } from '@/domain/repositories/employee/employee-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -17,7 +17,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -32,7 +32,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.employee.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -50,7 +50,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -68,7 +68,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -83,7 +83,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
       const response = await apiClient.delete<ApiResponse>(apiEndpoints.employee.delete(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

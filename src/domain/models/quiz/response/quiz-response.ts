@@ -1,4 +1,4 @@
-import { QuizTypeEnum } from '@/utils/enum/core-enum';
+import { type QuizTypeEnum } from '@/utils/enum/core-enum';
 
 import { AttendanceRecordResponse } from '../../attendance/response/attendance-record-response';
 import { CategoryResponse } from '../../category/response/category-response';
@@ -15,7 +15,7 @@ export class QuizResponse {
   id?: string;
   title?: string;
   description?: string;
-  status: string = '';
+  status = '';
 
   startTime?: Date;
   endTime?: Date;

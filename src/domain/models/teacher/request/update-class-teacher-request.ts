@@ -1,10 +1,10 @@
 export class UpdateClassTeacherRequest {
-  id: string = '';
+  id = '';
   userID?: string;
   description?: string;
   courseID?: string;
   classID?: string;
-  status: string = 'Active'; //active enum
+  status = 'Active'; //active enum
 
   constructor(init?: Partial<UpdateClassTeacherRequest>) {
     Object.assign(this, init);

@@ -1,9 +1,9 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
-import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
-import { LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
+import { type GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
+import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
+import { type LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -17,7 +17,7 @@ export class LessonRepoImpl implements LessonRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -32,7 +32,7 @@ export class LessonRepoImpl implements LessonRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.lessons.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -53,7 +53,7 @@ export class LessonRepoImpl implements LessonRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -76,7 +76,7 @@ export class LessonRepoImpl implements LessonRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

@@ -1,4 +1,4 @@
-import { EmployeeResponse } from './employee-response';
+import { type EmployeeResponse } from './employee-response';
 
 export interface EmployeeListResult {
   employees: EmployeeResponse[];

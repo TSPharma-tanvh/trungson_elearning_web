@@ -1,5 +1,5 @@
 import {
-  CategoryEnum,
+  type CategoryEnum,
   DisplayTypeEnum,
   LearningModeEnum,
   ScheduleStatusEnum,
@@ -10,7 +10,7 @@ export class CreateCourseRequest {
   pathID?: string;
   detail?: string;
   isRequired?: boolean;
-  name: string = '';
+  name = '';
 
   disableStatus: StatusEnum = StatusEnum.Enable;
   teacherID?: string;

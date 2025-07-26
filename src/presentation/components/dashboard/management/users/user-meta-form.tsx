@@ -5,13 +5,13 @@ export function UserMetaForm({ onChange }: { onChange: (field: string, value: an
   return (
     <Stack spacing={3}>
       {' '}
-      <TextField label="User ID" fullWidth size="small" onChange={(e) => onChange('id', e.target.value)} />
+      <TextField label="User ID" fullWidth size="small" onChange={(e) => { onChange('id', e.target.value); }} />
       <TextField
         label="Created At"
         type="datetime-local"
         fullWidth
         size="small"
-        onChange={(e) => onChange('createdAt', e.target.value)}
+        onChange={(e) => { onChange('createdAt', e.target.value); }}
         InputLabelProps={{ shrink: true }}
       />
     </Stack>

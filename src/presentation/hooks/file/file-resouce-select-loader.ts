@@ -1,10 +1,13 @@
+import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { FileResourceListResult } from '@/domain/models/file/response/file-resource-result';
-import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
+import type { FileResourceListResult } from '@/domain/models/file/response/file-resource-result';
+import type { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
 import { GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
-import { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
-import { StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum, FileResourceEnumUtils } from '@/utils/enum/file-resource-enum';
+import type { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
+import type { StatusEnum } from '@/utils/enum/core-enum';
+import { type FileResourceEnum, FileResourceEnumUtils } from '@/utils/enum/file-resource-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface FileResourceSelectLoaderProps {
   fileUsecase: FileResourcesUsecase;
@@ -42,7 +45,7 @@ export function useResourceSelectLoader({
   const abortControllerRef = useRef<AbortController | null>(null);
   const [searchTextState, setSearchText] = useState(searchText); // Khởi tạo từ prop
 
-  const loadFileResources = async (page: number, reset: boolean = false) => {
+  const loadFileResources = async (page: number, reset = false) => {
     if (!fileUsecase || loadingFiles || !isOpen) return;
 
     setLoadingFiles(true);
@@ -50,7 +53,7 @@ export function useResourceSelectLoader({
 
     try {
       const request = new GetFileResourcesRequest({
-        type: type != null ? FileResourceEnumUtils.getContentTypeByEnum(type) : undefined,
+        type: type !== undefined ? FileResourceEnumUtils.getContentTypeByEnum(type) : undefined,
         status,
         searchText: searchTextState,
         pageNumber: page,
@@ -66,7 +69,8 @@ export function useResourceSelectLoader({
         setPageNumber(page);
       }
     } catch (error) {
-      console.error('Error loading files:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load lessons.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       if (isOpen) setLoadingFiles(false);
     }
@@ -86,7 +90,7 @@ export function useResourceSelectLoader({
       await loadFileResources(1, true);
     };
 
-    fetchData();
+    void fetchData();
 
     return () => {
       controller.abort();

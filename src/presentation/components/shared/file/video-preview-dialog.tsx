@@ -1,3 +1,4 @@
+import React from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -50,11 +51,11 @@ export default function VideoPreviewDialog({
           </Typography>
 
           <Box display="flex" flexDirection="row" alignItems="center" flexShrink={0}>
-            {onToggleFullscreen && (
+            {onToggleFullscreen ? (
               <IconButton onClick={onToggleFullscreen} title="Toggle Fullscreen">
                 {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
-            )}
+            ) : null}
             <IconButton onClick={onClose} title="Close">
               <CloseIcon />
             </IconButton>

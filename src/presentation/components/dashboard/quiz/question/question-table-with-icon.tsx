@@ -8,17 +8,15 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Typography,
 } from '@mui/material';
 
-export type Question = {
+export interface Question {
   id: string;
   question: string;
   type: 'single' | 'multiple' | 'text' | 'truefalse';
@@ -26,12 +24,12 @@ export type Question = {
     text: string;
     isCorrect: boolean;
   }[];
-};
+}
 
-type Props = {
+interface Props {
   questions: Question[];
   onEdit: (question: Question) => void;
-};
+}
 
 export function QuestionsTableWithIcon({ questions, onEdit }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -93,7 +91,11 @@ export function QuestionsTableWithIcon({ questions, onEdit }: Props) {
                   </Box>
                 </TableCell>
                 <TableCell align="right">
-                  <IconButton onClick={(e) => handleMenuOpen(e, q)}>
+                  <IconButton
+                    onClick={(e) => {
+                      handleMenuOpen(e, q);
+                    }}
+                  >
                     <MoreVertIcon />
                   </IconButton>
                 </TableCell>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -74,7 +74,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
   const renderLessons = () => {
     if (!course.lessons || course.lessons.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<{ [key: string]: boolean }>({});
+    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (lessonId: string) => {
       setExpandedLessons((prev) => ({
@@ -102,7 +102,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                 title={lesson.name ?? `Lesson ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(lessonId)}
+                    onClick={() => { toggleExpanded(lessonId); }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -190,7 +190,7 @@ export default function CourseDetailForm({ open, courseId, onClose }: Props) {
           console.error('Error fetching course details:', error);
           setCourse(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); });
     }
   }, [open, courseId, courseUsecase]);
 
@@ -201,7 +201,7 @@ export default function CourseDetailForm({ open, courseId, onClose }: Props) {
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Course Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

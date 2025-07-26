@@ -1,4 +1,3 @@
-import { orange } from '@mui/material/colors';
 import type { ColorSystemOptions } from '@mui/material/styles';
 
 import { california, kepple, mainGreen, mainOrange, nevada, redOrange, shakespeare, stormGrey } from './colors';

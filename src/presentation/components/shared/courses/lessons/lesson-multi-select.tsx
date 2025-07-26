@@ -1,22 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
 import {
-  DisplayTypeDisplayNames,
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
-  ScheduleStatusDisplayNames,
   ScheduleStatusEnum,
   StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book, BookOutlined } from '@mui/icons-material';
+import { Book } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -36,14 +34,14 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
+  type SelectChangeEvent,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
 interface LessonMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
@@ -68,7 +66,6 @@ export function LessonMultiSelectDialog({
   onChange,
   label = 'Lessons',
   disabled = false,
-  pathID,
   ...selectProps
 }: LessonMultiSelectDialogProps) {
   const theme = useTheme();
@@ -83,18 +80,13 @@ export function LessonMultiSelectDialog({
   const {
     lessons,
     loadingLessons,
-    hasMore,
-    isSelectOpen,
     pageNumber,
     totalPages,
     listRef,
-    setIsSelectOpen,
     setSearchText,
     setLessonType,
-    setDisplayType,
-    setScheduleStatus,
+
     setDisableStatus,
-    searchText,
     lessonType,
     disableStatus,
     loadLessons,
@@ -124,14 +116,13 @@ export function LessonMultiSelectDialog({
   const handleClearFilters = () => {
     setLocalSearchText('');
     setLessonType(undefined);
-    setDisplayType(undefined);
-    setScheduleStatus(undefined);
+
     setDisableStatus(undefined);
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (LessonUsecase && !loadingLessons) {
-      loadLessons(newPage, true);
+      void loadLessons(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -165,11 +156,12 @@ export function LessonMultiSelectDialog({
           if (updated) {
             setSelectedLessonMap(newMap);
           }
-        } catch (error) {
-          console.error('Error fetching selected Lessons:', error);
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         }
       };
-      fetchSelectedLessons();
+      void fetchSelectedLessons();
     }
   }, [lessonUsecase, value, selectedLessonMap]);
 
@@ -214,7 +206,12 @@ export function LessonMultiSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Lessons</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -228,14 +225,14 @@ export function LessonMultiSelectDialog({
               <InputLabel>Lesson Type</InputLabel>
               <Select
                 value={lessonType !== undefined ? String(lessonType) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setLessonType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setLessonType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                }}
                 label="Lesson Type"
               >
                 {filterOptions.LessonType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? LearningModeDisplayNames[opt] : 'All'}
+                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select>
@@ -276,12 +273,14 @@ export function LessonMultiSelectDialog({
               <InputLabel>Disable Status</InputLabel>
               <Select
                 value={disableStatus ?? ''}
-                onChange={(e) => setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
+                onChange={(e) => {
+                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
+                }}
                 label="Disable Status"
               >
                 {filterOptions.disableStatus.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? StatusDisplayNames[opt] : 'All'}
+                    {opt !== undefined ? StatusDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select>
@@ -298,21 +297,21 @@ export function LessonMultiSelectDialog({
               <MenuItem
                 key={lesson.id}
                 value={lesson.id}
-                onClick={() =>
+                onClick={() => {
                   setLocalValue((prev) =>
                     prev.includes(lesson.id!) ? prev.filter((id) => id !== lesson.id!) : [...prev, lesson.id!]
-                  )
-                }
+                  );
+                }}
               >
                 <Checkbox checked={localValue.includes(lesson.id!)} />
                 <ListItemText primary={lesson.name} />
               </MenuItem>
             ))}
-            {loadingLessons && (
+            {loadingLessons ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
-            )}
+            ) : null}
             {!loadingLessons && lessons.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 No Lessons found

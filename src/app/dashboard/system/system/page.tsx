@@ -45,7 +45,7 @@ export default function Page(): React.JSX.Element {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
         <FormControl size="small" sx={{ width: 100 }}>
           <InputLabel>Results</InputLabel>
-          <Select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))} label="Results">
+          <Select value={rowsPerPage} onChange={(e) => { setRowsPerPage(Number(e.target.value)); }} label="Results">
             {[10, 25, 50].map((val) => (
               <MenuItem key={val} value={val}>
                 {val}
@@ -57,7 +57,7 @@ export default function Page(): React.JSX.Element {
           size="small"
           placeholder="Tìm kiếm nhanh"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => { setSearch(e.target.value); }}
         />
         <IconButton>
           <Download />

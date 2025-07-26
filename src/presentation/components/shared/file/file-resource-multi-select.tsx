@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
-import { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
+import { type FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
+import { type FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import { useResourceSelectLoader } from '@/presentation/hooks/file/file-resouce-select-loader';
-import { StatusEnum } from '@/utils/enum/core-enum';
+import { type StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
-import { Image as ImageIcon, InsertDriveFile, PlayArrow, Visibility } from '@mui/icons-material';
+import { InsertDriveFile, PlayArrow, Visibility } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -32,16 +32,16 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import ImagePreviewDialog from './image-preview-dialog';
 import VideoPreviewDialog from './video-preview-dialog';
 
-interface Props {
+interface FileResourcesMultiSelectProps {
   fileUsecase: FileResourcesUsecase;
   type?: FileResourceEnum;
   status?: StatusEnum;
@@ -65,7 +65,7 @@ export function FileResourceMultiSelect({
   showTypeSwitcher = false,
   allowAllTypes = false,
   defaultType,
-}: Props) {
+}: FileResourcesMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileResourcesResponse[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -75,7 +75,7 @@ export function FileResourceMultiSelect({
   const [previewFile, setPreviewFile] = useState<FileResourcesResponse | null>(null);
 
   const [selectedType, setSelectedType] = useState<FileResourceEnum | undefined>(allowAllTypes ? defaultType : type);
-  const [filterTypeEnabled, setFilterTypeEnabled] = useState<boolean>(!allowAllTypes ? true : false);
+  const [filterTypeEnabled, setFilterTypeEnabled] = useState<boolean>(!allowAllTypes);
   const [searchText, setSearchText] = useState('');
 
   const effectiveType = useMemo(
@@ -99,15 +99,16 @@ export function FileResourceMultiSelect({
     const missingIds = value.filter((id) => !selectedIdsSet.has(id));
 
     if (missingIds.length > 0) {
-      Promise.all(
-        missingIds.map((id) =>
-          fileUsecase.getFileResouceById(id).catch((err) => {
-            console.error('Error loading file:', err);
+      void Promise.all(
+        missingIds.map(async (id) =>
+          fileUsecase.getFileResouceById(id).catch((error: unknown) => {
+            const message = error instanceof Error ? error.message : 'An error has occurred.';
+            CustomSnackBar.showSnackbar(message, 'error');
             return null;
           })
         )
       ).then((newFiles) => {
-        const validNewFiles = newFiles.filter((f): f is FileResourcesResponse => !!f);
+        const validNewFiles = newFiles.filter((f): f is FileResourcesResponse => Boolean(f));
         setSelectedFiles((prev) => [...prev, ...validNewFiles]);
       });
     }
@@ -121,12 +122,11 @@ export function FileResourceMultiSelect({
 
   useEffect(() => {
     if (open) {
-      loadFileResources(1, true);
+      void loadFileResources(1, true);
     }
   }, [selectedType, filterTypeEnabled, searchText]);
 
   const handleConfirm = () => {
-    console.error(selectedIds);
     const newSelectedFiles = files.filter((f) => selectedIds.includes(f.id ?? ''));
     onChange(selectedIds);
     setSelectedFiles(newSelectedFiles);
@@ -137,7 +137,7 @@ export function FileResourceMultiSelect({
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   };
 
-  const handlePageChange = async (_: any, page: number) => {
+  const handlePageChange = async (_: unknown, page: number) => {
     await loadFileResources(page, true);
     if (listRef.current) listRef.current.scrollTop = 0;
   };
@@ -160,7 +160,9 @@ export function FileResourceMultiSelect({
           labelId="file-multi-select-label"
           multiple
           value={value}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+          }}
           input={<OutlinedInput label={label} />}
           renderValue={() => (selectedFiles.length ? selectedFiles.map((f) => f.name).join(', ') : 'No files selected')}
           open={false}
@@ -172,14 +174,30 @@ export function FileResourceMultiSelect({
         </Select>
       </FormControl>
 
-      <Dialog fullWidth maxWidth="sm" open={open} onClose={() => setOpen(false)} fullScreen={fullscreen}>
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        fullScreen={fullscreen}
+      >
         <DialogTitle>
           Select File Resources
           <Box sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <IconButton onClick={() => setFullscreen((prev) => !prev)}>
+            <IconButton
+              onClick={() => {
+                setFullscreen((prev) => !prev);
+              }}
+            >
               {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </IconButton>
-            <IconButton onClick={() => setOpen(false)}>
+            <IconButton
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
               <CloseIcon />
             </IconButton>
           </Box>
@@ -189,7 +207,7 @@ export function FileResourceMultiSelect({
           <CustomSearchInput placeholder="Search..." value={searchText} onChange={setSearchText} />
 
           <Box display="flex" gap={2} alignItems="center" mt={2} mb={2}>
-            {showTypeSwitcher && (
+            {showTypeSwitcher ? (
               <>
                 <FormControl fullWidth>
                   <InputLabel id="filter-type-label">File Type</InputLabel>
@@ -198,7 +216,9 @@ export function FileResourceMultiSelect({
                     value={selectedType ?? ''}
                     label="File Type"
                     disabled={!filterTypeEnabled}
-                    onChange={(e) => setSelectedType(e.target.value as FileResourceEnum)}
+                    onChange={(e) => {
+                      setSelectedType(e.target.value as FileResourceEnum);
+                    }}
                   >
                     {Object.values(FileResourceEnum).map((fileType) => (
                       <MenuItem key={fileType} value={fileType}>
@@ -208,16 +228,21 @@ export function FileResourceMultiSelect({
                   </Select>
                 </FormControl>
 
-                {allowAllTypes && (
+                {allowAllTypes ? (
                   <FormControlLabel
                     control={
-                      <Checkbox checked={filterTypeEnabled} onChange={(e) => setFilterTypeEnabled(e.target.checked)} />
+                      <Checkbox
+                        checked={filterTypeEnabled}
+                        onChange={(e) => {
+                          setFilterTypeEnabled(e.target.checked);
+                        }}
+                      />
                     }
                     label="Enable Type Filter"
                   />
-                )}
+                ) : null}
               </>
-            )}
+            ) : null}
           </Box>
 
           <List sx={{ overflow: 'auto' }} ref={listRef}>
@@ -240,14 +265,21 @@ export function FileResourceMultiSelect({
                 <ListItem
                   key={file.id}
                   secondaryAction={
-                    file.resourceUrl && (
-                      <IconButton edge="end" onClick={() => handleViewFile(file)}>
+                    file.resourceUrl ? (
+                      <IconButton
+                        edge="end"
+                        onClick={() => {
+                          handleViewFile(file);
+                        }}
+                      >
                         <Visibility fontSize="small" />
                       </IconButton>
-                    )
+                    ) : null
                   }
                   button
-                  onClick={() => handleToggleSelect(file.id ?? '')}
+                  onClick={() => {
+                    handleToggleSelect(file.id ?? '');
+                  }}
                   selected={selectedIds.includes(file.id ?? '')}
                 >
                   <Checkbox edge="start" checked={selectedIds.includes(file.id ?? '')} tabIndex={-1} disableRipple />
@@ -257,11 +289,11 @@ export function FileResourceMultiSelect({
               );
             })}
 
-            {loadingFiles && (
+            {loadingFiles ? (
               <Box textAlign="center" py={2}>
                 <CircularProgress size={24} />
               </Box>
-            )}
+            ) : null}
           </List>
         </DialogContent>
 
@@ -278,7 +310,13 @@ export function FileResourceMultiSelect({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
             <Button onClick={handleConfirm} variant="contained">
               Confirm
             </Button>
@@ -286,27 +324,35 @@ export function FileResourceMultiSelect({
         </DialogActions>
       </Dialog>
 
-      {previewFile?.resourceUrl && previewFile.type?.startsWith('image/') && (
+      {previewFile?.resourceUrl && previewFile.type?.startsWith('image/') ? (
         <ImagePreviewDialog
           open={previewImageOpen}
-          onClose={() => setPreviewImageOpen(false)}
+          onClose={() => {
+            setPreviewImageOpen(false);
+          }}
           imageUrl={previewFile.resourceUrl}
           title={previewFile.name}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => setFullscreen((prev) => !prev)}
+          onToggleFullscreen={() => {
+            setFullscreen((prev) => !prev);
+          }}
         />
-      )}
+      ) : null}
 
-      {previewFile?.resourceUrl && previewFile.type?.startsWith('video/') && (
+      {previewFile?.resourceUrl && previewFile.type?.startsWith('video/') ? (
         <VideoPreviewDialog
           open={previewVideoOpen}
-          onClose={() => setPreviewVideoOpen(false)}
+          onClose={() => {
+            setPreviewVideoOpen(false);
+          }}
           videoUrl={previewFile.resourceUrl}
           title={previewFile.name}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => setFullscreen((prev) => !prev)}
+          onToggleFullscreen={() => {
+            setFullscreen((prev) => !prev);
+          }}
         />
-      )}
+      ) : null}
     </>
   );
 }

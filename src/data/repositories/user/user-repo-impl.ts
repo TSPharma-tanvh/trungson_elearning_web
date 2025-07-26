@@ -1,10 +1,10 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
-import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
-import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
-import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
-import { UserRepository } from '@/domain/repositories/user/user-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
+import { type GetUserRequest } from '@/domain/models/user/request/get-user-request';
+import { type RegisterRequestModel } from '@/domain/models/user/request/register-request';
+import { type UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
+import { type UserRepository } from '@/domain/repositories/user/user-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -15,7 +15,7 @@ export class UserRepositoryImpl implements UserRepository {
       const response = await apiClient.get<ApiResponse>(apiEndpoints.user.getById(id));
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -38,7 +38,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -56,7 +56,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -72,7 +72,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 
@@ -88,7 +88,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       const apiResponse = response.data;
 
-      if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+      if (!apiResponse?.isSuccessStatusCode) {
         throw new Error(apiResponse?.message || 'Unknown API error');
       }
 

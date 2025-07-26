@@ -1,11 +1,11 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
-import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
+import { type GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
 import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
-import { UserLessonProgressDetailListResult } from '@/domain/models/user-lesson/response/user-lesson-detail-result';
+import { type UserLessonProgressDetailListResult } from '@/domain/models/user-lesson/response/user-lesson-detail-result';
 import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-lesson-response';
-import { UserLessonProgressRepository } from '@/domain/repositories/progress/user-lesson-progress-repository';
+import { type UserLessonProgressRepository } from '@/domain/repositories/progress/user-lesson-progress-repository';
 import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserLessonProgressUsecase {
@@ -35,9 +35,9 @@ export class UserLessonProgressUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.userLessonProgressRepo.getUserLessonProgressById(id);
+    const result = await this.userLessonProgressRepo.getUserLessonProgressById(id);
 
-    var userResponse = UserLessonProgressDetailResponse.fromJSON(result.result);
+    const userResponse = UserLessonProgressDetailResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -49,18 +49,18 @@ export class UserLessonProgressUsecase {
   }
 
   async updateUserLessonProgress(request: UpdateUserLessonRequest): Promise<ApiResponse> {
-    var result = await this.userLessonProgressRepo.updateUserLessonProgress(request);
+    const result = await this.userLessonProgressRepo.updateUserLessonProgress(request);
 
     return result;
   }
 
   async deleteUserLessonProgress(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateUserLessonRequest({
-      id: id,
+      id,
       status: UserProgressEnum[UserProgressEnum.Done],
     });
 
-    var result = await this.userLessonProgressRepo.updateUserLessonProgress(newFormData);
+    const result = await this.userLessonProgressRepo.updateUserLessonProgress(newFormData);
 
     return result;
   }

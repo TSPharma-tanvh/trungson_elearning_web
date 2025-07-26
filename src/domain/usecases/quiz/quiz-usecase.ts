@@ -1,11 +1,11 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
-import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
-import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
+import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
+import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
-import { QuizListResult } from '@/domain/models/quiz/response/quiz-result';
-import { QuizRepository } from '@/domain/repositories/quiz/quiz-repository';
+import { type QuizListResult } from '@/domain/models/quiz/response/quiz-result';
+import { type QuizRepository } from '@/domain/repositories/quiz/quiz-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
 
@@ -37,9 +37,9 @@ export class QuizUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.courseRepo.getQuizById(id);
+    const result = await this.courseRepo.getQuizById(id);
 
-    var userResponse = QuizResponse.fromJSON(result.result);
+    const userResponse = QuizResponse.fromJSON(result.result);
 
     return userResponse;
   }
@@ -57,7 +57,7 @@ export class QuizUsecase {
   }
 
   async updateQuiz(request: UpdateQuizRequest): Promise<ApiResponse> {
-    var result = await this.courseRepo.updateQuiz(request);
+    const result = await this.courseRepo.updateQuiz(request);
 
     return result;
   }
@@ -68,7 +68,7 @@ export class QuizUsecase {
       status: StatusEnum.Deleted,
     });
 
-    var result = await this.courseRepo.updateQuiz(newFormData);
+    const result = await this.courseRepo.updateQuiz(newFormData);
 
     return result;
   }

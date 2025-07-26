@@ -8,8 +8,8 @@ export class GetEnrollmentCriteriaRequest {
   maxCapacity?: number;
   targetPharmacyID?: string;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(data: Partial<GetEnrollmentCriteriaRequest> = {}) {
     Object.assign(this, {

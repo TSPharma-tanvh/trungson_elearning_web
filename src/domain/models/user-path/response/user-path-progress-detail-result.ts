@@ -1,4 +1,4 @@
-import { UserPathProgressDetailResponse } from './user-path-progress-detail-response';
+import { type UserPathProgressDetailResponse } from './user-path-progress-detail-response';
 
 export interface UserPathProgressDetailListResult {
   progress: UserPathProgressDetailResponse[];

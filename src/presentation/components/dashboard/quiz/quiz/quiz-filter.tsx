@@ -2,13 +2,11 @@
 
 import * as React from 'react';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
-import { CoreEnumUtils, LearningModeEnum, QuizTypeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
+import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
 import {
-  Box,
   Button,
   Card,
-  Checkbox,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -16,8 +14,6 @@ import {
   OutlinedInput,
   Select,
   Stack,
-  TextField,
-  Typography,
 } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
 
@@ -31,7 +27,7 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
   const handleFilter = () => {
     const request = new GetQuizRequest({
       searchText: searchText || undefined,
-      isRequired: isRequired,
+      isRequired,
       type: quizType || undefined,
       pageNumber: 1,
       pageSize: 10,
@@ -54,7 +50,9 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
         <OutlinedInput
           size="small"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
           fullWidth
           placeholder="Search course"
           startAdornment={
@@ -87,7 +85,9 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
           <InputLabel>Type</InputLabel>
           <Select
             value={quizType !== undefined ? quizType.toString() : ''}
-            onChange={(e) => setQuizType(e.target.value === '' ? undefined : (Number(e.target.value) as QuizTypeEnum))}
+            onChange={(e) => {
+              setQuizType(e.target.value === '' ? undefined : (Number(e.target.value) as QuizTypeEnum));
+            }}
             label="Type"
           >
             <MenuItem value="">All</MenuItem>
@@ -101,7 +101,9 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
           <InputLabel>Status</InputLabel>
           <Select
             value={status !== undefined ? status.toString() : ''}
-            onChange={(e) => setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum))}
+            onChange={(e) => {
+              setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum));
+            }}
             label="Status"
           >
             <MenuItem value="">All</MenuItem>
@@ -117,9 +119,9 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
           <Select
             label="Display Type"
             value={displayType !== undefined ? displayType.toString() : ''}
-            onChange={(e) =>
-              setDisplayType(e.target.value === '' ? undefined : (Number(e.target.value) as DisplayTypeEnum))
-            }
+            onChange={(e) => {
+              setDisplayType(e.target.value === '' ? undefined : (Number(e.target.value) as DisplayTypeEnum));
+            }}
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value={DisplayTypeEnum.Public}>Public</MenuItem>

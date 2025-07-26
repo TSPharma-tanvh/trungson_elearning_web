@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
 import { UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
-import { PermissionResponse } from '@/domain/models/role/response/permission-reponse';
-import { RoleResponse } from '@/domain/models/role/response/role-response'; // Import RoleResponse
+import { type PermissionResponse } from '@/domain/models/role/response/permission-reponse';
+import { type RoleResponse } from '@/domain/models/role/response/role-response'; // Import RoleResponse
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import {
   Box,
@@ -42,7 +42,7 @@ export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormPr
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const isUpdateMode = !!role; // Determine if in update mode
+  const isUpdateMode = Boolean(role); // Determine if in update mode
 
   const resetForm = () => {
     setName('');
@@ -112,11 +112,11 @@ export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormPr
         <DialogTitle>{isUpdateMode ? 'Update Role' : 'Create Role'}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={2}>
-            <TextField required label="Role Name" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
+            <TextField required label="Role Name" value={name} onChange={(e) => { setName(e.target.value); }} fullWidth />
             <TextField
               label="Description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => { setDescription(e.target.value); }}
               fullWidth
               multiline
               rows={3}
@@ -127,7 +127,7 @@ export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormPr
                 labelId="permission-select-label"
                 multiple
                 value={selectedPermissions}
-                onChange={(e) => setSelectedPermissions(e.target.value as string[])}
+                onChange={(e) => { setSelectedPermissions(e.target.value as string[]); }}
                 input={<OutlinedInput label="Permissions" />}
                 renderValue={(selected) => selected.join(', ')}
               >

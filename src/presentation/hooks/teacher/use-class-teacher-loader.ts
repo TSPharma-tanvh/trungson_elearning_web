@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type Dispatch, type RefObject, type SetStateAction } from 'react';
 import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
-import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
-import { ClassTeacherListResult } from '@/domain/models/teacher/response/class-teacher-result';
-import { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
-import { ActiveEnum, DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import type { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
+import type { ClassTeacherListResult } from '@/domain/models/teacher/response/class-teacher-result';
+import type { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
+import { ActiveEnum } from '@/utils/enum/core-enum';
+import type { LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface UseClassTeacherSelectLoaderProps {
   classUsecase: ClassTeacherUsecase | null;
@@ -15,21 +18,21 @@ interface UseClassTeacherSelectLoaderProps {
 
 interface ClassTeacherSelectLoaderState {
   classes: ClassTeacherResponse[];
-  loadingClassTeacheres: boolean;
+  loadingClassTeachers: boolean;
   hasMore: boolean;
   isSelectOpen: boolean;
   pageNumber: number;
   totalPages: number;
-  listRef: React.RefObject<HTMLUListElement>;
-  setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSearchText: React.Dispatch<React.SetStateAction<string>>;
-  setClassTeacherType: React.Dispatch<React.SetStateAction<LearningModeEnum | undefined>>;
-  setScheduleStatus: React.Dispatch<React.SetStateAction<ScheduleStatusEnum | undefined>>;
+  listRef: RefObject<HTMLUListElement>;
+  setIsSelectOpen: Dispatch<SetStateAction<boolean>>;
+  setSearchText: Dispatch<SetStateAction<string>>;
+  setClassTeacherType: Dispatch<SetStateAction<LearningModeEnum | undefined>>;
+  setScheduleStatus: Dispatch<SetStateAction<ScheduleStatusEnum | undefined>>;
   searchText: string;
   classType: LearningModeEnum | undefined;
   scheduleStatus: ScheduleStatusEnum | undefined;
   disableStatus: StatusEnum | undefined;
-  loadClassTeacheres: (page: number, reset?: boolean) => Promise<void>;
+  loadClassTeachers: (page: number, reset?: boolean) => Promise<void>;
 }
 
 export function useClassTeacherSelectLoader({
@@ -39,59 +42,71 @@ export function useClassTeacherSelectLoader({
   scheduleStatus: initialScheduleStatus,
   searchText: initialSearchText = '',
 }: UseClassTeacherSelectLoaderProps): ClassTeacherSelectLoaderState {
-  const [classes, setClassTeacheres] = useState<ClassTeacherResponse[]>([]);
+  const [classes, setClassTeachers] = useState<ClassTeacherResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingClassTeacheres, setLoadingClassTeacheres] = useState(false);
+  const [loadingClassTeachers, setLoadingClassTeachers] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [searchText, setSearchText] = useState(initialSearchText);
   const [classType, setClassTeacherType] = useState<LearningModeEnum | undefined>(initialClassTeacherType);
   const [scheduleStatus, setScheduleStatus] = useState<ScheduleStatusEnum | undefined>(initialScheduleStatus);
+
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const loadClassTeachers = useCallback(
+    async (page: number, reset = false): Promise<void> => {
+      if (!classUsecase || loadingClassTeachers || !isOpen) return;
 
-  const loadClassTeacheres = async (page: number, reset: boolean = false) => {
-    if (!classUsecase || loadingClassTeacheres || !isOpen) return;
+      setLoadingClassTeachers(true);
+      abortControllerRef.current = new AbortController();
 
-    setLoadingClassTeacheres(true);
-    abortControllerRef.current = new AbortController();
+      try {
+        const request = new GetClassTeacherRequest({
+          searchText: searchText || undefined,
+          status: ActiveEnum[ActiveEnum.Active],
+          pageNumber: page,
+          pageSize: 10,
+        });
 
-    try {
-      const request = new GetClassTeacherRequest({
-        searchText: searchText || undefined,
-        status: ActiveEnum[ActiveEnum.Active],
-        pageNumber: page,
-        pageSize: 10,
-      });
+        const result: ClassTeacherListResult = await classUsecase.getClassTeacherListInfo(request);
 
-      const result: ClassTeacherListResult = await classUsecase.getClassTeacherListInfo(request);
-      if (isOpen) {
-        setClassTeacheres((prev) => (reset || page === 1 ? result.teachers : [...prev, ...result.teachers]));
-        setHasMore(result.teachers.length > 0 && result.totalRecords > classes.length + result.teachers.length);
-        setTotalPages(Math.ceil(result.totalRecords / 10));
-        setPageNumber(page);
+        if (isOpen) {
+          setClassTeachers((prev) => {
+            const updated = reset || page === 1 ? result.teachers : [...prev, ...result.teachers];
+            setHasMore(result.teachers.length > 0 && result.totalRecords > updated.length);
+            return updated;
+          });
+          setTotalPages(Math.ceil(result.totalRecords / 10));
+          setPageNumber(page);
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'An unknown error occurred';
+        CustomSnackBar.showSnackbar(message, 'error');
+      } finally {
+        if (isOpen) setLoadingClassTeachers(false);
       }
-    } catch (error) {
-      console.error('Error loading classes:', error);
-    } finally {
-      if (isOpen) setLoadingClassTeacheres(false);
-    }
-  };
+    },
+    [classUsecase, loadingClassTeachers, isOpen, searchText]
+  );
 
   useEffect(() => {
-    if (isOpen) {
-      setClassTeacheres([]);
+    if (!isOpen) return;
+
+    const loadInitial = async () => {
+      setClassTeachers([]);
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
-      loadClassTeacheres(1, true);
-    }
+      await loadClassTeachers(1, true);
+    };
+
+    void loadInitial();
 
     return () => {
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
-      setClassTeacheres([]);
+      setClassTeachers([]);
       setPageNumber(1);
       setTotalPages(1);
       setHasMore(true);
@@ -101,7 +116,7 @@ export function useClassTeacherSelectLoader({
 
   return {
     classes,
-    loadingClassTeacheres,
+    loadingClassTeachers,
     hasMore,
     isSelectOpen,
     pageNumber,
@@ -115,6 +130,6 @@ export function useClassTeacherSelectLoader({
     classType,
     scheduleStatus,
     disableStatus: undefined,
-    loadClassTeacheres,
+    loadClassTeachers,
   };
 }

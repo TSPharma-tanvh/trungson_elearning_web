@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
-import { UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
+import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
+import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { UserProgressEnum } from '@/utils/enum/core-enum';
 import {
@@ -101,7 +101,7 @@ export default function UserCourseProgressTable({
         count={count}
         page={page}
         rowsPerPage={rowsPerPage}
-        getRowId={(row) => row.id!}
+        getRowId={(row) => row.id}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteUserCourseProgresss}
@@ -257,7 +257,7 @@ export default function UserCourseProgressTable({
               <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
 
               <TableCell align="right">
-                <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+                <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
                   <MoreVert />
                 </IconButton>
               </TableCell>
@@ -266,25 +266,21 @@ export default function UserCourseProgressTable({
         }}
       />
 
-      {editUserCourseProgressData && (
-        <UpdateUserCourseProgressFormDialog
+      {editUserCourseProgressData ? <UpdateUserCourseProgressFormDialog
           open={editOpen}
           data={editUserCourseProgressData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditUserCourseProgress(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {editUserCourseProgressData && (
-        <UserCourseProgressDetailForm
+      {editUserCourseProgressData ? <UserCourseProgressDetailForm
           open={viewOpen}
           userCourseProgressId={editUserCourseProgressData.id ?? null}
-          onClose={() => setViewOpen(false)}
-        />
-      )}
+          onClose={() => { setViewOpen(false); }}
+        /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

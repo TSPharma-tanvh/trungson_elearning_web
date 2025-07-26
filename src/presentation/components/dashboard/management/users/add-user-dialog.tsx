@@ -20,11 +20,11 @@ import {
 
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
 
-type Props = {
+interface Props {
   open: boolean;
   onClose: () => void;
   onSubmit: () => Promise<void>;
-};
+}
 
 export const AddUserDialog: React.FC<Props> = ({ open, onClose, onSubmit }) => {
   const { userUsecase } = useDI();
@@ -104,7 +104,7 @@ export const AddUserDialog: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                    <IconButton onClick={() => { setShowPassword((prev) => !prev); }} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -129,7 +129,7 @@ export const AddUserDialog: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setShowConfirmPassword((prev) => !prev)} edge="end">
+                    <IconButton onClick={() => { setShowConfirmPassword((prev) => !prev); }} edge="end">
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>

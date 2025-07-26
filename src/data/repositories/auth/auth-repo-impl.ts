@@ -1,7 +1,7 @@
-import { LoginRequest } from '@/domain/models/auth/request/login-request';
-import { LoginResponse } from '@/domain/models/auth/response/login-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { AuthRepository } from '@/domain/repositories/auth/auth-repository';
+import { type LoginRequest } from '@/domain/models/auth/request/login-request';
+import { type LoginResponse } from '@/domain/models/auth/response/login-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type AuthRepository } from '@/domain/repositories/auth/auth-repository';
 import axios from 'axios';
 
 import { apiClient } from '@/data/api/api-client';
@@ -19,7 +19,7 @@ export class AuthRepositoryImpl implements AuthRepository {
 
     const apiResponse = response.data;
 
-    if (!apiResponse || !apiResponse.isSuccessStatusCode) {
+    if (!apiResponse?.isSuccessStatusCode) {
       throw new Error(apiResponse?.message);
     }
 

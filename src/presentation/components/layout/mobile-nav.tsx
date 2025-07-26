@@ -4,15 +4,12 @@ import * as React from 'react';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { ArrowSquareUpRight as ArrowSquareUpRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareUpRight';
 import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 import { CaretUp as CaretUpIcon } from '@phosphor-icons/react/dist/ssr/CaretUp';
-import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
@@ -91,11 +88,12 @@ function renderNavItems({
     const Icon = icon ? navIcons[icon] : null;
 
     if (subItems) {
-      const hasActiveChild = subItems.some((sub) => isNavItemActive({ pathname, ...sub }));
       acc.push(
         <Box key={key} sx={{ mb: 1 }}>
           <Box
-            onClick={() => toggleExpanded(key)}
+            onClick={() => {
+              toggleExpanded(key);
+            }}
             sx={{
               alignItems: 'center',
               borderRadius: 1,
@@ -109,7 +107,7 @@ function renderNavItems({
             }}
           >
             <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
-              {Icon ? <Icon fill={'var(--mui-palette-common-white)'} fontSize="var(--icon-fontSize-md)" /> : null}
+              {Icon ? <Icon fill="var(--mui-palette-common-white)" fontSize="var(--icon-fontSize-md)" /> : null}
             </Box>
             <Box sx={{ flex: '1 1 auto' }}>
               <Typography
@@ -128,8 +126,8 @@ function renderNavItems({
           {expanded.includes(key) && (
             <Stack component="ul" spacing={0.5} sx={{ listStyle: 'none', m: 0, pl: 4 }}>
               {subItems.map((subItem) => {
-                const { key, ...rest } = subItem;
-                return <NavItem key={key} pathname={pathname} {...rest} />;
+                const { key: subItemKey, ...rest } = subItem;
+                return <NavItem key={subItemKey} pathname={pathname} {...rest} />;
               })}
             </Stack>
           )}
@@ -137,8 +135,8 @@ function renderNavItems({
       );
     } else {
       // Standalone item
-      const { key, ...rest } = curr;
-      acc.push(<NavItem key={key} pathname={pathname} {...rest} />);
+      const { key: standaloneKey, ...rest } = curr;
+      acc.push(<NavItem key={standaloneKey} pathname={pathname} {...rest} />);
     }
 
     return acc;

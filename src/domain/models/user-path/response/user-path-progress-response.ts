@@ -6,7 +6,7 @@ export class UserPathProgressResponse {
   startDate?: string;
   endDate?: string;
   lastAccess?: string;
-  status: string = '';
+  status = '';
 
   static fromJson(json: any): UserPathProgressResponse {
     const dto = new UserPathProgressResponse();

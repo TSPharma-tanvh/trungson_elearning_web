@@ -2,21 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
-import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
-import { EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
+import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
+import { type EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
 import { useEmployeeSelectLoader } from '@/presentation/hooks/employee/use-employee-select-loader';
 import { useEmployeeSelectDebounce } from '@/presentation/hooks/employee/user-course-select-debounce';
-import {
-  DisplayTypeDisplayNames,
-  DisplayTypeEnum,
-  LearningModeDisplayNames,
-  LearningModeEnum,
-  ScheduleStatusDisplayNames,
-  ScheduleStatusEnum,
-  StatusDisplayNames,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
-import { Book, BookOutlined, Info, InfoOutlined, Visibility } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -36,14 +26,13 @@ import {
   OutlinedInput,
   Pagination,
   Select,
-  SelectChangeEvent,
-  SelectProps,
-  TextField,
   Typography,
   useMediaQuery,
+  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import EmployeeDetailForm from '@/presentation/components/dashboard/management/employee/employee-detail-form';
 
@@ -55,13 +44,6 @@ interface EmployeeSelectDialogProps extends Omit<SelectProps<string>, 'value' | 
   disabled?: boolean;
   pathID?: string;
 }
-
-const filterOptions = {
-  employeeType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
-  displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
-  scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
-  disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
-};
 
 export function EmployeeSelectDialog({
   employeeUsecase,
@@ -114,7 +96,7 @@ export function EmployeeSelectDialog({
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (employeeUsecase && !loadingEmployees) {
-      loadEmployees(newPage, true);
+      void loadEmployees(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -147,11 +129,12 @@ export function EmployeeSelectDialog({
           if (updated) {
             setSelectedEmployeeMap(newMap);
           }
-        } catch (error) {
-          console.error('Error fetching selected employees:', error);
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         }
       };
-      fetchSelectedEmployees();
+      void fetchSelectedEmployees();
     }
   }, [employeeUsecase, value, pathID, selectedEmployeeMap]);
 
@@ -193,7 +176,12 @@ export function EmployeeSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Select Employee</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -216,7 +204,9 @@ export function EmployeeSelectDialog({
                 key={employee.id}
                 value={employee.id}
                 selected={localValue === employee.id}
-                onClick={() => setLocalValue(employee.id ?? '')}
+                onClick={() => {
+                  setLocalValue(employee.id ?? '');
+                }}
               >
                 <Checkbox checked={localValue === employee.id} />
                 <ListItemText primary={employee.name} />
@@ -233,11 +223,11 @@ export function EmployeeSelectDialog({
                 </IconButton>
               </MenuItem>
             ))}
-            {loadingEmployees && (
+            {loadingEmployees ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
               </Typography>
-            )}
+            ) : null}
             {!loadingEmployees && employees.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 No employees found
@@ -266,13 +256,15 @@ export function EmployeeSelectDialog({
           </Box>
         </DialogActions>
 
-        {selectedEmployee && (
+        {selectedEmployee ? (
           <EmployeeDetailForm
             open={viewOpen}
             employeeId={selectedEmployee.id ?? null}
-            onClose={() => setViewOpen(false)}
+            onClose={() => {
+              setViewOpen(false);
+            }}
           />
-        )}
+        ) : null}
       </Dialog>
     </>
   );

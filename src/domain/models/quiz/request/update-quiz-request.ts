@@ -1,4 +1,4 @@
-import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, type QuizTypeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateQuizRequest {
   id!: string;

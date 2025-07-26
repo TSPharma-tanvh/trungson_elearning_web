@@ -45,7 +45,7 @@ module.exports = {
     ],
     'import/newline-after-import': 'error',
     'react/jsx-uses-react': 'error',
-    'react/react-in-jsx-scope': 'error',
+    'react/react-in-jsx-scope': 'off',
     'unicorn/filename-case': [
       'error',
       {

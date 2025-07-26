@@ -1,10 +1,10 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
-import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
+import { type GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
 import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
 import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
-import { ClassTeacherListResult } from '@/domain/models/teacher/response/class-teacher-result';
-import { ClassTeacherRepository } from '@/domain/repositories/class/class-teacher-repository';
+import { type ClassTeacherListResult } from '@/domain/models/teacher/response/class-teacher-result';
+import { type ClassTeacherRepository } from '@/domain/repositories/class/class-teacher-repository';
 import { ActiveEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 export class ClassTeacherUsecase {
@@ -32,9 +32,9 @@ export class ClassTeacherUsecase {
       throw new Error('ID is missing.');
     }
 
-    var result = await this.ClassTeacherRepo.getClassTeacherById(id);
+    const result = await this.ClassTeacherRepo.getClassTeacherById(id);
 
-    var userResponse = ClassTeacherResponse.fromJson(result.result);
+    const userResponse = ClassTeacherResponse.fromJson(result.result);
 
     return userResponse;
   }
@@ -46,7 +46,7 @@ export class ClassTeacherUsecase {
   }
 
   async updateClassTeacher(request: UpdateClassTeacherRequest): Promise<ApiResponse> {
-    var result = await this.ClassTeacherRepo.updateClassTeacher(request);
+    const result = await this.ClassTeacherRepo.updateClassTeacher(request);
 
     return result;
   }
@@ -57,7 +57,7 @@ export class ClassTeacherUsecase {
       userID: userId ?? '',
       status: ActiveEnum[ActiveEnum.Inactive],
     });
-    var result = await this.ClassTeacherRepo.updateClassTeacher(newFormData);
+    const result = await this.ClassTeacherRepo.updateClassTeacher(newFormData);
     return result;
   }
 }

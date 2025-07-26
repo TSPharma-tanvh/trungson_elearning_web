@@ -64,7 +64,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => window.removeEventListener('resize', updateRows);
+    return () => { window.removeEventListener('resize', updateRows); };
   }, [fullScreen]);
 
   return (
@@ -74,7 +74,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
           Create Course Path
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -112,7 +112,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
               <CustomTextField
                 label="Tên khóa học"
                 value={form.name}
-                onChange={(val) => handleChange('name', val)}
+                onChange={(val) => { handleChange('name', val); }}
                 disabled={disabled}
               />
             </Grid>
@@ -121,7 +121,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
               <CustomTextField
                 label="Chi tiết"
                 value={form.detail}
-                onChange={(val) => handleChange('detail', val)}
+                onChange={(val) => { handleChange('detail', val); }}
                 disabled={disabled}
                 multiline
                 rows={detailRows}
@@ -138,7 +138,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={form.startTime}
-                onChange={(val) => handleChange('startTime', val)}
+                onChange={(val) => { handleChange('startTime', val); }}
                 disabled={disabled}
               />
             </Grid>
@@ -147,7 +147,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={form.endTime}
-                onChange={(val) => handleChange('endTime', val)}
+                onChange={(val) => { handleChange('endTime', val); }}
                 disabled={disabled}
               />
             </Grid>
@@ -156,7 +156,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
               <CustomSelectDropDown<StatusEnum>
                 label="Trạng thái"
                 value={form.status!}
-                onChange={(val) => handleChange('status', val)}
+                onChange={(val) => { handleChange('status', val); }}
                 disabled={disabled}
                 options={[
                   { value: StatusEnum.Enable, label: 'Kích hoạt' },
@@ -169,7 +169,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
               <CustomSelectDropDown<DisplayTypeEnum>
                 label="Kiểu hiển thị"
                 value={form.displayType!}
-                onChange={(val) => handleChange('displayType', val)}
+                onChange={(val) => { handleChange('displayType', val); }}
                 disabled={disabled}
                 options={[
                   { value: DisplayTypeEnum.Public, label: 'Công khai' },
@@ -179,7 +179,7 @@ export function CreateCoursePathDialog({ disabled = false, onSubmit, loading = f
             </Grid>
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => onSubmit(form)} loading={loading} disabled={disabled} />
+              <CustomButton label="Tạo mới" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
             </Grid>
           </Grid>
         </Box>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
-import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
@@ -64,7 +64,7 @@ export default function CourseTable({
         count={count}
         page={page}
         rowsPerPage={rowsPerPage}
-        getRowId={(row) => row.id!}
+        getRowId={(row) => row.id}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteCourses}
@@ -126,7 +126,7 @@ export default function CourseTable({
             <TableCell>{row.scheduleStatus}</TableCell>
             <TableCell>{row.displayType}</TableCell>
             <TableCell align="right">
-              <IconButton onClick={(e) => onActionClick(e as React.MouseEvent<HTMLElement>)}>
+              <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
                 <MoreVert />
               </IconButton>
             </TableCell>
@@ -134,21 +134,17 @@ export default function CourseTable({
         )}
       />
 
-      {editCourseData && (
-        <UpdateCourseFormDialog
+      {editCourseData ? <UpdateCourseFormDialog
           open={editOpen}
           data={editCourseData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => { setEditOpen(false); }}
           onSubmit={async (updatedData) => {
             await onEditCourse(updatedData);
             setEditOpen(false);
           }}
-        />
-      )}
+        /> : null}
 
-      {editCourseData && (
-        <CourseDetailForm open={viewOpen} courseId={editCourseData.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {editCourseData ? <CourseDetailForm open={viewOpen} courseId={editCourseData.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { GetRoleRequest } from '@/domain/models/role/request/get-role-request';
 import { UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
-import { RoleResponse } from '@/domain/models/role/response/role-response';
+import { type RoleResponse } from '@/domain/models/role/response/role-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
@@ -51,7 +51,7 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handlePageChange = (_: unknown, newPage: number) => setPage(newPage);
+  const handlePageChange = (_: unknown, newPage: number) => { setPage(newPage); };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));

@@ -1,8 +1,8 @@
 export class EnrollmentCriteriaResponse {
-  id: string = '';
+  id = '';
   name?: string;
   desc?: string;
-  targetType: string = '';
+  targetType = '';
   targetID?: string;
   targetLevelID?: string;
   maxCapacity?: number;

@@ -1,4 +1,4 @@
-import { StatusEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { type StatusEnum, type UserQuizProgressEnum } from '@/utils/enum/core-enum';
 
 import { QuizResponse } from '../../quiz/response/quiz-response';
 import { UserAnswerResponse } from '../../user-answer/response/user-answer-response';

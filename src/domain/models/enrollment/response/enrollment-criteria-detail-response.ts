@@ -6,10 +6,10 @@ import { QuizResponse } from '../../quiz/response/quiz-response';
 import { EnrollmentCriteriaCourseRelation } from './enrollment-criteria-course-relation-response';
 
 export class EnrollmentCriteriaDetailResponse {
-  id: string = '';
+  id = '';
   name?: string;
   desc?: string;
-  enrollmentCriteriaType: string = '';
+  enrollmentCriteriaType = '';
   enrollmentStatus?: string;
   maxCapacity?: number;
   targetLevelID?: string;

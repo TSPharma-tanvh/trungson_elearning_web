@@ -13,8 +13,7 @@ export interface Selection<T = string> {
   handleSelectOne: (key: T) => void;
   handleSelectAll: () => void;
 }
-
-export function userUserSelection<T = string>(keys: T[] = []): Selection<T> {
+export function useUserSelection<T = string>(keys: T[] = []): Selection<T> {
   const [selected, setSelected] = React.useState<Set<T>>(new Set());
 
   React.useEffect(() => {
@@ -45,8 +44,8 @@ export function userUserSelection<T = string>(keys: T[] = []): Selection<T> {
     });
   }, []);
 
-  // Additional helpers
   const isSelected = React.useCallback((key: T) => selected.has(key), [selected]);
+
   const handleSelectOne = React.useCallback((key: T) => {
     setSelected((prev) => {
       const copy = new Set(prev);

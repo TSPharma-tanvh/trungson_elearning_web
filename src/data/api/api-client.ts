@@ -1,10 +1,10 @@
 // src/data/api/apiClient.ts
-import path from 'path';
+import path from 'node:path';
 
 import { ValidationErrorResponse } from '@/domain/models/core/validation-error-response';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import qs from 'qs';
 
 import { paths } from '@/paths';
@@ -56,17 +56,15 @@ class ApiClient {
 
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
-        const data = response.data as any;
+        const data = response.data;
 
         if (typeof data?.isSuccessStatusCode === 'boolean') {
           if (!data.isSuccessStatusCode) {
             CustomSnackBar.showSnackbar(data.message || 'Unknown error', 'error');
             throw new Error(data.message || 'API logic error');
-          } else {
-            if (data.message && response.config.method?.toLowerCase() !== 'get') {
+          } else if (data.message && response.config.method?.toLowerCase() !== 'get') {
               CustomSnackBar.showSnackbar(data.message, 'success');
             }
-          }
         }
 
         return response;
@@ -75,7 +73,7 @@ class ApiClient {
       async (error) => {
         if (axios.isAxiosError(error)) {
           const status = error.response?.status;
-          const data = error.response?.data as any;
+          const data = error.response?.data;
 
           if (status === 400 && data?.errors) {
             const errorMessages: string[] = [];
@@ -87,7 +85,7 @@ class ApiClient {
             });
 
             // Show all validation messages
-            errorMessages.forEach((msg) => CustomSnackBar.showSnackbar(msg, 'error'));
+            errorMessages.forEach((msg) => { CustomSnackBar.showSnackbar(msg, 'error'); });
           } else {
             const msg = data?.message || data?.title || error.message || 'API error';
             CustomSnackBar.showSnackbar(msg, 'error');
@@ -151,7 +149,7 @@ class ApiClient {
       const response = await refreshClient.post(apiEndpoints.token.refreshToken, {
         RefreshToken: refreshToken,
       });
-      const data = response.data as any;
+      const data = response.data;
       if (data.IsSuccess && data.Result && data.StatusCode >= 200 && data.StatusCode < 300) {
         StoreLocalManager.saveLocalData(AppStrings.ACCESS_TOKEN, data.Result.AccessToken);
         StoreLocalManager.saveLocalData(AppStrings.REFRESH_TOKEN, data.Result.RefreshToken);

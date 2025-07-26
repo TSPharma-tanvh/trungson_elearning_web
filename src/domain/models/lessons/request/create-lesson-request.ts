@@ -1,10 +1,10 @@
-import { CategoryEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 export class CreateLessonRequest {
   courseID?: string;
   name?: string;
   detail?: string;
-  enablePlay: boolean = true;
+  enablePlay = true;
   status: StatusEnum = StatusEnum.Enable;
   lessonType: LearningModeEnum = LearningModeEnum.Online;
   quizIDs?: string;

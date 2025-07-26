@@ -7,8 +7,8 @@ export class GetUserPathProgressRequest {
   lastAccess?: string;
   status?: string; //UserProgressEnum
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetUserPathProgressRequest>) {
     Object.assign(this, init);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { RoleResponse } from '@/domain/models/role/response/role-response';
+import { type RoleResponse } from '@/domain/models/role/response/role-response';
 import { MoreVert } from '@mui/icons-material';
 import {
   Box,
@@ -206,7 +206,7 @@ export default function RolesTable({
                 return (
                   <TableRow hover key={row.id} selected={isItemSelected}>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => handleSelectOne(row.id ?? '')} />
+                      <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id ?? ''); }} />
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.description}</TableCell>
@@ -237,7 +237,7 @@ export default function RolesTable({
                       </Stack>
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton onClick={(e) => handleMenuOpen(e, row.id ?? '')}>
+                      <IconButton onClick={(e) => { handleMenuOpen(e, row.id ?? ''); }}>
                         <MoreVert />
                       </IconButton>
                     </TableCell>

@@ -18,7 +18,7 @@ import {
   TableRow,
 } from '@mui/material';
 
-import { ConfirmDeleteDialog } from '../core/dialog/confirm-delete-dialog';
+import { ConfirmDeleteDialog } from "./dialog/confirm-delete-dialog";
 
 interface CustomTableProps<T> {
   rows: T[];
@@ -80,7 +80,7 @@ export function CustomTable<T>({
     setSelectedRow(row);
   };
 
-  const handleMenuClose = () => setAnchorEl(null);
+  const handleMenuClose = () => { setAnchorEl(null); };
 
   const handleOpenDeleteDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -128,7 +128,7 @@ export function CustomTable<T>({
                 '&:hover': { backgroundColor: 'var(--mui-palette-secondary-dark)' },
               }}
               variant="contained"
-              onClick={() => handleOpenDeleteDialog(Array.from(selected))}
+              onClick={() => { handleOpenDeleteDialog(Array.from(selected)); }}
             >
               {deleteConfirmHeaderTitle} ({selected.size})
             </Button>
@@ -182,13 +182,13 @@ export function CustomTable<T>({
                 return (
                   <TableRow key={id} selected={isSelected(id)} hover>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isSelected(id)} onChange={() => handleSelectOne(id)} />
+                      <Checkbox checked={isSelected(id)} onChange={() => { handleSelectOne(id); }} />
                     </TableCell>
                     {renderRow(
                       row,
                       isSelected(id),
-                      () => handleSelectOne(id),
-                      (e) => handleMenuClick(e as React.MouseEvent<HTMLElement>, row)
+                      () => { handleSelectOne(id); },
+                      (e) => { handleMenuClick(e as React.MouseEvent<HTMLElement>, row); }
                     )}
                   </TableRow>
                 );
@@ -233,8 +233,7 @@ export function CustomTable<T>({
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuList>
-          {selectedRow &&
-            actionMenuItems.map((item, idx) => (
+          {selectedRow ? actionMenuItems.map((item, idx) => (
               <MenuItem
                 key={idx}
                 onClick={() => {
@@ -244,7 +243,7 @@ export function CustomTable<T>({
               >
                 {item.label}
               </MenuItem>
-            ))}
+            )) : null}
         </MenuList>
       </Popover>
 

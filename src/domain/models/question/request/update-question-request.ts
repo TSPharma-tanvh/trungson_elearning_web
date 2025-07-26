@@ -1,4 +1,4 @@
-import { CategoryEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, type QuestionEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateQuestionRequest {
   id!: string;
@@ -44,7 +44,7 @@ export class UpdateQuestionRequest {
     if (this.resourceIDs) form.append('resourceIDs', this.resourceIDs);
     if (this.status !== undefined) form.append('Status', this.status.toString());
 
-    this.resources?.forEach((file) => form.append('resources', file));
+    this.resources?.forEach((file) => { form.append('resources', file); });
     if (this.resourceDocumentNo) form.append('resourceDocumentNo', this.resourceDocumentNo);
     if (this.resourcePrefixName) form.append('resourcePrefixName', this.resourcePrefixName);
 
