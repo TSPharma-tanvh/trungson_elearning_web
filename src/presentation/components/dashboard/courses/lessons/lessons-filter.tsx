@@ -2,13 +2,11 @@
 
 import * as React from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { LearningModeEnum } from '@/utils/enum/core-enum';
+import { StatusEnum } from '@/utils/enum/path-enum';
 import {
-  Box,
   Button,
   Card,
-  Checkbox,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -16,8 +14,6 @@ import {
   OutlinedInput,
   Select,
   Stack,
-  TextField,
-  Typography,
 } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
 
@@ -50,7 +46,9 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
         <OutlinedInput
           size="small"
           value={searchText}
-          onChange={(e) => { setSearchText(e.target.value); }}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
           fullWidth
           placeholder="Search lesson"
           startAdornment={
@@ -66,9 +64,9 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
           <InputLabel>Type</InputLabel>
           <Select
             value={lessonsType !== undefined ? lessonsType.toString() : ''}
-            onChange={(e) =>
-              { setLessonsType(e.target.value === '' ? undefined : (Number(e.target.value) as LearningModeEnum)); }
-            }
+            onChange={(e) => {
+              setLessonsType(e.target.value === '' ? undefined : (Number(e.target.value) as LearningModeEnum));
+            }}
             label="Type"
           >
             <MenuItem value="">All</MenuItem>
@@ -82,7 +80,9 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
           <InputLabel>Status</InputLabel>
           <Select
             value={status !== undefined ? status.toString() : ''}
-            onChange={(e) => { setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum)); }}
+            onChange={(e) => {
+              setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum));
+            }}
             label="Status"
           >
             <MenuItem value="">All</MenuItem>

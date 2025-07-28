@@ -6,7 +6,7 @@ import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request
 import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { type UserPathProgressDetailListResult } from '@/domain/models/user-path/response/user-path-progress-detail-result';
 import { type UserPathProgressRepository } from '@/domain/repositories/progress/user-path-progress-repository';
-import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserPathProgressUsecase {
   constructor(private readonly userPathProgressRepo: UserPathProgressRepository) {}
@@ -18,7 +18,8 @@ export class UserPathProgressUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(UserPathProgressDetailResponse.fromJSON);
+    // const data = result.result.map(UserPathProgressDetailResponse.fromJSON);
+    const data = result.result.map((x) => UserPathProgressDetailResponse.fromJSON(x));
 
     return {
       progress: data,

@@ -17,7 +17,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 // type Props = {
 //   user: UserResponse;
 //   formData: UpdateUserInfoRequest;
-//   onChange: (field: keyof UpdateUserInfoRequest, value: any) => void;
+//   onChange: (field: keyof UpdateUserInfoRequest, value: unknown) => void;
 //   onSubmit: () => void;
 // };
 
@@ -79,14 +79,14 @@ import Grid from '@mui/material/Unstable_Grid2';
 //     </form>
 //   );
 // }
-interface Props {
+interface AccountDetailsProps {
   user: UserResponse | null;
   formData: UpdateUserInfoRequest;
-  onChange: (field: keyof UpdateUserInfoRequest, value: any) => void;
+  onChange: (field: keyof UpdateUserInfoRequest, value: unknown) => void;
   onSubmit: () => void;
 }
 
-export function AccountDetailsForm({ user, formData, onChange, onSubmit }: Props): React.JSX.Element {
+export function AccountDetailsForm({ formData, onChange, onSubmit }: AccountDetailsProps): React.JSX.Element {
   return (
     <form
       onSubmit={(event) => {
@@ -106,7 +106,9 @@ export function AccountDetailsForm({ user, formData, onChange, onSubmit }: Props
                   id="first-name"
                   label="First name"
                   value={formData.firstName || ''}
-                  onChange={(e) => { onChange('firstName', e.target.value); }}
+                  onChange={(e) => {
+                    onChange('firstName', e.target.value);
+                  }}
                 />
               </FormControl>
             </Grid>
@@ -117,7 +119,9 @@ export function AccountDetailsForm({ user, formData, onChange, onSubmit }: Props
                   id="last-name"
                   label="Last name"
                   value={formData.lastName || ''}
-                  onChange={(e) => { onChange('lastName', e.target.value); }}
+                  onChange={(e) => {
+                    onChange('lastName', e.target.value);
+                  }}
                 />
               </FormControl>
             </Grid>
@@ -128,7 +132,9 @@ export function AccountDetailsForm({ user, formData, onChange, onSubmit }: Props
                   id="email"
                   label="Email"
                   value={formData.email || ''}
-                  onChange={(e) => { onChange('email', e.target.value); }}
+                  onChange={(e) => {
+                    onChange('email', e.target.value);
+                  }}
                 />
               </FormControl>
             </Grid>

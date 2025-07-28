@@ -85,7 +85,7 @@ export class UpdateQuizRequest {
   toFormData(): FormData {
     const formData = new FormData();
 
-    const appendIfExists = (key: string, value: any) => {
+    const appendIfExists = (key: string, value: unknown) => {
       if (value !== undefined && value !== null) {
         formData.append(key, value instanceof Date ? value.toISOString() : value.toString());
       }

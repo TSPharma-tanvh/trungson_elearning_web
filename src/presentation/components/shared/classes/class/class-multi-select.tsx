@@ -174,7 +174,6 @@ export function ClassMultiSelectDialog({
         setSelectedClassMap(newMap);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classes, dialogOpen]);
 
   return (

@@ -15,19 +15,30 @@ import { AddressInfoForm } from './address-info-form';
 import { CustomerMetaForm } from './customer-meta-form';
 import { PersonalInfoForm } from './personal-info-form';
 
+interface CustomerFormData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  // Add all expected fields from all subforms
+  [key: string]: unknown;
+}
+
 interface AddCustomerDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: unknown) => void;
 }
 
 export function AddCustomerDialog({ open, onClose, onSubmit }: AddCustomerDialogProps) {
-  const [formData, setFormData] = React.useState<any>({});
+  const [formData, setFormData] = React.useState<CustomerFormData>({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleChange = (field: string, value: any) => {
-    setFormData((prev: any) => ({ ...prev, [field]: value }));
+  const handleChange = (field: string, value: unknown) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = () => {

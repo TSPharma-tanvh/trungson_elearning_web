@@ -22,7 +22,7 @@ const CustomSnackBar = {
     if (enqueueSnackbarFn) {
       enqueueSnackbarFn(message, type, durationMs);
     } else {
-      console.warn('Snackbar provider not initialized yet:', message);
+      CustomSnackBar.showSnackbar(`Snackbar provider not initialized yet: ${message}`, 'error');
     }
   },
 };

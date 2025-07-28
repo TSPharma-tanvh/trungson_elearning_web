@@ -10,6 +10,7 @@ import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateLessonDialog } from '@/presentation/components/dashboard/courses/lessons/create-lesson-form';
 import LessonTable from '@/presentation/components/dashboard/courses/lessons/lesson-table';
 import { LessonsFilters } from '@/presentation/components/dashboard/courses/lessons/lessons-filter';
@@ -19,11 +20,10 @@ export default function Page(): React.JSX.Element {
   const [filters, setFilters] = React.useState<GetLessonRequest>(new GetLessonRequest({ pageNumber: 1, pageSize: 10 }));
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [selectedRow, setSelectedRow] = React.useState<LessonDetailResponse | null>(null);
 
   const [lessons, setLessons] = React.useState<LessonDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
 
   const fetchLessons = React.useCallback(async () => {
@@ -36,13 +36,14 @@ export default function Page(): React.JSX.Element {
       const { Lessons, totalRecords } = await lessonUsecase.getLessonListInfo(request);
       setLessons(Lessons);
       setTotalCount(totalRecords);
-    } catch (error) {
-      console.error('Failed to fetch Lesson paths:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   }, [filters, page, rowsPerPage, lessonUsecase]);
 
   React.useEffect(() => {
-    fetchLessons();
+    void fetchLessons();
   }, [fetchLessons]);
 
   const handleFilter = (newFilters: GetLessonRequest) => {
@@ -65,8 +66,9 @@ export default function Page(): React.JSX.Element {
       await lessonUsecase.createLesson(request);
       setShowCreateDialog(false);
       await fetchLessons();
-    } catch (error) {
-      console.error('Failed to create Lesson path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -74,8 +76,9 @@ export default function Page(): React.JSX.Element {
     try {
       await lessonUsecase.updateLesson(request);
       await fetchLessons();
-    } catch (error) {
-      console.error('Failed to update Lesson path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -89,9 +92,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchLessons();
-    } catch (error) {
-      console.error('Failed to delete Lesson paths:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -106,7 +109,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -121,13 +126,15 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteLessonPaths={handleDeleteLessons}
         onEditLesson={handleEditLessonPath}
-       />
+      />
       <CreateLessonDialog
         onSubmit={handleCreateLesson}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

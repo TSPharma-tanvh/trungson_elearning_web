@@ -1,5 +1,3 @@
-import { QuestionEnum } from '@/utils/enum/core-enum';
-
 import { AnswerResponse } from '../../answer/response/answer-response';
 import { CategoryResponse } from '../../category/response/category-response';
 import { FileQuestionRelationResponse } from '../../file/response/file-question-relation-response';

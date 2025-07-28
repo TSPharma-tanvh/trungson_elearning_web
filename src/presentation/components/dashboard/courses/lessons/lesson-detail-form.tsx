@@ -24,15 +24,20 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
+
 import CustomFieldTypography from '../../../core/text-field/custom-typhography';
 
-interface Props {
+interface LessonDetailFormProps {
   open: boolean;
   lessonId: string | null;
   onClose: () => void;
 }
 
 function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; fullScreen: boolean }) {
+  const [quizExpandedLessons, setQuizExpandedLessons] = useState<Record<string, boolean>>({});
+  const [progressExpandedLessons, setProgressExpandedLessons] = useState<Record<string, boolean>>({});
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -69,10 +74,8 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
   const renderQuizzes = () => {
     if (!lesson.quizzes || lesson.quizzes.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
-
     const toggleExpanded = (lessonId: string) => {
-      setExpandedLessons((prev) => ({
+      setQuizExpandedLessons((prev) => ({
         ...prev,
         [lessonId]: !prev[lessonId],
       }));
@@ -83,7 +86,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
         <CardHeader title="Quizzes" sx={{ pl: 2, pb: 1, mb: 2 }} />
         {lesson.quizzes.map((quiz, index) => {
           const lessonId = quiz.id ?? `${index}`;
-          const isExpanded = expandedLessons[lessonId] || false;
+          const isExpanded = quizExpandedLessons[lessonId] || false;
 
           return (
             <Card
@@ -97,7 +100,9 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
                 title={quiz.title ?? `Quiz ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => { toggleExpanded(lessonId); }}
+                    onClick={() => {
+                      toggleExpanded(lessonId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -131,10 +136,8 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
   const renderUserProgress = () => {
     if (!lesson.userLessonProgress || lesson.userLessonProgress.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
-
     const toggleExpanded = (lessonId: string) => {
-      setExpandedLessons((prev) => ({
+      setProgressExpandedLessons((prev) => ({
         ...prev,
         [lessonId]: !prev[lessonId],
       }));
@@ -145,7 +148,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
         <CardHeader title="User Progress" sx={{ pl: 2, pb: 1, mb: 2 }} />
         {lesson.userLessonProgress.map((progress, index) => {
           const lessonId = progress.id ?? `${index}`;
-          const isExpanded = expandedLessons[lessonId] || false;
+          const isExpanded = progressExpandedLessons[lessonId] || false;
 
           return (
             <Card
@@ -159,7 +162,9 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
                 title={progress.id ?? `Quiz ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => { toggleExpanded(lessonId); }}
+                    onClick={() => {
+                      toggleExpanded(lessonId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -221,11 +226,12 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
       </Card>
       {renderEnrollmentCriteria()}
       {renderQuizzes()}
+      {renderUserProgress()}
     </Box>
   );
 }
 
-export default function LessonDetailForm({ open, lessonId, onClose }: Props) {
+export default function LessonDetailForm({ open, lessonId, onClose }: LessonDetailFormProps) {
   const { lessonUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [Lesson, setLesson] = useState<LessonDetailResponse | null>(null);
@@ -237,11 +243,14 @@ export default function LessonDetailForm({ open, lessonId, onClose }: Props) {
       lessonUsecase
         .getLessonById(lessonId)
         .then(setLesson)
-        .catch((error) => {
-          console.error('Error fetching Lesson details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setLesson(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, lessonId, lessonUsecase]);
 
@@ -252,7 +261,11 @@ export default function LessonDetailForm({ open, lessonId, onClose }: Props) {
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Lesson Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

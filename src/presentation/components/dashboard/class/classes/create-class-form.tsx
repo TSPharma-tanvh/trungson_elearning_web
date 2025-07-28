@@ -11,7 +11,7 @@ import { CustomButton } from '@/presentation/components/core/button/custom-butto
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
-interface Props {
+interface CreateClassProps {
   disabled?: boolean;
   onSubmit: (data: CreateClassRequest) => void;
   loading?: boolean;
@@ -19,7 +19,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function CreateClassDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function CreateClassDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateClassProps) {
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
   const [form, setForm] = useState<CreateClassRequest>(
@@ -61,7 +61,9 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => { window.removeEventListener('resize', updateRows); };
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
   return (
@@ -69,7 +71,11 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Tạo lớp học</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -83,7 +89,9 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             <CustomTextField
               label="Tên lớp"
               value={form.className}
-              onChange={(val) => { handleChange('className', val); }}
+              onChange={(val) => {
+                handleChange('className', val);
+              }}
               disabled={disabled}
             />
           </Grid>
@@ -92,7 +100,9 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             <CustomTextField
               label="Chi tiết"
               value={form.classDetail || ''}
-              onChange={(val) => { handleChange('classDetail', val); }}
+              onChange={(val) => {
+                handleChange('classDetail', val);
+              }}
               disabled={disabled}
               multiline
               rows={detailRows}
@@ -103,7 +113,9 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             <CustomDateTimePicker
               label="Thời gian bắt đầu"
               value={form.startAt?.toISOString()}
-              onChange={(val) => { handleChange('startAt', new Date(val)); }}
+              onChange={(val) => {
+                handleChange('startAt', new Date(val));
+              }}
               disabled={disabled}
             />
           </Grid>
@@ -112,7 +124,9 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             <CustomDateTimePicker
               label="Thời gian kết thúc"
               value={form.endAt?.toISOString()}
-              onChange={(val) => { handleChange('endAt', new Date(val)); }}
+              onChange={(val) => {
+                handleChange('endAt', new Date(val));
+              }}
               disabled={disabled}
             />
           </Grid>
@@ -120,7 +134,9 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             <CustomTextField
               label="Thời lượng (HH:mm:ss)"
               value={form.duration}
-              onChange={(val) => { handleChange('duration', val); }}
+              onChange={(val) => {
+                handleChange('duration', val);
+              }}
               disabled={disabled}
             />
           </Grid>
@@ -129,13 +145,22 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
               label="Số phút trễ cho phép"
               type="number"
               value={form.minuteLate}
-              onChange={(val) => { handleChange('minuteLate', Number(val)); }}
+              onChange={(val) => {
+                handleChange('minuteLate', Number(val));
+              }}
               disabled={disabled}
             />
           </Grid>
 
           <Grid item xs={12}>
-            <CustomButton label="Tạo lớp" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
+            <CustomButton
+              label="Tạo lớp"
+              onClick={() => {
+                onSubmit(form);
+              }}
+              loading={loading}
+              disabled={disabled}
+            />
           </Grid>
         </Grid>
       </DialogContent>

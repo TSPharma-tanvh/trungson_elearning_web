@@ -55,6 +55,9 @@ export function CustomersTable({
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
 
+  // State for menu anchor and selected row id
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [menuRowId, setMenuRowId] = React.useState<string | null>(null);
   return (
     <Card>
       <Box sx={{ overflowX: 'auto' }}>
@@ -85,10 +88,6 @@ export function CustomersTable({
           <TableBody>
             {rows.map((row) => {
               const isSelected = selected?.has(row.id);
-
-              // State for menu anchor and selected row id
-              const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-              const [menuRowId, setMenuRowId] = React.useState<string | null>(null);
 
               return (
                 <TableRow hover key={row.id} selected={isSelected}>

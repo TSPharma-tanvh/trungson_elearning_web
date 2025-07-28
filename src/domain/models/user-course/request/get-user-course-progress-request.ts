@@ -1,5 +1,3 @@
-import { UserProgressEnum } from '@/utils/enum/core-enum';
-
 export class GetUserCourseProgressRequest {
   userID?: string;
   coursesID?: string;
@@ -28,7 +26,9 @@ export class GetUserCourseProgressRequest {
     const formData = new FormData();
     Object.entries(this).forEach(([key, value]) => {
       if (Array.isArray(value)) {
-        value.forEach((v) => { formData.append(key, v); });
+        value.forEach((v) => {
+          formData.append(key, v);
+        });
       } else if (value !== undefined && value !== null) {
         formData.append(key, value.toString());
       }

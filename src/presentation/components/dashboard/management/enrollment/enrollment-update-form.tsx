@@ -36,7 +36,7 @@ interface EditEnrollmentDialogProps {
 export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, onSubmit }: EditEnrollmentDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase, classTeacherUsecase } = useDI();
+  const { fileUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateEnrollmentCriteriaRequest>(new UpdateEnrollmentCriteriaRequest({}));
@@ -75,11 +75,11 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
       }
-      await onSubmit(formData);
+      onSubmit(formData);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -106,7 +106,11 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
           Update Enrollment
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -126,7 +130,9 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
               <CustomTextField
                 label="Name"
                 value={formData.name}
-                onChange={(value) => { handleChange('name', value); }}
+                onChange={(value) => {
+                  handleChange('name', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -136,7 +142,9 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
               <CustomTextField
                 label="Detail"
                 value={formData.desc}
-                onChange={(value) => { handleChange('desc', value); }}
+                onChange={(value) => {
+                  handleChange('desc', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
@@ -153,7 +161,9 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
                 disabled={isSubmitting}
                 icon={<QrCode {...iconStyle} />}
                 inputMode="numeric"
-                onValidationChange={(isValid) => { setFieldValidations((prev) => ({ ...prev, minuteLate: isValid })); }}
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
+                }}
               />
             </Grid>
 
@@ -161,7 +171,9 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
               <CustomSelectDropDown
                 label="Status"
                 value={formData.enrollmentStatus ?? ''}
-                onChange={(value) => { handleChange('enrollmentStatus', value); }}
+                onChange={(value) => {
+                  handleChange('enrollmentStatus', value);
+                }}
                 disabled={isSubmitting}
                 options={statusOptions}
               />

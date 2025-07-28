@@ -1,15 +1,15 @@
 'use client';
 
 import React from 'react';
-import { CreateUserCourseProgressRequest } from '@/domain/models/user-course/request/create-user-course-progress-request';
 import { type EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
 import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
 import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateUserCourseProgressDialog } from '@/presentation/components/dashboard/progress/course/user-course-progress-create';
 import { UserCourseProgressFilters } from '@/presentation/components/dashboard/progress/course/user-course-progress-filter';
 import UserCourseProgressTable from '@/presentation/components/dashboard/progress/course/user-course-progress-table';
@@ -18,18 +18,17 @@ export default function Page(): React.JSX.Element {
   const { userCourseProgressUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserCourseProgressRequest>(
     new GetUserCourseProgressRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [userCourseProgress, setUserCourseProgress] = React.useState<UserCourseProgressResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const fetchUserCourseProgresss = React.useCallback(async () => {
+  const fetchUserCourseProgress = React.useCallback(async () => {
     try {
       const request = new GetUserCourseProgressRequest({
         ...filters,
@@ -39,14 +38,16 @@ export default function Page(): React.JSX.Element {
       const { courses, totalRecords } = await userCourseProgressUsecase.getUserCourseProgressListInfo(request);
       setUserCourseProgress(courses);
       setTotalCount(totalRecords);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
       setUserCourseProgress([]);
     }
   }, [filters, page, rowsPerPage, userCourseProgressUsecase]);
 
   React.useEffect(() => {
-    fetchUserCourseProgresss();
-  }, [fetchUserCourseProgresss]);
+    void fetchUserCourseProgress();
+  }, [fetchUserCourseProgress]);
 
   const handleFilter = (newFilters: GetUserCourseProgressRequest) => {
     setFilters(newFilters);
@@ -67,18 +68,20 @@ export default function Page(): React.JSX.Element {
     try {
       await userCourseProgressUsecase.enrollUserCourseProgress(request);
       setShowCreateDialog(false);
-      await fetchUserCourseProgresss();
-    } catch (error) {
-      console.error('Failed to create userCourseProgress course:', error);
+      await fetchUserCourseProgress();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
   const handleEditUserCourseProgress = async (request: UpdateUserCourseProgressRequest) => {
     try {
       await userCourseProgressUsecase.updateUserCourseProgress(request);
-      await fetchUserCourseProgresss();
-    } catch (error) {
-      console.error('Failed to update userCourseProgress course:', error);
+      await fetchUserCourseProgress();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -91,10 +94,10 @@ export default function Page(): React.JSX.Element {
           throw new Error(`Failed to delete course with ID: ${id}`);
         }
       }
-      await fetchUserCourseProgresss();
-    } catch (error) {
-      console.error('Failed to delete userCourseProgress:', error);
-      throw error;
+      await fetchUserCourseProgress();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -111,7 +114,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Enroll Users
         </Button>
@@ -126,14 +131,16 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteUserCourseProgresss={handleDeleteUserCourseProgresss}
         onEditUserCourseProgress={handleEditUserCourseProgress}
-       />
+      />
 
       <CreateUserCourseProgressDialog
         onSubmit={handleCreateUserCourseProgress}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

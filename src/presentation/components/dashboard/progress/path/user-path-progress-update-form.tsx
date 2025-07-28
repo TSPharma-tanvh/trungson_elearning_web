@@ -3,50 +3,28 @@ import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request
 import { type UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import {
-  ApproveStatusEnum,
-  CategoryEnum,
-  CategoryEnumUtils,
-  DisplayTypeEnum,
-  StatusEnum,
-  UserProgressEnum,
-} from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { UserProgressEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
   Grid,
   IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { CategorySelect } from '@/presentation/components/shared/category/category-select';
-import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { PathSelectDialog } from '@/presentation/components/shared/courses/path/path-select';
-import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
-import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
-import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
-import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
-import { UserSelectDialog } from '@/presentation/components/user/user-select';
 
 interface EditUserPathProgressDialogProps {
   open: boolean;
@@ -68,8 +46,6 @@ export function UpdateUserPathProgressFormDialog({
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateUserPathProgressRequest>(new UpdateUserPathProgressRequest({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
 
   useEffect(() => {
     if (userPathProgress && open) {
@@ -98,32 +74,15 @@ export function UpdateUserPathProgressFormDialog({
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      await onSubmit(formData);
+      onSubmit(formData);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const iconStyle = {
-    size: 20,
-    weight: 'fill' as const,
-    color: '#616161',
-  };
-
-  const statusOptions = [
-    { value: StatusEnum.Enable, label: 'Enable' },
-    { value: StatusEnum.Disable, label: 'Disable' },
-    { value: StatusEnum.Deleted, label: 'Deleted' },
-  ];
-
-  const displayTypeOptions = [
-    { value: DisplayTypeEnum.Public, label: 'Public' },
-    { value: DisplayTypeEnum.Private, label: 'Private' },
-  ];
 
   if (!userPathProgress) return null;
 
@@ -134,7 +93,11 @@ export function UpdateUserPathProgressFormDialog({
           Update UserPathProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -182,7 +145,9 @@ export function UpdateUserPathProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={formData.startDate ? DateTimeUtils.formatISODateToString(formData.startDate) : undefined}
-                onChange={(value) => { handleChange('startDate', value); }}
+                onChange={(value) => {
+                  handleChange('startDate', value);
+                }}
                 disabled={false}
               />
             </Grid>
@@ -191,7 +156,9 @@ export function UpdateUserPathProgressFormDialog({
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={formData.endDate ? DateTimeUtils.formatISODateToString(formData.endDate) : undefined}
-                onChange={(value) => { handleChange('endDate', value); }}
+                onChange={(value) => {
+                  handleChange('endDate', value);
+                }}
                 disabled={false}
               />
             </Grid>
@@ -201,7 +168,9 @@ export function UpdateUserPathProgressFormDialog({
               <CustomSelectDropDown<string>
                 label="Trạng thái"
                 value={formData.status}
-                onChange={(val) => { handleChange('status', val); }}
+                onChange={(val) => {
+                  handleChange('status', val);
+                }}
                 disabled={false}
                 options={[
                   { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'Chưa bắt đầu' },

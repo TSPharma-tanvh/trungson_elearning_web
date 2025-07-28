@@ -24,15 +24,18 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
-interface Props {
+interface CourseDetailProps {
   open: boolean;
   courseId: string | null;
   onClose: () => void;
 }
 
 function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; fullScreen: boolean }) {
+  const [courseExpandedLessons, setCourseExpandedLessons] = useState<Record<string, boolean>>({});
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -74,10 +77,8 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
   const renderLessons = () => {
     if (!course.lessons || course.lessons.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
-
     const toggleExpanded = (lessonId: string) => {
-      setExpandedLessons((prev) => ({
+      setCourseExpandedLessons((prev) => ({
         ...prev,
         [lessonId]: !prev[lessonId],
       }));
@@ -88,7 +89,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
         <CardHeader title="Lessons" sx={{ pl: 2, pb: 1, mb: 2 }} />
         {course.lessons.map((lesson, index) => {
           const lessonId = lesson.id ?? `lesson-${index}`;
-          const isExpanded = expandedLessons[lessonId] || false;
+          const isExpanded = courseExpandedLessons[lessonId] || false;
 
           return (
             <Card
@@ -102,7 +103,9 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                 title={lesson.name ?? `Lesson ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => { toggleExpanded(lessonId); }}
+                    onClick={() => {
+                      toggleExpanded(lessonId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -174,7 +177,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
   );
 }
 
-export default function CourseDetailForm({ open, courseId, onClose }: Props) {
+export default function CourseDetailForm({ open, courseId, onClose }: CourseDetailProps) {
   const { courseUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
@@ -186,11 +189,14 @@ export default function CourseDetailForm({ open, courseId, onClose }: Props) {
       courseUsecase
         .getCourseById(courseId)
         .then(setCourse)
-        .catch((error) => {
-          console.error('Error fetching course details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setCourse(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, courseId, courseUsecase]);
 
@@ -201,7 +207,11 @@ export default function CourseDetailForm({ open, courseId, onClose }: Props) {
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Course Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

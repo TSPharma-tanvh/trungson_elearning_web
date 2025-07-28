@@ -1,41 +1,24 @@
 'use client';
 
 import * as React from 'react';
-import type { Metadata } from 'next';
-import { CreateClassRequest } from '@/domain/models/class/request/create-class-request';
-import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
-import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
-import { ClassResponse } from '@/domain/models/class/response/class-response';
 import { type CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
 import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
 import { type UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
 import { type ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
-import { ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-usecase';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Box, useMediaQuery, useTheme } from '@mui/system';
-import { Copy, CopySimple } from '@phosphor-icons/react/dist/ssr';
-import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
-import { Plus, Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
-import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
-import dayjs from 'dayjs';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
-import { config } from '@/config';
-import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { ClassTeacherFilters } from '@/presentation/components/dashboard/class/teacher/class-teacher-filter';
 import TeacherTable from '@/presentation/components/dashboard/class/teacher/class-teacher-table';
 import { CreateClassTeacherDialog } from '@/presentation/components/dashboard/class/teacher/create-teacher-form';
-import { CategoryMultiCheckForm } from '@/presentation/components/shared/category/category-multickeck-form';
 
 export default function Page(): React.JSX.Element {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
   const { classTeacherUsecase } = useDI();
 
-  const [showForm, setShowForm] = React.useState(false);
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetClassTeacherRequest>(
     new GetClassTeacherRequest({ pageNumber: 1, pageSize: 10 })
@@ -44,7 +27,7 @@ export default function Page(): React.JSX.Element {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const fetchTeachers = React.useCallback(async () => {
     try {
@@ -53,21 +36,18 @@ export default function Page(): React.JSX.Element {
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { teachers, totalRecords } = await classTeacherUsecase.getClassTeacherListInfo(request);
-      setTeachers(teachers);
+      const { teachers: teacherList, totalRecords } = await classTeacherUsecase.getClassTeacherListInfo(request);
+      setTeachers(teacherList);
       setTotalCount(totalRecords);
-    } catch (error) {
-      console.error('Failed to fetch class:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   }, [filters, page, rowsPerPage, classTeacherUsecase]);
 
   React.useEffect(() => {
-    fetchTeachers();
+    void fetchTeachers();
   }, [fetchTeachers]);
-
-  const handleAddClick = () => {
-    setShowForm(true);
-  };
 
   const handleFilter = (newFilters: GetClassTeacherRequest) => {
     setFilters(newFilters);
@@ -89,8 +69,9 @@ export default function Page(): React.JSX.Element {
       await classTeacherUsecase.createClassTeacher(request);
       setShowCreateDialog(false);
       await fetchTeachers();
-    } catch (error) {
-      console.error('Failed to create Class path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -98,8 +79,9 @@ export default function Page(): React.JSX.Element {
     try {
       await classTeacherUsecase.updateClassTeacher(request);
       await fetchTeachers();
-    } catch (error) {
-      console.error('Failed to update Class path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -115,9 +97,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchTeachers();
-    } catch (error) {
-      console.error('Failed to delete Class paths:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -132,7 +114,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -147,7 +131,7 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteTeachers={handleDeleteTeachers}
         onEditTeacher={handleEditTeacher}
-       />
+      />
 
       {/* <AddCustomerDialog
         open={showForm}
@@ -162,7 +146,9 @@ export default function Page(): React.JSX.Element {
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

@@ -8,10 +8,6 @@ import { type QuizListResult } from '@/domain/models/quiz/response/quiz-result';
 import { type QuizRepository } from '@/domain/repositories/quiz/quiz-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
-
-
-
-
 export class QuizUsecase {
   constructor(private readonly courseRepo: QuizRepository) {}
 
@@ -22,7 +18,7 @@ export class QuizUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(QuizResponse.fromJSON);
+    const data = result.result.map((x) => QuizResponse.fromJSON(x));
 
     return {
       quizzes: data,

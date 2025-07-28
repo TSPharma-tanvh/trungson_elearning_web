@@ -14,22 +14,18 @@ import {
   IconButton,
   InputAdornment,
   TextField,
-  useMediaQuery,
-  useTheme,
 } from '@mui/material';
 
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
 
-interface Props {
+interface AddUserProps {
   open: boolean;
   onClose: () => void;
   onSubmit: () => Promise<void>;
 }
 
-export const AddUserDialog: React.FC<Props> = ({ open, onClose, onSubmit }) => {
+export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit }) => {
   const { userUsecase } = useDI();
-  const theme = useTheme();
-  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [formData, setFormData] = React.useState<RegisterRequestModel>(
     new RegisterRequestModel({
@@ -55,7 +51,7 @@ export const AddUserDialog: React.FC<Props> = ({ open, onClose, onSubmit }) => {
     setSubmitting(true);
 
     try {
-      const response = await userUsecase.registerUser(formData);
+      await userUsecase.registerUser(formData);
 
       await onSubmit();
       onClose();
@@ -104,7 +100,12 @@ export const AddUserDialog: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => { setShowPassword((prev) => !prev); }} edge="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowPassword((prev) => !prev);
+                      }}
+                      edge="end"
+                    >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -129,7 +130,12 @@ export const AddUserDialog: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => { setShowConfirmPassword((prev) => !prev); }} edge="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowConfirmPassword((prev) => !prev);
+                      }}
+                      edge="end"
+                    >
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>

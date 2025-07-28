@@ -13,7 +13,7 @@ export class FileResourcesUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(FileResourcesResponse.fromJson);
+    const data = result.result.map((x) => FileResourcesResponse.fromJson(x));
 
     return {
       files: data,

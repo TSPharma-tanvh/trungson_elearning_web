@@ -9,6 +9,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CourseFilters } from '@/presentation/components/dashboard/courses/courses/course-filters';
 import CourseTable from '@/presentation/components/dashboard/courses/courses/course-table';
 import { CreateCourseDialog } from '@/presentation/components/dashboard/courses/courses/create-course-form';
@@ -17,11 +18,10 @@ export default function Page(): React.JSX.Element {
   const { courseUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetCourseRequest>(new GetCourseRequest({ pageNumber: 1, pageSize: 10 }));
   const [courses, setCourses] = React.useState<CourseDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -33,16 +33,19 @@ export default function Page(): React.JSX.Element {
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { courses, totalRecords } = await courseUsecase.getCourseListInfo(request);
-      setCourses(courses);
+      const { courses: courseList, totalRecords } = await courseUsecase.getCourseListInfo(request);
+      setCourses(courseList);
       setTotalCount(totalRecords);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
+
       setCourses([]);
     }
   }, [filters, page, rowsPerPage, courseUsecase]);
 
   React.useEffect(() => {
-    fetchCourses();
+    void fetchCourses();
   }, [fetchCourses]);
 
   const handleFilter = (newFilters: GetCourseRequest) => {
@@ -65,8 +68,9 @@ export default function Page(): React.JSX.Element {
       await courseUsecase.createCourse(request);
       setShowCreateDialog(false);
       await fetchCourses();
-    } catch (error) {
-      console.error('Failed to create course:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -74,8 +78,9 @@ export default function Page(): React.JSX.Element {
     try {
       await courseUsecase.updateCourse(request);
       await fetchCourses();
-    } catch (error) {
-      console.error('Failed to update course:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -89,9 +94,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchCourses();
-    } catch (error) {
-      console.error('Failed to delete course:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -108,7 +113,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -123,14 +130,16 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteCourses={handleDeleteCourses}
         onEditCourse={handleEditCourse}
-       />
+      />
 
       <CreateCourseDialog
         onSubmit={handleCreateCourse}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

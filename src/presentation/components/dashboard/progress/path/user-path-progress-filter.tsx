@@ -2,10 +2,8 @@
 
 import * as React from 'react';
 import { GetUserPathProgressRequest } from '@/domain/models/user-path/request/get-user-path-progress-request';
-import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
+import { Button, Card, Stack } from '@mui/material';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -16,7 +14,7 @@ export function UserPathProgressFilters({
   onFilter: (filters: GetUserPathProgressRequest) => void;
 }): React.JSX.Element {
   const [searchText, setSearchText] = React.useState('');
-  const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
+  const [_isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<UserProgressEnum | undefined>(undefined);
 
   const handleFilter = () => {
@@ -54,7 +52,9 @@ export function UserPathProgressFilters({
         <CustomSelectFilter<UserProgressEnum>
           label="Status"
           value={status}
-          onChange={(val) => { setStatus(val); }}
+          onChange={(val) => {
+            setStatus(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(UserProgressEnum)}
         />
 

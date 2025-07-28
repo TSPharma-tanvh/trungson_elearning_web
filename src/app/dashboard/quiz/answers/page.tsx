@@ -9,6 +9,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateAnswerForm } from '@/presentation/components/dashboard/quiz/answer/answer-create-form';
 import { AnswerFilters } from '@/presentation/components/dashboard/quiz/answer/answer-filter';
 import AnswerTable from '@/presentation/components/dashboard/quiz/answer/answer-table';
@@ -17,11 +18,10 @@ export default function Page(): React.JSX.Element {
   const { answerUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetAnswerRequest>(new GetAnswerRequest({ pageNumber: 1, pageSize: 10 }));
   const [answers, setAnswers] = React.useState<AnswerDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -33,16 +33,19 @@ export default function Page(): React.JSX.Element {
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { answers, totalRecords } = await answerUsecase.getAnswerListInfo(request);
-      setAnswers(answers);
+      const { answers: answerList, totalRecords } = await answerUsecase.getAnswerListInfo(request);
+      setAnswers(answerList);
       setTotalCount(totalRecords);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
+
       setAnswers([]);
     }
   }, [filters, page, rowsPerPage, answerUsecase]);
 
   React.useEffect(() => {
-    fetchAnswers();
+    void fetchAnswers();
   }, [fetchAnswers]);
 
   const handleFilter = (newFilters: GetAnswerRequest) => {
@@ -62,13 +65,12 @@ export default function Page(): React.JSX.Element {
 
   const handleCreateAnswer = async (request: CreateAnswerRequest) => {
     try {
-      console.error(request);
-
       await answerUsecase.createAnswer(request);
       setShowCreateDialog(false);
       await fetchAnswers();
-    } catch (error) {
-      console.error('Failed to create answer:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -76,8 +78,9 @@ export default function Page(): React.JSX.Element {
     try {
       await answerUsecase.updateAnswer(request);
       await fetchAnswers();
-    } catch (error) {
-      console.error('Failed to update answer:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -91,9 +94,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchAnswers();
-    } catch (error) {
-      console.error('Failed to delete answers:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -110,7 +113,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -126,12 +131,14 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteAnswers={handleDeleteAnswers}
         onEditAnswer={handleEditAnswer}
-       />
+      />
 
       <CreateAnswerForm
         onSubmit={handleCreateAnswer}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

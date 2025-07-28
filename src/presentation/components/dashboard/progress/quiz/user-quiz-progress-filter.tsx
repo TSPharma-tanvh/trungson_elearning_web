@@ -2,10 +2,8 @@
 
 import * as React from 'react';
 import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
-import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { CoreEnumUtils, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { Button, Card, Stack } from '@mui/material';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -16,7 +14,6 @@ export function UserQuizProgressFilters({
   onFilter: (filters: GetUserQuizProgressRequest) => void;
 }): React.JSX.Element {
   const [searchText, setSearchText] = React.useState('');
-  const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<UserQuizProgressEnum | undefined>(undefined);
 
   const handleFilter = () => {
@@ -32,7 +29,6 @@ export function UserQuizProgressFilters({
 
   const handleClear = () => {
     setSearchText('');
-    setIsRequired(undefined);
     setStatus(undefined);
     onFilter(new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10 }));
   };
@@ -54,7 +50,9 @@ export function UserQuizProgressFilters({
         <CustomSelectFilter<UserQuizProgressEnum>
           label="Status"
           value={status}
-          onChange={(val) => { setStatus(val); }}
+          onChange={(val) => {
+            setStatus(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(UserQuizProgressEnum)}
         />
 

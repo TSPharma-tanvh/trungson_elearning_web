@@ -113,7 +113,7 @@ function renderNavItems({
     const Icon = icon ? navIcons[icon] : null;
 
     if (subItems) {
-      // Parent menu
+      // Parent menu -- parent menu
       acc.push(
         <Box key={key} sx={{ mb: 1 }}>
           <Box
@@ -152,17 +152,17 @@ function renderNavItems({
           {expanded.includes(key) && (
             <Stack component="ul" spacing={0.5} sx={{ listStyle: 'none', m: 0, pl: 4 }}>
               {subItems.map((subItem) => {
-                const { key, ...rest } = subItem;
-                return <NavItem key={subItem.key} pathname={pathname} {...rest} />;
+                const { key: subKey, ...rest } = subItem;
+                return <NavItem key={subKey} pathname={pathname} {...rest} />;
               })}
             </Stack>
           )}
         </Box>
       );
     } else {
-      // Standalone item
-      const { key, ...rest } = curr;
-      acc.push(<NavItem key={key} pathname={pathname} {...rest} />);
+      //Child item -- child item
+      const { key: itemKey, ...rest } = curr;
+      acc.push(<NavItem key={itemKey} pathname={pathname} {...rest} />);
     }
 
     return acc;

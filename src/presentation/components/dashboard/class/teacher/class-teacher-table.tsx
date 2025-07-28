@@ -25,7 +25,6 @@ import {
 } from '@mui/material';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
-import ClassTeacherForm from './class-teacher-detail-form';
 import ClassTeacherDetailForm from './class-teacher-detail-form';
 import { UpdateClassTeacherFormDialog } from './update-class-teacher-form';
 
@@ -79,7 +78,9 @@ export default function TeacherTable({
     setSelectedRow(row);
   };
 
-  const handleMenuClose = () => { setAnchorEl(null); };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleOpenDeleteDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -111,7 +112,13 @@ export default function TeacherTable({
       <Card>
         {selected.size > 0 && (
           <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button color="error" variant="outlined" onClick={() => { handleOpenDeleteDialog(Array.from(selected)); }}>
+            <Button
+              color="error"
+              variant="outlined"
+              onClick={() => {
+                handleOpenDeleteDialog(Array.from(selected));
+              }}
+            >
               Delete Selected ({selected.size})
             </Button>
           </Box>
@@ -145,7 +152,12 @@ export default function TeacherTable({
                 return (
                   <TableRow key={row.id} selected={isItemSelected} hover>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id); }} />
+                      <Checkbox
+                        checked={isItemSelected}
+                        onChange={() => {
+                          handleSelectOne(row.id);
+                        }}
+                      />
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" alignItems="center" spacing={2}>
@@ -166,7 +178,11 @@ export default function TeacherTable({
                     <TableCell>{DateTimeUtils.formatISODateFromString(row.createdDateTime)}</TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromString(row.updatedDateTime ?? '')}</TableCell>
                     <TableCell align="right">
-                      <IconButton onClick={(event) => { handleMenuClick(event, row); }}>
+                      <IconButton
+                        onClick={(event) => {
+                          handleMenuClick(event, row);
+                        }}
+                      >
                         <MoreVert />
                       </IconButton>
                     </TableCell>
@@ -227,17 +243,29 @@ export default function TeacherTable({
         </MenuList>
       </Popover>
 
-      {editTeacherData ? <UpdateClassTeacherFormDialog
+      {editTeacherData ? (
+        <UpdateClassTeacherFormDialog
           open={editOpen}
           data={editTeacherData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditTeacher(updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {selectedRow ? <ClassTeacherDetailForm open={viewOpen} classId={selectedRow?.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
+      {selectedRow ? (
+        <ClassTeacherDetailForm
+          open={viewOpen}
+          classId={selectedRow?.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}

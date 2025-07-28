@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -26,12 +27,12 @@ export interface Question {
   }[];
 }
 
-interface Props {
+interface QuestionTableWithIconsProps {
   questions: Question[];
   onEdit: (question: Question) => void;
 }
 
-export function QuestionsTableWithIcon({ questions, onEdit }: Props) {
+export function QuestionsTableWithIcon({ questions, onEdit }: QuestionTableWithIconsProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
 

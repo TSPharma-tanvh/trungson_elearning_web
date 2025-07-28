@@ -34,7 +34,7 @@ import { FileResourceMultiSelect } from '@/presentation/components/shared/file/f
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import { AnswerMultiSelectDialog } from '@/presentation/components/shared/quiz/answer/answer-multi-select';
 
-interface Props {
+interface QuestionCreateFormProps {
   disabled?: boolean;
   onSubmit: (data: CreateQuestionRequest) => void;
   loading?: boolean;
@@ -42,9 +42,14 @@ interface Props {
   onClose: () => void;
 }
 
-export function QuestionCreateForm({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function QuestionCreateForm({
+  disabled = false,
+  onSubmit,
+  loading = false,
+  open,
+  onClose,
+}: QuestionCreateFormProps) {
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
   const { categoryUsecase, fileUsecase, answerUsecase } = useDI();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -53,12 +58,6 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
   const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [filePreviewOpen, setFilePreviewOpen] = useState(false);
-  const [filePreviewData, setFilePreviewData] = useState<{
-    url: string;
-    title?: string;
-    type?: string;
-  } | null>(null);
 
   const [form, setForm] = useState<CreateQuestionRequest>(
     new CreateQuestionRequest({
@@ -74,30 +73,31 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
     setForm((prev) => new CreateQuestionRequest({ ...prev, [key]: value }));
   };
 
-  useEffect(() => {
-    const updateRows = () => {
-      const windowHeight = window.innerHeight;
-      const windowWidth = window.innerWidth;
-      const aspectRatio = windowWidth / windowHeight;
+  // useEffect(() => {
+  //   const updateRows = () => {
+  //     const windowHeight = window.innerHeight;
+  //     const windowWidth = window.innerWidth;
+  //     const aspectRatio = windowWidth / windowHeight;
 
-      let otherElementsHeight = 300;
-      if (windowHeight < 600) {
-        otherElementsHeight = 250;
-      } else if (windowHeight > 1000) {
-        otherElementsHeight = 350;
-      }
+  //     let otherElementsHeight = 300;
+  //     if (windowHeight < 600) {
+  //       otherElementsHeight = 250;
+  //     } else if (windowHeight > 1000) {
+  //       otherElementsHeight = 350;
+  //     }
 
-      const rowHeight = aspectRatio > 1.5 ? 22 : 24;
-      const availableHeight = windowHeight - otherElementsHeight;
-      const calculatedRows = Math.max(3, Math.floor(availableHeight / rowHeight));
+  //     const rowHeight = aspectRatio > 1.5 ? 22 : 24;
+  //     const availableHeight = windowHeight - otherElementsHeight;
+  //     const calculatedRows = Math.max(3, Math.floor(availableHeight / rowHeight));
 
-      setDetailRows(fullScreen ? calculatedRows : 3);
-    };
+  //   };
 
-    updateRows();
-    window.addEventListener('resize', updateRows);
-    return () => { window.removeEventListener('resize', updateRows); };
-  }, [fullScreen]);
+  //   updateRows();
+  //   window.addEventListener('resize', updateRows);
+  //   return () => {
+  //     window.removeEventListener('resize', updateRows);
+  //   };
+  // }, [fullScreen]);
 
   const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
     if (newSource) {
@@ -109,30 +109,18 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
         if (form.thumbnailID) {
           fileUsecase
             .getFileResouceById(form.thumbnailID)
-            .then((file) => { setPreviewUrl(file.resourceUrl || null); })
-            .catch((error) => {
-              console.error('Error fetching thumbnail:', error);
+            .then((file) => {
+              setPreviewUrl(file.resourceUrl || null);
+            })
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setPreviewUrl(null);
             });
         } else {
           setPreviewUrl(null);
         }
       }
-    }
-  };
-
-  const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
-    if (id) {
-      try {
-        const file = await fileUsecase.getFileResouceById(id);
-        setPreviewUrl(file.resourceUrl || null);
-      } catch (error) {
-        console.error('Error fetching file resource:', error);
-        setPreviewUrl(null);
-      }
-    } else {
-      setPreviewUrl(null);
     }
   };
 
@@ -150,10 +138,10 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
     handleChange('resources', files);
   };
 
-  const handleFilePreview = (url: string, title?: string, type?: string) => {
-    setFilePreviewData({ url, title, type });
-    setFilePreviewOpen(true);
-  };
+  // const handleFilePreview = (url: string, title?: string, type?: string) => {
+  //   setFilePreviewData({ url, title, type });
+  //   setFilePreviewOpen(true);
+  // };
 
   const handleSave = async () => {
     setIsSubmitting(true);
@@ -164,11 +152,11 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
         return;
       }
 
-      await onSubmit(form);
+      onSubmit(form);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -187,7 +175,11 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
           Create Question
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -225,7 +217,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
               <CustomTextField
                 label="Tên câu hỏi"
                 value={form.questionText}
-                onChange={(val) => { handleChange('questionText', val); }}
+                onChange={(val) => {
+                  handleChange('questionText', val);
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -242,7 +236,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                 disabled={isSubmitting}
                 inputMode="numeric"
                 icon={<Clock />}
-                onValidationChange={(isValid) => { setFieldValidations((prev) => ({ ...prev, point: isValid })); }}
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, point: isValid }));
+                }}
               />
             </Grid>
 
@@ -250,7 +246,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.categoryID}
-                onChange={(value) => { handleChange('categoryID', value); }}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Question}
                 disabled={isSubmitting}
               />
@@ -260,7 +258,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
               <CustomSelectDropDown<QuestionEnum>
                 label="questionType"
                 value={form.questionType ?? ''}
-                onChange={(val) => { handleChange('questionType', val); }}
+                onChange={(val) => {
+                  handleChange('questionType', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: QuestionEnum.SingleChoice, label: 'SingleChoice' },
@@ -275,7 +275,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
               <CustomSelectDropDown<StatusEnum>
                 label="Trạng thái"
                 value={form.status!}
-                onChange={(val) => { handleChange('status', val); }}
+                onChange={(val) => {
+                  handleChange('status', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: StatusEnum.Enable, label: 'Kích hoạt' },
@@ -288,7 +290,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
               <AnswerMultiSelectDialog
                 answerUsecase={answerUsecase}
                 value={form.answerIDs ? form.answerIDs.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => { handleChange('answerIDs', value.join(',')); }}
+                onChange={(value: string[]) => {
+                  handleChange('answerIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -301,7 +305,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
               <ToggleButtonGroup
                 value={fileSelectSource}
                 exclusive
-                onChange={(e, newValue) => newValue && setFileSelectSource(newValue)}
+                onChange={(e, newValue: 'upload' | 'multi-select') => {
+                  if (newValue) setFileSelectSource(newValue);
+                }}
                 aria-label="file select source"
                 fullWidth
                 sx={{ mb: 2 }}
@@ -316,7 +322,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
                   value={form.resourceIDs?.split(',').filter(Boolean) ?? []}
-                  onChange={(ids) => { handleChange('resourceIDs', ids.join(',')); }}
+                  onChange={(ids) => {
+                    handleChange('resourceIDs', ids.join(','));
+                  }}
                   label="Select Files"
                   disabled={false}
                   showTypeSwitcher
@@ -351,7 +359,6 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                       <Button
                         variant="text"
                         fullWidth
-                        onClick={() => { handleFilePreview(URL.createObjectURL(file), file.name, file.type); }}
                         sx={{
                           justifyContent: 'flex-start',
                           textAlign: 'left',
@@ -398,7 +405,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                   type={FileResourceEnum.Image}
                   status={StatusEnum.Enable}
                   value={form.thumbnailID}
-                  onChange={(ids) => { handleChange('thumbnailID', ids); }}
+                  onChange={(ids) => {
+                    handleChange('thumbnailID', ids);
+                  }}
                   label="Thumbnail"
                   disabled={isSubmitting}
                 />
@@ -408,7 +417,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={form.thumbDocumentNo}
-                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<Image />}
                     />
@@ -417,7 +428,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={form.thumbPrefixName}
-                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<Image />}
                     />
@@ -429,7 +442,9 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => { handleFileUpload(e.target.files?.[0] || null); }}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -450,14 +465,17 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                       control={
                         <Checkbox
                           checked={Boolean(form.isDeleteOldThumbnail)}
-                          onChange={(e) => { handleChange('isDeleteOldThumbnail', e.target.checked); }}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl ? <Grid item xs={12}>
+                  {previewUrl ? (
+                    <Grid item xs={12}>
                       <Box
                         sx={{
                           width: fullScreen ? 400 : 200,
@@ -478,7 +496,8 @@ export function QuestionCreateForm({ disabled = false, onSubmit, loading = false
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
-                    </Grid> : null}
+                    </Grid>
+                  ) : null}
                 </Grid>
               )}
             </Grid>

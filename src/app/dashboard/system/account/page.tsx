@@ -2,13 +2,9 @@ import * as React from 'react';
 import type { Metadata } from 'next';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Unstable_Grid2';
 
 import { config } from '@/config';
-import { AccountDetailsForm } from '@/presentation/components/dashboard/account/account-details-form';
 import { AccountForm } from '@/presentation/components/dashboard/account/account-form';
-import { AccountInfo } from '@/presentation/components/dashboard/account/account-info';
-import { UpdatePasswordForm } from '@/presentation/components/dashboard/account/update-password-form';
 
 export const metadata = { title: `Account | Dashboard | ${config.site.name}` } satisfies Metadata;
 

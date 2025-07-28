@@ -61,7 +61,9 @@ export class CreateUserQuizRequest {
   toFormData(): FormData {
     const form = new FormData();
     form.append('quizID', this.quizID);
-    this.userIDs.forEach((uid) => { form.append('userIDs', uid); });
+    this.userIDs.forEach((uid) => {
+      form.append('userIDs', uid);
+    });
     form.append('assignedAt', this.assignedAt.toISOString());
     if (this.customStartTime) form.append('customStartTime', this.customStartTime.toISOString());
     if (this.customEndTime) form.append('customEndTime', this.customEndTime.toISOString());
@@ -70,7 +72,7 @@ export class CreateUserQuizRequest {
     form.append('isAutoSubmitted', this.isAutoSubmitted.toString());
     if (this.enrollmentCriteriaID) form.append('enrollmentCriteriaID', this.enrollmentCriteriaID);
     if (this.userID) form.append('userID', this.userID);
-    if (this.enrollStatus != null) form.append('enrollStatus', this.enrollStatus.toString());
+    if (this.enrollStatus !== undefined) form.append('enrollStatus', this.enrollStatus.toString());
     if (this.approvedBy) form.append('approvedBy', this.approvedBy);
     if (this.approvedAt) form.append('approvedAt', this.approvedAt.toISOString());
     if (this.rejectedReason) form.append('rejectedReason', this.rejectedReason);

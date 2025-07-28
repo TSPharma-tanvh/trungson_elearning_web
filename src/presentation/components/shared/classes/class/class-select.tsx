@@ -154,7 +154,6 @@ export function ClassSelectDialog({
       };
       void fetchSelectedClasses();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classUsecase, value, pathID]);
 
   useEffect(() => {
@@ -171,7 +170,6 @@ export function ClassSelectDialog({
         setSelectedClassMap(newMap);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classes, dialogOpen]);
 
   return (

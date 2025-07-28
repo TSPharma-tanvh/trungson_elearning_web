@@ -6,9 +6,10 @@ import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
 import { type UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CoursePathDetailForm from '@/presentation/components/dashboard/courses/path/course-path-detail-form';
 import { CreateCoursePathDialog } from '@/presentation/components/dashboard/courses/path/create-path-form';
 import { PathFilters } from '@/presentation/components/dashboard/courses/path/path-filter';
@@ -27,30 +28,21 @@ export default function Page(): React.JSX.Element {
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [pathToEdit, setPathToEdit] = React.useState<CoursePathResponse | null>(null);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
-  const [pagination, setPagination] = React.useState({
-    filters: new GetPathRequest({ pageNumber: 1, pageSize: 10 }),
-    page: 0,
-    rowsPerPage: 10,
-  });
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const fetchPaths = React.useCallback(async () => {
     try {
-      // const request = new GetPathRequest({
-      //   ...filters,
-      //   pageNumber: page + 1,
-      //   pageSize: rowsPerPage,
-      // });
       const { path, totalRecords } = await pathUseCase.getPathListInfo(filters);
       setPaths(path);
       setTotalCount(totalRecords);
-    } catch (error) {
-      console.error('Failed to fetch course paths:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   }, [filters, page, rowsPerPage, pathUseCase]);
 
   React.useEffect(() => {
-    fetchPaths();
+    void fetchPaths();
   }, [fetchPaths]);
 
   const handleFilter = (newFilters: GetPathRequest) => {
@@ -72,8 +64,9 @@ export default function Page(): React.JSX.Element {
     try {
       await pathUseCase.updatePathInfo(request);
       await fetchPaths();
-    } catch (error) {
-      console.error('Failed to update course path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -87,17 +80,12 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchPaths();
-    } catch (error) {
-      console.error('Failed to delete course paths:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
-  };
-
-  const handleOpenEditDialog = (path: CoursePathResponse) => {
-    setPathToEdit(path);
-    setShowUpdateDialog(true);
   };
 
   const handleCreateCoursePath = async (request: CreateCoursePathRequest) => {
@@ -105,8 +93,9 @@ export default function Page(): React.JSX.Element {
       await pathUseCase.createPath(request);
       setShowCreateDialog(false);
       await fetchPaths();
-    } catch (error) {
-      console.error('Failed to create course path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -121,7 +110,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -137,14 +128,16 @@ export default function Page(): React.JSX.Element {
         onDeleteCoursePaths={handleDeletePaths}
         onEditCoursePath={handleEditCoursePath}
       />
-      {selectedPath ? <CoursePathDetailForm
+      {selectedPath ? (
+        <CoursePathDetailForm
           open={showForm}
           coursePathId={selectedPath?.id ?? null}
           onClose={() => {
             setShowForm(false);
             setSelectedPath(null);
           }}
-        /> : null}
+        />
+      ) : null}
       <UpdatePathFormDialog
         open={showUpdateDialog}
         path={pathToEdit}
@@ -159,7 +152,9 @@ export default function Page(): React.JSX.Element {
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

@@ -9,6 +9,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateUserQuizProgressDialog } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-create';
 import { UserQuizProgressFilters } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-filter';
 import UserQuizProgressTable from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-table';
@@ -17,13 +18,12 @@ export default function Page(): React.JSX.Element {
   const { userQuizProgressUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserQuizProgressRequest>(
     new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [userQuizProgress, setUserQuizProgress] = React.useState<UserQuizProgressDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -38,13 +38,16 @@ export default function Page(): React.JSX.Element {
       const { progress, totalRecords } = await userQuizProgressUsecase.getUserQuizProgressListInfo(request);
       setUserQuizProgress(progress);
       setTotalCount(totalRecords);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
+
       setUserQuizProgress([]);
     }
   }, [filters, page, rowsPerPage, userQuizProgressUsecase]);
 
   React.useEffect(() => {
-    fetchUserQuizProgress();
+    void fetchUserQuizProgress();
   }, [fetchUserQuizProgress]);
 
   const handleFilter = (newFilters: GetUserQuizProgressRequest) => {
@@ -67,8 +70,9 @@ export default function Page(): React.JSX.Element {
       await userQuizProgressUsecase.createUserQuizProgress(request);
       setShowCreateDialog(false);
       await fetchUserQuizProgress();
-    } catch (error) {
-      console.error('Failed to create userQuizProgress lesson:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -76,8 +80,9 @@ export default function Page(): React.JSX.Element {
     try {
       await userQuizProgressUsecase.updateUserQuizProgress(request);
       await fetchUserQuizProgress();
-    } catch (error) {
-      console.error('Failed to update userQuizProgress lesson:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -91,9 +96,9 @@ export default function Page(): React.JSX.Element {
       }
 
       await fetchUserQuizProgress();
-    } catch (error) {
-      console.error('Failed to delete userQuizProgress:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -110,7 +115,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Enroll Users
         </Button>
@@ -125,14 +132,16 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteUserQuizProgress={handleDeleteUserQuizProgress}
         onEditUserQuizProgress={handleEditUserQuizProgress}
-       />
+      />
 
       <CreateUserQuizProgressDialog
         onSubmit={handleCreateUserQuizProgress}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

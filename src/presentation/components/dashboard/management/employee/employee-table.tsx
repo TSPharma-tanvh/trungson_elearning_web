@@ -2,7 +2,7 @@ import React from 'react';
 import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
-import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { CheckCircle, XCircle } from '@phosphor-icons/react';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
@@ -29,7 +29,6 @@ export default function EmployeeTable({
   onRowsPerPageChange,
   onDeleteEmployees,
 }: EmployeeTableProps) {
-  const [editOpen, setEditOpen] = React.useState(false);
   const [editEmployeeData, setEditEmployeeData] = React.useState<EmployeeResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
@@ -139,7 +138,11 @@ export default function EmployeeTable({
             </TableCell>
 
             <TableCell align="right">
-              <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
+              <IconButton
+                onClick={(e) => {
+                  onActionClick(e as React.MouseEvent<HTMLElement>);
+                }}
+              >
                 <MoreVert />
               </IconButton>
             </TableCell>
@@ -147,11 +150,15 @@ export default function EmployeeTable({
         )}
       />
 
-      {editEmployeeData ? <EmployeeDetailForm
+      {editEmployeeData ? (
+        <EmployeeDetailForm
           open={viewOpen}
           employeeId={editEmployeeData.id ?? null}
-          onClose={() => { setViewOpen(false); }}
-        /> : null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

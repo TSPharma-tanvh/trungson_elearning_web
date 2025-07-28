@@ -23,10 +23,11 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
-interface Props {
+interface AnswerDetailsProps {
   open: boolean;
   answerId: string | null;
   onClose: () => void;
@@ -36,7 +37,9 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
-  const toggleExpand = (id: string) => { setExpanded((prev) => ({ ...prev, [id]: !prev[id] })); };
+  const toggleExpand = (id: string) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -84,7 +87,9 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
                   title={`Relation ${index + 1}`}
                   action={
                     <IconButton
-                      onClick={() => { toggleExpand(relId); }}
+                      onClick={() => {
+                        toggleExpand(relId);
+                      }}
                       sx={{
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s',
@@ -113,19 +118,25 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
         </Box>
       )}
 
-      {previewImage ? <ImagePreviewDialog
+      {previewImage ? (
+        <ImagePreviewDialog
           open
-          onClose={() => { setPreviewImage(null); }}
+          onClose={() => {
+            setPreviewImage(null);
+          }}
           imageUrl={previewImage}
           title="Image Preview"
           fullscreen={fullScreen}
-          onToggleFullscreen={() => {}}
-        /> : null}
+          onToggleFullscreen={() => {
+            undefined;
+          }}
+        />
+      ) : null}
     </Box>
   );
 }
 
-export default function AnswerDetailForm({ open, answerId, onClose }: Props) {
+export default function AnswerDetailForm({ open, answerId, onClose }: AnswerDetailsProps) {
   const { answerUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState<AnswerDetailResponse | null>(null);
@@ -137,11 +148,14 @@ export default function AnswerDetailForm({ open, answerId, onClose }: Props) {
       answerUsecase
         .getAnswerById(answerId)
         .then(setAnswer)
-        .catch((err) => {
-          console.error('Failed to load answer', err);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setAnswer(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, answerId]);
 
@@ -152,7 +166,11 @@ export default function AnswerDetailForm({ open, answerId, onClose }: Props) {
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6">Answer Information</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

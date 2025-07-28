@@ -1,7 +1,7 @@
 // src/layouts/core/CustomSnackBarProvider.tsx
 'use client';
 
-import React, { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Alert, Snackbar } from '@mui/material';
 
 import { registerEnqueueSnackbar } from './custom-snack-bar';
@@ -46,10 +46,18 @@ export const CustomSnackBarProvider: React.FC<{ children: ReactNode }> = ({ chil
           key={snack.key}
           open
           autoHideDuration={snack.duration}
-          onClose={() => { handleClose(snack.key); }}
+          onClose={() => {
+            handleClose(snack.key);
+          }}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
-          <Alert onClose={() => { handleClose(snack.key); }} severity={snack.type} sx={{ width: '100%' }}>
+          <Alert
+            onClose={() => {
+              handleClose(snack.key);
+            }}
+            severity={snack.type}
+            sx={{ width: '100%' }}
+          >
             {snack.message}
           </Alert>
         </Snackbar>

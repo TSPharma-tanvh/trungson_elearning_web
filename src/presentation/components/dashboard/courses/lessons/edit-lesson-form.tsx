@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -46,7 +46,7 @@ interface EditLessonDialogProps {
 export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }: EditLessonDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase, quizUsecase } = useDI();
+  const { categoryUsecase, fileUsecase, quizUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateLessonRequest>(new UpdateLessonRequest({}));
@@ -89,7 +89,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
         setFormData(newFormData);
       }
     }
-    setupFormData();
+    void setupFormData();
   }, [lesson, open, fileUsecase]);
 
   async function urlToFile(url: string, filename: string): Promise<File | null> {
@@ -100,8 +100,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
       }
       const blob = await response.blob();
       return new File([blob], filename, { type: blob.type });
-    } catch (error) {
-      console.error(`Error fetching file from ${url}:`, error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
       return null;
     }
   }
@@ -116,17 +117,17 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
         setPreviewUrl(URL.createObjectURL(formData.thumbnail));
       }
       setThumbnailSource(newSource);
-      if (newSource === 'upload') {
-        // handleChange('thumbnailID', undefined);
-        // setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
-      } else {
+      if (newSource !== 'upload') {
         handleChange('thumbnail', undefined);
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => { setPreviewUrl(file.resourceUrl || null); })
-            .catch((error) => {
-              console.error('Error fetching thumbnail:', error);
+            .then((file) => {
+              setPreviewUrl(file.resourceUrl || null);
+            })
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setPreviewUrl(null);
             });
         } else {
@@ -152,9 +153,12 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
         if (formData.videoID) {
           fileUsecase
             .getFileResouceById(formData.videoID)
-            .then((file) => { setVideoPreviewUrl(file.resourceUrl || null); })
-            .catch((error) => {
-              console.error('Error fetching video resource:', error);
+            .then((file) => {
+              setVideoPreviewUrl(file.resourceUrl || null);
+            })
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setVideoPreviewUrl(null);
             });
         } else {
@@ -179,8 +183,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error) {
-        console.error('Error fetching file resource:', error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        CustomSnackBar.showSnackbar(message, 'error');
         setPreviewUrl(null);
       }
     } else {
@@ -194,8 +199,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setVideoPreviewUrl(file.resourceUrl || null);
-      } catch (error) {
-        console.error('Error fetching video resource:', error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        CustomSnackBar.showSnackbar(message, 'error');
         setVideoPreviewUrl(null);
       }
     } else {
@@ -216,23 +222,26 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
     setIsSubmitting(true);
 
     try {
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => { reject(new Error('Request timeout after 1 hour')); }, 3600000)
-      );
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Request timeout after 1 hour'));
+        }, 3600000);
+      });
 
+      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- Fix ESLint
       await Promise.race([onSubmit(formData), timeoutPromise]);
 
       onClose();
-    } catch (error: any) {
-      console.error('Error updating lesson:', error);
-      CustomSnackBar.showSnackbar(error?.message || 'Failed to update lesson', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: ReturnType<typeof setInterval>;
 
     if (isSubmitting) {
       intervalId = setInterval(() => {
@@ -251,17 +260,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
     color: '#616161',
   };
 
-  const statusOptions = [
-    { value: StatusEnum.Enable, label: 'Enable' },
-    { value: StatusEnum.Disable, label: 'Disable' },
-    { value: StatusEnum.Deleted, label: 'Deleted' },
-  ];
-
-  const displayTypeOptions = [
-    { value: DisplayTypeEnum.Public, label: 'Public' },
-    { value: DisplayTypeEnum.Private, label: 'Private' },
-  ];
-
   const lessonTypeOptions = [
     { value: LearningModeEnum.Online, label: 'Online' },
     { value: LearningModeEnum.Offline, label: 'Offline' },
@@ -276,7 +274,11 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
           Update Lesson
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -296,7 +298,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <CustomTextField
                 label="Name"
                 value={formData.name}
-                onChange={(value) => { handleChange('name', value); }}
+                onChange={(value) => {
+                  handleChange('name', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -306,7 +310,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <CustomTextField
                 label="Detail"
                 value={formData.detail}
-                onChange={(value) => { handleChange('detail', value); }}
+                onChange={(value) => {
+                  handleChange('detail', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
@@ -315,7 +321,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <CustomSelectDropDown
                 label="Lesson Type"
                 value={formData.lessonType ?? ''}
-                onChange={(value) => { handleChange('lessonType', value); }}
+                onChange={(value) => {
+                  handleChange('lessonType', value);
+                }}
                 disabled={isSubmitting}
                 options={lessonTypeOptions}
               />
@@ -325,7 +333,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <QuizMultiSelectDialog
                 quizUsecase={quizUsecase}
                 value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
-                onChange={(val) => { handleChange('quizIDs', val.join(',')); }}
+                onChange={(val) => {
+                  handleChange('quizIDs', val.join(','));
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -346,7 +356,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
-                onChange={(value) => { handleChange('categoryID', value); }}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Lesson}
                 disabled={isSubmitting}
               />
@@ -393,7 +405,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -402,7 +416,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -420,7 +436,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => { handleFileUpload(e.target.files?.[0] || null); }}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -430,7 +448,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                       control={
                         <Checkbox
                           checked={Boolean(formData.isDeleteOldThumbnail)}
-                          onChange={(e) => { handleChange('isDeleteOldThumbnail', e.target.checked); }}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
@@ -441,7 +461,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               )}
             </Grid>
 
-            {(previewUrl || lesson.thumbnail?.resourceUrl) ? <Grid item xs={12}>
+            {previewUrl || lesson.thumbnail?.resourceUrl ? (
+              <Grid item xs={12}>
                 <Box
                   sx={{
                     width: fullScreen ? 400 : 200,
@@ -462,7 +483,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </Box>
-              </Grid> : null}
+              </Grid>
+            ) : null}
 
             {/* Video */}
 
@@ -505,7 +527,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     <CustomTextField
                       label="Video Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -514,7 +538,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                     <CustomTextField
                       label="Video Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -532,16 +558,20 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                         type="file"
                         hidden
                         accept="video/*"
-                        onChange={(e) => { handleVideoUpload(e.target.files?.[0] || null); }}
+                        onChange={(e) => {
+                          handleVideoUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
                 </Grid>
               )}
             </Grid>
-            {(videoPreviewUrl || lesson.video?.resourceUrl) ? <Grid item xs={12}>
+            {videoPreviewUrl || lesson.video?.resourceUrl ? (
+              <Grid item xs={12}>
                 <CustomVideoPlayer src={videoPreviewUrl ?? lesson.video?.resourceUrl ?? ''} fullscreen />
-              </Grid> : null}
+              </Grid>
+            ) : null}
           </Grid>
         </Box>
       </DialogContent>

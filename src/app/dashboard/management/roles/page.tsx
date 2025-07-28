@@ -42,8 +42,8 @@ export default function Page(): React.JSX.Element {
   };
 
   useEffect(() => {
-    fetchRoles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    void fetchRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- ESLint
   }, [filters, page, rowsPerPage]);
 
   const handleFilter = (newFilters: GetRoleRequest) => {
@@ -51,7 +51,9 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handlePageChange = (_: unknown, newPage: number) => { setPage(newPage); };
+  const handlePageChange = (_: unknown, newPage: number) => {
+    setPage(newPage);
+  };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));

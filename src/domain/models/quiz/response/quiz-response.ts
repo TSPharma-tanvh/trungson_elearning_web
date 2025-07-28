@@ -5,7 +5,6 @@ import { CategoryResponse } from '../../category/response/category-response';
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
 import { FileQuizRelationResponse } from '../../file/response/file-quiz-relation-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
-import { QuestionResponse } from '../../question/response/question-response';
 import { UserQuizQuestionResponse } from '../../question/response/user-quiz-question-response';
 import { UserAnswerResponse } from '../../user-answer/response/user-answer-response';
 import { UserQuizProgressionResponse } from '../../user-quiz/response/user-quiz-progress-response';
@@ -42,7 +41,7 @@ export class QuizResponse {
   isRequired?: boolean;
   isAutoSubmitted?: boolean;
   type?: QuizTypeEnum;
-  time?: string; // backend sends “hh:mm:ss”; keep as string or parse to seconds
+  time?: string; // backend sends “hh:mm:ss”; keep as string or parse to seconds -- be rules
   scoreToPass?: number;
   totalQuestion?: number;
   maxAttempts?: number;
@@ -51,7 +50,6 @@ export class QuizResponse {
     Object.assign(this, init);
   }
 
-  /** ① map raw JSON -> class */
   static fromJSON(json: any): QuizResponse {
     const dto = new QuizResponse();
 
@@ -112,7 +110,6 @@ export class QuizResponse {
     return dto;
   }
 
-  /** ② map class -> JSON ready for API */
   toJSON(): any {
     return {
       id: this.id,
@@ -149,7 +146,7 @@ export class QuizResponse {
       isAutoSubmitted: this.isAutoSubmitted,
 
       type: this.type,
-      time: this.time, // stay consistent with backend “hh:mm:ss”
+      time: this.time,
       scoreToPass: this.scoreToPass,
       totalQuestion: this.totalQuestion,
       maxAttempts: this.maxAttempts,

@@ -9,6 +9,10 @@ import { type UserRepository } from '@/domain/repositories/user/user-repository'
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 
+
+
+
+
 export class UserUsecase {
   constructor(private readonly userRepo: UserRepository) {}
 
@@ -55,7 +59,8 @@ export class UserUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(UserResponse.fromJSON);
+    // const data = result.result.map(UserResponse.fromJSON);
+    const data = result.result.map((x) => UserResponse.fromJSON(x));
 
     return {
       users: data,

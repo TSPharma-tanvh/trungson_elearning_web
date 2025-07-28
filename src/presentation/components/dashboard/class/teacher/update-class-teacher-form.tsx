@@ -18,7 +18,6 @@ import {
   Typography,
 } from '@mui/material';
 import { Box, useMediaQuery, useTheme } from '@mui/system';
-import { Form } from 'react-hook-form';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -38,7 +37,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { userUsecase, courseUsecase, classUsecase } = useDI();
-  const [detailRows, setDetailRows] = useState(3);
+  const [detailRows, _setDetailRows] = useState(3);
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateClassTeacherRequest>(new UpdateClassTeacherRequest({}));
@@ -65,11 +64,11 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      await onSubmit(formData);
+      onSubmit(formData);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +81,11 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
           Update Teacher
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -97,7 +100,9 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <UserSelectDialog
               userUsecase={userUsecase}
               value={formData.userID ?? ''}
-              onChange={(val) => { handleChange('userID', val); }}
+              onChange={(val) => {
+                handleChange('userID', val);
+              }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -106,7 +111,9 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <CustomTextField
               label="Mô tả"
               value={formData.description || ''}
-              onChange={(val) => { handleChange('description', val); }}
+              onChange={(val) => {
+                handleChange('description', val);
+              }}
               multiline
               rows={detailRows}
               disabled={false}
@@ -117,7 +124,9 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <CourseMultiSelectDialog
               courseUsecase={courseUsecase}
               value={formData.courseID ? formData.courseID.split(',').filter((id) => id) : []}
-              onChange={(value: string[]) => { handleChange('courseID', value.join(',')); }}
+              onChange={(value: string[]) => {
+                handleChange('courseID', value.join(','));
+              }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -126,7 +135,9 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <ClassMultiSelectDialog
               classUsecase={classUsecase}
               value={formData.classID ? formData.classID.split(',').filter((id) => id) : []}
-              onChange={(val) => { handleChange('classID', val.join(',')); }}
+              onChange={(val) => {
+                handleChange('classID', val.join(','));
+              }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -134,7 +145,9 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             <CustomSelectDropDown<string>
               label="Trạng thái"
               value={formData.status}
-              onChange={(val) => { handleChange('status', val); }}
+              onChange={(val) => {
+                handleChange('status', val);
+              }}
               options={[
                 { value: ActiveEnum[ActiveEnum.Active], label: 'Kích hoạt' },
                 { value: ActiveEnum[ActiveEnum.Inactive], label: 'Tạm khóa' },

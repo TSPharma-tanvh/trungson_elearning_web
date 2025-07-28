@@ -10,11 +10,9 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Avatar,
   Box,
-  Button,
   Chip,
   CircularProgress,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
@@ -23,19 +21,21 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 
-interface Props {
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
+
+interface ViewUserDetailProps {
   open: boolean;
   userId: string | null;
   onClose: () => void;
 }
 
-export function ViewUserDialog({ open, userId, onClose }: Props) {
+export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
   const { userUsecase } = useDI();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
 
-  const EMPLOYEE_FIELDS: { label: string; value: (e: EmployeeResponse) => any }[] = [
+  const EMPLOYEE_FIELDS: { label: string; value: (e: EmployeeResponse) => unknown }[] = [
     { label: 'Full Name', value: (e) => `${e.firstName ?? ''} ${e.lastName ?? ''}` },
     { label: 'Title', value: (e) => e.title },
     { label: 'Level', value: (e) => e.levelId },
@@ -72,10 +72,13 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
       userUsecase
         .getUserInfoWithId(userId)
         .then(setUser)
-        .catch((err) => {
-          console.error('Failed to fetch user detail:', err);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, userId, userUsecase]);
 
@@ -93,7 +96,11 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
       >
         <Typography variant="h6">User Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -217,7 +224,8 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
             </Grid>
 
             {/* Employee Info */}
-            {user.employee ? <>
+            {user.employee ? (
+              <>
                 <Grid item xs={12}>
                   <Divider sx={{ my: 2 }} />
                   <Typography variant="h6">Employee Info</Typography>
@@ -240,13 +248,14 @@ export function ViewUserDialog({ open, userId, onClose }: Props) {
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          {fieldValue ?? '-'}
+                          {String(fieldValue ?? '')}
                         </Typography>
                       </Box>
                     </Grid>
                   );
                 })}
-              </> : null}
+              </>
+            ) : null}
           </Grid>
         )}
       </DialogContent>

@@ -28,7 +28,7 @@ import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog'
 import { EditUserDialog } from './edit-user-dialog';
 import { ViewUserDialog } from './view-user-detail-dialog';
 
-interface Props {
+interface UserTableProps {
   rows: UserResponse[];
   count: number;
   page: number;
@@ -48,7 +48,7 @@ export default function UsersTable({
   onRowsPerPageChange,
   onDeleteUsers,
   onUpdateUser,
-}: Props) {
+}: UserTableProps) {
   const rowIds = React.useMemo(() => rows.map((row) => row.id), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -85,7 +85,9 @@ export default function UsersTable({
     setSelectedUser(row);
   };
 
-  const handleMenuClose = () => { setAnchorEl(null); };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleEditClick = () => {
     if (selectedUser) {
@@ -96,7 +98,7 @@ export default function UsersTable({
   };
 
   const handleDeleteConfirm = async () => {
-    await onDeleteUsers(Array.from(selected));
+    onDeleteUsers(Array.from(selected));
     setSelected(new Set());
     setDeleteConfirmOpen(false);
   };
@@ -138,7 +140,9 @@ export default function UsersTable({
                 '&:hover': { backgroundColor: 'var(--mui-palette-secondary-dark)' },
               }}
               variant="outlined"
-              onClick={() => { setDeleteConfirmOpen(true); }}
+              onClick={() => {
+                setDeleteConfirmOpen(true);
+              }}
             >
               Delete Selected ({selected.size})
             </Button>
@@ -197,7 +201,12 @@ export default function UsersTable({
                 return (
                   <TableRow hover key={row.id} selected={isItemSelected}>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id); }} />
+                      <Checkbox
+                        checked={isItemSelected}
+                        onChange={() => {
+                          handleSelectOne(row.id);
+                        }}
+                      />
                     </TableCell>{' '}
                     <TableCell sx={{ width: '10%' }}>{row.id}</TableCell>
                     <TableCell sx={{ width: '25%' }}>
@@ -218,7 +227,11 @@ export default function UsersTable({
                     <TableCell>{row.email}</TableCell>
                     <TableCell>{row.roles?.join(', ')}</TableCell>
                     <TableCell align="right">
-                      <IconButton onClick={(event) => { handleMenuClick(event, row); }}>
+                      <IconButton
+                        onClick={(event) => {
+                          handleMenuClick(event, row);
+                        }}
+                      >
                         <MoreVert />
                       </IconButton>
                     </TableCell>
@@ -287,17 +300,29 @@ export default function UsersTable({
         onConfirm={handleDeleteConfirm}
       />
 
-      {editUserData ? <EditUserDialog
+      {editUserData ? (
+        <EditUserDialog
           open={editOpen}
           user={editUserData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onUpdateUser(editUserData.id, updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {selectedUser ? <ViewUserDialog open={viewOpen} userId={selectedUser?.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
+      {selectedUser ? (
+        <ViewUserDialog
+          open={viewOpen}
+          userId={selectedUser?.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

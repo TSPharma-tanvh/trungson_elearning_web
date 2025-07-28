@@ -2,13 +2,10 @@
 
 import * as React from 'react';
 import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
-import { ActiveEnum, CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { ActiveEnum } from '@/utils/enum/core-enum';
 import {
-  Box,
   Button,
   Card,
-  Checkbox,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -16,8 +13,6 @@ import {
   OutlinedInput,
   Select,
   Stack,
-  TextField,
-  Typography,
 } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
 
@@ -27,7 +22,7 @@ export function ClassTeacherFilters({
   onFilter: (filters: GetClassTeacherRequest) => void;
 }): React.JSX.Element {
   const [searchText, setSearchText] = React.useState('');
-  const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
+  const [_isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<string | undefined>(undefined);
 
   const handleFilter = () => {
@@ -54,7 +49,9 @@ export function ClassTeacherFilters({
         <OutlinedInput
           size="small"
           value={searchText}
-          onChange={(e) => { setSearchText(e.target.value); }}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
           fullWidth
           placeholder="Search course"
           startAdornment={
@@ -70,7 +67,9 @@ export function ClassTeacherFilters({
           <InputLabel>Status</InputLabel>
           <Select
             value={status ?? ''}
-            onChange={(e) => { setStatus(e.target.value === '' ? undefined : e.target.value); }}
+            onChange={(e) => {
+              setStatus(e.target.value === '' ? undefined : e.target.value);
+            }}
             label="Status"
           >
             <MenuItem value="">All</MenuItem>

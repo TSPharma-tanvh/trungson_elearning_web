@@ -61,8 +61,8 @@ export class GetUserQuizProgressRequest {
     if (this.startedAt) form.append('startedAt', this.startedAt.toISOString());
     if (this.completedAt) form.append('completedAt', this.completedAt.toISOString());
     if (this.lastAccess) form.append('lastAccess', this.lastAccess.toISOString());
-    if (this.progressStatus != null) form.append('progressStatus', this.progressStatus.toString());
-    if (this.activeStatus != null) form.append('activeStatus', this.activeStatus.toString());
+    if (this.progressStatus !== undefined) form.append('progressStatus', this.progressStatus.toString());
+    if (this.activeStatus !== undefined) form.append('activeStatus', this.activeStatus.toString());
     if (this.searchText) form.append('searchText', this.searchText);
     form.append('pageNumber', this.pageNumber.toString());
     form.append('pageSize', this.pageSize.toString());

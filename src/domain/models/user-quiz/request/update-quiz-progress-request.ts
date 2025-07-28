@@ -1,5 +1,4 @@
-import { DateTimeUtils } from '@/utils/date-time-utils';
-import { type StatusEnum, UserProgressEnum, type UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { type StatusEnum, type UserQuizProgressEnum } from '@/utils/enum/core-enum';
 
 export class UpdateUserQuizRequest {
   userID!: string;

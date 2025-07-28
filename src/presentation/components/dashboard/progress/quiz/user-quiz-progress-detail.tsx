@@ -4,11 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { Info, InfoOutlined } from '@mui/icons-material';
+import { InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Avatar,
   Box,
@@ -25,12 +24,13 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
 import { ViewUserDialog } from '../../management/users/view-user-detail-dialog';
 import QuizDetailForm from '../../quiz/quiz/quiz-detail-form';
 
-interface Props {
+interface UserQuizProgressDetailsProps {
   open: boolean;
   userQuizProgressId: string | null;
   onClose: () => void;
@@ -43,6 +43,9 @@ function UserQuizProgressDetails({
   userQuizProgress: UserQuizProgressDetailResponse;
   fullScreen: boolean;
 }) {
+  const [openQuizDetail, setOpenQuizDetail] = useState(false);
+  const [openUserDetail, setOpenUserDetail] = useState(false);
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -55,8 +58,6 @@ function UserQuizProgressDetails({
   const renderQuiz = () => {
     const quiz = userQuizProgress.quiz;
     if (!quiz) return null;
-
-    const [openQuizDetail, setOpenQuizDetail] = useState(false);
 
     const handleViewQuizDetail = () => {
       setOpenQuizDetail(true);
@@ -94,14 +95,20 @@ function UserQuizProgressDetails({
               {renderField('Thumbnail Name', quiz.thumbnail?.name)}
             </Grid>
             {/* <Box mt={4}>
-              {quiz?.video?.resourceUrl != null && (
+              {quiz?.video?.resourceUrl !== undefined && (
                 <CustomVideoPlayer src={quiz.video.resourceUrl} fullscreen={fullScreen} />
               )}
             </Box> */}
           </Box>
         </CardContent>
 
-        <QuizDetailForm open={openQuizDetail} quizId={quiz?.id ?? null} onClose={() => { setOpenQuizDetail(false); }} />
+        <QuizDetailForm
+          open={openQuizDetail}
+          quizId={quiz?.id ?? null}
+          onClose={() => {
+            setOpenQuizDetail(false);
+          }}
+        />
       </Card>
     );
   };
@@ -109,8 +116,6 @@ function UserQuizProgressDetails({
   const renderUserInformation = () => {
     const user = userQuizProgress.user;
     if (!user) return null;
-
-    const [openUserDetail, setOpenUserDetail] = useState(false);
 
     const handleViewQuizDetail = () => {
       setOpenUserDetail(true);
@@ -129,7 +134,8 @@ function UserQuizProgressDetails({
         <CardContent>
           <Box key={user.id} sx={{ mb: 2 }}>
             {/* Avatar */}
-            {user.employee?.avatar ? <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
+            {user.employee?.avatar ? (
+              <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar sx={{ width: 100, height: 100 }} src={user.employee?.avatar ?? user.thumbnail?.resourceUrl}>
                     {user.firstName?.[0]}
@@ -143,7 +149,8 @@ function UserQuizProgressDetails({
                     </Typography>
                   </Box>
                 </Stack>
-              </Box> : null}
+              </Box>
+            ) : null}
 
             <Grid container spacing={2}>
               {renderField('ID', user.id)}
@@ -161,7 +168,13 @@ function UserQuizProgressDetails({
           </Box>
         </CardContent>
 
-        <ViewUserDialog open={openUserDetail} userId={user?.id ?? null} onClose={() => { setOpenUserDetail(false); }} />
+        <ViewUserDialog
+          open={openUserDetail}
+          userId={user?.id ?? null}
+          onClose={() => {
+            setOpenUserDetail(false);
+          }}
+        />
       </Card>
     );
   };
@@ -211,7 +224,11 @@ function UserQuizProgressDetails({
   );
 }
 
-export default function UserQuizProgressDetailForm({ open, userQuizProgressId, onClose }: Props) {
+export default function UserQuizProgressDetailForm({
+  open,
+  userQuizProgressId,
+  onClose,
+}: UserQuizProgressDetailsProps) {
   const { userQuizProgressUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userQuizProgress, setUserQuizProgress] = useState<UserQuizProgressDetailResponse | null>(null);
@@ -223,11 +240,14 @@ export default function UserQuizProgressDetailForm({ open, userQuizProgressId, o
       userQuizProgressUsecase
         .getUserQuizProgressById(userQuizProgressId)
         .then(setUserQuizProgress)
-        .catch((error) => {
-          console.error('Error fetching userQuizProgress details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setUserQuizProgress(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, userQuizProgressId, userQuizProgressUsecase]);
 
@@ -238,7 +258,11 @@ export default function UserQuizProgressDetailForm({ open, userQuizProgressId, o
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">UserQuizProgress Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

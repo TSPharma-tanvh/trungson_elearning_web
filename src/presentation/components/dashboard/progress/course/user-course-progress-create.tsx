@@ -8,17 +8,7 @@ import { ApproveStatusEnum, CategoryEnum, UserProgressEnum } from '@/utils/enum/
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -27,7 +17,7 @@ import { CourseSelectDialog } from '@/presentation/components/shared/courses/cou
 import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
-interface Props {
+interface UserCourseProgressCreateProps {
   disabled?: boolean;
   onSubmit: (data: EnrollUserListToCourseRequest) => void;
   loading?: boolean;
@@ -35,13 +25,17 @@ interface Props {
   onClose: () => void;
 }
 
-export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+export function CreateUserCourseProgressDialog({
+  disabled = false,
+  onSubmit,
+  loading = false,
+  open,
+  onClose,
+}: UserCourseProgressCreateProps) {
   const { userUsecase, courseUsecase, enrollUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
+  const [_detailRows, setDetailRows] = useState(3);
 
   const [form, setForm] = useState<EnrollUserListToCourseRequest>(
     new EnrollUserListToCourseRequest({
@@ -84,7 +78,9 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => { window.removeEventListener('resize', updateRows); };
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
   return (
@@ -94,7 +90,11 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
           Create UserCourseProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -141,7 +141,9 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
               <CourseSelectDialog
                 courseUsecase={courseUsecase}
                 value={form.courseID ?? ''}
-                onChange={(value: string) => { handleChange('courseID', value); }}
+                onChange={(value: string) => {
+                  handleChange('courseID', value);
+                }}
                 disabled={false}
               />
             </Grid>
@@ -150,7 +152,9 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
               <UserMultiSelectDialog
                 userUsecase={userUsecase}
                 value={form.userIDs ? form.userIDs : []}
-                onChange={(value: string[]) => { handleChange('userIDs', value); }}
+                onChange={(value: string[]) => {
+                  handleChange('userIDs', value);
+                }}
                 disabled={false}
               />
             </Grid>
@@ -159,7 +163,9 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
               <EnrollmentSingleSelect
                 enrollmentUsecase={enrollUsecase}
                 value={form.enrollmentCriteriaID ?? ''}
-                onChange={(value: string) => { handleChange('enrollmentCriteriaID', value); }}
+                onChange={(value: string) => {
+                  handleChange('enrollmentCriteriaID', value);
+                }}
                 disabled={false}
                 categoryEnum={CategoryEnum.Course}
               />
@@ -169,7 +175,9 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
-                onChange={(value) => { handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value)); }}
+                onChange={(value) => {
+                  handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value));
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -178,7 +186,9 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
-                onChange={(value) => { handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value)); }}
+                onChange={(value) => {
+                  handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value));
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -187,7 +197,9 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
               <CustomSelectDropDown<UserProgressEnum>
                 label="Trạng thái"
                 value={form.status}
-                onChange={(val) => { handleChange('status', val); }}
+                onChange={(val) => {
+                  handleChange('status', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: UserProgressEnum.NotStarted, label: 'Chưa bắt đầu' },
@@ -201,7 +213,9 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
               <CustomSelectDropDown<ApproveStatusEnum>
                 label="Duyệt"
                 value={form.enrollStatus!}
-                onChange={(val) => { handleChange('enrollStatus', val); }}
+                onChange={(val) => {
+                  handleChange('enrollStatus', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: ApproveStatusEnum.Approve, label: 'Chấp nhận' },
@@ -211,7 +225,14 @@ export function CreateUserCourseProgressDialog({ disabled = false, onSubmit, loa
             </Grid>
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
+              <CustomButton
+                label="Tạo mới"
+                onClick={() => {
+                  onSubmit(form);
+                }}
+                loading={loading}
+                disabled={disabled}
+              />
             </Grid>
           </Grid>
         </Box>

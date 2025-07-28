@@ -51,32 +51,39 @@ export class UpdateCategoryRequest {
 
   toFormData(): FormData {
     const formData = new FormData();
-    // Append each property individually
+
     formData.append('id', this.id);
-    if (this.categoryName != null) {
+
+    if (this.categoryName !== null && this.categoryName !== undefined) {
       formData.append('categoryName', this.categoryName);
     }
-    if (this.description != null) {
+    if (this.description !== null && this.description !== undefined) {
       formData.append('description', this.description);
     }
-    if (this.category != null) {
+    if (this.category !== null && this.category !== undefined) {
       formData.append('category', this.category.toString());
     }
-    if (this.thumbnailID != null) {
+
+    if (this.thumbnailID !== null && this.thumbnailID !== undefined) {
       formData.append('thumbnailID', this.thumbnailID);
     }
+
     if (this.thumbnail) {
       formData.append('thumbnail', this.thumbnail);
     }
-    if (this.thumbDocumentNo != null) {
+
+    if (this.thumbDocumentNo !== null && this.thumbDocumentNo !== undefined) {
       formData.append('thumbDocumentNo', this.thumbDocumentNo);
     }
-    if (this.thumbPrefixName != null) {
+
+    if (this.thumbPrefixName !== null && this.thumbPrefixName !== undefined) {
       formData.append('thumbPrefixName', this.thumbPrefixName);
     }
-    if (this.isDeleteOldThumbnail != null) {
+
+    if (this.isDeleteOldThumbnail !== null && this.isDeleteOldThumbnail !== undefined) {
       formData.append('isDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
     }
+
     return formData;
   }
 }

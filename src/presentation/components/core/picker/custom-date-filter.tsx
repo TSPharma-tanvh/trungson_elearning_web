@@ -1,6 +1,6 @@
 'use client';
 
-import { InputAdornment, Popper, TextField } from '@mui/material';
+import { InputAdornment, Popper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Calendar } from '@phosphor-icons/react';
@@ -42,7 +42,9 @@ export function CustomDateTimeFilter({ label, value, onChange, disabled = false 
       label={label}
       value={value ? dayjs(value) : null}
       format="DD/MM/YYYY hh:mm A"
-      onChange={(newValue) => { onChange(newValue ? dayjs(newValue).format('YYYY-MM-DDTHH:mm:ss') : ''); }}
+      onChange={(newValue) => {
+        onChange(newValue ? dayjs(newValue).format('YYYY-MM-DDTHH:mm:ss') : '');
+      }}
       disabled={disabled}
       ampm
       slots={{

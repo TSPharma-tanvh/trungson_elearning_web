@@ -9,6 +9,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateEnrollmentDialog } from '@/presentation/components/dashboard/management/enrollment/enrollment-create-form';
 import { EnrollmentFilters } from '@/presentation/components/dashboard/management/enrollment/enrollment-filter';
 import EnrollmentTable from '@/presentation/components/dashboard/management/enrollment/enrollment-table';
@@ -17,13 +18,12 @@ export default function Page(): React.JSX.Element {
   const { enrollUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetEnrollmentCriteriaRequest>(
     new GetEnrollmentCriteriaRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [enrollments, setEnrollments] = React.useState<EnrollmentCriteriaDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -35,16 +35,19 @@ export default function Page(): React.JSX.Element {
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { enrollments, totalRecords } = await enrollUsecase.getEnrollmentList(request);
-      setEnrollments(enrollments);
+      const { enrollments: enrollmentList, totalRecords } = await enrollUsecase.getEnrollmentList(request);
+      setEnrollments(enrollmentList);
       setTotalCount(totalRecords);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
+
       setEnrollments([]);
     }
   }, [filters, page, rowsPerPage, enrollUsecase]);
 
   React.useEffect(() => {
-    fetchEnrollments();
+    void fetchEnrollments();
   }, [fetchEnrollments]);
 
   const handleFilter = (newFilters: GetEnrollmentCriteriaRequest) => {
@@ -67,8 +70,9 @@ export default function Page(): React.JSX.Element {
       await enrollUsecase.createEnrollment(request);
       setShowCreateDialog(false);
       await fetchEnrollments();
-    } catch (error) {
-      console.error('Failed to create enrollment path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -76,8 +80,9 @@ export default function Page(): React.JSX.Element {
     try {
       await enrollUsecase.updateEnrollment(request);
       await fetchEnrollments();
-    } catch (error) {
-      console.error('Failed to update enrollment path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -91,9 +96,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchEnrollments();
-    } catch (error) {
-      console.error('Failed to delete enrollment paths:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -110,7 +115,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -125,14 +132,16 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteEnrollments={handleDeleteEnrollments}
         onEditEnrollment={handleEditEnrollment}
-       />
+      />
 
       <CreateEnrollmentDialog
         onSubmit={handleCreateEnrollment}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

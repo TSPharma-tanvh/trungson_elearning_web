@@ -1,4 +1,3 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { type GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
@@ -18,7 +17,8 @@ export class LessonUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(LessonDetailResponse.fromJSON);
+    // const data = result.result.map(LessonDetailResponse.fromJSON);
+    const data = result.result.map((x) => LessonDetailResponse.fromJSON(x));
 
     return {
       Lessons: data,

@@ -3,18 +3,8 @@ import { type UpdateUserPathProgressRequest } from '@/domain/models/user-path/re
 import { type UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { UserProgressEnum } from '@/utils/enum/core-enum';
-import {
-  Autorenew,
-  CancelOutlined,
-  CheckCircleOutline,
-  DataUsage,
-  HourglassEmpty,
-  MoreVert,
-  NotStarted,
-  NotStartedOutlined,
-} from '@mui/icons-material';
-import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
-import { CheckCircle, XCircle } from '@phosphor-icons/react';
+import { CancelOutlined, CheckCircleOutline, DataUsage, MoreVert } from '@mui/icons-material';
+import { Avatar, Box, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -212,7 +202,9 @@ export default function UserPathProgressTable({
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar
                     src={
-                      row.user?.employee?.avatar != null ? row.user?.employee?.avatar : row.user?.thumbnail?.resourceUrl
+                      row.user?.employee?.avatar !== undefined
+                        ? row.user?.employee?.avatar
+                        : row.user?.thumbnail?.resourceUrl
                     }
                   >
                     {row.user?.employee?.name?.[0]}
@@ -238,7 +230,11 @@ export default function UserPathProgressTable({
               <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
 
               <TableCell align="right">
-                <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
+                <IconButton
+                  onClick={(e) => {
+                    onActionClick(e as React.MouseEvent<HTMLElement>);
+                  }}
+                >
                   <MoreVert />
                 </IconButton>
               </TableCell>
@@ -247,21 +243,29 @@ export default function UserPathProgressTable({
         }}
       />
 
-      {editUserPathProgressData ? <UpdateUserPathProgressFormDialog
+      {editUserPathProgressData ? (
+        <UpdateUserPathProgressFormDialog
           open={editOpen}
           data={editUserPathProgressData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditUserPathProgress(updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {editUserPathProgressData ? <UserPathProgressDetailForm
+      {editUserPathProgressData ? (
+        <UserPathProgressDetailForm
           open={viewOpen}
           userPathProgressId={editUserPathProgressData.id ?? null}
-          onClose={() => { setViewOpen(false); }}
-        /> : null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

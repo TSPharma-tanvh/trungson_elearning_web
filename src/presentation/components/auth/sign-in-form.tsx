@@ -24,7 +24,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 
 import { paths } from '@/paths';
-import { authClient } from '@/lib/auth/client';
 
 const schema = zod.object({
   email: zod.string().min(1, { message: 'Email is required' }),
@@ -69,9 +68,9 @@ export function SignInForm(): React.JSX.Element {
         if (result.token.trim().length > 0) {
           router.refresh();
         }
-      } catch (err: any) {
-        console.error(`Sign-in error: ${err.message || err}`);
-        setError('root', { type: 'server', message: err.message ?? 'Sign in failed' });
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        setError('root', { type: 'server', message: message ?? 'Sign in failed' });
       } finally {
         setIsPending(false);
       }

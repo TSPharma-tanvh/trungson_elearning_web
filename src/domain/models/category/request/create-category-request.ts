@@ -2,13 +2,13 @@ import { CategoryEnum } from '@/utils/enum/core-enum';
 
 export class CreateCategoryRequest {
   categoryName: string;
-  description?: string | null;
+  description?: string | undefined;
   category: CategoryEnum;
-  thumbnailID?: string | null;
-  thumbnail?: File | null;
-  thumbDocumentNo?: string | null;
-  thumbPrefixName?: string | null;
-  isDeleteOldThumbnail?: boolean | null;
+  thumbnailID?: string | undefined;
+  thumbnail?: File | undefined;
+  thumbDocumentNo?: string | undefined;
+  thumbPrefixName?: string | undefined;
+  isDeleteOldThumbnail?: boolean | undefined;
 
   constructor(data: Partial<CreateCategoryRequest> = {}) {
     this.categoryName = data.categoryName ?? '';
@@ -48,23 +48,23 @@ export class CreateCategoryRequest {
   toFormData(): FormData {
     const formData = new FormData();
     formData.append('categoryName', this.categoryName);
-    if (this.description != null) {
+    if (this.description !== undefined) {
       formData.append('description', this.description);
     }
     formData.append('category', this.category.toString());
-    if (this.thumbnailID != null) {
+    if (this.thumbnailID !== undefined) {
       formData.append('thumbnailID', this.thumbnailID);
     }
     if (this.thumbnail) {
       formData.append('thumbnail', this.thumbnail);
     }
-    if (this.thumbDocumentNo != null) {
+    if (this.thumbDocumentNo !== undefined) {
       formData.append('thumbDocumentNo', this.thumbDocumentNo);
     }
-    if (this.thumbPrefixName != null) {
+    if (this.thumbPrefixName !== undefined) {
       formData.append('thumbPrefixName', this.thumbPrefixName);
     }
-    if (this.isDeleteOldThumbnail != null) {
+    if (this.isDeleteOldThumbnail !== undefined) {
       formData.append('isDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
     }
     return formData;

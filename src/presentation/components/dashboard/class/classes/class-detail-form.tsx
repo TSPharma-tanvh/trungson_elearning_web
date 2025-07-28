@@ -22,11 +22,12 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
-interface Props {
+interface ClassDetailProps {
   open: boolean;
   classId: string | null;
   onClose: () => void;
@@ -101,11 +102,14 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                       mb: 1,
                     }}
                   >
-                    {isImage ? <Box
+                    {isImage ? (
+                      <Box
                         component="img"
                         src={res.resourceUrl}
                         alt={res.name}
-                        onClick={() => { setPreviewUrl(res.resourceUrl ?? ''); }}
+                        onClick={() => {
+                          setPreviewUrl(res.resourceUrl ?? '');
+                        }}
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -115,9 +119,11 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                           objectFit: 'cover',
                           cursor: 'pointer',
                         }}
-                      /> : null}
+                      />
+                    ) : null}
 
-                    {isVideo ? <Box
+                    {isVideo ? (
+                      <Box
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -127,9 +133,11 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                         }}
                       >
                         <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
-                      </Box> : null}
+                      </Box>
+                    ) : null}
 
-                    {isOther ? <Box
+                    {isOther ? (
+                      <Box
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -143,7 +151,8 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                         }}
                       >
                         <Typography variant="body2">No preview</Typography>
-                      </Box> : null}
+                      </Box>
+                    ) : null}
                   </Box>
 
                   <Typography variant="body2" noWrap>
@@ -155,14 +164,20 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
           </Grid>
 
           {/* Preview image modal */}
-          {previewUrl ? <ImagePreviewDialog
+          {previewUrl ? (
+            <ImagePreviewDialog
               open={Boolean(previewUrl)}
-              onClose={() => { setPreviewUrl(null); }}
+              onClose={() => {
+                setPreviewUrl(null);
+              }}
               imageUrl={previewUrl}
               title="Image Preview"
               fullscreen={fullScreen}
-              onToggleFullscreen={() => {}}
-            /> : null}
+              onToggleFullscreen={() => {
+                undefined;
+              }}
+            />
+          ) : null}
         </CardContent>
       </Card>
     );
@@ -197,12 +212,14 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
               classes.startAt ? DateTimeUtils.formatISODateFromDate(classes.startAt) : undefined
             )}
             {renderField('End At', classes.endAt ? DateTimeUtils.formatISODateFromDate(classes.endAt) : undefined)}
-            {classes.qrCodeURL ? <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+            {classes.qrCodeURL ? (
+              <Grid item xs={12} sm={fullScreen ? 4 : 6}>
                 <Typography variant="subtitle2" fontWeight={500}>
                   QR Code
                 </Typography>
                 <Box component="img" src={classes.qrCodeURL} alt="QR Code" sx={{ maxWidth: '100%', height: 'auto' }} />
-              </Grid> : null}
+              </Grid>
+            ) : null}
           </Grid>
         </CardContent>
       </Card>
@@ -213,7 +230,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   );
 }
 
-export default function ClassDetailForm({ open, classId, onClose }: Props) {
+export default function ClassDetailForm({ open, classId, onClose }: ClassDetailProps) {
   const { classUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [classes, setClass] = useState<ClassResponse | null>(null);
@@ -225,11 +242,14 @@ export default function ClassDetailForm({ open, classId, onClose }: Props) {
       classUsecase
         .getClassById(classId)
         .then(setClass)
-        .catch((error) => {
-          console.error('Error fetching Class details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setClass(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, classId, classUsecase]);
 
@@ -240,7 +260,11 @@ export default function ClassDetailForm({ open, classId, onClose }: Props) {
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Class Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

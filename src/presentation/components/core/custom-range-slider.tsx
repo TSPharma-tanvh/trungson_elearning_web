@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Box, FormControl, FormLabel, Slider, type SliderProps } from '@mui/material';
+import { FormControl, FormLabel, Slider, type SliderProps } from '@mui/material';
 
 interface CustomRangeSliderProps extends Omit<SliderProps, 'onChange'> {
   label?: string;
@@ -25,7 +25,8 @@ export const CustomRangeSlider: React.FC<CustomRangeSliderProps> = ({
         justifyContent: 'center',
       }}
     >
-      {label ? <FormLabel
+      {label ? (
+        <FormLabel
           sx={{
             fontSize: '0.75rem',
             color: 'var(--mui-palette-primary-main)',
@@ -34,11 +35,14 @@ export const CustomRangeSlider: React.FC<CustomRangeSliderProps> = ({
           }}
         >
           {label}
-        </FormLabel> : null}
+        </FormLabel>
+      ) : null}
 
       <Slider
         value={value}
-        onChange={(_, newValue) => { onChange(newValue as [number, number]); }}
+        onChange={(_, newValue) => {
+          onChange(newValue as [number, number]);
+        }}
         min={min}
         max={max}
         size="small"

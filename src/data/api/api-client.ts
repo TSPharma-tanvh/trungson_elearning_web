@@ -1,10 +1,11 @@
-// src/data/api/apiClient.ts
-import path from 'node:path';
-
-import { ValidationErrorResponse } from '@/domain/models/core/validation-error-response';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from 'axios';
 import qs from 'qs';
 
 import { paths } from '@/paths';
@@ -50,7 +51,7 @@ class ApiClient {
       },
       (error) => {
         CustomSnackBar.showSnackbar('Request error', 'error');
-        return Promise.reject(error);
+        return Promise.reject(new Error(error.message));
       }
     );
 
@@ -63,8 +64,8 @@ class ApiClient {
             CustomSnackBar.showSnackbar(data.message || 'Unknown error', 'error');
             throw new Error(data.message || 'API logic error');
           } else if (data.message && response.config.method?.toLowerCase() !== 'get') {
-              CustomSnackBar.showSnackbar(data.message, 'success');
-            }
+            CustomSnackBar.showSnackbar(data.message, 'success');
+          }
         }
 
         return response;
@@ -85,7 +86,9 @@ class ApiClient {
             });
 
             // Show all validation messages
-            errorMessages.forEach((msg) => { CustomSnackBar.showSnackbar(msg, 'error'); });
+            errorMessages.forEach((msg) => {
+              CustomSnackBar.showSnackbar(msg, 'error');
+            });
           } else {
             const msg = data?.message || data?.title || error.message || 'API error';
             CustomSnackBar.showSnackbar(msg, 'error');
@@ -117,7 +120,7 @@ class ApiClient {
           CustomSnackBar.showSnackbar('Unexpected error', 'error');
         }
 
-        return Promise.reject(error);
+        return Promise.reject(new Error(error.message));
       }
     );
   }
@@ -156,8 +159,9 @@ class ApiClient {
         return true;
       }
       return false;
-    } catch (err) {
-      console.error('Refresh token failed', err);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
       return false;
     }
   }
@@ -171,7 +175,7 @@ class ApiClient {
   }
 
   public async put<T>(url: string, data: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.put<T>(url, data);
+    return this.client.put<T>(url, data, config);
   }
 
   public async delete<T>(url: string): Promise<AxiosResponse<T>> {

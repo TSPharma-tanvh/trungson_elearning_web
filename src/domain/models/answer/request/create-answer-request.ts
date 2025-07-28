@@ -32,7 +32,7 @@ export class CreateAnswerRequest {
       thumbPrefixName: this.thumbPrefixName,
       isDeleteOldThumbnail: this.isDeleteOldThumbnail,
       categoryEnum: this.categoryEnum,
-      status: this.status != null ? Number(this.status) : undefined,
+      status: this.status !== undefined ? Number(this.status) : undefined,
     };
   }
 
@@ -52,7 +52,7 @@ export class CreateAnswerRequest {
     if (this.categoryEnum !== undefined) {
       formData.append('CategoryEnum', this.categoryEnum.toString());
     }
-    if (this.status != null) formData.append('Status', String(this.status));
+    if (this.status !== undefined) formData.append('Status', String(this.status));
     return formData;
   }
 }

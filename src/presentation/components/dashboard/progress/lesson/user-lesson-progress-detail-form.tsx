@@ -5,7 +5,6 @@ import { type UserLessonProgressDetailResponse } from '@/domain/models/user-less
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -15,7 +14,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -25,10 +23,11 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 
-interface Props {
+interface UserLessonProgressDetailProps {
   open: boolean;
   userLessonProgressId: string | null;
   onClose: () => void;
@@ -78,7 +77,7 @@ function UserLessonProgressDetails({
               {renderField('Thumbnail Name', lesson.thumbnail?.name)}
             </Grid>
             <Box mt={4}>
-              {lesson?.video?.resourceUrl != null && (
+              {lesson?.video?.resourceUrl !== undefined && (
                 <CustomVideoPlayer src={lesson.video.resourceUrl} fullscreen={fullScreen} />
               )}
             </Box>
@@ -98,7 +97,8 @@ function UserLessonProgressDetails({
         <CardContent>
           <Box key={user.id} sx={{ mb: 2 }}>
             {/* Avatar */}
-            {user.employee?.avatar ? <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
+            {user.employee?.avatar ? (
+              <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar sx={{ width: 100, height: 100 }} src={user.employee?.avatar ?? user.thumbnail?.resourceUrl}>
                     {user.firstName?.[0]}
@@ -112,7 +112,8 @@ function UserLessonProgressDetails({
                     </Typography>
                   </Box>
                 </Stack>
-              </Box> : null}
+              </Box>
+            ) : null}
 
             <Grid container spacing={2}>
               {renderField('ID', user.id)}
@@ -162,7 +163,7 @@ function UserLessonProgressDetails({
   );
 }
 
-export default function UserLessonProgressDetailForm({ open, userLessonProgressId, onClose }: Props) {
+export default function UserLessonProgressDetailForm({ open, userLessonProgressId, onClose }: UserLessonProgressDetailProps) {
   const { userLessonProgressUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userLessonProgress, setUserLessonProgress] = useState<UserLessonProgressDetailResponse | null>(null);
@@ -174,11 +175,14 @@ export default function UserLessonProgressDetailForm({ open, userLessonProgressI
       userLessonProgressUsecase
         .getUserLessonProgressById(userLessonProgressId)
         .then(setUserLessonProgress)
-        .catch((error) => {
-          console.error('Error fetching userLessonProgress details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setUserLessonProgress(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, userLessonProgressId, userLessonProgressUsecase]);
 
@@ -189,7 +193,11 @@ export default function UserLessonProgressDetailForm({ open, userLessonProgressI
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">UserLessonProgress Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

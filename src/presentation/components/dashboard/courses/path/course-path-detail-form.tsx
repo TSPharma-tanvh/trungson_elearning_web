@@ -25,9 +25,10 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
-interface Props {
+interface CoursePathDetailProps {
   open: boolean;
   coursePathId: string | null;
   onClose: () => void;
@@ -200,7 +201,9 @@ export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) 
               title={enroll.name ?? `Enrollment #${index + 1}`}
               action={
                 <IconButton
-                  onClick={() => { toggleExpanded(enroll.id); }}
+                  onClick={() => {
+                    toggleExpanded(enroll.id);
+                  }}
                   sx={{
                     transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s',
@@ -263,7 +266,9 @@ function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
         title={course.name ?? 'Unnamed Course'}
         action={
           <IconButton
-            onClick={() => { setExpanded(!expanded); }}
+            onClick={() => {
+              setExpanded(!expanded);
+            }}
             sx={{
               transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 0.2s',
@@ -316,7 +321,7 @@ function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
   );
 }
 
-export default function CoursePathDetailForm({ open, coursePathId, onClose }: Props) {
+export default function CoursePathDetailForm({ open, coursePathId, onClose }: CoursePathDetailProps) {
   const { pathUseCase } = useDI();
   const [loading, setLoading] = useState(false);
   const [coursePath, setCoursePath] = useState<CoursePathResponse | null>(null);
@@ -328,11 +333,14 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Pr
       pathUseCase
         .getPathDetailInfo(coursePathId)
         .then(setCoursePath)
-        .catch((error) => {
-          console.error('Error fetching course path details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setCoursePath(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, coursePathId, pathUseCase]);
 
@@ -343,7 +351,11 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Pr
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', pr: 1 }}>
         <Typography variant="h6">Course Path Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

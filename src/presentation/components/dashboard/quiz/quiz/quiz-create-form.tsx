@@ -18,7 +18,7 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { QuestionMultiSelectDialog } from '@/presentation/components/shared/quiz/question/question-multi-select';
 
-interface Props {
+interface CreateQuizProps {
   disabled?: boolean;
   onSubmit: (data: CreateQuizRequest) => void;
   loading?: boolean;
@@ -26,8 +26,8 @@ interface Props {
   onClose: () => void;
 }
 
-export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
-  const { categoryUsecase, enrollUsecase, fileUsecase, questionUsecase } = useDI();
+export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateQuizProps) {
+  const { categoryUsecase, questionUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
@@ -59,12 +59,11 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
       }
-
-      await onSubmit(form);
+      onSubmit(form);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }

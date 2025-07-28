@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateCategoryRequest } from '@/domain/models/category/request/create-category-request';
-import { CategoryEnum, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -10,10 +10,9 @@ import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography }
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
-interface Props {
+interface CategoryCreateProps {
   disabled?: boolean;
   onSubmit: (data: CreateCategoryRequest) => void;
   loading?: boolean;
@@ -21,7 +20,13 @@ interface Props {
   onClose: () => void;
 }
 
-export function CreateCategoryDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function CreateCategoryDialog({
+  disabled = false,
+  onSubmit,
+  loading = false,
+  open,
+  onClose,
+}: CategoryCreateProps) {
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
 
@@ -59,7 +64,9 @@ export function CreateCategoryDialog({ disabled = false, onSubmit, loading = fal
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => { window.removeEventListener('resize', updateRows); };
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
   return (
@@ -69,7 +76,11 @@ export function CreateCategoryDialog({ disabled = false, onSubmit, loading = fal
           Create Category
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -107,7 +118,9 @@ export function CreateCategoryDialog({ disabled = false, onSubmit, loading = fal
               <CustomTextField
                 label="Tên khóa học"
                 value={form.categoryName}
-                onChange={(val) => { handleChange('categoryName', val); }}
+                onChange={(val) => {
+                  handleChange('categoryName', val);
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -116,7 +129,9 @@ export function CreateCategoryDialog({ disabled = false, onSubmit, loading = fal
               <CustomTextField
                 label="Chi tiết"
                 value={form.description ?? ''}
-                onChange={(val) => { handleChange('description', val); }}
+                onChange={(val) => {
+                  handleChange('description', val);
+                }}
                 disabled={disabled}
                 multiline
                 rows={detailRows}
@@ -133,7 +148,9 @@ export function CreateCategoryDialog({ disabled = false, onSubmit, loading = fal
               <CustomSelectDropDown<CategoryEnum>
                 label="Enrollment Criteria Type"
                 value={form.category ?? CategoryEnum.Path}
-                onChange={(val) => { handleChange('category', val); }}
+                onChange={(val) => {
+                  handleChange('category', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: CategoryEnum.Path, label: 'Lộ trình' },
@@ -149,7 +166,14 @@ export function CreateCategoryDialog({ disabled = false, onSubmit, loading = fal
             </Grid>
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
+              <CustomButton
+                label="Tạo mới"
+                onClick={() => {
+                  onSubmit(form);
+                }}
+                loading={loading}
+                disabled={disabled}
+              />
             </Grid>
           </Grid>
         </Box>

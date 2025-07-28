@@ -4,32 +4,19 @@ import React, { useEffect, useState } from 'react';
 import { CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ApproveStatusEnum, CategoryEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { UserProgressEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
-import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
 import { LessonSingleSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-select';
-import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
-import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 import { UserSelectDialog } from '@/presentation/components/user/user-select';
 
-interface Props {
+interface CreateUserLessonProgressProps {
   disabled?: boolean;
   onSubmit: (data: CreateUserLessonRequest) => void;
   loading?: boolean;
@@ -37,13 +24,17 @@ interface Props {
   onClose: () => void;
 }
 
-export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { userUsecase, lessonUsecase, enrollUsecase } = useDI();
+export function CreateUserLessonProgressDialog({
+  disabled = false,
+  onSubmit,
+  loading = false,
+  open,
+  onClose,
+}: CreateUserLessonProgressProps) {
+  const { userUsecase, lessonUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
+  const [_detailRows, setDetailRows] = useState(3);
 
   const [form, setForm] = useState<CreateUserLessonRequest>(
     new CreateUserLessonRequest({
@@ -82,7 +73,9 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => { window.removeEventListener('resize', updateRows); };
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
   return (
@@ -92,7 +85,11 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
           Create UserLessonProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -139,7 +136,9 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <LessonSingleSelectDialog
                 lessonUsecase={lessonUsecase}
                 value={form.lessonID ?? ''}
-                onChange={(value: string) => { handleChange('lessonID', value); }}
+                onChange={(value: string) => {
+                  handleChange('lessonID', value);
+                }}
                 disabled={false}
               />
             </Grid>
@@ -148,7 +147,9 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <UserSelectDialog
                 userUsecase={userUsecase}
                 value={form.userID ? form.userID : ''}
-                onChange={(value: string) => { handleChange('userID', value); }}
+                onChange={(value: string) => {
+                  handleChange('userID', value);
+                }}
                 disabled={false}
               />
             </Grid>
@@ -157,7 +158,9 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
-                onChange={(value) => { handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value)); }}
+                onChange={(value) => {
+                  handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value));
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -166,7 +169,9 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
-                onChange={(value) => { handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value)); }}
+                onChange={(value) => {
+                  handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value));
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -175,7 +180,9 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
               <CustomSelectDropDown<string>
                 label="Trạng thái"
                 value={form.status ?? ''}
-                onChange={(val) => { handleChange('status', val); }}
+                onChange={(val) => {
+                  handleChange('status', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'Chưa bắt đầu' },
@@ -186,7 +193,14 @@ export function CreateUserLessonProgressDialog({ disabled = false, onSubmit, loa
             </Grid>
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
+              <CustomButton
+                label="Tạo mới"
+                onClick={() => {
+                  onSubmit(form);
+                }}
+                loading={loading}
+                disabled={disabled}
+              />
             </Grid>
           </Grid>
         </Box>

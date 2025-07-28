@@ -5,7 +5,7 @@ import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-
 import { UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { type UserQuizProgressDetailListResult } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-result';
 import { type UserQuizProgressRepository } from '@/domain/repositories/progress/user-quiz-progress-repository';
-import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class UserQuizProgressUsecase {
   constructor(private readonly userQuizProgressRepo: UserQuizProgressRepository) {}
@@ -17,7 +17,8 @@ export class UserQuizProgressUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(UserQuizProgressDetailResponse.fromJson);
+    // const data = result.result.map(UserQuizProgressDetailResponse.fromJson);
+    const data = result.result.map((x) => UserQuizProgressDetailResponse.fromJson(x));
 
     return {
       progress: data,

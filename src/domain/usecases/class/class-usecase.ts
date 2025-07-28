@@ -5,7 +5,7 @@ import { ClassResponse } from '@/domain/models/class/response/class-response';
 import { type ClassListResult } from '@/domain/models/class/response/class-result';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type ClassRepository } from '@/domain/repositories/class/class-repository';
-import { ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { ScheduleStatusEnum } from '@/utils/enum/core-enum';
 
 export class ClassUsecase {
   constructor(private readonly ClassRepo: ClassRepository) {}
@@ -17,7 +17,8 @@ export class ClassUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(ClassResponse.fromJson);
+    // const data = result.result.map(ClassResponse.fromJson);
+    const data = result.result.map((x) => ClassResponse.fromJson(x));
 
     return {
       class: data,

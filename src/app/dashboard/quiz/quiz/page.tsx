@@ -10,27 +10,25 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Copy } from '@phosphor-icons/react';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
-import { Plus, Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
 import { ImportQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-import-form';
 import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
-// export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
 export default function Page(): React.JSX.Element {
   const { quizUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [showImportDialog, setShowImportDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetQuizRequest>(new GetQuizRequest({ pageNumber: 1, pageSize: 10 }));
   const [quizzes, setQuizzes] = React.useState<QuizResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -42,8 +40,8 @@ export default function Page(): React.JSX.Element {
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { quizzes, totalRecords } = await quizUsecase.getQuizListInfo(request);
-      setQuizzes(quizzes);
+      const { quizzes: quiz, totalRecords } = await quizUsecase.getQuizListInfo(request);
+      setQuizzes(quiz);
       setTotalCount(totalRecords);
     } catch (error) {
       setQuizzes([]);
@@ -51,7 +49,7 @@ export default function Page(): React.JSX.Element {
   }, [filters, page, rowsPerPage, quizUsecase]);
 
   React.useEffect(() => {
-    fetchQuizzes();
+    void fetchQuizzes();
   }, [fetchQuizzes]);
 
   const handleFilter = (newFilters: GetQuizRequest) => {
@@ -74,8 +72,9 @@ export default function Page(): React.JSX.Element {
       await quizUsecase.createQuiz(request);
       setShowCreateDialog(false);
       await fetchQuizzes();
-    } catch (error) {
-      console.error('Failed to create course path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -84,8 +83,9 @@ export default function Page(): React.JSX.Element {
       await quizUsecase.importFromExcel(request);
       setShowImportDialog(false);
       await fetchQuizzes();
-    } catch (error) {
-      console.error('Failed to create course path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -93,8 +93,9 @@ export default function Page(): React.JSX.Element {
     try {
       await quizUsecase.updateQuiz(request);
       await fetchQuizzes();
-    } catch (error) {
-      console.error('Failed to update course path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -108,9 +109,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchQuizzes();
-    } catch (error) {
-      console.error('Failed to delete course paths:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -125,7 +126,9 @@ export default function Page(): React.JSX.Element {
             <Button
               color="inherit"
               startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}
-              onClick={() => { setShowImportDialog(true); }}
+              onClick={() => {
+                setShowImportDialog(true);
+              }}
             >
               Import Questions to Quiz
             </Button>
@@ -138,7 +141,9 @@ export default function Page(): React.JSX.Element {
           <Button
             startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
-            onClick={() => { setShowCreateDialog(true); }}
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
           >
             Add
           </Button>
@@ -154,14 +159,16 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteQuizs={handleDeleteQuizs}
         onEditQuiz={handleEditQuiz}
-       />
+      />
 
       <CreateQuizDialog
         onSubmit={handleCreateQuiz}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
 
       <ImportQuizDialog
@@ -169,7 +176,9 @@ export default function Page(): React.JSX.Element {
         disabled={false}
         loading={false}
         open={showImportDialog}
-        onClose={() => { setShowImportDialog(false); }}
+        onClose={() => {
+          setShowImportDialog(false);
+        }}
       />
     </Stack>
   );

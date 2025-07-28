@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
 import { type UserQuestionResponse } from '@/domain/models/question/response/user-question-response';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -32,8 +31,9 @@ import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
 import QuestionInformationForm from '../../../shared/quiz/question/question-information-form';
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
-interface Props {
+interface QuizDetailFormProps {
   open: boolean;
   quizId: string | null;
   onClose: () => void;
@@ -43,6 +43,8 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedQuestion, setSelectedQuestion] = React.useState<UserQuestionResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
+  const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
+  const [previewFullScreen, setPreviewFullScreen] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
@@ -84,8 +86,6 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
 
   const renderQuestions = () => {
     if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) return null;
-
-    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (lessonId: string) => {
       setExpandedLessons((prev) => ({
@@ -129,7 +129,9 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                     </IconButton>
 
                     <IconButton
-                      onClick={() => { toggleExpanded(lessonId); }}
+                      onClick={() => {
+                        toggleExpanded(lessonId);
+                      }}
                       sx={{
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s',
@@ -190,11 +192,14 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                       mb: 1,
                     }}
                   >
-                    {isImage ? <Box
+                    {isImage ? (
+                      <Box
                         component="img"
                         src={res.resourceUrl}
                         alt={res.name}
-                        onClick={() => { setPreviewUrl(res.resourceUrl ?? ''); }}
+                        onClick={() => {
+                          setPreviewUrl(res.resourceUrl ?? '');
+                        }}
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -204,9 +209,11 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                           objectFit: 'cover',
                           cursor: 'pointer',
                         }}
-                      /> : null}
+                      />
+                    ) : null}
 
-                    {isVideo ? <Box
+                    {isVideo ? (
+                      <Box
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -216,9 +223,11 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                         }}
                       >
                         <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
-                      </Box> : null}
+                      </Box>
+                    ) : null}
 
-                    {isOther ? <Box
+                    {isOther ? (
+                      <Box
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -232,7 +241,8 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                         }}
                       >
                         <Typography variant="body2">No preview</Typography>
-                      </Box> : null}
+                      </Box>
+                    ) : null}
                   </Box>
 
                   <Typography variant="body2" noWrap>
@@ -244,14 +254,20 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
           </Grid>
 
           {/* Preview image modal */}
-          {previewUrl ? <ImagePreviewDialog
+          {previewUrl ? (
+            <ImagePreviewDialog
               open={Boolean(previewUrl)}
-              onClose={() => { setPreviewUrl(null); }}
+              onClose={() => {
+                setPreviewUrl(null);
+              }}
               imageUrl={previewUrl}
               title="Image Preview"
-              fullscreen={fullScreen}
-              onToggleFullscreen={() => {}}
-            /> : null}
+              fullscreen={previewFullScreen}
+              onToggleFullscreen={() => {
+                setPreviewFullScreen((prev) => !prev);
+              }}
+            />
+          ) : null}
         </CardContent>
       </Card>
     );
@@ -296,16 +312,20 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
       {renderFiles()}
 
       {/* question details */}
-      {selectedQuestion ? <QuestionInformationForm
+      {selectedQuestion ? (
+        <QuestionInformationForm
           open={viewOpen}
           questionId={selectedQuestion?.id ?? null}
-          onClose={() => { setViewOpen(false); }}
-        /> : null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </Box>
   );
 }
 
-export default function QuizDetailForm({ open, quizId, onClose }: Props) {
+export default function QuizDetailForm({ open, quizId, onClose }: QuizDetailFormProps) {
   const { quizUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [course, setQuiz] = useState<QuizResponse | null>(null);
@@ -317,11 +337,14 @@ export default function QuizDetailForm({ open, quizId, onClose }: Props) {
       quizUsecase
         .getQuizById(quizId)
         .then(setQuiz)
-        .catch((error) => {
-          console.error('Error fetching course details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setQuiz(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, quizId, quizUsecase]);
 
@@ -332,7 +355,11 @@ export default function QuizDetailForm({ open, quizId, onClose }: Props) {
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Quiz Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

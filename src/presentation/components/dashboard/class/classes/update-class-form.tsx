@@ -1,15 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import {
-  CategoryEnum,
-  DisplayTypeEnum,
-  LearningModeEnum,
-  ScheduleStatusEnum,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
+import { CategoryEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -58,7 +52,7 @@ interface EditClassDialogProps {
 export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: EditClassDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase, classTeacherUsecase } = useDI();
+  const { categoryUsecase, enrollUsecase, fileUsecase, classTeacherUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateClassRequest>(new UpdateClassRequest({}));
@@ -145,8 +139,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error) => {
-              console.error('Error fetching thumbnail:', error);
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setPreviewUrl(null);
             });
         } else {
@@ -162,8 +157,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error) {
-        console.error('Error fetching file resource:', error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        CustomSnackBar.showSnackbar(message, 'error');
         setPreviewUrl(null);
       }
     } else {
@@ -199,7 +195,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
         return;
       }
 
-      await onSubmit(formData);
+      onSubmit(formData);
       onClose();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'An error has occurred.';
@@ -230,17 +226,6 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
     { value: ScheduleStatusEnum.Schedule, label: 'Schedule' },
     { value: ScheduleStatusEnum.Ongoing, label: 'Ongoing' },
     { value: ScheduleStatusEnum.Cancelled, label: 'Cancelled' },
-  ];
-
-  const statusOptions = [
-    { value: StatusEnum.Enable, label: 'Enable' },
-    { value: StatusEnum.Disable, label: 'Disable' },
-    { value: StatusEnum.Deleted, label: 'Deleted' },
-  ];
-
-  const displayTypeOptions = [
-    { value: DisplayTypeEnum.Public, label: 'Public' },
-    { value: DisplayTypeEnum.Private, label: 'Private' },
   ];
 
   if (!classes) return null;
@@ -428,7 +413,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <ToggleButtonGroup
                 value={fileSelectSource}
                 exclusive
-                onChange={(e, newValue) => newValue && setFileSelectSource(newValue)}
+                onChange={(e, newValue: 'upload' | 'multi-select') => {
+                  if (newValue) setFileSelectSource(newValue);
+                }}
                 aria-label="file select source"
                 fullWidth
                 sx={{ mb: 2 }}

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreateClassTeacherRequest } from '@/domain/models/teacher/request/create-class-teacher-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { ActiveEnum, LearningModeEnum } from '@/utils/enum/core-enum';
+import { ActiveEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -11,13 +11,12 @@ import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography }
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { ClassMultiSelectDialog } from '@/presentation/components/shared/classes/class/class-multi-select';
 import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';
 import { UserSelectDialog } from '@/presentation/components/user/user-select';
 
-interface Props {
+interface CreateTeacherFormProps {
   disabled?: boolean;
   onSubmit: (data: CreateClassTeacherRequest) => void;
   loading?: boolean;
@@ -25,11 +24,17 @@ interface Props {
   onClose: () => void;
 }
 
-export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function CreateClassTeacherDialog({
+  disabled = false,
+  onSubmit,
+  loading = false,
+  open,
+  onClose,
+}: CreateTeacherFormProps) {
   const { userUsecase, courseUsecase, classUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, _setIsSubmitting] = useState(false);
 
   const getNewForm = () =>
     new CreateClassTeacherRequest({
@@ -66,21 +71,23 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => { window.removeEventListener('resize', updateRows); };
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
-  const handleSave = async () => {
-    setIsSubmitting(true);
-    try {
-      await onSubmit(form);
-      onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // const handleSave = async () => {
+  //   setIsSubmitting(true);
+  //   try {
+  //     void onSubmit(form);
+  //     onClose();
+  //   } catch (error: unknown) {
+  //     const message = error instanceof Error ? error.message : 'An error has occurred.';
+  //     CustomSnackBar.showSnackbar(message, 'error');
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   useEffect(() => {
     setForm(getNewForm());
@@ -91,7 +98,11 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Tạo lớp học</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -105,7 +116,9 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <UserSelectDialog
               userUsecase={userUsecase}
               value={form.userID ?? ''}
-              onChange={(val) => { handleChange('userID', val); }}
+              onChange={(val) => {
+                handleChange('userID', val);
+              }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -114,7 +127,9 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <CustomTextField
               label="Mô tả"
               value={form.description || ''}
-              onChange={(val) => { handleChange('description', val); }}
+              onChange={(val) => {
+                handleChange('description', val);
+              }}
               disabled={disabled}
               multiline
               rows={detailRows}
@@ -125,7 +140,9 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <CourseMultiSelectDialog
               courseUsecase={courseUsecase}
               value={form.courseID ? form.courseID.split(',').filter((id) => id) : []}
-              onChange={(value: string[]) => { handleChange('courseID', value.join(',')); }}
+              onChange={(value: string[]) => {
+                handleChange('courseID', value.join(','));
+              }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -134,7 +151,9 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <ClassMultiSelectDialog
               classUsecase={classUsecase}
               value={form.classID ? form.classID.split(',').filter((id) => id) : []}
-              onChange={(val) => { handleChange('classID', val.join(',')); }}
+              onChange={(val) => {
+                handleChange('classID', val.join(','));
+              }}
               disabled={isSubmitting}
             />
           </Grid>
@@ -143,7 +162,9 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
             <CustomSelectDropDown<string>
               label="Trạng thái"
               value={form.status}
-              onChange={(val) => { handleChange('status', val); }}
+              onChange={(val) => {
+                handleChange('status', val);
+              }}
               disabled={disabled}
               options={[
                 { value: ActiveEnum[ActiveEnum.Active], label: 'Kích hoạt' },
@@ -153,7 +174,14 @@ export function CreateClassTeacherDialog({ disabled = false, onSubmit, loading =
           </Grid>
 
           <Grid item xs={12}>
-            <CustomButton label="Tạo lớp" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
+            <CustomButton
+              label="Tạo lớp"
+              onClick={() => {
+                onSubmit(form);
+              }}
+              loading={loading}
+              disabled={disabled}
+            />
           </Grid>
         </Grid>
       </DialogContent>

@@ -2,10 +2,9 @@
 
 import * as React from 'react';
 import { GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/get-enrollment-criteria-request';
-import { CategoryEnum, CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { CategoryEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
+import { StatusEnum } from '@/utils/enum/path-enum';
+import { Button, Card, Stack } from '@mui/material';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -55,7 +54,9 @@ export function EnrollmentFilters({
         <CustomSelectFilter<StatusEnum>
           label="Status"
           value={status}
-          onChange={(val) => { setStatus(val); }}
+          onChange={(val) => {
+            setStatus(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
@@ -63,7 +64,9 @@ export function EnrollmentFilters({
         <CustomSelectFilter<CategoryEnum>
           label="Display Type"
           value={targetType}
-          onChange={(val) => { setTargetType(val); }}
+          onChange={(val) => {
+            setTargetType(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(CategoryEnum)}
         />
 

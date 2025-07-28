@@ -11,13 +11,13 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-interface Props {
+interface AccountInfoProps {
   user: UserResponse | null;
   onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   thumbnailPreview?: string | null;
 }
 
-export function AccountInfo({ user, onUpload, thumbnailPreview }: Props): React.JSX.Element {
+export function AccountInfo({ user, onUpload, thumbnailPreview }: AccountInfoProps): React.JSX.Element {
   const avatarUrl = thumbnailPreview ?? user?.thumbnail?.resourceUrl ?? '/assets/avatar.png';
 
   return (

@@ -24,11 +24,12 @@ import {
   useTheme,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
-interface Props {
+interface QuestionDetailsProps {
   open: boolean;
   questionId: string | null;
   onClose: () => void;
@@ -37,6 +38,8 @@ interface Props {
 function QuestionDetails({ question, fullScreen }: { question: QuestionResponse; fullScreen: boolean }) {
   const theme = useTheme();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [expandedAnswers, setExpandedAnswers] = useState<Record<string, boolean>>({});
+  const [previewFullScreen, setPreviewFullScreen] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -49,8 +52,6 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
 
   const renderAnswers = () => {
     if (!question.answers || question.answers.length === 0) return null;
-
-    const [expandedAnswers, setExpandedAnswers] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (lessonId: string) => {
       setExpandedAnswers((prev) => ({
@@ -114,8 +115,6 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
   };
 
   const renderFileResources = () => {
-    const [previewFullScreen, setPreviewFullScreen] = useState(false);
-
     if (!question.fileQuestionRelation?.length) return null;
 
     return (
@@ -273,7 +272,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
   );
 }
 
-export default function QuestionDetailForm({ open, questionId, onClose }: Props) {
+export default function QuestionDetailForm({ open, questionId, onClose }: QuestionDetailsProps) {
   const { questionUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState<QuestionResponse | null>(null);
@@ -285,8 +284,9 @@ export default function QuestionDetailForm({ open, questionId, onClose }: Props)
       questionUsecase
         .getQuestionById(questionId)
         .then(setQuestion)
-        .catch((error) => {
-          console.error('Error fetching question details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setQuestion(null);
         })
         .finally(() => {

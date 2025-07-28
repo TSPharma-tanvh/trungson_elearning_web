@@ -6,7 +6,7 @@ import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/req
 import { UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { type UserCourseProgressResult } from '@/domain/models/user-course/response/user-course-progress-result';
 import { type UserCourseProgressRepository } from '@/domain/repositories/progress/user-course-progress-repository';
-import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserCourseProgressUsecase {
   constructor(private readonly userCourseProgressRepo: UserCourseProgressRepository) {}
@@ -18,7 +18,8 @@ export class UserCourseProgressUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(UserCourseProgressResponse.fromJSON);
+    // const data = result.result.map(UserCourseProgressResponse.fromJSON);
+    const data = result.result.map((x) => UserCourseProgressResponse.fromJSON(x));
 
     return {
       courses: data,

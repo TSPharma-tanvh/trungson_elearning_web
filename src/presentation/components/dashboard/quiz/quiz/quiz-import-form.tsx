@@ -18,7 +18,7 @@ import ImagePreviewDialog from '@/presentation/components/shared/file/image-prev
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 import { QuizSingleSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 
-interface Props {
+interface QuizImportFormProps {
   disabled?: boolean;
   onSubmit: (data: CreateQuizFromExcelRequest) => void;
   loading?: boolean;
@@ -26,12 +26,12 @@ interface Props {
   onClose: () => void;
 }
 
-export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, open, onClose }: QuizImportFormProps) {
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
+  // const [detailRows, setDetailRows] = useState(3);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { categoryUsecase, quizUsecase } = useDI();
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
 
   const [form, setForm] = useState<CreateQuizFromExcelRequest>(
@@ -75,17 +75,17 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
   //   };
 
   const handleFileUpload = (file: File | null) => {
-    if (file == null) {
+    if (file === null) {
       CustomSnackBar.showSnackbar('File is required.', 'error');
       return;
     }
 
     handleChange('excelFile', file);
-    if (file) {
-      setPreviewUrl(URL.createObjectURL(file));
-    } else {
-      setPreviewUrl(null);
-    }
+    // if (file) {
+    //   setPreviewUrl(URL.createObjectURL(file));
+    // } else {
+    //   setPreviewUrl(null);
+    // }
   };
 
   const handleSave = async () => {
@@ -97,11 +97,11 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
         return;
       }
 
-      await onSubmit(form);
+      onSubmit(form);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -113,32 +113,29 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
     color: '#616161',
   };
 
-  useEffect(() => {
-    const updateRows = () => {
-      const windowHeight = window.innerHeight;
-      const windowWidth = window.innerWidth;
-      const aspectRatio = windowWidth / windowHeight;
+  // useEffect(() => {
+  //   const updateRows = () => {
+  //     // const windowHeight = window.innerHeight;
+  //     // const windowWidth = window.innerWidth;
+  //     // const aspectRatio = windowWidth / windowHeight;
+  //     // let otherElementsHeight = 300;
+  //     // if (windowHeight < 600) {
+  //     //   otherElementsHeight = 250;
+  //     // } else if (windowHeight > 1000) {
+  //     //   otherElementsHeight = 350;
+  //     // }
+  //     // const rowHeight = aspectRatio > 1.5 ? 22 : 24;
+  //     // const availableHeight = windowHeight - otherElementsHeight;
+  //     // const calculatedRows = Math.max(3, Math.floor(availableHeight / rowHeight));
+  //     // setDetailRows(fullScreen ? calculatedRows : 3);
+  //   };
 
-      let otherElementsHeight = 300;
-      if (windowHeight < 600) {
-        otherElementsHeight = 250;
-      } else if (windowHeight > 1000) {
-        otherElementsHeight = 350;
-      }
-
-      const rowHeight = aspectRatio > 1.5 ? 22 : 24;
-      const availableHeight = windowHeight - otherElementsHeight;
-      const calculatedRows = Math.max(3, Math.floor(availableHeight / rowHeight));
-
-      setDetailRows(fullScreen ? calculatedRows : 3);
-    };
-
-    updateRows();
-    window.addEventListener('resize', updateRows);
-    return () => {
-      window.removeEventListener('resize', updateRows);
-    };
-  }, [fullScreen]);
+  //   updateRows();
+  //   window.addEventListener('resize', updateRows);
+  //   return () => {
+  //     window.removeEventListener('resize', updateRows);
+  //   };
+  // }, [fullScreen]);
 
   useEffect(() => {
     if (!open) {

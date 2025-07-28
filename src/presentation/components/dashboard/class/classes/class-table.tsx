@@ -382,10 +382,6 @@ export default function ClassTable({
     setEditOpen(true);
   };
 
-  const handleDelete = (row: ClassResponse) => {
-    onDeleteClass([row.id]);
-  };
-
   return (
     <>
       <CustomTable<ClassResponse>
@@ -453,17 +449,29 @@ export default function ClassTable({
         ]}
       />
 
-      {editClassData ? <UpdateClassFormDialog
+      {editClassData ? (
+        <UpdateClassFormDialog
           open={editOpen}
           classes={editClassData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditClass(updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {selectedRow ? <ClassDetailForm open={viewOpen} classId={selectedRow.id} onClose={() => { setViewOpen(false); }} /> : null}
+      {selectedRow ? (
+        <ClassDetailForm
+          open={viewOpen}
+          classId={selectedRow.id}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

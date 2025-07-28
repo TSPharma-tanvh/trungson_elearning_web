@@ -23,7 +23,7 @@ import {
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 
-interface Props {
+interface RoleTableProps {
   rows: RoleResponse[];
   count: number;
   page: number;
@@ -31,7 +31,7 @@ interface Props {
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteRoles: (roleIds: string[]) => void;
-  onEditRole: (role: RoleResponse) => void; // New callback for editing
+  onEditRole: (role: RoleResponse) => void;
 }
 
 export default function RolesTable({
@@ -43,7 +43,7 @@ export default function RolesTable({
   onRowsPerPageChange,
   onDeleteRoles,
   onEditRole,
-}: Props) {
+}: RoleTableProps) {
   const rowIds = React.useMemo(() => rows.map((row) => row.id ?? ''), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
@@ -206,7 +206,12 @@ export default function RolesTable({
                 return (
                   <TableRow hover key={row.id} selected={isItemSelected}>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id ?? ''); }} />
+                      <Checkbox
+                        checked={isItemSelected}
+                        onChange={() => {
+                          handleSelectOne(row.id ?? '');
+                        }}
+                      />
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.description}</TableCell>
@@ -237,7 +242,11 @@ export default function RolesTable({
                       </Stack>
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton onClick={(e) => { handleMenuOpen(e, row.id ?? ''); }}>
+                      <IconButton
+                        onClick={(e) => {
+                          handleMenuOpen(e, row.id ?? '');
+                        }}
+                      >
                         <MoreVert />
                       </IconButton>
                     </TableCell>

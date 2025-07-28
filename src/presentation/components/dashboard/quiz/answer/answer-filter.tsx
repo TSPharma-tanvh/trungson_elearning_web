@@ -2,10 +2,9 @@
 
 import * as React from 'react';
 import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
-import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { CoreEnumUtils } from '@/utils/enum/core-enum';
+import { StatusEnum } from '@/utils/enum/path-enum';
+import { Button, Card, Stack } from '@mui/material';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -62,7 +61,9 @@ export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerReque
         <CustomSelectFilter<StatusEnum>
           label="Status"
           value={status}
-          onChange={(val) => { setStatus(val); }}
+          onChange={(val) => {
+            setStatus(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 

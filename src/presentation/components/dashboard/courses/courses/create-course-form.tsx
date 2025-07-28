@@ -7,13 +7,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
-import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
+
+import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
-import { CustomButton } from '@/presentation/components/core/button/custom-button';
+import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
-
-interface Props {
+interface CreateCourseProps {
   disabled?: boolean;
   onSubmit: (data: CreateCourseRequest) => void;
   loading?: boolean;
@@ -21,7 +21,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function CreateCourseDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
+export function CreateCourseDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateCourseProps) {
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
 
@@ -64,7 +64,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => { window.removeEventListener('resize', updateRows); };
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
   return (
@@ -74,7 +76,11 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
           Create Course
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -112,7 +118,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               <CustomTextField
                 label="Tên khóa học"
                 value={form.name}
-                onChange={(val) => { handleChange('name', val); }}
+                onChange={(val) => {
+                  handleChange('name', val);
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -121,7 +129,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               <CustomTextField
                 label="Chi tiết"
                 value={form.detail}
-                onChange={(val) => { handleChange('detail', val); }}
+                onChange={(val) => {
+                  handleChange('detail', val);
+                }}
                 disabled={disabled}
                 multiline
                 rows={detailRows}
@@ -138,7 +148,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={form.startTime}
-                onChange={(val) => { handleChange('startTime', val); }}
+                onChange={(val) => {
+                  handleChange('startTime', val);
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -147,7 +159,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={form.endTime}
-                onChange={(val) => { handleChange('endTime', val); }}
+                onChange={(val) => {
+                  handleChange('endTime', val);
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -156,7 +170,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               <CustomSelectDropDown<StatusEnum>
                 label="Trạng thái"
                 value={form.disableStatus}
-                onChange={(val) => { handleChange('disableStatus', val); }}
+                onChange={(val) => {
+                  handleChange('disableStatus', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: StatusEnum.Enable, label: 'Kích hoạt' },
@@ -169,7 +185,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               <CustomSelectDropDown<DisplayTypeEnum>
                 label="Kiểu hiển thị"
                 value={form.displayType}
-                onChange={(val) => { handleChange('displayType', val); }}
+                onChange={(val) => {
+                  handleChange('displayType', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: DisplayTypeEnum.Public, label: 'Công khai' },
@@ -179,7 +197,14 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
             </Grid>
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => { onSubmit(form); }} loading={loading} disabled={disabled} />
+              <CustomButton
+                label="Tạo mới"
+                onClick={() => {
+                  onSubmit(form);
+                }}
+                loading={loading}
+                disabled={disabled}
+              />
             </Grid>
           </Grid>
         </Box>

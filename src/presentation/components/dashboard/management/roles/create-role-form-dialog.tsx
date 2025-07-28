@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { type JSX, useEffect, useState } from 'react';
 import { CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
 import { type PermissionResponse } from '@/domain/models/role/response/permission-reponse';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import {
-  Box,
   Button,
   Checkbox,
   CircularProgress,
@@ -22,6 +21,8 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface CreateRoleFormProps {
   open: boolean;
@@ -50,13 +51,16 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
     try {
       const permissions = await roleUseCase.getAllPermission();
       setAllPermissions(permissions);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPermissions();
+    void fetchPermissions();
   }, []);
 
   useEffect(() => {
@@ -80,8 +84,9 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
       await roleUseCase.createRole(req);
       onCreated();
       onClose();
-    } catch (err) {
-      console.error('Create role error', err);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setSubmitting(false);
     }
@@ -93,11 +98,21 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
         <DialogTitle>Create Role</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={2}>
-            <TextField required label="Role Name" value={name} onChange={(e) => { setName(e.target.value); }} fullWidth />
+            <TextField
+              required
+              label="Role Name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              fullWidth
+            />
             <TextField
               label="Description"
               value={description}
-              onChange={(e) => { setDescription(e.target.value); }}
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
               fullWidth
               multiline
               rows={3}
@@ -108,7 +123,9 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
                 labelId="permission-select-label"
                 multiple
                 value={selectedPermissions}
-                onChange={(e) => { setSelectedPermissions(e.target.value as string[]); }}
+                onChange={(e) => {
+                  setSelectedPermissions(e.target.value as string[]);
+                }}
                 input={<OutlinedInput label="Permissions" />}
                 renderValue={(selected) => selected.join(', ')}
               >

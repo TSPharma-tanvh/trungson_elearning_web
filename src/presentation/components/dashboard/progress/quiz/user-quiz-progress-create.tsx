@@ -8,17 +8,7 @@ import { ApproveStatusEnum, CategoryEnum, StatusEnum, UserProgressEnum } from '@
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -29,7 +19,7 @@ import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollm
 import { QuizSingleSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
-interface Props {
+interface CreateQuizUserProressProps {
   disabled?: boolean;
   onSubmit: (data: CreateUserQuizRequest) => void;
   loading?: boolean;
@@ -37,14 +27,18 @@ interface Props {
   onClose: () => void;
 }
 
-export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loading = false, open, onClose }: Props) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+export function CreateUserQuizProgressDialog({
+  disabled = false,
+  onSubmit,
+  loading = false,
+  open,
+  onClose,
+}: CreateQuizUserProressProps) {
   const { userUsecase, quizUsecase, enrollUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [_detailRows, setDetailRows] = useState(3);
+  const [_isSubmitting, setIsSubmitting] = useState(false);
   const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
   const [form, setForm] = useState<CreateUserQuizRequest>(
     new CreateUserQuizRequest({
@@ -85,7 +79,9 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
 
     updateRows();
     window.addEventListener('resize', updateRows);
-    return () => { window.removeEventListener('resize', updateRows); };
+    return () => {
+      window.removeEventListener('resize', updateRows);
+    };
   }, [fullScreen]);
 
   const handleSave = async () => {
@@ -97,11 +93,11 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
         return;
       }
 
-      await onSubmit(form);
+      onSubmit(form);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -114,7 +110,11 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
           Create UserQuizProgress
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -152,7 +152,9 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <QuizSingleSelectDialog
                 quizUsecase={quizUsecase}
                 value={form.quizID ?? ''}
-                onChange={(value: string | null) => { handleChange('quizID', value ?? ''); }}
+                onChange={(value: string | null) => {
+                  handleChange('quizID', value ?? '');
+                }}
                 disabled={false}
               />
             </Grid>
@@ -161,7 +163,9 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <UserMultiSelectDialog
                 userUsecase={userUsecase}
                 value={form.userIDs ? form.userIDs : []}
-                onChange={(value: string[]) => { handleChange('userIDs', value); }}
+                onChange={(value: string[]) => {
+                  handleChange('userIDs', value);
+                }}
                 disabled={false}
               />
             </Grid>
@@ -170,7 +174,9 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <EnrollmentSingleSelect
                 enrollmentUsecase={enrollUsecase}
                 value={form.enrollmentCriteriaID ?? ''}
-                onChange={(value: string) => { handleChange('enrollmentCriteriaID', value); }}
+                onChange={(value: string) => {
+                  handleChange('enrollmentCriteriaID', value);
+                }}
                 disabled={false}
                 categoryEnum={CategoryEnum.Quiz}
               />
@@ -180,7 +186,9 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <CustomDateTimePicker
                 label="Thời gian bắt đầu"
                 value={form.customStartTime ? DateTimeUtils.formatISODateToString(form.customStartTime) : undefined}
-                onChange={(value) => { handleChange('customStartTime', DateTimeUtils.parseLocalDateTimeString(value)); }}
+                onChange={(value) => {
+                  handleChange('customStartTime', DateTimeUtils.parseLocalDateTimeString(value));
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -189,7 +197,9 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <CustomDateTimePicker
                 label="Thời gian kết thúc"
                 value={form.customEndTime ? DateTimeUtils.formatISODateToString(form.customEndTime) : undefined}
-                onChange={(value) => { handleChange('customEndTime', DateTimeUtils.parseLocalDateTimeString(value)); }}
+                onChange={(value) => {
+                  handleChange('customEndTime', DateTimeUtils.parseLocalDateTimeString(value));
+                }}
                 disabled={disabled}
               />
             </Grid>
@@ -211,7 +221,9 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <CustomSelectDropDown<UserProgressEnum>
                 label="Trạng thái"
                 value={form.progressStatus ?? ''}
-                onChange={(val) => { handleChange('progressStatus', val); }}
+                onChange={(val) => {
+                  handleChange('progressStatus', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: UserProgressEnum.NotStarted, label: 'Chưa bắt đầu' },
@@ -225,7 +237,9 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
               <CustomSelectDropDown<ApproveStatusEnum>
                 label="Trạng thái duyệt"
                 value={form.enrollStatus ?? ''}
-                onChange={(val) => { handleChange('enrollStatus', val); }}
+                onChange={(val) => {
+                  handleChange('enrollStatus', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: ApproveStatusEnum.Approve, label: 'Chấp nhận' },
@@ -239,14 +253,16 @@ export function CreateUserQuizProgressDialog({ disabled = false, onSubmit, loadi
                 <CustomTextField
                   label="Lý do từ chối"
                   value={form.rejectedReason ?? ''}
-                  onChange={(val) => { handleChange('rejectedReason', val); }}
+                  onChange={(val) => {
+                    handleChange('rejectedReason', val);
+                  }}
                   disabled={disabled}
                   multiline
                   required={form.enrollStatus === ApproveStatusEnum.Reject}
                   rows={3}
-                  onValidationChange={(isValid) =>
-                    { setFieldValidations((prev) => ({ ...prev, rejectedReason: isValid })); }
-                  }
+                  onValidationChange={(isValid) => {
+                    setFieldValidations((prev) => ({ ...prev, rejectedReason: isValid }));
+                  }}
                 />
               </Grid>
             )}

@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -15,7 +13,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -24,9 +21,10 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
-interface Props {
+interface CategoryDetailFormProps {
   open: boolean;
   categoryId: string | null;
   onClose: () => void;
@@ -66,7 +64,7 @@ function CategoryDetails({ category, fullScreen }: { category: CategoryDetailRes
   );
 }
 
-export default function CategoryDetailForm({ open, categoryId, onClose }: Props) {
+export default function CategoryDetailForm({ open, categoryId, onClose }: CategoryDetailFormProps) {
   const { categoryUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<CategoryDetailResponse | null>(null);
@@ -78,11 +76,14 @@ export default function CategoryDetailForm({ open, categoryId, onClose }: Props)
       categoryUsecase
         .getCategoryById(categoryId)
         .then(setCategory)
-        .catch((error) => {
-          console.error('Error fetching category details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setCategory(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, categoryId, categoryUsecase]);
 
@@ -95,7 +96,11 @@ export default function CategoryDetailForm({ open, categoryId, onClose }: Props)
           Category Details
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

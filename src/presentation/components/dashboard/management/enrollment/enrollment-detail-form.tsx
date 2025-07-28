@@ -3,13 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -24,9 +22,10 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
-interface Props {
+interface EnrollmentDetailProps {
   open: boolean;
   enrollmentId: string | null;
   onClose: () => void;
@@ -167,7 +166,9 @@ function EnrollmentDetails({
                 title={enroll.id ?? `Enrollment ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => { toggleExpanded(enrollId); }}
+                    onClick={() => {
+                      toggleExpanded(enrollId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -220,7 +221,9 @@ function EnrollmentDetails({
                 title={courseEnroll.course?.name ?? `Course Enrollment ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => { toggleExpanded(courseEnrollId); }}
+                    onClick={() => {
+                      toggleExpanded(courseEnrollId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -237,11 +240,13 @@ function EnrollmentDetails({
                     {renderField('ID', courseEnroll.id)}
                     {renderField('Enrollment Criteria ID', courseEnroll.enrollmentCriteriaID)}
                     {renderField('Course ID', courseEnroll.courseID)}
-                    {courseEnroll.course ? <>
+                    {courseEnroll.course ? (
+                      <>
                         {renderField('Course Name', courseEnroll.course.name)}
                         {renderField('Course ID', courseEnroll.course.id)}
                         {/* Add other fields from CourseResponse if available */}
-                      </> : null}
+                      </>
+                    ) : null}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -286,7 +291,7 @@ function EnrollmentDetails({
   );
 }
 
-export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: Props) {
+export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: EnrollmentDetailProps) {
   const { enrollUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [enrollment, setEnrollment] = useState<EnrollmentCriteriaDetailResponse | null>(null);
@@ -298,11 +303,14 @@ export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: Pr
       enrollUsecase
         .getEnrollmentById(enrollmentId)
         .then(setEnrollment)
-        .catch((error) => {
-          console.error('Error fetching enrollment details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setEnrollment(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, enrollmentId, enrollUsecase]);
 
@@ -313,7 +321,11 @@ export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: Pr
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Enrollment Criteria Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

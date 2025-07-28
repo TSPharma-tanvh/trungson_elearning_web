@@ -5,7 +5,6 @@ import { type SyncEmployeeFromHrmRequest } from '@/domain/models/employee/reques
 import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { type EmployeeListResult } from '@/domain/models/employee/response/employee-result';
 import { type EmployeeRepository } from '@/domain/repositories/employee/employee-repository';
-import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class EmployeeUsecase {
   constructor(private readonly courseRepo: EmployeeRepository) {}
@@ -17,7 +16,7 @@ export class EmployeeUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(EmployeeResponse.fromJSON);
+    const data = result.result.map((x) => EmployeeResponse.fromJSON(x));
 
     return {
       employees: data,

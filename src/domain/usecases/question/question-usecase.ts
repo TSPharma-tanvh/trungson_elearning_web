@@ -17,7 +17,8 @@ export class QuestionUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(QuestionResponse.fromJSON);
+    // const data = result.result.map(QuestionResponse.fromJSON);
+    const data = result.result.map((x) => QuestionResponse.fromJSON(x));
 
     return {
       questions: data,

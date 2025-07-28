@@ -6,9 +6,10 @@ import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/reques
 import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { type UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateUserLessonProgressDialog } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-create';
 import { UserLessonProgressFilters } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-filter';
 import UserLessonProgressTable from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-table';
@@ -17,13 +18,12 @@ export default function Page(): React.JSX.Element {
   const { userLessonProgressUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserLessonProgressRequest>(
     new GetUserLessonProgressRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [userLessonProgress, setUserLessonProgress] = React.useState<UserLessonProgressDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -38,13 +38,16 @@ export default function Page(): React.JSX.Element {
       const { progress, totalRecords } = await userLessonProgressUsecase.getUserLessonProgressListInfo(request);
       setUserLessonProgress(progress);
       setTotalCount(totalRecords);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
+
       setUserLessonProgress([]);
     }
   }, [filters, page, rowsPerPage, userLessonProgressUsecase]);
 
   React.useEffect(() => {
-    fetchUserLessonProgress();
+    void fetchUserLessonProgress();
   }, [fetchUserLessonProgress]);
 
   const handleFilter = (newFilters: GetUserLessonProgressRequest) => {
@@ -67,8 +70,9 @@ export default function Page(): React.JSX.Element {
       await userLessonProgressUsecase.createUserLessonProgress(request);
       setShowCreateDialog(false);
       await fetchUserLessonProgress();
-    } catch (error) {
-      console.error('Failed to create userLessonProgress lesson:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -76,8 +80,9 @@ export default function Page(): React.JSX.Element {
     try {
       await userLessonProgressUsecase.updateUserLessonProgress(request);
       await fetchUserLessonProgress();
-    } catch (error) {
-      console.error('Failed to update userLessonProgress lesson:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -91,9 +96,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchUserLessonProgress();
-    } catch (error) {
-      console.error('Failed to delete userLessonProgress:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -110,7 +115,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Enroll Users
         </Button>
@@ -125,14 +132,16 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteUserLessonProgresss={handleDeleteUserLessonProgresss}
         onEditUserLessonProgress={handleEditUserLessonProgress}
-       />
+      />
 
       <CreateUserLessonProgressDialog
         onSubmit={handleCreateUserLessonProgress}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

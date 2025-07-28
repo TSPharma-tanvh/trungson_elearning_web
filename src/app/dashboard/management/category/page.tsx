@@ -9,6 +9,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateCategoryDialog } from '@/presentation/components/dashboard/management/category/category-create-form';
 import { CategoryFilters } from '@/presentation/components/dashboard/management/category/category-filter';
 import CategoryTable from '@/presentation/components/dashboard/management/category/category-table';
@@ -17,13 +18,12 @@ export default function Page(): React.JSX.Element {
   const { categoryUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetCategoryRequest>(
     new GetCategoryRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [categorys, setCategories] = React.useState<CategoryDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -38,13 +38,16 @@ export default function Page(): React.JSX.Element {
       const { categories, totalRecords } = await categoryUsecase.getCategoryList(request);
       setCategories(categories);
       setTotalCount(totalRecords);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
+
       setCategories([]);
     }
   }, [filters, page, rowsPerPage, categoryUsecase]);
 
   React.useEffect(() => {
-    fetchCategories();
+    void fetchCategories();
   }, [fetchCategories]);
 
   const handleFilter = (newFilters: GetCategoryRequest) => {
@@ -67,8 +70,9 @@ export default function Page(): React.JSX.Element {
       await categoryUsecase.createCategory(request);
       setShowCreateDialog(false);
       await fetchCategories();
-    } catch (error) {
-      console.error('Failed to create category path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -76,8 +80,9 @@ export default function Page(): React.JSX.Element {
     try {
       await categoryUsecase.updateCategory(request);
       await fetchCategories();
-    } catch (error) {
-      console.error('Failed to update category path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -91,9 +96,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchCategories();
-    } catch (error) {
-      console.error('Failed to delete category paths:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -110,7 +115,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -125,14 +132,16 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteCategories={handleDeleteCategories}
         onEditCategory={handleEditCategory}
-       />
+      />
 
       <CreateCategoryDialog
         onSubmit={handleCreateCategory}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -15,7 +13,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -25,9 +22,10 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
-interface Props {
+interface UserCourseProgressProps {
   open: boolean;
   userCourseProgressId: string | null;
   onClose: () => void;
@@ -89,7 +87,8 @@ function UserCourseProgressDetails({
         <CardContent>
           <Box key={user.id} sx={{ mb: 2 }}>
             {/* Avatar */}
-            {user.employee?.avatar ? <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
+            {user.employee?.avatar ? (
+              <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar sx={{ width: 100, height: 100 }} src={user.employee?.avatar ?? user.thumbnail?.resourceUrl}>
                     {user.firstName?.[0]}
@@ -103,7 +102,8 @@ function UserCourseProgressDetails({
                     </Typography>
                   </Box>
                 </Stack>
-              </Box> : null}
+              </Box>
+            ) : null}
 
             <Grid container spacing={2}>
               {renderField('ID', user.id)}
@@ -154,7 +154,7 @@ function UserCourseProgressDetails({
   );
 }
 
-export default function UserCourseProgressDetailForm({ open, userCourseProgressId, onClose }: Props) {
+export default function UserCourseProgressDetailForm({ open, userCourseProgressId, onClose }: UserCourseProgressProps) {
   const { userCourseProgressUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userCourseProgress, setUserCourseProgress] = useState<UserCourseProgressResponse | null>(null);
@@ -166,11 +166,14 @@ export default function UserCourseProgressDetailForm({ open, userCourseProgressI
       userCourseProgressUsecase
         .getUserCourseProgressById(userCourseProgressId)
         .then(setUserCourseProgress)
-        .catch((error) => {
-          console.error('Error fetching userCourseProgress details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setUserCourseProgress(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, userCourseProgressId, userCourseProgressUsecase]);
 
@@ -181,7 +184,11 @@ export default function UserCourseProgressDetailForm({ open, userCourseProgressI
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">UserCourseProgress Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

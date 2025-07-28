@@ -1,9 +1,8 @@
 import React from 'react';
 import { type UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
 import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
-import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -117,7 +116,11 @@ export default function EnrollmentTable({
             <TableCell>{row.maxCapacity}</TableCell>
             <TableCell>{row.enrollmentStatus}</TableCell>
             <TableCell align="right">
-              <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
+              <IconButton
+                onClick={(e) => {
+                  onActionClick(e as React.MouseEvent<HTMLElement>);
+                }}
+              >
                 <MoreVert />
               </IconButton>
             </TableCell>
@@ -125,21 +128,29 @@ export default function EnrollmentTable({
         )}
       />
 
-      {editEnrollmentData ? <UpdateEnrollmentFormDialog
+      {editEnrollmentData ? (
+        <UpdateEnrollmentFormDialog
           open={editOpen}
           data={editEnrollmentData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditEnrollment(updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {editEnrollmentData ? <EnrollmentDetailForm
+      {editEnrollmentData ? (
+        <EnrollmentDetailForm
           open={viewOpen}
           enrollmentId={editEnrollmentData.id ?? null}
-          onClose={() => { setViewOpen(false); }}
-        /> : null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

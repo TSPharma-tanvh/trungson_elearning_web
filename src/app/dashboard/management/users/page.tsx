@@ -10,6 +10,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { AddUserDialog } from '@/presentation/components/dashboard/management/users/add-user-dialog';
 import { UsersFilters } from '@/presentation/components/dashboard/management/users/users-filters';
 import UsersTable from '@/presentation/components/dashboard/management/users/users-table';
@@ -31,17 +32,18 @@ export default function Page(): React.JSX.Element {
         pageSize: rowsPerPage,
       });
 
-      const { users, totalRecords, pageSize, pageNumber } = await userUsecase.getUserListInfo(request);
+      const { users: userList, totalRecords, pageNumber } = await userUsecase.getUserListInfo(request);
 
-      setUsers(users);
+      setUsers(userList);
       setTotalCount(totalRecords / pageNumber);
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   }, [userUsecase, filters, page, rowsPerPage]);
 
   React.useEffect(() => {
-    fetchUsers();
+    void fetchUsers();
   }, [fetchUsers]);
 
   const handleFilter = (newFilters: GetUserRequest) => {
@@ -61,10 +63,11 @@ export default function Page(): React.JSX.Element {
 
   const handleUpdateUser = async (userId: string, data: UpdateUserInfoRequest) => {
     try {
-      const response = await userUsecase.updateUserInfo(userId, data);
-      await fetchUsers();
-    } catch (error) {
-      console.error('Error updating user:', error);
+      await userUsecase.updateUserInfo(userId, data);
+      void fetchUsers();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -98,7 +101,9 @@ export default function Page(): React.JSX.Element {
           <Button
             startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
-            onClick={() => { setShowForm(true); }}
+            onClick={() => {
+              setShowForm(true);
+            }}
           >
             Add
           </Button>
@@ -120,7 +125,9 @@ export default function Page(): React.JSX.Element {
 
       <AddUserDialog
         open={showForm}
-        onClose={() => { setShowForm(false); }}
+        onClose={() => {
+          setShowForm(false);
+        }}
         onSubmit={async () => {
           await fetchUsers();
           setShowForm(false);

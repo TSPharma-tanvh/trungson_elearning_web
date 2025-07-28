@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -51,11 +52,8 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
-  const [fileSelectSource, setFileSelectSource] = useState<'multi-select' | 'upload'>('multi-select');
-
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [filePreviewOpen, setFilePreviewOpen] = useState(false);
-  const [filePreviewData, setFilePreviewData] = useState<{
+  const [filePreviewData, _setFilePreviewData] = useState<{
     url: string;
     title?: string;
     type?: string;
@@ -68,7 +66,6 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
-      console.error(newFormData);
     }
   }, [open, fileUsecase]);
 
@@ -86,9 +83,12 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => { setPreviewUrl(file.resourceUrl || null); })
-            .catch((error) => {
-              console.error('Error fetching thumbnail:', error);
+            .then((file) => {
+              setPreviewUrl(file.resourceUrl || null);
+            })
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setPreviewUrl(null);
             });
         } else {
@@ -107,15 +107,10 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
     }
   };
 
-  const handleFilePreview = (url: string, title?: string, type?: string) => {
-    setFilePreviewData({ url, title, type });
-    setFilePreviewOpen(true);
-  };
-
-  const handleSave = async () => {
+  const handleSave = () => {
     setIsSubmitting(true);
     try {
-      await onSubmit(formData);
+      onSubmit(formData);
       onClose();
     } catch (error) {
       CustomSnackBar.showSnackbar('Failed to update answer', 'error');
@@ -148,7 +143,11 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
           Create Answer
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -164,7 +163,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
               <CustomTextField
                 label="answerText"
                 value={formData.answerText}
-                onChange={(value) => { handleChange('answerText', value); }}
+                onChange={(value) => {
+                  handleChange('answerText', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -174,7 +175,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
               <CustomSelectDropDown
                 label="isCorrect"
                 value={String(formData.isCorrect ?? '')}
-                onChange={(value) => { handleChange('isCorrect', value === 'true'); }}
+                onChange={(value) => {
+                  handleChange('isCorrect', value === 'true');
+                }}
                 disabled={isSubmitting}
                 options={booleanOptions}
               />
@@ -184,7 +187,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
               <CustomSelectDropDown
                 label="Status"
                 value={formData.status ?? 0}
-                onChange={(value) => { handleChange('status', value as StatusEnum); }}
+                onChange={(value) => {
+                  handleChange('status', value as StatusEnum);
+                }}
                 disabled={isSubmitting}
                 options={statusOptions}
               />
@@ -194,7 +199,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
-                onChange={(value) => { handleChange('categoryID', value); }}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Answer}
                 disabled={isSubmitting}
               />
@@ -203,7 +210,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
               <QuestionSingleSelectDialog
                 questionUsecase={questionUsecase}
                 value={formData.questionID ?? ''}
-                onChange={(value: string) => { handleChange('questionID', value); }}
+                onChange={(value: string) => {
+                  handleChange('questionID', value);
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -238,7 +247,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                   type={FileResourceEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
-                  onChange={(ids) => { handleChange('thumbnailID', ids); }}
+                  onChange={(ids) => {
+                    handleChange('thumbnailID', ids);
+                  }}
                   label="Thumbnail"
                   disabled={isSubmitting}
                 />
@@ -248,7 +259,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -257,7 +270,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -275,7 +290,9 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => { handleFileUpload(e.target.files?.[0] || null); }}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -285,14 +302,17 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                       control={
                         <Checkbox
                           checked={Boolean(formData.isDeleteOldThumbnail)}
-                          onChange={(e) => { handleChange('isDeleteOldThumbnail', e.target.checked); }}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl ? <Grid item xs={12}>
+                  {previewUrl ? (
+                    <Grid item xs={12}>
                       <Box
                         sx={{
                           width: fullScreen ? 400 : 200,
@@ -313,7 +333,8 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
-                    </Grid> : null}
+                    </Grid>
+                  ) : null}
                 </Grid>
               )}
             </Grid>
@@ -352,27 +373,37 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
         </Box>
       </DialogActions>
 
-      {filePreviewData?.url ? <>
+      {filePreviewData?.url ? (
+        <>
           {filePreviewData.type?.includes('image') ? (
             <ImagePreviewDialog
               open={filePreviewOpen}
-              onClose={() => { setFilePreviewOpen(false); }}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               imageUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => { setFullScreen((prev) => !prev); }}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : filePreviewData.type?.includes('video') ? (
             <VideoPreviewDialog
               open={filePreviewOpen}
-              onClose={() => { setFilePreviewOpen(false); }}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               videoUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => { setFullScreen((prev) => !prev); }}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : null}
-        </> : null}
+        </>
+      ) : null}
     </Dialog>
   );
 }

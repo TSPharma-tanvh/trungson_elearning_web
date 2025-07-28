@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/system';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
 import ClassTable from '@/presentation/components/dashboard/class/classes/class-table';
 import { CreateClassDialog } from '@/presentation/components/dashboard/class/classes/create-class-form';
@@ -22,14 +23,13 @@ export default function Page(): React.JSX.Element {
 
   const { classUsecase } = useDI();
 
-  const [showForm, setShowForm] = React.useState(false);
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetClassRequest>(new GetClassRequest({ pageNumber: 1, pageSize: 10 }));
   const [classes, setClasses] = React.useState<ClassResponse[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const fetchClasses = React.useCallback(async () => {
     try {
@@ -41,18 +41,15 @@ export default function Page(): React.JSX.Element {
       const { class: classList, totalRecords } = await classUsecase.getClassListInfo(request);
       setClasses(classList);
       setTotalCount(totalRecords);
-    } catch (error) {
-      console.error('Failed to fetch class:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   }, [filters, page, rowsPerPage, classUsecase]);
 
   React.useEffect(() => {
-    fetchClasses();
+    void fetchClasses();
   }, [fetchClasses]);
-
-  const handleAddClick = () => {
-    setShowForm(true);
-  };
 
   const handleFilter = (newFilters: GetClassRequest) => {
     setFilters(newFilters);
@@ -74,8 +71,9 @@ export default function Page(): React.JSX.Element {
       await classUsecase.createClass(request);
       setShowCreateDialog(false);
       await fetchClasses();
-    } catch (error) {
-      console.error('Failed to create Class path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -83,21 +81,13 @@ export default function Page(): React.JSX.Element {
     try {
       await classUsecase.updateClass(request);
       await fetchClasses();
-    } catch (error) {
-      console.error('Failed to update Class path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
-  const handleEditClassPath = async (request: UpdateClassRequest) => {
-    try {
-      await classUsecase.updateClass(request);
-      await fetchClasses();
-    } catch (error) {
-      console.error('Failed to update Class path:', error);
-    }
-  };
-
-  const handleDeleteClasss = async (ids: string[]) => {
+  const handleDeleteClass = async (ids: string[]) => {
     try {
       setDeleteLoading(true);
       for (const id of ids) {
@@ -107,9 +97,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchClasses();
-    } catch (error) {
-      console.error('Failed to delete Class paths:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -126,7 +116,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -144,9 +136,9 @@ export default function Page(): React.JSX.Element {
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
-          onDeleteClass={handleDeleteClasss}
+          onDeleteClass={handleDeleteClass}
           onEditClass={handleEditClass}
-         />
+        />
       </Stack>
 
       {/* <AddCustomerDialog
@@ -162,7 +154,9 @@ export default function Page(): React.JSX.Element {
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

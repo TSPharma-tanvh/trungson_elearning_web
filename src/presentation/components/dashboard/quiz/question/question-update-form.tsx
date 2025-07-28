@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
 import { type QuestionResponse } from '@/domain/models/question/response/question-response';
@@ -78,7 +79,8 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
         status: question.status !== undefined ? StatusEnum[question.status as keyof typeof StatusEnum] : undefined,
         categoryID: question.categoryId || undefined,
         thumbnailID: question.thumbnailId || undefined,
-        answerIDs: question.answers != null ? question.answers.map((answer) => answer.id).join(',') || '' : undefined,
+        answerIDs:
+          question.answers !== undefined ? question.answers.map((answer) => answer.id).join(',') || '' : undefined,
         resourceIDs:
           question.fileQuestionRelation
             ?.map((item) => item.fileResourceId)
@@ -88,7 +90,6 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
-      console.error(newFormData);
     }
   }, [question, open, fileUsecase]);
 
@@ -109,29 +110,15 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error) => {
-              console.error('Error fetching thumbnail:', error);
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setPreviewUrl(null);
             });
         } else {
           setPreviewUrl(null);
         }
       }
-    }
-  };
-
-  const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
-    if (id) {
-      try {
-        const file = await fileUsecase.getFileResouceById(id);
-        setPreviewUrl(file.resourceUrl || null);
-      } catch (error) {
-        console.error('Error fetching file resource:', error);
-        setPreviewUrl(null);
-      }
-    } else {
-      setPreviewUrl(null);
     }
   };
 
@@ -157,7 +144,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      await onSubmit(formData);
+      onSubmit(formData);
       onClose();
     } catch (error) {
       CustomSnackBar.showSnackbar('Failed to update question', 'error');
@@ -279,7 +266,9 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               <ToggleButtonGroup
                 value={fileSelectSource}
                 exclusive
-                onChange={(e, newValue) => newValue && setFileSelectSource(newValue)}
+                onChange={(e, newValue: 'upload' | 'multi-select') => {
+                  if (newValue) setFileSelectSource(newValue);
+                }}
                 aria-label="file select source"
                 fullWidth
                 sx={{ mb: 2 }}

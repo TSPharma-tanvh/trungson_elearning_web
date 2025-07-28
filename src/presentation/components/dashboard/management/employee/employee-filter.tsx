@@ -3,14 +3,9 @@
 import * as React from 'react';
 import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { Button, Card, Stack } from '@mui/material';
 
-import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomDateTimeFilter } from '@/presentation/components/core/picker/custom-date-filter';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function EmployeeFilters({ onFilter }: { onFilter: (filters: GetEmployeeRequest) => void }): React.JSX.Element {
@@ -52,9 +47,6 @@ export function EmployeeFilters({ onFilter }: { onFilter: (filters: GetEmployeeR
           value={dateTime ? dateTime.toISOString() : ''}
           onChange={(value) => {
             const parsedDate = DateTimeUtils.parseLocalDateTimeString(value);
-            console.error(value);
-            console.error(parsedDate);
-
             if (parsedDate) {
               setDateTime(parsedDate);
             }

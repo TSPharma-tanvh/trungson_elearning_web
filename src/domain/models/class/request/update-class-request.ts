@@ -1,5 +1,10 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { type CategoryEnum, type LearningModeEnum, type ScheduleStatusEnum, type StatusEnum } from '@/utils/enum/core-enum';
+import {
+  type CategoryEnum,
+  type LearningModeEnum,
+  type ScheduleStatusEnum,
+  type StatusEnum,
+} from '@/utils/enum/core-enum';
 
 export class UpdateClassRequest {
   id!: string;
@@ -108,7 +113,7 @@ export class UpdateClassRequest {
     fd.append('Id', this.id);
 
     const appendIfExist = (key: string, val: any) => {
-      if (val != null) fd.append(key, typeof val === 'string' ? val : String(val));
+      if (val !== undefined) fd.append(key, typeof val === 'string' ? val : String(val));
     };
 
     appendIfExist('ClassName', this.className);
@@ -139,7 +144,9 @@ export class UpdateClassRequest {
     appendIfExist('EnrollmentCourseIDs', this.enrollmentCourseIDs);
     if (this.thumbnail) fd.append('Thumbnail', this.thumbnail);
     if (this.resources) {
-      this.resources.forEach((f) => { fd.append('Resources', f, f.name); });
+      this.resources.forEach((f) => {
+        fd.append('Resources', f, f.name);
+      });
     }
 
     return fd;

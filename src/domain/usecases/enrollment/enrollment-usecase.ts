@@ -1,5 +1,4 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { EnrollmentCriteriaResponse } from '@/domain/models/criteria/response/enrollment-criteria-response';
 import { type CreateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/create-enrollment-criteria-request';
 import { type GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/get-enrollment-criteria-request';
 import { UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
@@ -18,7 +17,8 @@ export class EnrollmentUsecase {
       throw new Error('Failed to load enrollment list.');
     }
 
-    const data = result.result.map(EnrollmentCriteriaDetailResponse.fromJson);
+    // const data = result.result.map(EnrollmentCriteriaDetailResponse.fromJson);
+    const data = result.result.map((x) => EnrollmentCriteriaDetailResponse.fromJson(x));
 
     return {
       enrollments: data,

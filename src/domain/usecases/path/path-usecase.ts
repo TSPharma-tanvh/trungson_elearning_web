@@ -1,4 +1,3 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateCoursePathRequest } from '@/domain/models/path/request/create-path-request';
 import { type GetPathRequest } from '@/domain/models/path/request/get-path-request';
@@ -18,7 +17,8 @@ export class PathUsecase {
       throw new Error('Failed to load path list.');
     }
 
-    const data = result.result.map(CoursePathResponse.fromJson);
+    // const data = result.result.map(CoursePathResponse.fromJson);
+    const data = result.result.map((x) => CoursePathResponse.fromJson(x));
 
     return {
       path: data,

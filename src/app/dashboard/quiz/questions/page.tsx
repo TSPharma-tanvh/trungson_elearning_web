@@ -9,6 +9,7 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { QuestionCreateForm } from '@/presentation/components/dashboard/quiz/question/question-create-form';
 import { QuestionFilters } from '@/presentation/components/dashboard/quiz/question/question-filter';
 import QuestionTable from '@/presentation/components/dashboard/quiz/question/question-table';
@@ -17,13 +18,12 @@ export default function Page(): React.JSX.Element {
   const { questionUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetQuestionRequest>(
     new GetQuestionRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [questions, setQuestions] = React.useState<QuestionResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -35,16 +35,19 @@ export default function Page(): React.JSX.Element {
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { questions, totalRecords } = await questionUsecase.getQuestionListInfo(request);
-      setQuestions(questions);
+      const { questions: questionList, totalRecords } = await questionUsecase.getQuestionListInfo(request);
+      setQuestions(questionList);
       setTotalCount(totalRecords);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
+
       setQuestions([]);
     }
   }, [filters, page, rowsPerPage, questionUsecase]);
 
   React.useEffect(() => {
-    fetchQuestions();
+    void fetchQuestions();
   }, [fetchQuestions]);
 
   const handleFilter = (newFilters: GetQuestionRequest) => {
@@ -64,13 +67,12 @@ export default function Page(): React.JSX.Element {
 
   const handleCreateQuestion = async (request: CreateQuestionRequest) => {
     try {
-      console.error(request);
-
       await questionUsecase.createQuestion(request);
       setShowCreateDialog(false);
       await fetchQuestions();
-    } catch (error) {
-      console.error('Failed to create question:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -78,8 +80,9 @@ export default function Page(): React.JSX.Element {
     try {
       await questionUsecase.updateQuestion(request);
       await fetchQuestions();
-    } catch (error) {
-      console.error('Failed to update question:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -93,9 +96,9 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchQuestions();
-    } catch (error) {
-      console.error('Failed to delete questions:', error);
-      throw error;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setDeleteLoading(false);
     }
@@ -112,7 +115,9 @@ export default function Page(): React.JSX.Element {
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
-          onClick={() => { setShowCreateDialog(true); }}
+          onClick={() => {
+            setShowCreateDialog(true);
+          }}
         >
           Add
         </Button>
@@ -127,14 +132,16 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteQuestions={handleDeleteQuestions}
         onEditQuestion={handleEditQuestion}
-       />
+      />
 
       <QuestionCreateForm
         onSubmit={handleCreateQuestion}
         disabled={false}
         loading={false}
         open={showCreateDialog}
-        onClose={() => { setShowCreateDialog(false); }}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
       />
     </Stack>
   );

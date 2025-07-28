@@ -211,7 +211,7 @@ export function PathSelectDialog({
               >
                 {filterOptions.pathType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? LearningModeDisplayNames[opt] : 'All'}
+                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select> */}

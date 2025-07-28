@@ -1,9 +1,9 @@
 import {
-  type CategoryEnum,
   DisplayTypeEnum,
   LearningModeEnum,
   ScheduleStatusEnum,
   StatusEnum,
+  type CategoryEnum,
 } from '@/utils/enum/core-enum';
 
 export class CreateCourseRequest {
@@ -129,7 +129,7 @@ export class CreateCourseRequest {
     if (this.thumbnailID) formData.append('ThumbnailID', this.thumbnailID);
     if (this.resourceIDs) formData.append('ResourceIDs', this.resourceIDs);
     if (this.resources) {
-      this.resources.forEach((file, index) => {
+      this.resources.forEach((file) => {
         formData.append(`Resources`, file);
       });
     }

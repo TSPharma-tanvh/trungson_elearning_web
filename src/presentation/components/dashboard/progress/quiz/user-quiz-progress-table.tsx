@@ -2,30 +2,18 @@ import React from 'react';
 import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ActiveEnum, StatusEnum, UserProgressEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { StatusEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
 import {
-  Autorenew,
-  Cancel,
   CancelOutlined,
   Check,
-  CheckBox,
-  CheckCircleOutline,
   Close,
   DataUsage,
-  Delete,
   DeleteOutline,
-  HourglassEmpty,
-  IndeterminateCheckBox,
   MoreVert,
-  NotStarted,
-  NotStartedOutlined,
-  ThumbDown,
   ThumbDownOutlined,
-  ThumbUp,
   ThumbUpOutlined,
 } from '@mui/icons-material';
-import { Avatar, Box, Checkbox, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
-import { CheckCircle, XCircle } from '@phosphor-icons/react';
+import { Avatar, Box, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -275,7 +263,9 @@ export default function UserQuizProgressTable({
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar
                     src={
-                      row.user?.employee?.avatar != null ? row.user?.employee?.avatar : row.user?.thumbnail?.resourceUrl
+                      row.user?.employee?.avatar !== undefined
+                        ? row.user?.employee?.avatar
+                        : row.user?.thumbnail?.resourceUrl
                     }
                   >
                     {row.user?.employee?.name?.[0]}
@@ -295,11 +285,11 @@ export default function UserQuizProgressTable({
               <TableCell>{row.completedAt ? DateTimeUtils.formatISODateFromDate(row.completedAt) : ''}</TableCell>
 
               <TableCell align="center">
-                {row.progressStatus != null ? renderProgressStatus(row.progressStatus) : ''}
+                {row.progressStatus !== undefined ? renderProgressStatus(row.progressStatus) : ''}
               </TableCell>
 
               <TableCell align="center">
-                {row.activeStatus != null ? renderActiveStatus(row.activeStatus) : ''}
+                {row.activeStatus !== undefined ? renderActiveStatus(row.activeStatus) : ''}
               </TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
@@ -308,7 +298,11 @@ export default function UserQuizProgressTable({
               <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
 
               <TableCell align="right">
-                <IconButton onClick={(e) => { onActionClick(e as React.MouseEvent<HTMLElement>); }}>
+                <IconButton
+                  onClick={(e) => {
+                    onActionClick(e as React.MouseEvent<HTMLElement>);
+                  }}
+                >
                   <MoreVert />
                 </IconButton>
               </TableCell>
@@ -317,21 +311,29 @@ export default function UserQuizProgressTable({
         }}
       />
 
-      {editUserQuizProgressData ? <UpdateUserQuizProgressFormDialog
+      {editUserQuizProgressData ? (
+        <UpdateUserQuizProgressFormDialog
           open={editOpen}
           data={editUserQuizProgressData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditUserQuizProgress(updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {editUserQuizProgressData ? <UserQuizProgressDetailForm
+      {editUserQuizProgressData ? (
+        <UserQuizProgressDetailForm
           open={viewOpen}
           userQuizProgressId={editUserQuizProgressData.id ?? null}
-          onClose={() => { setViewOpen(false); }}
-        /> : null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

@@ -75,14 +75,14 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
         break;
 
       case 'email':
-        valid = val === '' || /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val);
+        valid = val === '' || /^[\w-.]+@(?:[\w-]+\.)+[\w-]{2,4}$/.test(val);
         if (!valid) setHelperText('Email không hợp lệ');
         break;
 
       case 'url':
         if (val) {
           try {
-            new URL(val);
+            const _ = new URL(val);
           } catch {
             valid = false;
             setHelperText('URL không hợp lệ');

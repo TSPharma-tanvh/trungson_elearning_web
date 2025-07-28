@@ -1,13 +1,8 @@
-export class AccountFormModel {
-  // Add shared fields here if any
-}
-
-export class LoginRequest extends AccountFormModel {
+export class LoginRequest {
   userName: string;
   password: string;
 
   constructor(userName: string, password: string) {
-    super();
     this.userName = userName;
     this.password = password;
   }

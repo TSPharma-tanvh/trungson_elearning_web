@@ -1,11 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
+import React, { useEffect, useState } from 'react';
 import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, CategoryEnumUtils } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
@@ -30,7 +28,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
+import { Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -54,9 +52,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
   const { categoryUsecase, courseUsecase, enrollUsecase, fileUsecase } = useDI();
 
   const [courseFormData, setCourseFormData] = useState<UpdateCoursePathRequest>(new UpdateCoursePathRequest());
-  const [enrollmentFormData, setEnrollmentFormData] = useState<UpdateEnrollmentCriteriaRequest>(
-    new UpdateEnrollmentCriteriaRequest()
-  );
+
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
@@ -89,9 +85,12 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
       if (path.thumbnailID) {
         fileUsecase
           .getFileResouceById(path.thumbnailID)
-          .then((file) => { setPreviewUrl(file.resourceUrl || null); })
-          .catch((error) => {
-            console.error('Error fetching thumbnail:', error);
+          .then((file) => {
+            setPreviewUrl(file.resourceUrl || null);
+          })
+          .catch((error: unknown) => {
+            const message = error instanceof Error ? error.message : 'An error has occurred.';
+            CustomSnackBar.showSnackbar(message, 'error');
             setPreviewUrl(null);
           });
       } else {
@@ -112,7 +111,6 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
 
   const handleChange = <K extends keyof UpdateCoursePathRequest>(field: K, value: UpdateCoursePathRequest[K]) => {
     setCourseFormData((prev) => new UpdateCoursePathRequest({ ...prev, [field]: value }));
-    console.log(courseFormData);
   };
 
   const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
@@ -126,9 +124,12 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
         if (courseFormData.thumbnailID) {
           fileUsecase
             .getFileResouceById(courseFormData.thumbnailID)
-            .then((file) => { setPreviewUrl(file.resourceUrl || null); })
-            .catch((error) => {
-              console.error('Error fetching thumbnail:', error);
+            .then((file) => {
+              setPreviewUrl(file.resourceUrl || null);
+            })
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setPreviewUrl(null);
             });
         } else {
@@ -144,8 +145,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error) {
-        console.error('Error fetching file resource:', error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        CustomSnackBar.showSnackbar(message, 'error');
         setPreviewUrl(null);
       }
     } else {
@@ -165,12 +167,11 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      await onSubmit(courseFormData);
-      console.error(courseFormData);
+      onSubmit(courseFormData);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -202,7 +203,11 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
           Update Course Path
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -220,7 +225,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
               <CustomTextField
                 label="Name"
                 value={courseFormData.name}
-                onChange={(value) => { handleChange('name', value); }}
+                onChange={(value) => {
+                  handleChange('name', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -229,7 +236,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
               <CustomTextField
                 label="Detail"
                 value={courseFormData.detail}
-                onChange={(value) => { handleChange('detail', value); }}
+                onChange={(value) => {
+                  handleChange('detail', value);
+                }}
                 disabled={isSubmitting}
                 multiline
                 rows={3}
@@ -240,7 +249,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
               <CustomDateTimePicker
                 label="Start Time"
                 value={courseFormData.startTime}
-                onChange={(value) => { handleChange('startTime', value); }}
+                onChange={(value) => {
+                  handleChange('startTime', value);
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -248,7 +259,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
               <CustomDateTimePicker
                 label="End Time"
                 value={courseFormData.endTime}
-                onChange={(value) => { handleChange('endTime', value); }}
+                onChange={(value) => {
+                  handleChange('endTime', value);
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -256,7 +269,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
               <CustomSelectDropDown
                 label="Status"
                 value={courseFormData.status ?? ''}
-                onChange={(value) => { handleChange('status', value); }}
+                onChange={(value) => {
+                  handleChange('status', value);
+                }}
                 disabled={isSubmitting}
                 options={statusOptions}
               />
@@ -265,7 +280,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
               <CustomSelectDropDown
                 label="Display Type"
                 value={courseFormData.displayType ?? ''}
-                onChange={(value) => { handleChange('displayType', value); }}
+                onChange={(value) => {
+                  handleChange('displayType', value);
+                }}
                 disabled={isSubmitting}
                 options={displayTypeOptions}
               />
@@ -278,7 +295,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                     ? courseFormData.enrollmentCourseIDs.split(',').filter((id) => id)
                     : []
                 }
-                onChange={(value: string[]) => { handleChange('enrollmentCourseIDs', value.join(',')); }}
+                onChange={(value: string[]) => {
+                  handleChange('enrollmentCourseIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
                 pathID={courseFormData.id}
               />
@@ -292,7 +311,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                     ? courseFormData.enrollmentCriteriaIDs.split(',').filter((id) => id)
                     : []
                 }
-                onChange={(value: string[]) => { handleChange('enrollmentCriteriaIDs', value.join(',')); }}
+                onChange={(value: string[]) => {
+                  handleChange('enrollmentCriteriaIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
                 label="Enrollment Criteria"
               />
@@ -301,7 +322,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={courseFormData.categoryID}
-                onChange={(value) => { handleChange('categoryID', value); }}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Path}
                 disabled={isSubmitting}
               />
@@ -341,7 +364,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={courseFormData.thumbDocumentNo}
-                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -350,7 +375,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={courseFormData.thumbPrefixName}
-                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -368,7 +395,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => { handleFileUpload(e.target.files?.[0] || null); }}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -380,7 +409,9 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                 control={
                   <Checkbox
                     checked={Boolean(courseFormData.isRequired)}
-                    onChange={(e) => { handleChange('isRequired', e.target.checked); }}
+                    onChange={(e) => {
+                      handleChange('isRequired', e.target.checked);
+                    }}
                     disabled={isSubmitting}
                   />
                 }
@@ -392,14 +423,17 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                 control={
                   <Checkbox
                     checked={Boolean(courseFormData.isDeleteOldThumbnail)}
-                    onChange={(e) => { handleChange('isDeleteOldThumbnail', e.target.checked); }}
+                    onChange={(e) => {
+                      handleChange('isDeleteOldThumbnail', e.target.checked);
+                    }}
                     disabled={isSubmitting}
                   />
                 }
                 label="Delete Old Thumbnail"
               />
             </Grid>
-            {previewUrl ? <Grid item xs={12}>
+            {previewUrl ? (
+              <Grid item xs={12}>
                 <Box
                   sx={{
                     width: fullScreen ? 400 : 200,
@@ -420,7 +454,8 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </Box>
-              </Grid> : null}
+              </Grid>
+            ) : null}
           </Grid>
         </Box>
       </DialogContent>

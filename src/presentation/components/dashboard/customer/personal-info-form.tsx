@@ -2,7 +2,7 @@ import React from 'react';
 import { AccountCircle, Email, Image, Phone } from '@mui/icons-material';
 import { Grid, InputAdornment, TextField } from '@mui/material';
 
-export function PersonalInfoForm({ onChange }: { onChange: (field: string, value: any) => void }) {
+export function PersonalInfoForm({ onChange }: { onChange: (field: string, value: unknown) => void }) {
   return (
     <Grid container spacing={3}>
       {' '}
@@ -12,7 +12,9 @@ export function PersonalInfoForm({ onChange }: { onChange: (field: string, value
           label="Full Name"
           fullWidth
           size="small"
-          onChange={(e) => { onChange('name', e.target.value); }}
+          onChange={(e) => {
+            onChange('name', e.target.value);
+          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -27,7 +29,9 @@ export function PersonalInfoForm({ onChange }: { onChange: (field: string, value
           label="Email"
           fullWidth
           size="small"
-          onChange={(e) => { onChange('email', e.target.value); }}
+          onChange={(e) => {
+            onChange('email', e.target.value);
+          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -42,7 +46,9 @@ export function PersonalInfoForm({ onChange }: { onChange: (field: string, value
           label="Phone Number"
           fullWidth
           size="small"
-          onChange={(e) => { onChange('phone', e.target.value); }}
+          onChange={(e) => {
+            onChange('phone', e.target.value);
+          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -57,7 +63,9 @@ export function PersonalInfoForm({ onChange }: { onChange: (field: string, value
           label="Avatar URL"
           fullWidth
           size="small"
-          onChange={(e) => { onChange('avatar', e.target.value); }}
+          onChange={(e) => {
+            onChange('avatar', e.target.value);
+          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

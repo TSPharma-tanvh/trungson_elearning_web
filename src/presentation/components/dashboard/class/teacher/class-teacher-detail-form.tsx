@@ -1,5 +1,3 @@
-import { error } from 'node:console';
-
 import { useEffect, useState } from 'react';
 import { type ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -24,15 +22,16 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
-interface Props {
+interface ClassTeacherDetailFormProps {
   open: boolean;
   classId: string | null;
   onClose: () => void;
 }
 
-export default function ClassTeacherDetailForm({ open, classId: teacherId, onClose }: Props) {
+export default function ClassTeacherDetailForm({ open, classId: teacherId, onClose }: ClassTeacherDetailFormProps) {
   const { classTeacherUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [teacher, setTeacher] = useState<ClassTeacherResponse | null>(null);
@@ -44,11 +43,14 @@ export default function ClassTeacherDetailForm({ open, classId: teacherId, onClo
       classTeacherUsecase
         .getClassTeacherById(teacherId)
         .then(setTeacher)
-        .catch((error) => {
-          console.error('Error fetching teacher details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setTeacher(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, teacherId, classTeacherUsecase]);
 
@@ -57,7 +59,11 @@ export default function ClassTeacherDetailForm({ open, classId: teacherId, onClo
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Teacher Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -79,6 +85,9 @@ export default function ClassTeacherDetailForm({ open, classId: teacherId, onClo
 }
 
 function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse; fullScreen: boolean }) {
+  const [classExpandedLessons, setClassExpandedLessons] = useState<Record<string, boolean>>({});
+  const [courseExpandedLessons, setCourseExpandedLessons] = useState<Record<string, boolean>>({});
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -91,10 +100,8 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
   const renderCourses = () => {
     if (!teacher.courses || teacher.courses.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
-
     const toggleExpanded = (lessonId: string) => {
-      setExpandedLessons((prev) => ({
+      setCourseExpandedLessons((prev) => ({
         ...prev,
         [lessonId]: !prev[lessonId],
       }));
@@ -105,7 +112,7 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
         <CardHeader title="Courses" sx={{ pl: 2, pb: 1, mb: 2 }} />
         {teacher.courses.map((course, index) => {
           const lessonId = course.id ?? `lesson-${index}`;
-          const isExpanded = expandedLessons[lessonId] || false;
+          const isExpanded = courseExpandedLessons[lessonId] || false;
 
           return (
             <Card
@@ -119,7 +126,9 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
                 title={course.name ?? `Lesson ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => { toggleExpanded(lessonId); }}
+                    onClick={() => {
+                      toggleExpanded(lessonId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -157,10 +166,8 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
   const renderClasses = () => {
     if (!teacher.classes || teacher.classes.length === 0) return null;
 
-    const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
-
     const toggleExpanded = (lessonId: string) => {
-      setExpandedLessons((prev) => ({
+      setClassExpandedLessons((prev) => ({
         ...prev,
         [lessonId]: !prev[lessonId],
       }));
@@ -171,7 +178,7 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
         <CardHeader title="Courses" sx={{ pl: 2, pb: 1, mb: 2 }} />
         {teacher.classes.map((classData, index) => {
           const lessonId = classData.id ?? `lesson-${index}`;
-          const isExpanded = expandedLessons[lessonId] || false;
+          const isExpanded = classExpandedLessons[lessonId] || false;
 
           return (
             <Card
@@ -185,7 +192,9 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
                 title={classData.className ?? `Lesson ${index + 1}`}
                 action={
                   <IconButton
-                    onClick={() => { toggleExpanded(lessonId); }}
+                    onClick={() => {
+                      toggleExpanded(lessonId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',

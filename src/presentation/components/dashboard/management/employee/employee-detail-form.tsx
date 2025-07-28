@@ -5,7 +5,6 @@ import { type EmployeeResponse } from '@/domain/models/employee/response/employe
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -15,7 +14,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -24,10 +22,11 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
-interface Props {
+interface EmployeeDetailProps {
   open: boolean;
   employeeId: string | null;
   onClose: () => void;
@@ -55,10 +54,10 @@ function EmployeeDetails({
         <CardHeader title="Employee Information" />
         <CardContent>
           <Grid container spacing={2}>
-            {Object.entries(employee).map(([key, value]) => {
+            {Object.entries(employee).map(([key, value], index) => {
               if (value === undefined || value === null) return null;
 
-              let displayValue = value;
+              let displayValue: string | number | boolean = value as string | number | boolean;
 
               const dateFields = ['birthDate', 'hireDate', 'birthDay'];
               if (dateFields.includes(key) && typeof value === 'string') {
@@ -69,10 +68,17 @@ function EmployeeDetails({
                 displayValue = value ? 'Yes' : 'No';
               }
 
-              const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+              // const label = key
+              //   .replace(/(?:^|[^a-zA-Z])([A-Z])/g, (_, group) => ` ${group}`)
+              //   .replace(/^./, (str) => str.toUpperCase());
+
+              const label = key
+                // eslint-disable-next-line prefer-named-capture-group -- Using unnamed capture group for backward compatibility with older RegExp usage
+                .replace(/(?:^|[^a-zA-Z])([A-Z])/g, (_, group) => ` ${group}`)
+                .replace(/^./, (str) => str.toUpperCase());
 
               return (
-                <Grid item xs={12} sm={fullScreen ? 3 : 4} key={key}>
+                <Grid item xs={12} sm={fullScreen ? 3 : 4} key={index}>
                   <Typography variant="subtitle2" fontWeight={500}>
                     {label}
                   </Typography>
@@ -87,7 +93,7 @@ function EmployeeDetails({
   );
 }
 
-export default function EmployeeDetailForm({ open, employeeId, onClose }: Props) {
+export default function EmployeeDetailForm({ open, employeeId, onClose }: EmployeeDetailProps) {
   const { employeeUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [employee, setEmployee] = useState<EmployeeResponse | null>(null);
@@ -101,11 +107,14 @@ export default function EmployeeDetailForm({ open, employeeId, onClose }: Props)
       employeeUsecase
         .getEmployeeById(employeeId)
         .then(setEmployee)
-        .catch((error) => {
-          console.error('Error fetching course details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setEmployee(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, employeeId, employeeUsecase]);
 
@@ -120,7 +129,11 @@ export default function EmployeeDetailForm({ open, employeeId, onClose }: Props)
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">Employee Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -140,11 +153,15 @@ export default function EmployeeDetailForm({ open, employeeId, onClose }: Props)
 
       <ImagePreviewDialog
         open={imagePreviewOpen}
-        onClose={() => { setImagePreviewOpen(false); }}
+        onClose={() => {
+          setImagePreviewOpen(false);
+        }}
         imageUrl={employee?.avatar || ''}
         title={employee?.name || 'Avatar'}
         fullscreen={imageFullscreen}
-        onToggleFullscreen={() => { setImageFullscreen((prev) => !prev); }}
+        onToggleFullscreen={() => {
+          setImageFullscreen((prev) => !prev);
+        }}
       />
     </Dialog>
   );

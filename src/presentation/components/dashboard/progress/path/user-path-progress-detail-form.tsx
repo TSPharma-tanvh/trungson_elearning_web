@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { type UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -15,7 +13,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -26,8 +23,9 @@ import {
 } from '@mui/material';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
-interface Props {
+interface UserPathProgressProps {
   open: boolean;
   userPathProgressId: string | null;
   onClose: () => void;
@@ -88,7 +86,8 @@ function UserPathProgressDetails({
         <CardContent>
           <Box key={user.id} sx={{ mb: 2 }}>
             {/* Avatar */}
-            {user.employee?.avatar ? <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
+            {user.employee?.avatar ? (
+              <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar sx={{ width: 100, height: 100 }} src={user.employee?.avatar ?? user.thumbnail?.resourceUrl}>
                     {user.firstName?.[0]}
@@ -102,7 +101,8 @@ function UserPathProgressDetails({
                     </Typography>
                   </Box>
                 </Stack>
-              </Box> : null}
+              </Box>
+            ) : null}
 
             <Grid container spacing={2}>
               {renderField('ID', user.id)}
@@ -153,7 +153,7 @@ function UserPathProgressDetails({
   );
 }
 
-export default function UserPathProgressDetailForm({ open, userPathProgressId, onClose }: Props) {
+export default function UserPathProgressDetailForm({ open, userPathProgressId, onClose }: UserPathProgressProps) {
   const { userPathProgressUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userPathProgress, setUserPathProgress] = useState<UserPathProgressDetailResponse | null>(null);
@@ -165,11 +165,14 @@ export default function UserPathProgressDetailForm({ open, userPathProgressId, o
       userPathProgressUsecase
         .getUserPathProgressById(userPathProgressId)
         .then(setUserPathProgress)
-        .catch((error) => {
-          console.error('Error fetching userPathProgress details:', error);
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
           setUserPathProgress(null);
         })
-        .finally(() => { setLoading(false); });
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, userPathProgressId, userPathProgressUsecase]);
 
@@ -180,7 +183,11 @@ export default function UserPathProgressDetailForm({ open, userPathProgressId, o
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">UserPathProgress Details</Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

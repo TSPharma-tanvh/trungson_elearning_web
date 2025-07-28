@@ -246,7 +246,7 @@ export function LessonSingleSelectDialog({
               >
                 {filterOptions.displayType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? DisplayTypeDisplayNames[opt] : 'All'}
+                    {opt !== undefined ? DisplayTypeDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select>
@@ -262,7 +262,7 @@ export function LessonSingleSelectDialog({
               >
                 {filterOptions.scheduleStatus.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt != null ? ScheduleStatusDisplayNames[opt] : 'All'}
+                    {opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select>

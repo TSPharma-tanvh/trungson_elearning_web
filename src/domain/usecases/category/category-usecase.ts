@@ -2,7 +2,6 @@ import { type CreateCategoryRequest } from '@/domain/models/category/request/cre
 import { type GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
 import { type UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
 import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
-import { CategoryResponse } from '@/domain/models/category/response/category-response';
 import { type CategoryListResult } from '@/domain/models/category/response/category-result';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CategoryRepository } from '@/domain/repositories/category/category-repository';
@@ -16,7 +15,7 @@ export class CategoryUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(CategoryDetailResponse.fromJson);
+    const data = result.result.map((x) => CategoryDetailResponse.fromJson(x));
 
     return {
       categories: data,

@@ -1,8 +1,9 @@
+import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, DisplayTypeEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -91,7 +92,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
         categoryID: quiz.categoryID || undefined,
         thumbnailID: quiz.thumbnailID || undefined,
         questionIDs:
-          quiz.quizQuestions != null
+          quiz.quizQuestions !== undefined
             ? quiz.quizQuestions.map((lesson) => lesson.question?.id).join(',') || ''
             : undefined,
         resourceIDs:
@@ -130,8 +131,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error) => {
-              console.error('Error fetching thumbnail:', error);
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setPreviewUrl(null);
             });
         } else {
@@ -147,8 +149,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error) {
-        console.error('Error fetching file resource:', error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        CustomSnackBar.showSnackbar(message, 'error');
         setPreviewUrl(null);
       }
     } else {
@@ -178,10 +181,11 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      await onSubmit(formData);
+      onSubmit(formData);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
       CustomSnackBar.showSnackbar('Failed to update path', 'error');
     } finally {
       setIsSubmitting(false);
@@ -204,11 +208,6 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
     { value: StatusEnum.Enable, label: 'Enable' },
     { value: StatusEnum.Disable, label: 'Disable' },
     { value: StatusEnum.Deleted, label: 'Deleted' },
-  ];
-
-  const displayTypeOptions = [
-    { value: DisplayTypeEnum.Public, label: 'Public' },
-    { value: DisplayTypeEnum.Private, label: 'Private' },
   ];
 
   if (!quiz) return null;
@@ -299,9 +298,6 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 pattern="^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$"
                 patternError="hh:mm:ss"
                 icon={<Clock {...iconStyle} />}
-                onValidationChange={(isValid) => {
-                  console.log('Time is valid:', isValid);
-                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -452,7 +448,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <ToggleButtonGroup
                 value={fileSelectSource}
                 exclusive
-                onChange={(e, newValue) => newValue && setFileSelectSource(newValue)}
+                onChange={(e, newValue: 'upload' | 'multi-select') => {
+                  if (newValue) setFileSelectSource(newValue);
+                }}
                 aria-label="file select source"
                 fullWidth
                 sx={{ mb: 2 }}

@@ -4,9 +4,8 @@ import { type GetUserLessonProgressRequest } from '@/domain/models/user-lesson/r
 import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { type UserLessonProgressDetailListResult } from '@/domain/models/user-lesson/response/user-lesson-detail-result';
-import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-lesson-response';
 import { type UserLessonProgressRepository } from '@/domain/repositories/progress/user-lesson-progress-repository';
-import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserLessonProgressUsecase {
   constructor(private readonly userLessonProgressRepo: UserLessonProgressRepository) {}
@@ -20,7 +19,7 @@ export class UserLessonProgressUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(UserLessonProgressDetailResponse.fromJSON);
+    const data = result.result.map((x) => UserLessonProgressDetailResponse.fromJSON(x));
 
     return {
       progress: data,

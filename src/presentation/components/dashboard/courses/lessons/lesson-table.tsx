@@ -28,7 +28,6 @@ import VideoPreviewDialog from '@/presentation/components/shared/file/video-prev
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 import { UpdateLessonFormDialog } from './edit-lesson-form';
-import ClassDetailForm from './lesson-detail-form';
 import LessonDetailForm from './lesson-detail-form';
 
 interface LessonTableProps {
@@ -94,7 +93,9 @@ export default function LessonTable({
     setSelectedRow(row);
   };
 
-  const handleMenuClose = () => { setAnchorEl(null); };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleOpenDeleteDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -121,7 +122,13 @@ export default function LessonTable({
     <Card>
       {selected.size > 0 && (
         <Box display="flex" justifyContent="flex-end" p={2}>
-          <Button color="error" variant="outlined" onClick={() => { handleOpenDeleteDialog(Array.from(selected)); }}>
+          <Button
+            color="error"
+            variant="outlined"
+            onClick={() => {
+              handleOpenDeleteDialog(Array.from(selected));
+            }}
+          >
             Delete Selected ({selected.size})
           </Button>
         </Box>
@@ -155,7 +162,12 @@ export default function LessonTable({
               return (
                 <TableRow key={row.id} selected={isItemSelected} hover>
                   <TableCell padding="checkbox">
-                    <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id!); }} />
+                    <Checkbox
+                      checked={isItemSelected}
+                      onChange={() => {
+                        handleSelectOne(row.id!);
+                      }}
+                    />
                   </TableCell>
                   <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
@@ -186,7 +198,11 @@ export default function LessonTable({
                   <TableCell>{row.category?.categoryName}</TableCell>
                   <TableCell>
                     {row.video?.resourceUrl ? (
-                      <IconButton onClick={() => { handlePreviewVideo(row.video?.resourceUrl ?? '', row.name); }}>
+                      <IconButton
+                        onClick={() => {
+                          handlePreviewVideo(row.video?.resourceUrl ?? '', row.name);
+                        }}
+                      >
                         <Visibility fontSize="small" />
                       </IconButton>
                     ) : (
@@ -195,7 +211,11 @@ export default function LessonTable({
                   </TableCell>
                   <TableCell>{row.quizzes?.length}</TableCell>
                   <TableCell align="right">
-                    <IconButton onClick={(event) => { handleMenuClick(event, row); }}>
+                    <IconButton
+                      onClick={(event) => {
+                        handleMenuClick(event, row);
+                      }}
+                    >
                       <MoreVert />
                     </IconButton>
                   </TableCell>
@@ -255,35 +275,59 @@ export default function LessonTable({
         </MenuList>
       </Popover>
 
-      {selectedRow ? <LessonDetailForm open={viewOpen} lessonId={selectedRow?.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
+      {selectedRow ? (
+        <LessonDetailForm
+          open={viewOpen}
+          lessonId={selectedRow?.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
-      {editCourseData ? <UpdateLessonFormDialog
+      {editCourseData ? (
+        <UpdateLessonFormDialog
           open={editOpen}
           data={editCourseData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditLesson(updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {previewFile?.url ? <ImagePreviewDialog
+      {previewFile?.url ? (
+        <ImagePreviewDialog
           open={previewImageOpen}
-          onClose={() => { setPreviewImageOpen(false); }}
+          onClose={() => {
+            setPreviewImageOpen(false);
+          }}
           imageUrl={previewFile.url}
           title={previewFile.title}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => { setFullscreen((prev) => !prev); }}
-        /> : null}
+          onToggleFullscreen={() => {
+            setFullscreen((prev) => !prev);
+          }}
+        />
+      ) : null}
 
-      {previewFile?.url ? <VideoPreviewDialog
+      {previewFile?.url ? (
+        <VideoPreviewDialog
           open={previewVideoOpen}
-          onClose={() => { setPreviewVideoOpen(false); }}
+          onClose={() => {
+            setPreviewVideoOpen(false);
+          }}
           videoUrl={previewFile.url}
           title={previewFile.title}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => { setFullscreen((prev) => !prev); }}
-        /> : null}
+          onToggleFullscreen={() => {
+            setFullscreen((prev) => !prev);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}

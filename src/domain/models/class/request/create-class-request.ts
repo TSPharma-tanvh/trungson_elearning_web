@@ -119,15 +119,18 @@ export class CreateClassRequest {
     if (this.resourcePrefixName) fd.append('ResourcePrefixName', this.resourcePrefixName);
     if (this.thumbDocumentNo) fd.append('ThumbDocumentNo', this.thumbDocumentNo);
     if (this.thumbPrefixName) fd.append('ThumbPrefixName', this.thumbPrefixName);
-    if (this.isDeleteOldThumbnail != null) fd.append('IsDeleteOldThumbnail', String(this.isDeleteOldThumbnail));
-    if (this.categoryEnum != null) fd.append('CategoryEnum', String(this.categoryEnum));
-    if (this.enrollmentCriteriaType != null) fd.append('EnrollmentCriteriaType', String(this.enrollmentCriteriaType));
-    if (this.enrollmentStatus != null) fd.append('EnrollmentStatus', String(this.enrollmentStatus));
-    if (this.maxCapacity != null) fd.append('MaxCapacity', String(this.maxCapacity));
+    if (this.isDeleteOldThumbnail !== undefined) fd.append('IsDeleteOldThumbnail', String(this.isDeleteOldThumbnail));
+    if (this.categoryEnum !== undefined) fd.append('CategoryEnum', String(this.categoryEnum));
+    if (this.enrollmentCriteriaType !== undefined)
+      fd.append('EnrollmentCriteriaType', String(this.enrollmentCriteriaType));
+    if (this.enrollmentStatus !== undefined) fd.append('EnrollmentStatus', String(this.enrollmentStatus));
+    if (this.maxCapacity !== undefined) fd.append('MaxCapacity', String(this.maxCapacity));
     if (this.enrollmentCourseIDs) fd.append('EnrollmentCourseIDs', this.enrollmentCourseIDs);
     if (this.thumbnail) fd.append('Thumbnail', this.thumbnail);
     if (this.resources) {
-      this.resources.forEach((r) => { fd.append('Resources', r, r.name); });
+      this.resources.forEach((r) => {
+        fd.append('Resources', r, r.name);
+      });
     }
 
     return fd;

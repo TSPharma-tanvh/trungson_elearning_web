@@ -23,7 +23,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  TableRowProps,
   Typography,
 } from '@mui/material';
 
@@ -81,7 +80,9 @@ export default function CoursePathTable({
     setSelectedRow(row);
   };
 
-  const handleMenuClose = () => { setAnchorEl(null); };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleOpenDeleteDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -129,7 +130,9 @@ export default function CoursePathTable({
                 '&:hover': { backgroundColor: 'var(--mui-palette-secondary-dark)' },
               }}
               variant="outlined"
-              onClick={() => { handleOpenDeleteDialog(Array.from(selected)); }}
+              onClick={() => {
+                handleOpenDeleteDialog(Array.from(selected));
+              }}
             >
               Delete Selected ({selected.size})
             </Button>
@@ -189,7 +192,12 @@ export default function CoursePathTable({
                 return (
                   <TableRow key={row.id} selected={isItemSelected} hover>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id!); }} />
+                      <Checkbox
+                        checked={isItemSelected}
+                        onChange={() => {
+                          handleSelectOne(row.id!);
+                        }}
+                      />
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" alignItems="center" spacing={2}>
@@ -209,7 +217,11 @@ export default function CoursePathTable({
                     <TableCell>{row.displayType}</TableCell>
                     <TableCell>{row.category?.categoryName}</TableCell>
                     <TableCell align="right">
-                      <IconButton onClick={(event) => { handleMenuClick(event, row); }}>
+                      <IconButton
+                        onClick={(event) => {
+                          handleMenuClick(event, row);
+                        }}
+                      >
                         <MoreVert />
                       </IconButton>
                     </TableCell>
@@ -279,21 +291,29 @@ export default function CoursePathTable({
         </MenuList>
       </Popover>
 
-      {editPathData ? <UpdatePathFormDialog
+      {editPathData ? (
+        <UpdatePathFormDialog
           open={editOpen}
           path={editPathData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditCoursePath(updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {selectedRow ? <CoursePathDetailForm
+      {selectedRow ? (
+        <CoursePathDetailForm
           open={viewOpen}
           coursePathId={selectedRow?.id ?? null}
-          onClose={() => { setViewOpen(false); }}
-        /> : null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}

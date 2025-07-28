@@ -18,7 +18,8 @@ export class RoleUsecase {
       throw new Error('Failed to load role list.');
     }
 
-    const data = result.result.map(RoleResponse.fromJSON);
+    // const data = result.result.map(RoleResponse.fromJSON);
+    const data = result.result.map((x) => RoleResponse.fromJSON(x));
 
     return {
       roles: data,
@@ -35,7 +36,7 @@ export class RoleUsecase {
       throw new Error('Failed to load permission list.');
     }
 
-    return result.result.map((item: any) => PermissionResponse.fromJSON(item));
+    return result.result.map((item: unknown) => PermissionResponse.fromJSON(item));
   }
 
   async createRole(request: CreateRoleRequest): Promise<ApiResponse> {

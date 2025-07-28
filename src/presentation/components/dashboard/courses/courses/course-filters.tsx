@@ -4,8 +4,7 @@ import * as React from 'react';
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { Button, Card, Stack } from '@mui/material';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -69,7 +68,9 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSelectFilter<LearningModeEnum>
           label="Type"
           value={courseType}
-          onChange={(val) => { setCourseType(val); }}
+          onChange={(val) => {
+            setCourseType(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(LearningModeEnum)}
         />
 
@@ -77,7 +78,9 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSelectFilter<StatusEnum>
           label="Status"
           value={status}
-          onChange={(val) => { setStatus(val); }}
+          onChange={(val) => {
+            setStatus(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
@@ -85,7 +88,9 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSelectFilter<DisplayTypeEnum>
           label="Display Type"
           value={displayType}
-          onChange={(val) => { setDisplayType(val); }}
+          onChange={(val) => {
+            setDisplayType(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(DisplayTypeEnum)}
         />
 
@@ -93,7 +98,9 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSelectFilter<ScheduleStatusEnum>
           label="Status"
           value={scheduleStatus}
-          onChange={(val) => { setScheduleStatus(val); }}
+          onChange={(val) => {
+            setScheduleStatus(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(ScheduleStatusEnum)}
         />
 

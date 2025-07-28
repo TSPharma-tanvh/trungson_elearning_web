@@ -1,4 +1,3 @@
-import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
 import { type EnrollmentCriteriaDetailResponse } from './enrollment-criteria-detail-response';
 
 export interface EnrollmentCriteriaListResult {

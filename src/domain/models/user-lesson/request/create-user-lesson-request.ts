@@ -1,5 +1,3 @@
-import { UserProgressEnum } from '@/utils/enum/core-enum';
-
 export class CreateUserLessonRequest {
   userID?: string;
   lessonID?: string;

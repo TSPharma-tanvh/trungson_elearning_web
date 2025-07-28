@@ -5,7 +5,7 @@ import { UpdateClassTeacherRequest } from '@/domain/models/teacher/request/updat
 import { ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { type ClassTeacherListResult } from '@/domain/models/teacher/response/class-teacher-result';
 import { type ClassTeacherRepository } from '@/domain/repositories/class/class-teacher-repository';
-import { ActiveEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { ActiveEnum } from '@/utils/enum/core-enum';
 
 export class ClassTeacherUsecase {
   constructor(private readonly ClassTeacherRepo: ClassTeacherRepository) {}
@@ -17,7 +17,7 @@ export class ClassTeacherUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map(ClassTeacherResponse.fromJson);
+    const data = result.result.map((x) => ClassTeacherResponse.fromJson(x));
 
     return {
       teachers: data,

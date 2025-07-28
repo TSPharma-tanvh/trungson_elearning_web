@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { InputAdornment, Popper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DateTimePicker } from '@mui/x-date-pickers';
@@ -9,7 +8,7 @@ import dayjs from 'dayjs';
 
 interface CustomTimePickerProps {
   label: string;
-  value: string | undefined; // expected format: 'HH:mm:ss'
+  value: string | undefined; // expected format: 'HH:mm:ss' -- Hour format
   onChange: (value: string) => void;
   disabled?: boolean;
 }
@@ -22,12 +21,10 @@ const StyledPopper = styled(Popper)(({ theme }) => ({
     padding: theme.spacing(2),
     backgroundColor: theme.palette.background.paper,
 
-    // 👇 Custom CSS to hide calendar (date part)
     '& .MuiDateCalendar-root': {
       display: 'none',
     },
     '& .MuiMultiSectionDigitalClock-root': {
-      // Optional: Adjust height if calendar is hidden
       height: 'auto',
     },
   },
@@ -44,8 +41,8 @@ export function CustomTimePicker({ label, value, onChange, disabled = false }: C
         }
       }}
       views={['hours', 'minutes', 'seconds']}
-      format="HH:mm:ss" // ✅ 24h format (no AM/PM)
-      ampm={false} // ✅ Force no AM/PM
+      format="HH:mm:ss"
+      ampm={false}
       disabled={disabled}
       slots={{
         popper: StyledPopper,

@@ -24,6 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { UpdatePasswordForm } from './update-password-form';
 
 export function AccountForm(): React.JSX.Element {
@@ -49,7 +50,7 @@ export function AccountForm(): React.JSX.Element {
 
   if (loading || !user) return <div>Loading...</div>;
 
-  const handleChange = (field: keyof UpdateUserInfoRequest, value: any) => {
+  const handleChange = (field: keyof UpdateUserInfoRequest, value: unknown) => {
     setFormData((prev) => {
       const updatedData = { ...prev, [field]: value };
       return new UpdateUserInfoRequest(updatedData);
@@ -71,13 +72,13 @@ export function AccountForm(): React.JSX.Element {
 
       const updatedUser = await userUsecase.getUserInfo();
 
-      if (updatedUser.id != null) {
-        const userJson = updatedUser.toJSON();
+      if (updatedUser.id !== undefined) {
+        const userJson = updatedUser.toJSON() as Record<string, unknown>;
         StoreLocalManager.saveLocalData(AppStrings.USER_DATA, userJson);
         window.dispatchEvent(
           new StorageEvent('storage', {
             key: AppStrings.USER_DATA,
-            newValue: userJson,
+            newValue: JSON.stringify(userJson),
           })
         );
       }
@@ -87,8 +88,9 @@ export function AccountForm(): React.JSX.Element {
       if (formData.thumbnail instanceof File) {
         setThumbnailPreview(URL.createObjectURL(formData.thumbnail));
       }
-    } catch (err) {
-      console.error('Update failed:', err);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     }
   };
 
@@ -130,7 +132,9 @@ export function AccountForm(): React.JSX.Element {
                       id="first-name"
                       label="First name"
                       value={formData.firstName || ''}
-                      onChange={(e) => { handleChange('firstName', e.target.value); }}
+                      onChange={(e) => {
+                        handleChange('firstName', e.target.value);
+                      }}
                     />
                   </FormControl>
                 </Grid>
@@ -141,7 +145,9 @@ export function AccountForm(): React.JSX.Element {
                       id="last-name"
                       label="Last name"
                       value={formData.lastName || ''}
-                      onChange={(e) => { handleChange('lastName', e.target.value); }}
+                      onChange={(e) => {
+                        handleChange('lastName', e.target.value);
+                      }}
                     />
                   </FormControl>
                 </Grid>
@@ -152,7 +158,9 @@ export function AccountForm(): React.JSX.Element {
                       id="email"
                       label="Email"
                       value={formData.email || ''}
-                      onChange={(e) => { handleChange('email', e.target.value); }}
+                      onChange={(e) => {
+                        handleChange('email', e.target.value);
+                      }}
                     />
                   </FormControl>
                 </Grid>
@@ -164,7 +172,9 @@ export function AccountForm(): React.JSX.Element {
                       id="phoneNumber"
                       label="Phone Number"
                       value={formData.phoneNumber || ''}
-                      onChange={(e) => { handleChange('phoneNumber', e.target.value); }}
+                      onChange={(e) => {
+                        handleChange('phoneNumber', e.target.value);
+                      }}
                     />
                   </FormControl>
                 </Grid>

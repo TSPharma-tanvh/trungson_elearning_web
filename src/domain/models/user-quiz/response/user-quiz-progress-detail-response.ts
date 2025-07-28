@@ -1,5 +1,3 @@
-import { StatusEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
-
 import { EnrollmentResponse } from '../../class/response/enrollment-response';
 import { QuizResponse } from '../../quiz/response/quiz-response';
 import { UserAnswerResponse } from '../../user-answer/response/user-answer-response';

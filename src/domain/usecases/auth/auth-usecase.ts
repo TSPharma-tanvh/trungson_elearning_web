@@ -1,5 +1,3 @@
-import { resourceLimits } from 'node:worker_threads';
-
 import { type LoginRequest } from '@/domain/models/auth/request/login-request';
 import { LoginResponse } from '@/domain/models/auth/response/login-response';
 import { type AuthRepository } from '@/domain/repositories/auth/auth-repository';

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { CategoryEnum, CategoryEnumUtils, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -26,7 +26,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, Calendar, Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
+import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -76,7 +76,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         enrollmentCriteriaIDs: course.enrollmentCriteria?.map((enrollment) => enrollment.id).join(',') || undefined,
         categoryID: course.categoryId || undefined,
         thumbnailID: course.thumbnailId || undefined,
-        lessonIds: course.lessons != null ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
+        lessonIds: course.lessons !== undefined ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
         categoryEnum: CategoryEnum.Course,
         isDeleteOldThumbnail: false,
       });
@@ -98,9 +98,12 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         if (formData.thumbnailID) {
           fileUsecase
             .getFileResouceById(formData.thumbnailID)
-            .then((file) => { setPreviewUrl(file.resourceUrl || null); })
-            .catch((error) => {
-              console.error('Error fetching thumbnail:', error);
+            .then((file) => {
+              setPreviewUrl(file.resourceUrl || null);
+            })
+            .catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : 'An error has occurred.';
+              CustomSnackBar.showSnackbar(message, 'error');
               setPreviewUrl(null);
             });
         } else {
@@ -116,8 +119,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error) {
-        console.error('Error fetching file resource:', error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        CustomSnackBar.showSnackbar(message, 'error');
         setPreviewUrl(null);
       }
     } else {
@@ -137,11 +141,11 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      await onSubmit(formData);
+      onSubmit(formData);
       onClose();
-    } catch (error) {
-      console.error('Error updating path:', error);
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -173,7 +177,11 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           Update Course
         </Typography>
         <Box>
-          <IconButton onClick={() => { setFullScreen((prev) => !prev); }}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -193,7 +201,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomTextField
                 label="Name"
                 value={formData.name}
-                onChange={(value) => { handleChange('name', value); }}
+                onChange={(value) => {
+                  handleChange('name', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
@@ -203,7 +213,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomTextField
                 label="Detail"
                 value={formData.detail}
-                onChange={(value) => { handleChange('detail', value); }}
+                onChange={(value) => {
+                  handleChange('detail', value);
+                }}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
@@ -213,7 +225,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomDateTimePicker
                 label="Start Time"
                 value={formData.startTime}
-                onChange={(value) => { handleChange('startTime', value); }}
+                onChange={(value) => {
+                  handleChange('startTime', value);
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -222,7 +236,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomDateTimePicker
                 label="End Time"
                 value={formData.endTime}
-                onChange={(value) => { handleChange('endTime', value); }}
+                onChange={(value) => {
+                  handleChange('endTime', value);
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -230,7 +246,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomSelectDropDown
                 label="Status"
                 value={formData.disableStatus ?? ''}
-                onChange={(value) => { handleChange('disableStatus', value); }}
+                onChange={(value) => {
+                  handleChange('disableStatus', value);
+                }}
                 disabled={isSubmitting}
                 options={statusOptions}
               />
@@ -239,7 +257,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CustomSelectDropDown
                 label="Display Type"
                 value={formData.displayType ?? ''}
-                onChange={(value) => { handleChange('displayType', value); }}
+                onChange={(value) => {
+                  handleChange('displayType', value);
+                }}
                 disabled={isSubmitting}
                 options={displayTypeOptions}
               />
@@ -248,7 +268,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <LessonMultiSelectDialog
                 lessonUsecase={lessonUsecase}
                 value={formData.lessonIds ? formData.lessonIds.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => { handleChange('lessonIds', value.join(',')); }}
+                onChange={(value: string[]) => {
+                  handleChange('lessonIds', value.join(','));
+                }}
                 disabled={isSubmitting}
                 pathID={formData.id}
               />
@@ -260,7 +282,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 value={
                   formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
                 }
-                onChange={(value: string[]) => { handleChange('enrollmentCriteriaIDs', value.join(',')); }}
+                onChange={(value: string[]) => {
+                  handleChange('enrollmentCriteriaIDs', value.join(','));
+                }}
                 disabled={isSubmitting}
                 label="Enrollment Criteria"
               />
@@ -269,7 +293,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
-                onChange={(value) => { handleChange('categoryID', value); }}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
                 categoryEnum={CategoryEnum.Course}
                 disabled={isSubmitting}
               />
@@ -279,7 +305,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
                 value={formData.teacherID ?? ''}
-                onChange={(value) => { handleChange('teacherID', value); }}
+                onChange={(value) => {
+                  handleChange('teacherID', value);
+                }}
                 disabled={isSubmitting}
               />
             </Grid>
@@ -319,7 +347,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                     <CustomTextField
                       label="Thumbnail Document No"
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => { handleChange('thumbDocumentNo', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbDocumentNo', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -328,7 +358,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                     <CustomTextField
                       label="Thumbnail Prefix Name"
                       value={formData.thumbPrefixName}
-                      onChange={(value) => { handleChange('thumbPrefixName', value); }}
+                      onChange={(value) => {
+                        handleChange('thumbPrefixName', value);
+                      }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -346,7 +378,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => { handleFileUpload(e.target.files?.[0] || null); }}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -355,7 +389,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       control={
                         <Checkbox
                           checked={Boolean(formData.isRequired)}
-                          onChange={(e) => { handleChange('isRequired', e.target.checked); }}
+                          onChange={(e) => {
+                            handleChange('isRequired', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
@@ -367,14 +403,17 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       control={
                         <Checkbox
                           checked={Boolean(formData.isDeleteOldThumbnail)}
-                          onChange={(e) => { handleChange('isDeleteOldThumbnail', e.target.checked); }}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl ? <Grid item xs={12}>
+                  {previewUrl ? (
+                    <Grid item xs={12}>
                       <Box
                         sx={{
                           width: fullScreen ? 400 : 200,
@@ -395,7 +434,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
-                    </Grid> : null}
+                    </Grid>
+                  ) : null}
                 </Grid>
               )}
             </Grid>

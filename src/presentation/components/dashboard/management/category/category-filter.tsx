@@ -2,10 +2,8 @@
 
 import * as React from 'react';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { CategoryEnum, CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { CategoryEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
+import { Button, Card, Stack } from '@mui/material';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -48,7 +46,9 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
         <CustomSelectFilter<CategoryEnum>
           label="Category"
           value={categoryValue}
-          onChange={(val) => { setCategoryValue(val); }}
+          onChange={(val) => {
+            setCategoryValue(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(CategoryEnum)}
         />
 

@@ -20,7 +20,7 @@ export default function CustomFieldTypography({
       {...typographyProps}
       sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}
     >
-      {children ?? (value != null ? String(value) : fallback)}
+      {children ?? (value !== undefined ? String(value) : fallback)}
     </Typography>
   );
 }
