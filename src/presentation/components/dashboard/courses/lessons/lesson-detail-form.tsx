@@ -24,8 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-
 import CustomFieldTypography from '../../../core/text-field/custom-typhography';
 
 interface LessonDetailFormProps {
@@ -243,9 +241,7 @@ export default function LessonDetailForm({ open, lessonId, onClose }: LessonDeta
       lessonUsecase
         .getLessonById(lessonId)
         .then(setLesson)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setLesson(null);
         })
         .finally(() => {

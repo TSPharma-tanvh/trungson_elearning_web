@@ -6,8 +6,6 @@ import { NotificationEntity } from '@/domain/models/Notification';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Box, Button, TextField } from '@mui/material';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
-
 type NotificationFormProps = Record<string, never>;
 
 const NotificationForm: React.FC<NotificationFormProps> = () => {
@@ -32,9 +30,8 @@ const NotificationForm: React.FC<NotificationFormProps> = () => {
       });
 
       await sendNotificationUseCase.executeToUser(notification);
-    } catch (errorApi: unknown) {
-      const message = errorApi instanceof Error ? errorApi.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (errorApi) {
+      return undefined;
     } finally {
       setLoading(false);
     }

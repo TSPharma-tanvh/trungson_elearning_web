@@ -9,7 +9,6 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateEnrollmentDialog } from '@/presentation/components/dashboard/management/enrollment/enrollment-create-form';
 import { EnrollmentFilters } from '@/presentation/components/dashboard/management/enrollment/enrollment-filter';
 import EnrollmentTable from '@/presentation/components/dashboard/management/enrollment/enrollment-table';
@@ -38,11 +37,9 @@ export default function Page(): React.JSX.Element {
       const { enrollments: enrollmentList, totalRecords } = await enrollUsecase.getEnrollmentList(request);
       setEnrollments(enrollmentList);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
-
+    } catch (error) {
       setEnrollments([]);
+      return undefined;
     }
   }, [filters, page, rowsPerPage, enrollUsecase]);
 
@@ -70,9 +67,8 @@ export default function Page(): React.JSX.Element {
       await enrollUsecase.createEnrollment(request);
       setShowCreateDialog(false);
       await fetchEnrollments();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -80,9 +76,8 @@ export default function Page(): React.JSX.Element {
     try {
       await enrollUsecase.updateEnrollment(request);
       await fetchEnrollments();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -96,9 +91,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchEnrollments();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

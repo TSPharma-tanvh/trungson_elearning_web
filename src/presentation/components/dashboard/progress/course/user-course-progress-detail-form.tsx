@@ -22,7 +22,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
 interface UserCourseProgressProps {
@@ -166,9 +165,7 @@ export default function UserCourseProgressDetailForm({ open, userCourseProgressI
       userCourseProgressUsecase
         .getUserCourseProgressById(userCourseProgressId)
         .then(setUserCourseProgress)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setUserCourseProgress(null);
         })
         .finally(() => {

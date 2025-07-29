@@ -86,9 +86,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error: unknown) => {
-              const message = error instanceof Error ? error.message : 'An error has occurred.';
-              CustomSnackBar.showSnackbar(message, 'error');
+            .catch(() => {
               setPreviewUrl(null);
             });
         } else {

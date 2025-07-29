@@ -24,7 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
 interface CourseDetailProps {
@@ -189,9 +188,7 @@ export default function CourseDetailForm({ open, courseId, onClose }: CourseDeta
       courseUsecase
         .getCourseById(courseId)
         .then(setCourse)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setCourse(null);
         })
         .finally(() => {

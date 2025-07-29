@@ -30,7 +30,7 @@ import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
-import { QuizMultiSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select';
+import { QuizMultiSelect } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select';
 
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
@@ -100,9 +100,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
       }
       const blob = await response.blob();
       return new File([blob], filename, { type: blob.type });
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
       return null;
     }
   }
@@ -125,9 +123,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error: unknown) => {
-              const message = error instanceof Error ? error.message : 'An error has occurred.';
-              CustomSnackBar.showSnackbar(message, 'error');
+            .catch(() => {
               setPreviewUrl(null);
             });
         } else {
@@ -156,9 +152,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             .then((file) => {
               setVideoPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error: unknown) => {
-              const message = error instanceof Error ? error.message : 'An error has occurred.';
-              CustomSnackBar.showSnackbar(message, 'error');
+            .catch(() => {
               setVideoPreviewUrl(null);
             });
         } else {
@@ -232,9 +226,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
       await Promise.race([onSubmit(formData), timeoutPromise]);
 
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }
@@ -330,7 +323,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <QuizMultiSelectDialog
+              <QuizMultiSelect
                 quizUsecase={quizUsecase}
                 value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
                 onChange={(val) => {

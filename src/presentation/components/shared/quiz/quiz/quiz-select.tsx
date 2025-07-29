@@ -1,18 +1,17 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
+import React, { useCallback, useEffect, useState } from 'react';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
-import { useQuizSelectDebounce } from '@/presentation/hooks/quiz/use-quiz-select-debounce';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
-import { Book } from '@mui/icons-material';
+import { InfoOutlined, Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
@@ -35,40 +34,65 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import QuizDetailForm from '@/presentation/components/dashboard/quiz/quiz/quiz-detail-form';
 
-interface QuizSingleSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
-  quizUsecase: QuizUsecase | null;
-  value: string | null;
-  onChange: (value: string | null) => void;
+interface QuizSingleSelectProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+  quizUsecase: QuizUsecase;
+  value: string;
+  onChange: (value: string) => void;
   label?: string;
   disabled?: boolean;
 }
 
-export function QuizSingleSelectDialog({
+export function QuizSingleSelect({
   quizUsecase,
   value,
   onChange,
   label = 'Quiz',
   disabled = false,
   ...selectProps
-}: QuizSingleSelectDialogProps) {
+}: QuizSingleSelectProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [localValue, setLocalValue] = useState<string | null>(value);
+  const [localValue, setLocalValue] = useState<string>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useQuizSelectDebounce(localSearchText, 300);
   const [selectedQuizMap, setSelectedQuizMap] = useState<Record<string, QuizResponse>>({});
-  const [selectedQuiz, setSelectedQuiz] = React.useState<QuizResponse | null>(null);
-  const [viewOpen, setViewOpen] = React.useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState<QuizResponse | null>(null);
 
-  const { quizzes, loadingQuizzes, pageNumber, totalPages, listRef, setSearchText, loadQuizzes } = useQuizSelectLoader({
-    quizUsecase,
-    isOpen: dialogOpen,
-    searchText: debouncedSearchText,
-  });
+  const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, searchText, listRef, loadQuizzes } =
+    useQuizSelectLoader({
+      quizUsecase,
+      isOpen: dialogOpen,
+    });
 
   const isFull = isSmallScreen || isFullscreen;
+
+  useEffect(() => {
+    if (localSearchText !== searchText) {
+      setSearchText(localSearchText);
+    }
+  }, [localSearchText, searchText, setSearchText]);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const fetchQuizDetails = useCallback(async () => {
+    if (value && !selectedQuizMap[value]) {
+      try {
+        const detail = await quizUsecase.getQuizById(value);
+        setSelectedQuizMap((prev) => ({ ...prev, [value]: detail }));
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An error has occurred.';
+        CustomSnackBar.showSnackbar(message, 'error');
+      }
+    }
+  }, [value, quizUsecase, selectedQuizMap]);
+
+  useEffect(() => {
+    void fetchQuizDetails();
+  }, [fetchQuizDetails]);
 
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
@@ -84,68 +108,15 @@ export function QuizSingleSelectDialog({
     setDialogOpen(false);
   };
 
+  const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
+    void loadQuizzes(newPage);
+    listRef.current?.scrollTo(0, 0);
+  };
+
   const handleClearFilters = () => {
     setLocalSearchText('');
+    // setDisableStatus(undefined);
   };
-
-  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (quizUsecase && !loadingQuizzes) {
-      void loadQuizzes(newPage, true);
-      if (listRef.current) {
-        listRef.current.scrollTop = 0;
-      }
-    }
-  };
-
-  useEffect(() => {
-    setSearchText(debouncedSearchText);
-  }, [debouncedSearchText, setSearchText]);
-
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (quizUsecase && value) {
-      const fetchSelectedQuizzes = async () => {
-        try {
-          const request = new GetQuizRequest({});
-          const result = await quizUsecase.getQuizListInfo(request);
-          const newMap = { ...selectedQuizMap };
-          let updated = false;
-          for (const quiz of result.quizzes) {
-            if (!newMap[quiz.id ?? '']) {
-              newMap[quiz.id ?? ''] = quiz;
-              updated = true;
-            }
-          }
-          if (updated) {
-            setSelectedQuizMap(newMap);
-          }
-        } catch (error) {
-          const message = error instanceof Error ? error.message : 'An unknown error occurred';
-          CustomSnackBar.showSnackbar(message, 'error');
-        }
-      };
-      void fetchSelectedQuizzes();
-    }
-  }, [quizUsecase, value, selectedQuizMap]);
-
-  useEffect(() => {
-    if (dialogOpen) {
-      const newMap = { ...selectedQuizMap };
-      let updated = false;
-      for (const quiz of quizzes) {
-        if (quiz.id && !newMap[quiz.id]) {
-          newMap[quiz.id] = quiz;
-          updated = true;
-        }
-      }
-      if (updated) {
-        setSelectedQuizMap(newMap);
-      }
-    }
-  }, [quizzes, dialogOpen, selectedQuizMap]);
 
   return (
     <>
@@ -153,9 +124,9 @@ export function QuizSingleSelectDialog({
         <InputLabel id="quiz-select-label">{label}</InputLabel>
         <Select
           labelId="quiz-select-label"
-          value={value ?? ''}
+          value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) => selectedQuizMap[selected]?.title || 'No Quiz Selected'}
@@ -171,18 +142,26 @@ export function QuizSingleSelectDialog({
             <Box>
               <IconButton
                 onClick={() => {
-                  setIsFullscreen((prev) => !prev);
+                  setIsFullscreen(!isFullscreen);
                 }}
                 size="small"
               >
-                {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
+                {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
                 <CloseIcon />
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search quizzes..." />
+
+          <CustomSearchInput
+            value={localSearchText}
+            onChange={(val) => {
+              setLocalSearchText(val);
+            }}
+            placeholder="Search quizzes..."
+          />
+
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               Clear Filters
@@ -192,37 +171,31 @@ export function QuizSingleSelectDialog({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {quizzes.map((quiz) => (
+            {quizzes.map((item) => (
               <MenuItem
-                key={quiz.id}
-                value={quiz.id}
-                selected={localValue === quiz.id}
+                key={item.id}
+                value={item.id}
+                selected={localValue === item.id}
                 onClick={() => {
-                  setLocalValue(quiz.id ?? null);
+                  setLocalValue(item.id ?? '');
                 }}
               >
-                <ListItemText
-                  primary={quiz.title}
-                  sx={{
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    flex: 1,
-                    mr: 1,
-                  }}
-                />
-                <Button
+                <Checkbox checked={localValue === item.id} />
+                <ListItemText primary={item.title} />
+                <IconButton
                   size="small"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedQuiz(quiz);
+                    setSelectedQuiz(item);
                     setViewOpen(true);
                   }}
+                  aria-label="Show Details"
                 >
-                  Show Detail
-                </Button>
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
+
             {loadingQuizzes ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
@@ -250,7 +223,7 @@ export function QuizSingleSelectDialog({
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave} variant="contained">
+            <Button onClick={handleSave} variant="contained" disabled={!localValue}>
               Save
             </Button>
           </Box>
@@ -260,7 +233,7 @@ export function QuizSingleSelectDialog({
       {selectedQuiz ? (
         <QuizDetailForm
           open={viewOpen}
-          quizId={selectedQuiz?.id ?? null}
+          quizId={selectedQuiz.id ?? null}
           onClose={() => {
             setViewOpen(false);
           }}

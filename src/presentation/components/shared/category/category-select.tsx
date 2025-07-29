@@ -31,7 +31,6 @@ import {
   useTheme,
 } from '@mui/material';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 
 interface CategorySelectDialogProps {
@@ -204,9 +203,8 @@ export function CategorySelect({
           }),
         };
         setSelectedCategory(cat);
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
+      } catch (error) {
+        return undefined;
       } finally {
         setLoaded(true);
       }

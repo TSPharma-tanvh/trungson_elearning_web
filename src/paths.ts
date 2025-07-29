@@ -10,6 +10,7 @@ export const paths = {
     criteria: '/dashboard/management/criteria',
     employee: '/dashboard/management/employee',
     category: '/dashboard/management/category',
+    devices: '/dashboard/management/devices',
     integrations: '/dashboard/system/integrations',
     settings: '/dashboard/system/settings',
     class: '/dashboard/class/class',

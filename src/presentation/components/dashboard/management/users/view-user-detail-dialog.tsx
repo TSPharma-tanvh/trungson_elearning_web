@@ -21,8 +21,6 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-
 interface ViewUserDetailProps {
   open: boolean;
   userId: string | null;
@@ -72,9 +70,8 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
       userUsecase
         .getUserInfoWithId(userId)
         .then(setUser)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
+          undefined;
         })
         .finally(() => {
           setLoading(false);

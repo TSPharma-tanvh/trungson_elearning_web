@@ -16,7 +16,7 @@ import { CustomDateTimePicker } from '@/presentation/components/core/picker/cust
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
-import { QuestionMultiSelectDialog } from '@/presentation/components/shared/quiz/question/question-multi-select';
+import { QuestionMultiSelect } from '@/presentation/components/shared/quiz/question/question-multi-select';
 
 interface CreateQuizProps {
   disabled?: boolean;
@@ -61,9 +61,8 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
       }
       onSubmit(form);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }
@@ -312,7 +311,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
 
             <Grid item xs={12}>
-              <QuestionMultiSelectDialog
+              <QuestionMultiSelect
                 questionUsecase={questionUsecase}
                 value={form.questionIDs ? form.questionIDs.split(',').filter((id) => id) : []}
                 onChange={(value: string[]) => {

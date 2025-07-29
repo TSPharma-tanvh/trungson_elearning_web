@@ -14,6 +14,7 @@ export const navItems = [
       { key: 'employee', title: 'Employee', href: paths.dashboard.employee, icon: 'employee' },
       { key: 'category', title: 'Category', href: paths.dashboard.category, icon: 'category' },
       { key: 'criteria', title: 'Enrollment Criteria', href: paths.dashboard.criteria, icon: 'criteria' },
+      { key: 'devices', title: 'Devices', href: paths.dashboard.devices, icon: 'devices' },
     ],
   },
   {

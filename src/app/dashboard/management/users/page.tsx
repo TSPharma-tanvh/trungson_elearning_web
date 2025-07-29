@@ -10,7 +10,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { AddUserDialog } from '@/presentation/components/dashboard/management/users/add-user-dialog';
 import { UsersFilters } from '@/presentation/components/dashboard/management/users/users-filters';
 import UsersTable from '@/presentation/components/dashboard/management/users/users-table';
@@ -36,9 +35,8 @@ export default function Page(): React.JSX.Element {
 
       setUsers(userList);
       setTotalCount(totalRecords / pageNumber);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   }, [userUsecase, filters, page, rowsPerPage]);
 
@@ -65,9 +63,8 @@ export default function Page(): React.JSX.Element {
     try {
       await userUsecase.updateUserInfo(userId, data);
       void fetchUsers();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 

@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { type CreateClassRequest } from '@/domain/models/class/request/create-class-request';
-import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
-import { type UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
-import { type ClassResponse } from '@/domain/models/class/response/class-response';
+import { type EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
+import { GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/get-attendance-records-request';
+import { type UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';
+import { type AttendanceRecordDetailResponse } from '@/domain/models/attendance/response/attendance-record-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -12,46 +12,47 @@ import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/system';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
-import ClassTable from '@/presentation/components/dashboard/class/classes/class-table';
-import { CreateClassDialog } from '@/presentation/components/dashboard/class/classes/create-class-form';
+import { AttendanceRecordsFilters } from '@/presentation/components/dashboard/class/attendance/attendance-records-filter';
+import AttendanceRecordsTable from '@/presentation/components/dashboard/class/attendance/attendance-records-table';
+import { CreateAttendanceRecordsDialog } from '@/presentation/components/dashboard/class/attendance/enroll-user-to-class-form';
 
 export default function Page(): React.JSX.Element {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { classUsecase } = useDI();
+  const { attendanceRecordsUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [filters, setFilters] = React.useState<GetClassRequest>(new GetClassRequest({ pageNumber: 1, pageSize: 10 }));
-  const [classes, setClasses] = React.useState<ClassResponse[]>([]);
+  const [filters, setFilters] = React.useState<GetAttendanceRecordsRequest>(
+    new GetAttendanceRecordsRequest({ pageNumber: 1, pageSize: 10 })
+  );
+  const [attendanceRecordses, setAttendanceRecordses] = React.useState<AttendanceRecordDetailResponse[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
 
-  const fetchClasses = React.useCallback(async () => {
+  const fetchAttendanceRecordses = React.useCallback(async () => {
     try {
-      const request = new GetClassRequest({
+      const request = new GetAttendanceRecordsRequest({
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { class: classList, totalRecords } = await classUsecase.getClassListInfo(request);
-      setClasses(classList);
+      const { records: attendanceRecordsList, totalRecords } =
+        await attendanceRecordsUsecase.getAttendanceRecordsListInfo(request);
+      setAttendanceRecordses(attendanceRecordsList);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
-  }, [filters, page, rowsPerPage, classUsecase]);
+  }, [filters, page, rowsPerPage, attendanceRecordsUsecase]);
 
   React.useEffect(() => {
-    void fetchClasses();
-  }, [fetchClasses]);
+    void fetchAttendanceRecordses();
+  }, [fetchAttendanceRecordses]);
 
-  const handleFilter = (newFilters: GetClassRequest) => {
+  const handleFilter = (newFilters: GetAttendanceRecordsRequest) => {
     setFilters(newFilters);
     setPage(0);
   };
@@ -66,40 +67,37 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateClass = async (request: CreateClassRequest) => {
+  const handleCreateAttendanceRecords = async (request: EnrollUserListToClassRequest) => {
     try {
-      await classUsecase.createClass(request);
+      await attendanceRecordsUsecase.enrollUserListToClass(request);
       setShowCreateDialog(false);
-      await fetchClasses();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+      await fetchAttendanceRecordses();
+    } catch (error) {
+      return undefined;
     }
   };
 
-  const handleEditClass = async (request: UpdateClassRequest) => {
+  const handleEditAttendanceRecords = async (request: UpdateAttendanceRecordsRequest) => {
     try {
-      await classUsecase.updateClass(request);
-      await fetchClasses();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+      await attendanceRecordsUsecase.updateAttendanceRecords(request);
+      await fetchAttendanceRecordses();
+    } catch (error) {
+      return undefined;
     }
   };
 
-  const handleDeleteClasss = async (ids: string[]) => {
+  const handleDeleteAttendanceRecords = async (ids: string[]) => {
     try {
       setDeleteLoading(true);
       for (const id of ids) {
-        const response = await classUsecase.deleteClass(id);
+        const response = await attendanceRecordsUsecase.deleteAttendanceRecords(id);
         if (!response) {
           throw new Error(`Failed to delete path with ID: ${id}`);
         }
       }
-      await fetchClasses();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+      await fetchAttendanceRecordses();
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }
@@ -118,24 +116,20 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          Enroll user
         </Button>
       </Stack>
-      <ClassFilters onFilter={handleFilter} />
+      <AttendanceRecordsFilters onFilter={handleFilter} />
       <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>
-        {/* <Box flex={1}>
-          <CategoryMultiCheckForm onChange={handleAddClick} />
-        </Box> */}
-
-        <ClassTable
-          rows={classes}
+        <AttendanceRecordsTable
+          rows={attendanceRecordses}
           count={totalCount}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
-          onDeleteClass={handleDeleteClasss}
-          onEditClass={handleEditClass}
+          onDeleteAttendanceRecords={handleDeleteAttendanceRecords}
+          onEditAttendanceRecords={handleEditAttendanceRecords}
         />
       </Stack>
 
@@ -147,8 +141,8 @@ export default function Page(): React.JSX.Element {
         }}
       /> */}
 
-      <CreateClassDialog
-        onSubmit={handleCreateClass}
+      <CreateAttendanceRecordsDialog
+        onSubmit={handleCreateAttendanceRecords}
         disabled={false}
         loading={false}
         open={showCreateDialog}

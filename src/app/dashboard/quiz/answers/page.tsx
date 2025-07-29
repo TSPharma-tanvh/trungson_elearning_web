@@ -9,7 +9,6 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateAnswerForm } from '@/presentation/components/dashboard/quiz/answer/answer-create-form';
 import { AnswerFilters } from '@/presentation/components/dashboard/quiz/answer/answer-filter';
 import AnswerTable from '@/presentation/components/dashboard/quiz/answer/answer-table';
@@ -36,10 +35,7 @@ export default function Page(): React.JSX.Element {
       const { answers: answerList, totalRecords } = await answerUsecase.getAnswerListInfo(request);
       setAnswers(answerList);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
-
+    } catch (error) {
       setAnswers([]);
     }
   }, [filters, page, rowsPerPage, answerUsecase]);
@@ -68,9 +64,8 @@ export default function Page(): React.JSX.Element {
       await answerUsecase.createAnswer(request);
       setShowCreateDialog(false);
       await fetchAnswers();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -78,9 +73,8 @@ export default function Page(): React.JSX.Element {
     try {
       await answerUsecase.updateAnswer(request);
       await fetchAnswers();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -94,9 +88,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchAnswers();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

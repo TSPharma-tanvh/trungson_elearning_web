@@ -16,7 +16,7 @@ import { CustomDateTimePicker } from '@/presentation/components/core/picker/cust
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
-import { QuizSingleSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-select';
+import { QuizSingleSelect } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
 interface CreateQuizUserProressProps {
@@ -95,9 +95,8 @@ export function CreateUserQuizProgressDialog({
 
       onSubmit(form);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }
@@ -149,7 +148,7 @@ export function CreateUserQuizProgressDialog({
             }}
           >
             <Grid item xs={12}>
-              <QuizSingleSelectDialog
+              <QuizSingleSelect
                 quizUsecase={quizUsecase}
                 value={form.quizID ?? ''}
                 onChange={(value: string | null) => {

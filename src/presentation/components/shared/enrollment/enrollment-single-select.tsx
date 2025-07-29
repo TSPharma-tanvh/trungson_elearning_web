@@ -32,7 +32,6 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import EnrollmentDetailForm from '../../dashboard/management/enrollment/enrollment-detail-form';
 
@@ -97,9 +96,8 @@ export function EnrollmentSingleSelect({
         try {
           const detail = await enrollmentUsecase.getEnrollmentById(value);
           setSelectedEnrollmentMap((prev) => ({ ...prev, [value]: detail }));
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        } catch (error) {
+          return undefined;
         }
       }
     };

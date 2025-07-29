@@ -23,7 +23,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 
@@ -163,7 +162,11 @@ function UserLessonProgressDetails({
   );
 }
 
-export default function UserLessonProgressDetailForm({ open, userLessonProgressId, onClose }: UserLessonProgressDetailProps) {
+export default function UserLessonProgressDetailForm({
+  open,
+  userLessonProgressId,
+  onClose,
+}: UserLessonProgressDetailProps) {
   const { userLessonProgressUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userLessonProgress, setUserLessonProgress] = useState<UserLessonProgressDetailResponse | null>(null);
@@ -175,9 +178,7 @@ export default function UserLessonProgressDetailForm({ open, userLessonProgressI
       userLessonProgressUsecase
         .getUserLessonProgressById(userLessonProgressId)
         .then(setUserLessonProgress)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setUserLessonProgress(null);
         })
         .finally(() => {

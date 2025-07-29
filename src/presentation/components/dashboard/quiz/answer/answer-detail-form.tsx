@@ -23,7 +23,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
@@ -148,9 +147,7 @@ export default function AnswerDetailForm({ open, answerId, onClose }: AnswerDeta
       answerUsecase
         .getAnswerById(answerId)
         .then(setAnswer)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setAnswer(null);
         })
         .finally(() => {

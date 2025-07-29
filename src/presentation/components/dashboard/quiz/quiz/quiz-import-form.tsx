@@ -16,7 +16,7 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
-import { QuizSingleSelectDialog } from '@/presentation/components/shared/quiz/quiz/quiz-select';
+import { QuizSingleSelect } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 
 interface QuizImportFormProps {
   disabled?: boolean;
@@ -99,9 +99,8 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
 
       onSubmit(form);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }
@@ -238,7 +237,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
 
             <Grid item xs={12}>
-              <QuizSingleSelectDialog
+              <QuizSingleSelect
                 quizUsecase={quizUsecase}
                 value={form.quizID}
                 onChange={(value) => {

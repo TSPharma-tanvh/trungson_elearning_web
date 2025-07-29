@@ -36,7 +36,6 @@ import {
   useTheme,
 } from '@mui/material';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import ImagePreviewDialog from './image-preview-dialog';
 import VideoPreviewDialog from './video-preview-dialog';
@@ -101,10 +100,8 @@ export function FileResourceMultiSelect({
     if (missingIds.length > 0) {
       void Promise.all(
         missingIds.map(async (id) =>
-          fileUsecase.getFileResouceById(id).catch((error: unknown) => {
-            const message = error instanceof Error ? error.message : 'An error has occurred.';
-            CustomSnackBar.showSnackbar(message, 'error');
-            return null;
+          fileUsecase.getFileResouceById(id).catch(() => {
+            return undefined;
           })
         )
       ).then((newFiles) => {

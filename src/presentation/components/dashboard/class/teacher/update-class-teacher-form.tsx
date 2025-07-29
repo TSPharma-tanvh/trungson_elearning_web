@@ -20,7 +20,6 @@ import {
 import { Box, useMediaQuery, useTheme } from '@mui/system';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { ClassMultiSelectDialog } from '@/presentation/components/shared/classes/class/class-multi-select';
 import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';
@@ -66,9 +65,8 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
     try {
       onSubmit(formData);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }

@@ -1,0 +1,61 @@
+export class GetUserDevicesRequest {
+  userID?: string;
+  deviceName?: string;
+  deviceType?: string;
+  deviceID?: string;
+  deviceToken?: string;
+  ipAddress?: string;
+  signInAtFrom?: Date;
+  signInAtTo?: Date;
+  signOutAtFrom?: Date;
+  signOutAtTo?: Date;
+  lastAccessFrom?: Date;
+  lastAccessTo?: Date;
+  searchText?: string;
+  pageNumber: number = 1;
+  pageSize: number = 10;
+
+  constructor(init?: Partial<GetUserDevicesRequest>) {
+    Object.assign(this, init);
+  }
+
+  static fromJSON(json: any): GetUserDevicesRequest {
+    return new GetUserDevicesRequest({
+      userID: json.userID,
+      deviceName: json.deviceName,
+      deviceType: json.deviceType,
+      deviceID: json.deviceID,
+      deviceToken: json.deviceToken,
+      ipAddress: json.ipAddress,
+      signInAtFrom: json.signInAtFrom ? new Date(json.signInAtFrom) : undefined,
+      signInAtTo: json.signInAtTo ? new Date(json.signInAtTo) : undefined,
+      signOutAtFrom: json.signOutAtFrom ? new Date(json.signOutAtFrom) : undefined,
+      signOutAtTo: json.signOutAtTo ? new Date(json.signOutAtTo) : undefined,
+      lastAccessFrom: json.lastAccessFrom ? new Date(json.lastAccessFrom) : undefined,
+      lastAccessTo: json.lastAccessTo ? new Date(json.lastAccessTo) : undefined,
+      searchText: json.searchText,
+      pageNumber: json.pageNumber ?? 1,
+      pageSize: json.pageSize ?? 10,
+    });
+  }
+
+  toJSON(): any {
+    return {
+      userID: this.userID,
+      deviceName: this.deviceName,
+      deviceType: this.deviceType,
+      deviceID: this.deviceID,
+      deviceToken: this.deviceToken,
+      ipAddress: this.ipAddress,
+      signInAtFrom: this.signInAtFrom?.toISOString(),
+      signInAtTo: this.signInAtTo?.toISOString(),
+      signOutAtFrom: this.signOutAtFrom?.toISOString(),
+      signOutAtTo: this.signOutAtTo?.toISOString(),
+      lastAccessFrom: this.lastAccessFrom?.toISOString(),
+      lastAccessTo: this.lastAccessTo?.toISOString(),
+      searchText: this.searchText,
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
+    };
+  }
+}

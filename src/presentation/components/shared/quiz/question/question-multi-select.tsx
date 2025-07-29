@@ -3,9 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { type QuestionUsecase } from '@/domain/usecases/question/question-usecase';
-import { useQuestionSelectDebounce } from '@/presentation/hooks/question/use-question-select-debounce';
 import { useQuestionSelectLoader } from '@/presentation/hooks/question/use-question-select-loader';
-import { Book } from '@mui/icons-material';
+import { Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -15,7 +14,6 @@ import {
   Checkbox,
   Dialog,
   DialogActions,
-  DialogContent,
   DialogTitle,
   FormControl,
   IconButton,
@@ -27,54 +25,76 @@ import {
   Select,
   Typography,
   useMediaQuery,
+  useTheme,
   type SelectProps,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
-import QuestionInformationForm from './question-information-form';
-
-interface QuestionMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
-  questionUsecase: QuestionUsecase | null;
+interface QuestionSelectProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
+  questionUsecase: QuestionUsecase;
   value: string[];
   onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
 }
 
-export function QuestionMultiSelectDialog({
+export function QuestionMultiSelect({
   questionUsecase,
   value,
   onChange,
   label = 'Questions',
   disabled = false,
-  ...selectProps
-}: QuestionMultiSelectDialogProps) {
+}: QuestionSelectProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useQuestionSelectDebounce(localSearchText, 300);
   const [selectedQuestionMap, setSelectedQuestionMap] = useState<Record<string, QuestionResponse>>({});
-  const [selectedQuestion, setSelectedQuestion] = React.useState<QuestionResponse | null>(null);
-  const [viewOpen, setViewOpen] = React.useState(false);
 
-  const { questions, loadingQuestions, pageNumber, totalPages, listRef, setSearchText, loadQuestions } =
+  const { questions, loadingQuestions, pageNumber, totalPages, setSearchText, listRef, loadQuestions } =
     useQuestionSelectLoader({
       questionUsecase,
       isOpen: dialogOpen,
-      searchText: debouncedSearchText,
     });
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Handlers
+  useEffect(() => {
+    const fetch = async () => {
+      const newMap = { ...selectedQuestionMap };
+      let updated = false;
+
+      for (const id of value) {
+        if (!newMap[id]) {
+          try {
+            const detail = await questionUsecase.getQuestionById(id);
+            newMap[id] = detail;
+            updated = true;
+          } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'An error has occurred.';
+            CustomSnackBar.showSnackbar(message, 'error');
+          }
+        }
+      }
+
+      if (updated) setSelectedQuestionMap(newMap);
+    };
+
+    if (value.length > 0) void fetch();
+  }, [value, questionUsecase]);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
   const handleOpen = () => {
-    if (!disabled) setDialogOpen(true);
+    if (!disabled) {
+      setDialogOpen(true);
+    }
   };
 
   const handleClose = () => {
@@ -87,85 +107,26 @@ export function QuestionMultiSelectDialog({
     setDialogOpen(false);
   };
 
+  const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
+    void loadQuestions(newPage);
+    listRef.current?.scrollTo(0, 0);
+  };
+
   const handleClearFilters = () => {
     setLocalSearchText('');
+    setSearchText('');
   };
-
-  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (questionUsecase && !loadingQuestions) {
-      void loadQuestions(newPage, true);
-      if (listRef.current) {
-        listRef.current.scrollTop = 0;
-      }
-    }
-  };
-
-  // Effects
-  useEffect(() => {
-    setSearchText(debouncedSearchText);
-  }, [debouncedSearchText, setSearchText]);
-
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (questionUsecase && value.length > 0) {
-      const fetchSelectedQuestions = async () => {
-        try {
-          const newMap = { ...selectedQuestionMap };
-          let updated = false;
-
-          for (const id of value) {
-            if (!newMap[id]) {
-              const response = await questionUsecase.getQuestionById(id);
-              const question = response;
-              if (question?.id) {
-                newMap[question.id] = question;
-                updated = true;
-              }
-            }
-          }
-
-          if (updated) {
-            setSelectedQuestionMap(newMap);
-          }
-        } catch (error) {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
-        }
-      };
-
-      void fetchSelectedQuestions();
-    }
-  }, [questionUsecase, value]);
-
-  useEffect(() => {
-    if (dialogOpen) {
-      const newMap = { ...selectedQuestionMap };
-      let updated = false;
-      for (const question of questions) {
-        if (question.id && !newMap[question.id]) {
-          newMap[question.id] = question;
-          updated = true;
-        }
-      }
-      if (updated) {
-        setSelectedQuestionMap(newMap);
-      }
-    }
-  }, [questions, dialogOpen, selectedQuestionMap]);
 
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="course-select-label">{label}</InputLabel>
+        <InputLabel id="question-select-label">{label}</InputLabel>
         <Select
-          labelId="course-select-label"
           multiple
+          labelId="question-select-label"
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
@@ -173,7 +134,6 @@ export function QuestionMultiSelectDialog({
             'No Questions Selected'
           }
           open={false}
-          {...selectProps}
         />
       </FormControl>
 
@@ -184,72 +144,60 @@ export function QuestionMultiSelectDialog({
             <Box>
               <IconButton
                 onClick={() => {
-                  setIsFullscreen((prev) => !prev);
+                  setIsFullscreen(!isFullscreen);
                 }}
                 size="small"
               >
-                {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
+                {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
                 <CloseIcon />
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
-            </Button>
-          </Box>
+
+          <CustomSearchInput
+            value={localSearchText}
+            onChange={(val) => {
+              setLocalSearchText(val);
+              setSearchText(val);
+            }}
+            placeholder="Search questions..."
+          />
+
+          <Button size="small" onClick={handleClearFilters} variant="outlined">
+            Clear Filters
+          </Button>
         </DialogTitle>
 
-        <DialogContent dividers>
-          <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {questions.map((question) => (
+        <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
+          {questions.map((item) => {
+            const checked = localValue.includes(item.id);
+            return (
               <MenuItem
-                key={question.id}
-                value={question.id}
+                key={item.id}
+                value={item.id}
                 onClick={() => {
-                  setLocalValue((prev) =>
-                    prev.includes(question.id) ? prev.filter((id) => id !== question.id) : [...prev, question.id]
-                  );
+                  setLocalValue((prev) => (checked ? prev.filter((id) => id !== item.id) : [...prev, item.id]));
                 }}
               >
-                <Checkbox checked={localValue.includes(question.id)} />
-                <ListItemText
-                  primary={question.questionText}
-                  sx={{
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    flex: 1,
-                    mr: 1,
-                  }}
-                />
-                <Button
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedQuestion(question);
-                    setViewOpen(true);
-                  }}
-                >
-                  Show Detail
-                </Button>
+                <Checkbox checked={checked} />
+                <ListItemText primary={item.questionText} />
               </MenuItem>
-            ))}
-            {loadingQuestions ? (
-              <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
-              </Typography>
-            ) : null}
-            {!loadingQuestions && questions.length === 0 && (
-              <Typography variant="body2" sx={{ p: 2 }}>
-                No questions found
-              </Typography>
-            )}
-          </Box>
-        </DialogContent>
+            );
+          })}
+
+          {loadingQuestions ? (
+            <Typography variant="body2" sx={{ p: 2 }}>
+              Loading...
+            </Typography>
+          ) : null}
+          {!loadingQuestions && questions.length === 0 && (
+            <Typography variant="body2" sx={{ p: 2 }}>
+              No questions found
+            </Typography>
+          )}
+        </Box>
 
         <DialogActions sx={{ flexDirection: 'column', gap: 2 }}>
           {totalPages > 1 && (
@@ -271,16 +219,6 @@ export function QuestionMultiSelectDialog({
           </Box>
         </DialogActions>
       </Dialog>
-
-      {selectedQuestion ? (
-        <QuestionInformationForm
-          open={viewOpen}
-          questionId={selectedQuestion?.id ?? null}
-          onClose={() => {
-            setViewOpen(false);
-          }}
-        />
-      ) : null}
     </>
   );
 }

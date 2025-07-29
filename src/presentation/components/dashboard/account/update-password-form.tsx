@@ -16,8 +16,6 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
-
 export function UpdatePasswordForm(): React.JSX.Element {
   const { userUsecase } = useDI();
   const [oldPassword, setOldPassword] = React.useState('');
@@ -39,9 +37,8 @@ export function UpdatePasswordForm(): React.JSX.Element {
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 

@@ -10,7 +10,6 @@ import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { Plus } from '@phosphor-icons/react';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateLessonDialog } from '@/presentation/components/dashboard/courses/lessons/create-lesson-form';
 import LessonTable from '@/presentation/components/dashboard/courses/lessons/lesson-table';
 import { LessonsFilters } from '@/presentation/components/dashboard/courses/lessons/lessons-filter';
@@ -36,9 +35,8 @@ export default function Page(): React.JSX.Element {
       const { Lessons, totalRecords } = await lessonUsecase.getLessonListInfo(request);
       setLessons(Lessons);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   }, [filters, page, rowsPerPage, lessonUsecase]);
 
@@ -66,9 +64,8 @@ export default function Page(): React.JSX.Element {
       await lessonUsecase.createLesson(request);
       setShowCreateDialog(false);
       await fetchLessons();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -76,9 +73,8 @@ export default function Page(): React.JSX.Element {
     try {
       await lessonUsecase.updateLesson(request);
       await fetchLessons();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -92,9 +88,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchLessons();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

@@ -14,7 +14,6 @@ import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Downloa
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
 import { ImportQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-import-form';
@@ -72,9 +71,8 @@ export default function Page(): React.JSX.Element {
       await quizUsecase.createQuiz(request);
       setShowCreateDialog(false);
       await fetchQuizzes();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -83,9 +81,8 @@ export default function Page(): React.JSX.Element {
       await quizUsecase.importFromExcel(request);
       setShowImportDialog(false);
       await fetchQuizzes();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -93,9 +90,8 @@ export default function Page(): React.JSX.Element {
     try {
       await quizUsecase.updateQuiz(request);
       await fetchQuizzes();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -109,9 +105,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchQuizzes();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

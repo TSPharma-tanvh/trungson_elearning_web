@@ -82,6 +82,7 @@ export function useQuestionSelectLoader({
       setTotalPages(1);
       setHasMore(true);
       void loadQuestions(1, true);
+      setIsSelectOpen(false);
     }
 
     return () => {
@@ -93,7 +94,7 @@ export function useQuestionSelectLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen, searchText, loadQuestions]);
+  }, [isOpen]);
 
   return {
     questions,

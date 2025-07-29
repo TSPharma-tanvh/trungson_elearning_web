@@ -147,6 +147,21 @@ interface UserQuizProgressEndpoints {
   update: StaticEndpoint;
 }
 
+interface AttendanceRecordsEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+  enroll: StaticEndpoint;
+}
+
+interface UserDevicesEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  update: StaticEndpoint;
+  delete: StaticEndpoint;
+}
+
 // Main type containing all endpoint categories
 interface EndpointDefinitions {
   identity: IdentityEndpoints;
@@ -170,6 +185,8 @@ interface EndpointDefinitions {
   userCourseProgress: UserCourseProgressEndpoints;
   userLessonProgress: UserLessonProgressEndpoints;
   userQuizProgress: UserQuizProgressEndpoints;
+  attendanceRecords: AttendanceRecordsEndpoints;
+  userDevices: UserDevicesEndpoints;
 }
 
 //endpoint values
@@ -301,6 +318,19 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `UserQuizProgress/GetUserQuizProgressById/${id}`,
     create: 'UserQuizProgress/AssignUsers',
     update: 'UserQuizProgress/UpdateProgress',
+  },
+  attendanceRecords: {
+    getAll: 'AttendanceRecords/GetAttendanceRecords',
+    getById: (id: string) => `AttendanceRecords/GetAttendanceRecordsById/${id}`,
+    create: 'AttendanceRecords/CreateAttendanceRecords',
+    update: 'AttendanceRecords/UpdateAttendanceRecords',
+    enroll: 'Class/EnrollUserListToClass',
+  },
+  userDevices: {
+    getAll: 'UserDevices/GetUserDevices',
+    getById: (id: string) => `UserDevices/GetUserDevicesById/${id}`,
+    update: 'UserDevices/UpdateUserDevices',
+    delete: 'UserDevices/DeleteUserDevices',
   },
 };
 

@@ -77,9 +77,8 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
       }
       onSubmit(formData);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }

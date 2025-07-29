@@ -24,7 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { UpdatePasswordForm } from './update-password-form';
 
 export function AccountForm(): React.JSX.Element {
@@ -88,9 +87,8 @@ export function AccountForm(): React.JSX.Element {
       if (formData.thumbnail instanceof File) {
         setThumbnailPreview(URL.createObjectURL(formData.thumbnail));
       }
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 

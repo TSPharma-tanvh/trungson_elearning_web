@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/system';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
 import ClassTable from '@/presentation/components/dashboard/class/classes/class-table';
 import { CreateClassDialog } from '@/presentation/components/dashboard/class/classes/create-class-form';
@@ -41,9 +40,8 @@ export default function Page(): React.JSX.Element {
       const { class: classList, totalRecords } = await classUsecase.getClassListInfo(request);
       setClasses(classList);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   }, [filters, page, rowsPerPage, classUsecase]);
 
@@ -71,9 +69,8 @@ export default function Page(): React.JSX.Element {
       await classUsecase.createClass(request);
       setShowCreateDialog(false);
       await fetchClasses();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -81,9 +78,8 @@ export default function Page(): React.JSX.Element {
     try {
       await classUsecase.updateClass(request);
       await fetchClasses();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -97,9 +93,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchClasses();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

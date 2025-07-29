@@ -11,7 +11,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { ClassTeacherFilters } from '@/presentation/components/dashboard/class/teacher/class-teacher-filter';
 import TeacherTable from '@/presentation/components/dashboard/class/teacher/class-teacher-table';
 import { CreateClassTeacherDialog } from '@/presentation/components/dashboard/class/teacher/create-teacher-form';
@@ -39,9 +38,8 @@ export default function Page(): React.JSX.Element {
       const { teachers: teacherList, totalRecords } = await classTeacherUsecase.getClassTeacherListInfo(request);
       setTeachers(teacherList);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   }, [filters, page, rowsPerPage, classTeacherUsecase]);
 
@@ -69,9 +67,8 @@ export default function Page(): React.JSX.Element {
       await classTeacherUsecase.createClassTeacher(request);
       setShowCreateDialog(false);
       await fetchTeachers();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -79,9 +76,8 @@ export default function Page(): React.JSX.Element {
     try {
       await classTeacherUsecase.updateClassTeacher(request);
       await fetchTeachers();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -97,9 +93,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchTeachers();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

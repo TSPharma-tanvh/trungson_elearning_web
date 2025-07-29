@@ -31,7 +31,6 @@ import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
 import QuestionInformationForm from '../../../shared/quiz/question/question-information-form';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface QuizDetailFormProps {
   open: boolean;
@@ -337,9 +336,7 @@ export default function QuizDetailForm({ open, quizId, onClose }: QuizDetailForm
       quizUsecase
         .getQuizById(quizId)
         .then(setQuiz)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setQuiz(null);
         })
         .finally(() => {

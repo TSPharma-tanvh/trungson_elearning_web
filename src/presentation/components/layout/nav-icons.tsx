@@ -10,6 +10,7 @@ import {
   ChalkboardTeacher,
   ChatCircleText,
   CircleNotch,
+  DeviceMobile,
   Exam,
   Faders,
   File,
@@ -70,4 +71,5 @@ export const navIcons = {
   criteria: UsersThree,
   category: BookmarkSimple,
   employee: IdentificationCard,
+  devices: DeviceMobile,
 } as Record<string, Icon>;

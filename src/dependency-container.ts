@@ -32,14 +32,19 @@ import { QuizRepoImpl } from '@/data/repositories/quiz/quiz-repo-impl';
 import { RoleRepositoryImpl } from '@/data/repositories/role/role-repo-impl';
 import { UserRepositoryImpl } from '@/data/repositories/user/user-repo-impl';
 
+import { AttendanceRecordsRepoImpl } from './data/repositories/class/attendance-records-repo-impl';
 import { EmployeeRepoImpl } from './data/repositories/employee/employee-repo-impl';
 import { UserCourseProgressRepoImpl } from './data/repositories/progress/user-course-progress-repo-impl';
 import { UserLessonProgressRepoImpl } from './data/repositories/progress/user-lesson-progress-repo-impl';
 import { UserQuizProgressRepoImpl } from './data/repositories/progress/user-quiz-progress-repo-impl';
+import { UserDevicesRepoImpl } from './data/repositories/user/user-devices-repo-impl';
+import { UserDeviceResponse } from './domain/models/user-devices/response/user-devices-response';
+import { AttendanceRecordsUsecase } from './domain/usecases/class/attendance-records-usecase';
 import { EmployeeUsecase } from './domain/usecases/employee/employee-usecase';
 import { UserCourseProgressUsecase } from './domain/usecases/progress/user-course-progress-usecase';
 import { UserLessonProgressUsecase } from './domain/usecases/progress/user-lesson-progress-usecase';
 import { UserQuizProgressUsecase } from './domain/usecases/progress/user-quiz-progress-usecase';
+import { UserDevicesUsecase } from './domain/usecases/user/user-device-usecase';
 
 export class DependencyContainer {
   // Repository instances
@@ -51,6 +56,7 @@ export class DependencyContainer {
 
   //user
   public userRepo = new UserRepositoryImpl();
+  public userDeviceRepo = new UserDevicesRepoImpl();
 
   //role
   public roleRepo = new RoleRepositoryImpl();
@@ -72,6 +78,7 @@ export class DependencyContainer {
 
   //class
   public classRepo = new ClassRepoImpl();
+  public attendanceRecordsRepo = new AttendanceRecordsRepoImpl();
 
   //teacher
   public classTeacherRepo = new ClassTeacherRepoImpl();
@@ -105,6 +112,7 @@ export class DependencyContainer {
 
   //user
   public userUsecase = new UserUsecase(this.userRepo);
+  public userDevicesUsecase = new UserDevicesUsecase(this.userDeviceRepo);
 
   //role
   public roleUseCase = new RoleUsecase(this.roleRepo);
@@ -126,6 +134,7 @@ export class DependencyContainer {
 
   //class
   public classUsecase = new ClassUsecase(this.classRepo);
+  public attendanceRecordsUsecase = new AttendanceRecordsUsecase(this.attendanceRecordsRepo);
 
   //teacher
   public classTeacherUsecase = new ClassTeacherUsecase(this.classTeacherRepo);

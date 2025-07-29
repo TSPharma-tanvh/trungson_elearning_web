@@ -24,7 +24,6 @@ import {
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface EditUserLessonProgressDialogProps {
   open: boolean;
@@ -72,9 +71,8 @@ export function UpdateUserLessonProgressFormDialog({
     try {
       onSubmit(formData);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }

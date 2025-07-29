@@ -38,7 +38,7 @@ import { FileResourceMultiSelect } from '@/presentation/components/shared/file/f
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
-import { QuestionMultiSelectDialog } from '@/presentation/components/shared/quiz/question/question-multi-select';
+import { QuestionMultiSelect } from '@/presentation/components/shared/quiz/question/question-multi-select';
 
 interface EditQuizDialogProps {
   open: boolean;
@@ -131,9 +131,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error: unknown) => {
-              const message = error instanceof Error ? error.message : 'An error has occurred.';
-              CustomSnackBar.showSnackbar(message, 'error');
+            .catch(() => {
               setPreviewUrl(null);
             });
         } else {
@@ -183,10 +181,8 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
     try {
       onSubmit(formData);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
-      CustomSnackBar.showSnackbar('Failed to update path', 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }
@@ -394,8 +390,8 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <QuestionMultiSelectDialog
+            <Grid item xs={12} sm={6}>
+              <QuestionMultiSelect
                 questionUsecase={questionUsecase}
                 value={formData.questionIDs ? formData.questionIDs.split(',').filter((id) => id) : []}
                 onChange={(value: string[]) => {

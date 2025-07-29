@@ -1,4 +1,5 @@
 import { ClassResponse } from '../../class/response/class-response';
+import { EnrollmentResponse } from '../../class/response/enrollment-response';
 import { UserResponse } from '../../user/response/user-response';
 
 export class AttendanceRecordDetailResponse {
@@ -11,6 +12,7 @@ export class AttendanceRecordDetailResponse {
   status?: string;
   class?: ClassResponse;
   user?: UserResponse;
+  enrollment?: EnrollmentResponse;
 
   constructor(init?: Partial<AttendanceRecordDetailResponse>) {
     Object.assign(this, init);
@@ -27,6 +29,7 @@ export class AttendanceRecordDetailResponse {
       status: json.status,
       class: json.class ? ClassResponse.fromJson(json.class) : undefined,
       user: json.user ? UserResponse.fromJSON(json.user) : undefined,
+      enrollment: json.enrollment ? EnrollmentResponse.fromJson(json.enrollment) : undefined,
     });
   }
 
@@ -41,6 +44,7 @@ export class AttendanceRecordDetailResponse {
       status: this.status,
       class: this.class?.toJson(),
       user: this.user?.toJSON(),
+      enrollment: this.enrollment?.toJson(),
     };
   }
 }

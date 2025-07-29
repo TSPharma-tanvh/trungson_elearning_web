@@ -21,7 +21,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
 interface CategoryDetailFormProps {
@@ -76,9 +75,7 @@ export default function CategoryDetailForm({ open, categoryId, onClose }: Catego
       categoryUsecase
         .getCategoryById(categoryId)
         .then(setCategory)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setCategory(null);
         })
         .finally(() => {

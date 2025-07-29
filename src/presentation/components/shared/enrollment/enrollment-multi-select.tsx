@@ -31,7 +31,6 @@ import {
   type SelectProps,
 } from '@mui/material';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 
 interface EnrollmentSelectProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
@@ -89,9 +88,8 @@ export function EnrollmentMultiSelect({
             const detail = await enrollmentUsecase.getEnrollmentById(id);
             newMap[id] = detail;
             updated = true;
-          } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : 'An error has occurred.';
-            CustomSnackBar.showSnackbar(message, 'error');
+          } catch (error) {
+            return undefined;
           }
         }
       }

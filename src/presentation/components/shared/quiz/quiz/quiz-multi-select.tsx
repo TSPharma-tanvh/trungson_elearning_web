@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
-import { useQuizSelectDebounce } from '@/presentation/hooks/quiz/use-quiz-select-debounce';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
-import { Book } from '@mui/icons-material';
+import { InfoOutlined, Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -35,42 +34,69 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import QuizDetailForm from '@/presentation/components/dashboard/quiz/quiz/quiz-detail-form';
 
-interface QuizMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
-  quizUsecase: QuizUsecase | null;
+interface QuizMultiSelectProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
+  quizUsecase: QuizUsecase;
   value: string[];
   onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
 }
 
-export function QuizMultiSelectDialog({
+export function QuizMultiSelect({
   quizUsecase,
   value,
   onChange,
   label = 'Quizzes',
   disabled = false,
   ...selectProps
-}: QuizMultiSelectDialogProps) {
+}: QuizMultiSelectProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [localValue, setLocalValue] = useState<string[]>(value);
+  const [localValue, setLocalValue] = useState<string[]>(value ?? []);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useQuizSelectDebounce(localSearchText, 300);
   const [selectedQuizMap, setSelectedQuizMap] = useState<Record<string, QuizResponse>>({});
-  const [selectedQuiz, setSelectedQuiz] = React.useState<QuizResponse | null>(null);
-  const [viewOpen, setViewOpen] = React.useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState<QuizResponse | null>(null);
 
-  const { quizzes, loadingQuizzes, pageNumber, totalPages, listRef, setSearchText, loadQuizzes } = useQuizSelectLoader({
-    quizUsecase,
-    isOpen: dialogOpen,
-    searchText: debouncedSearchText,
-  });
+  const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, searchText, listRef, loadQuizzes } =
+    useQuizSelectLoader({
+      quizUsecase,
+      isOpen: dialogOpen,
+    });
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Handlers
+  useEffect(() => {
+    if (localSearchText !== searchText) {
+      setSearchText(localSearchText);
+    }
+  }, [localSearchText, searchText, setSearchText]);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const fetchQuizDetails = useCallback(async () => {
+    const idsToFetch = value.filter((id) => !selectedQuizMap[id]);
+    await Promise.all(
+      idsToFetch.map(async (id) => {
+        try {
+          const detail = await quizUsecase.getQuizById(id);
+          setSelectedQuizMap((prev) => ({ ...prev, [id]: detail }));
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
+        }
+      })
+    );
+  }, [value, quizUsecase, selectedQuizMap]);
+
+  useEffect(() => {
+    void fetchQuizDetails();
+  }, [fetchQuizDetails]);
+
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
   };
@@ -85,89 +111,29 @@ export function QuizMultiSelectDialog({
     setDialogOpen(false);
   };
 
+  const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
+    void loadQuizzes(newPage);
+    listRef.current?.scrollTo(0, 0);
+  };
+
   const handleClearFilters = () => {
     setLocalSearchText('');
   };
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (quizUsecase && !loadingQuizzes) {
-      void loadQuizzes(newPage, true);
-      if (listRef.current) {
-        listRef.current.scrollTop = 0;
-      }
-    }
-  };
-
-  // Effects
-  useEffect(() => {
-    setSearchText(debouncedSearchText);
-  }, [debouncedSearchText, setSearchText]);
-
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (quizUsecase && value.length > 0) {
-      const fetchSelectedQuizzes = async () => {
-        try {
-          const newMap = { ...selectedQuizMap };
-          let updated = false;
-
-          for (const id of value) {
-            if (!newMap[id]) {
-              const response = await quizUsecase.getQuizById(id);
-              const quiz = response;
-              if (quiz?.id) {
-                newMap[quiz.id] = quiz;
-                updated = true;
-              }
-            }
-          }
-
-          if (updated) {
-            setSelectedQuizMap(newMap);
-          }
-        } catch (error) {
-          const message = error instanceof Error ? error.message : 'An unknown error occurred';
-          CustomSnackBar.showSnackbar(message, 'error');
-        }
-      };
-
-      void fetchSelectedQuizzes();
-    }
-  }, [quizUsecase, value]);
-
-  useEffect(() => {
-    if (dialogOpen) {
-      const newMap = { ...selectedQuizMap };
-      let updated = false;
-      for (const quiz of quizzes) {
-        if (quiz.id && !newMap[quiz.id]) {
-          newMap[quiz.id] = quiz;
-          updated = true;
-        }
-      }
-      if (updated) {
-        setSelectedQuizMap(newMap);
-      }
-    }
-  }, [quizzes, dialogOpen, selectedQuizMap]);
-
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="course-select-label">{label}</InputLabel>
+        <InputLabel id="quiz-multi-select-label">{label}</InputLabel>
         <Select
-          labelId="course-select-label"
+          labelId="quiz-multi-select-label"
           multiple
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
-            selected.map((id: string) => selectedQuizMap[id]?.title || id).join(', ') || 'No Quizzes Selected'
+            selected.map((id) => selectedQuizMap[id]?.title).join(', ') || 'No Quizzes Selected'
           }
           open={false}
           {...selectProps}
@@ -181,18 +147,26 @@ export function QuizMultiSelectDialog({
             <Box>
               <IconButton
                 onClick={() => {
-                  setIsFullscreen((prev) => !prev);
+                  setIsFullscreen(!isFullscreen);
                 }}
                 size="small"
               >
-                {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
+                {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
                 <CloseIcon />
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
+
+          <CustomSearchInput
+            value={localSearchText}
+            onChange={(val) => {
+              setLocalSearchText(val);
+            }}
+            placeholder="Search quizzes..."
+          />
+
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               Clear Filters
@@ -202,39 +176,35 @@ export function QuizMultiSelectDialog({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {quizzes.map((quiz) => (
-              <MenuItem
-                key={quiz.id}
-                value={quiz.id}
-                onClick={() => {
-                  setLocalValue((prev) =>
-                    prev.includes(quiz.id!) ? prev.filter((id) => id !== quiz.id!) : [...prev, quiz.id!]
-                  );
-                }}
-              >
-                <Checkbox checked={localValue.includes(quiz.id ?? '')} />
-                <ListItemText
-                  primary={quiz.title}
-                  sx={{
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    flex: 1,
-                    mr: 1,
-                  }}
-                />
-                <Button
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedQuiz(quiz);
-                    setViewOpen(true);
+            {quizzes.map((item) => {
+              const isSelected = localValue.includes(item.id ?? '');
+              return (
+                <MenuItem
+                  key={item.id}
+                  value={item.id}
+                  selected={isSelected}
+                  onClick={() => {
+                    const id = item.id ?? '';
+                    setLocalValue((prev) => (isSelected ? prev.filter((v) => v !== id) : [...prev, id]));
                   }}
                 >
-                  Show Detail
-                </Button>
-              </MenuItem>
-            ))}
+                  <Checkbox checked={isSelected} />
+                  <ListItemText primary={item.title} />
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedQuiz(item);
+                      setViewOpen(true);
+                    }}
+                    aria-label="Show Details"
+                  >
+                    <InfoOutlined />
+                  </IconButton>
+                </MenuItem>
+              );
+            })}
+
             {loadingQuizzes ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 Loading...
@@ -262,7 +232,7 @@ export function QuizMultiSelectDialog({
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave} variant="contained">
+            <Button onClick={handleSave} variant="contained" disabled={localValue.length === 0}>
               Save
             </Button>
           </Box>
@@ -272,7 +242,7 @@ export function QuizMultiSelectDialog({
       {selectedQuiz ? (
         <QuizDetailForm
           open={viewOpen}
-          quizId={selectedQuiz?.id ?? null}
+          quizId={selectedQuiz.id ?? null}
           onClose={() => {
             setViewOpen(false);
           }}

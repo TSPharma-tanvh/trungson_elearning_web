@@ -1,6 +1,6 @@
 'use client';
 
-import React, { type JSX, useEffect, useState } from 'react';
+import React, { useEffect, useState, type JSX } from 'react';
 import { CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
 import { type PermissionResponse } from '@/domain/models/role/response/permission-reponse';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -51,9 +51,8 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
     try {
       const permissions = await roleUseCase.getAllPermission();
       setAllPermissions(permissions);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setLoading(false);
     }

@@ -1,18 +1,22 @@
-import { CheckinTimeEnum } from '@/utils/enum/core-enum';
+import { type CheckinTimeEnum } from '@/utils/enum/core-enum';
 
-export class GetAttendanceRecordsResponse {
+export class GetAttendanceRecordsRequest {
   userID?: string;
   levelID?: string;
   classID?: string;
   checkinTimeFrom?: Date;
   checkinTimeTo?: Date;
-  status?: CheckinTimeEnum = CheckinTimeEnum.OnTime;
+  status?: CheckinTimeEnum;
   searchText?: string;
   pageNumber = 1;
   pageSize = 10;
 
-  static fromJSON(json: any): GetAttendanceRecordsResponse {
-    const dto = new GetAttendanceRecordsResponse();
+  constructor(init?: Partial<GetAttendanceRecordsRequest>) {
+    Object.assign(this, init);
+  }
+
+  static fromJson(json: any): GetAttendanceRecordsRequest {
+    const dto = new GetAttendanceRecordsRequest();
     dto.userID = json.userID;
     dto.levelID = json.levelID;
     dto.classID = json.classID;
@@ -25,7 +29,7 @@ export class GetAttendanceRecordsResponse {
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userID: this.userID,
       levelID: this.levelID,

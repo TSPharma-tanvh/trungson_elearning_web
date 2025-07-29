@@ -9,7 +9,6 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateUserLessonProgressDialog } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-create';
 import { UserLessonProgressFilters } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-filter';
 import UserLessonProgressTable from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-table';
@@ -38,11 +37,9 @@ export default function Page(): React.JSX.Element {
       const { progress, totalRecords } = await userLessonProgressUsecase.getUserLessonProgressListInfo(request);
       setUserLessonProgress(progress);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
-
+    } catch (error) {
       setUserLessonProgress([]);
+      return undefined;
     }
   }, [filters, page, rowsPerPage, userLessonProgressUsecase]);
 
@@ -70,9 +67,8 @@ export default function Page(): React.JSX.Element {
       await userLessonProgressUsecase.createUserLessonProgress(request);
       setShowCreateDialog(false);
       await fetchUserLessonProgress();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -80,9 +76,8 @@ export default function Page(): React.JSX.Element {
     try {
       await userLessonProgressUsecase.updateUserLessonProgress(request);
       await fetchUserLessonProgress();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -96,9 +91,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchUserLessonProgress();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

@@ -8,7 +8,6 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { ArrowsClockwise } from '@phosphor-icons/react';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { EmployeeFilters } from '@/presentation/components/dashboard/management/employee/employee-filter';
 import EmployeeTable from '@/presentation/components/dashboard/management/employee/employee-table';
 
@@ -36,11 +35,9 @@ export default function Page(): React.JSX.Element {
       const { employees, totalRecords } = await employeeUsecase.getEmployeeListInfo(request);
       setEmployee(employees);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
-
+    } catch (error) {
       setEmployee([]);
+      return undefined;
     }
   }, [filters, page, rowsPerPage, employeeUsecase]);
 
@@ -68,9 +65,8 @@ export default function Page(): React.JSX.Element {
       await employeeUsecase.syncEmployeeFromHrm(request);
       setShowCreateDialog(false);
       await fetchCategories();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -93,9 +89,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchCategories();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

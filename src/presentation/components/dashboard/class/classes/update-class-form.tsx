@@ -139,9 +139,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error: unknown) => {
-              const message = error instanceof Error ? error.message : 'An error has occurred.';
-              CustomSnackBar.showSnackbar(message, 'error');
+            .catch(() => {
               setPreviewUrl(null);
             });
         } else {
@@ -197,9 +195,8 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
 
       onSubmit(formData);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }

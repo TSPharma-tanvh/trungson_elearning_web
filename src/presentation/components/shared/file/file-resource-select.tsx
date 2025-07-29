@@ -33,7 +33,6 @@ import {
   useTheme,
 } from '@mui/material';
 
-import CustomSnackBar from '../../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import ImagePreviewDialog from './image-preview-dialog';
 import VideoPreviewDialog from './video-preview-dialog';
@@ -75,9 +74,8 @@ export function FileResourceSelect({
       fileUsecase
         .getFileResouceById(value)
         .then(setSelectedFile)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
+          undefined;
         });
     }
   }, [value]);

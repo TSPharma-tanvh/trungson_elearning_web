@@ -24,7 +24,6 @@ import {
   useTheme,
 } from '@mui/material';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
 import { CustomVideoPlayer } from '../../file/custom-video-player';
@@ -262,9 +261,7 @@ export default function QuestionInformationForm({ open, questionId, onClose }: Q
       questionUsecase
         .getQuestionById(questionId)
         .then(setQuestion)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setQuestion(null);
         })
         .finally(() => {

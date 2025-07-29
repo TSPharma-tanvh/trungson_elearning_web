@@ -112,9 +112,7 @@ export function QuestionCreateForm({
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
-            .catch((error: unknown) => {
-              const message = error instanceof Error ? error.message : 'An error has occurred.';
-              CustomSnackBar.showSnackbar(message, 'error');
+            .catch(() => {
               setPreviewUrl(null);
             });
         } else {
@@ -154,9 +152,8 @@ export function QuestionCreateForm({
 
       onSubmit(form);
       onClose();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }

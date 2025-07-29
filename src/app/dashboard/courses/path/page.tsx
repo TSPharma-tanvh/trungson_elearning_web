@@ -9,7 +9,6 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CoursePathDetailForm from '@/presentation/components/dashboard/courses/path/course-path-detail-form';
 import { CreateCoursePathDialog } from '@/presentation/components/dashboard/courses/path/create-path-form';
 import { PathFilters } from '@/presentation/components/dashboard/courses/path/path-filter';
@@ -35,9 +34,8 @@ export default function Page(): React.JSX.Element {
       const { path, totalRecords } = await pathUseCase.getPathListInfo(filters);
       setPaths(path);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   }, [filters, page, rowsPerPage, pathUseCase]);
 
@@ -64,9 +62,8 @@ export default function Page(): React.JSX.Element {
     try {
       await pathUseCase.updatePathInfo(request);
       await fetchPaths();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -80,9 +77,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchPaths();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }
@@ -93,9 +89,8 @@ export default function Page(): React.JSX.Element {
       await pathUseCase.createPath(request);
       setShowCreateDialog(false);
       await fetchPaths();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 

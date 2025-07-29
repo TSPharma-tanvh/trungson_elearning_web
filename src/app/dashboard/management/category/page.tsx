@@ -9,7 +9,6 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateCategoryDialog } from '@/presentation/components/dashboard/management/category/category-create-form';
 import { CategoryFilters } from '@/presentation/components/dashboard/management/category/category-filter';
 import CategoryTable from '@/presentation/components/dashboard/management/category/category-table';
@@ -38,11 +37,9 @@ export default function Page(): React.JSX.Element {
       const { categories, totalRecords } = await categoryUsecase.getCategoryList(request);
       setCategories(categories);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
-
+    } catch (error) {
       setCategories([]);
+      return undefined;
     }
   }, [filters, page, rowsPerPage, categoryUsecase]);
 
@@ -70,9 +67,8 @@ export default function Page(): React.JSX.Element {
       await categoryUsecase.createCategory(request);
       setShowCreateDialog(false);
       await fetchCategories();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -80,9 +76,8 @@ export default function Page(): React.JSX.Element {
     try {
       await categoryUsecase.updateCategory(request);
       await fetchCategories();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -96,9 +91,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchCategories();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

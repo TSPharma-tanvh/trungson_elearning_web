@@ -9,7 +9,6 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { QuestionCreateForm } from '@/presentation/components/dashboard/quiz/question/question-create-form';
 import { QuestionFilters } from '@/presentation/components/dashboard/quiz/question/question-filter';
 import QuestionTable from '@/presentation/components/dashboard/quiz/question/question-table';
@@ -38,10 +37,7 @@ export default function Page(): React.JSX.Element {
       const { questions: questionList, totalRecords } = await questionUsecase.getQuestionListInfo(request);
       setQuestions(questionList);
       setTotalCount(totalRecords);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
-
+    } catch (error) {
       setQuestions([]);
     }
   }, [filters, page, rowsPerPage, questionUsecase]);
@@ -70,9 +66,8 @@ export default function Page(): React.JSX.Element {
       await questionUsecase.createQuestion(request);
       setShowCreateDialog(false);
       await fetchQuestions();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -80,9 +75,8 @@ export default function Page(): React.JSX.Element {
     try {
       await questionUsecase.updateQuestion(request);
       await fetchQuestions();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     }
   };
 
@@ -96,9 +90,8 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchQuestions();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
+    } catch (error) {
+      return undefined;
     } finally {
       setDeleteLoading(false);
     }

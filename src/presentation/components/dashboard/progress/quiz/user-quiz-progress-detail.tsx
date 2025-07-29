@@ -24,7 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
 import { ViewUserDialog } from '../../management/users/view-user-detail-dialog';
@@ -240,9 +239,7 @@ export default function UserQuizProgressDetailForm({
       userQuizProgressUsecase
         .getUserQuizProgressById(userQuizProgressId)
         .then(setUserQuizProgress)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
+        .catch(() => {
           setUserQuizProgress(null);
         })
         .finally(() => {
