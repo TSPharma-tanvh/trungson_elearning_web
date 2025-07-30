@@ -31,6 +31,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
@@ -49,12 +50,13 @@ export function EmployeeSelectDialog({
   employeeUsecase,
   value,
   onChange,
-  label = 'Employees',
+  label = 'employee',
   disabled = false,
   pathID,
   ...selectProps
 }: EmployeeSelectDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -157,12 +159,12 @@ export function EmployeeSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="employee-select-label">{label}</InputLabel>
+        <InputLabel id="employee-select-label">{t(label)}</InputLabel>
         <Select
           labelId="employee-select-label"
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) => selectedEmployeeMap[selected]?.name || 'No Employee Selected'}
@@ -174,7 +176,7 @@ export function EmployeeSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Employee</Typography>
+            <Typography variant="h6">{t('searchEmployee')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -192,7 +194,7 @@ export function EmployeeSelectDialog({
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search employees..." />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -225,12 +227,12 @@ export function EmployeeSelectDialog({
             ))}
             {loadingEmployees ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('loading')}
               </Typography>
             ) : null}
             {!loadingEmployees && employees.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No employees found
+                {t('noEmployeeFound')}
               </Typography>
             )}
           </Box>
@@ -249,9 +251,9 @@ export function EmployeeSelectDialog({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained" disabled={!localValue}>
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

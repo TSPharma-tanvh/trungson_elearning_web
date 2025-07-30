@@ -1,23 +1,21 @@
-// // src/i18n.ts
-// import i18n from 'i18next';
-// import { initReactI18next } from 'react-i18next';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
-// import en from './locales/en.json';
-// import vi from './locales/vi.json'; // example Vietnamese
+import en from './locale/en.json';
+import vi from './locale/vi.json';
 
-// // Initialize only once
-// if (!i18n.isInitialized) {
-//   i18n.use(initReactI18next).init({
-//     fallbackLng: 'en',
-//     lng: 'en', // default; you can detect or store user preference
-//     resources: {
-//       en: { translation: en },
-//       vi: { translation: vi },
-//     },
-//     interpolation: {
-//       escapeValue: false,
-//     },
-//   });
-// }
+if (!i18n.isInitialized) {
+  void i18n.use(initReactI18next).init({
+    fallbackLng: 'vi',
+    lng: 'vi',
+    resources: {
+      en: { translation: en },
+      vi: { translation: vi },
+    },
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+}
 
-// export default i18n;
+export default i18n;

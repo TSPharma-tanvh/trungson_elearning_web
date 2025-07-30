@@ -1,8 +1,8 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { GetUserDevicesRequest } from '@/domain/models/user-devices/request/get-user-devices-request';
-import { UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
-import { UserDevicesRepository } from '@/domain/repositories/user/device-repository';
+import { type GetUserDevicesRequest } from '@/domain/models/user-devices/request/get-user-devices-request';
+import { type UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
+import { type UserDevicesRepository } from '@/domain/repositories/user/device-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
@@ -61,7 +61,7 @@ export class UserDevicesRepoImpl implements UserDevicesRepository {
 
   async updateUserDevices(request: UpdateUserDevicesRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.userDevices.update, request.toJSON);
+      const response = await apiClient.put<ApiResponse>(apiEndpoints.userDevices.update, request.toJSON());
 
       const apiResponse = response.data;
 

@@ -20,6 +20,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 
@@ -44,6 +45,7 @@ export default function RolesTable({
   onDeleteRoles,
   onEditRole,
 }: RoleTableProps) {
+  const { t } = useTranslation();
   const rowIds = React.useMemo(() => rows.map((row) => row.id ?? ''), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
@@ -153,7 +155,7 @@ export default function RolesTable({
               variant="outlined"
               onClick={handleDeleteSelected}
             >
-              Delete Selected ({selected.size})
+              {t('deleteSelectedItems')} ({selected.size})
             </Button>
           </Box>
         )}
@@ -188,10 +190,11 @@ export default function RolesTable({
                     }}
                   />
                 </TableCell>
-                <TableCell>Role Name</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Permissions</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell>{t('roleName')}</TableCell>
+                <TableCell>{t('description')}</TableCell>
+                <TableCell>{t('permissions')}</TableCell>
+
+                <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody
@@ -264,9 +267,10 @@ export default function RolesTable({
           rowsPerPage={rowsPerPage}
           onPageChange={onPageChange}
           onRowsPerPageChange={onRowsPerPageChange}
+          labelRowsPerPage={t('rowsPerPage')}
           labelDisplayedRows={() => {
             const totalPages = Math.ceil(count / rowsPerPage);
-            return `Page ${page + 1} of ${totalPages}`;
+            return t('paginationInfo', { currentPage: page + 1, totalPages });
           }}
           sx={{
             '& .MuiTablePagination-actions button': {
@@ -286,8 +290,8 @@ export default function RolesTable({
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={handleEditRow}>Edit</MenuItem>
-        <MenuItem onClick={handleDeleteRow}>Delete</MenuItem>
+        <MenuItem onClick={handleEditRow}>{t('edit')}</MenuItem>
+        <MenuItem onClick={handleDeleteRow}>{t('delete')}</MenuItem>
       </Menu>
 
       <ConfirmDeleteDialog

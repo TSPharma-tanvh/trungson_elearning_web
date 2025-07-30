@@ -2,9 +2,8 @@
 
 import * as React from 'react';
 import { GetUserDevicesRequest } from '@/domain/models/user-devices/request/get-user-devices-request';
-import { LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
@@ -13,6 +12,7 @@ export function UserDevicesFilters({
 }: {
   onFilter: (filters: GetUserDevicesRequest) => void;
 }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
 
   const handleFilter = () => {
@@ -42,13 +42,13 @@ export function UserDevicesFilters({
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search devices" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchDevices')} />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

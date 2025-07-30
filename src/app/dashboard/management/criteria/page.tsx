@@ -8,12 +8,14 @@ import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollmen
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CreateEnrollmentDialog } from '@/presentation/components/dashboard/management/enrollment/enrollment-create-form';
 import { EnrollmentFilters } from '@/presentation/components/dashboard/management/enrollment/enrollment-filter';
 import EnrollmentTable from '@/presentation/components/dashboard/management/enrollment/enrollment-table';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { enrollUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
@@ -103,7 +105,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Enrollment Criteria
+            {t('criteria')}
           </Typography>
         </Stack>
         <Button
@@ -113,7 +115,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          {t('add')}
         </Button>
       </Stack>
       <EnrollmentFilters onFilter={handleFilter} />

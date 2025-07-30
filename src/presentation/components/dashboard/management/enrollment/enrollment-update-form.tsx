@@ -20,7 +20,8 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, QrCode, Tag } from '@phosphor-icons/react';
+import { Article, Tag, UsersFour } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -35,6 +36,7 @@ interface EditEnrollmentDialogProps {
 
 export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, onSubmit }: EditEnrollmentDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { fileUsecase } = useDI();
 
@@ -72,7 +74,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
     try {
       const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
-        CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
+        CustomSnackBar.showSnackbar(t('someFieldsAreInvalid'), 'error');
         return;
       }
       onSubmit(formData);
@@ -91,9 +93,9 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
   };
 
   const statusOptions = [
-    { value: StatusEnum.Enable, label: 'Enable' },
-    { value: StatusEnum.Disable, label: 'Disable' },
-    { value: StatusEnum.Deleted, label: 'Deleted' },
+    { value: StatusEnum.Enable, label: 'enable' },
+    { value: StatusEnum.Disable, label: 'disable' },
+    { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
   if (!enrollment) return null;
@@ -102,7 +104,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update Enrollment
+          {t('updateEnrollment')}
         </Typography>
         <Box>
           <IconButton
@@ -127,7 +129,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
-                label="Name"
+                label={t('name')}
                 value={formData.name}
                 onChange={(value) => {
                   handleChange('name', value);
@@ -139,11 +141,13 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
 
             <Grid item xs={12}>
               <CustomTextField
-                label="Detail"
+                label={t('description')}
                 value={formData.desc}
                 onChange={(value) => {
                   handleChange('desc', value);
                 }}
+                multiline
+                rows={3}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
@@ -151,14 +155,14 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label="Minute Late"
+                label={t('maxCapacity')}
                 value={formData.maxCapacity?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
                   handleChange('maxCapacity', numericValue);
                 }}
                 disabled={isSubmitting}
-                icon={<QrCode {...iconStyle} />}
+                icon={<UsersFour {...iconStyle} />}
                 inputMode="numeric"
                 onValidationChange={(isValid) => {
                   setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
@@ -168,7 +172,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="Status"
+                label={t('enrollmentStatus')}
                 value={formData.enrollmentStatus ?? ''}
                 onChange={(value) => {
                   handleChange('enrollmentStatus', value);
@@ -199,7 +203,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -207,7 +211,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

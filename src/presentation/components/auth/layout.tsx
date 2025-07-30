@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 import { paths } from '@/paths';
 import { DynamicLogo } from '@/presentation/components/core/logo';
@@ -16,6 +17,7 @@ export interface LayoutProps {
 
 export function Layout({ children }: LayoutProps): React.JSX.Element {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -69,7 +71,7 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
             backgroundColor: 'rgba(0, 0, 0, 0.2)',
             borderRadius: 3,
             p: 4,
-            maxWidth: 600,
+            maxWidth: 620,
             width: '100%',
           }}
         >
@@ -85,13 +87,13 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
             }}
           />
           <Typography color="inherit" sx={{ fontSize: '24px', lineHeight: '32px', textAlign: 'center' }} variant="h1">
-            Welcome to{' '}
+            {t('welcomeTo')}{' '}
             <Box component="span" sx={{ color: theme.palette.primary.light }}>
               Trung Son Elearning
             </Box>
           </Typography>
           <Typography align="center" variant="subtitle1" color={theme.palette.warning.dark}>
-            Your gateway to professional growth at Trung Son Pharmacy.
+            {t('welcomeSlogan')}{' '}
           </Typography>
         </Stack>
       </Box>

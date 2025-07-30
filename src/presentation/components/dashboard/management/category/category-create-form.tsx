@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -27,6 +28,7 @@ export function CreateCategoryDialog({
   open,
   onClose,
 }: CategoryCreateProps) {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
 
@@ -73,7 +75,7 @@ export function CreateCategoryDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create Category
+          {t('createCategory')}
         </Typography>
         <Box>
           <IconButton
@@ -116,7 +118,7 @@ export function CreateCategoryDialog({
           >
             <Grid item xs={12}>
               <CustomTextField
-                label="Tên khóa học"
+                label={t('categoryName')}
                 value={form.categoryName}
                 onChange={(val) => {
                   handleChange('categoryName', val);
@@ -127,7 +129,7 @@ export function CreateCategoryDialog({
 
             <Grid item xs={12}>
               <CustomTextField
-                label="Chi tiết"
+                label={t('description')}
                 value={form.description ?? ''}
                 onChange={(val) => {
                   handleChange('description', val);
@@ -146,28 +148,28 @@ export function CreateCategoryDialog({
 
             <Grid item xs={12}>
               <CustomSelectDropDown<CategoryEnum>
-                label="Enrollment Criteria Type"
+                label={t('enrollmentCriteriaType')}
                 value={form.category ?? CategoryEnum.Path}
                 onChange={(val) => {
                   handleChange('category', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: CategoryEnum.Path, label: 'Lộ trình' },
-                  { value: CategoryEnum.Course, label: 'Khóa học' },
-                  { value: CategoryEnum.Lesson, label: 'Bài học' },
-                  { value: CategoryEnum.Class, label: 'Lớp học' },
-                  { value: CategoryEnum.Quiz, label: 'Bài kiểm tra' },
-                  { value: CategoryEnum.Question, label: 'Câu hỏi' },
-                  { value: CategoryEnum.Answer, label: 'Câu trả lời' },
-                  { value: CategoryEnum.Criteria, label: 'Tiêu chí' },
+                  { value: CategoryEnum.Path, label: 'path' },
+                  { value: CategoryEnum.Course, label: 'course' },
+                  { value: CategoryEnum.Lesson, label: 'lesson' },
+                  { value: CategoryEnum.Class, label: 'class' },
+                  { value: CategoryEnum.Quiz, label: 'quiz' },
+                  { value: CategoryEnum.Question, label: 'question' },
+                  { value: CategoryEnum.Answer, label: 'answer' },
+                  { value: CategoryEnum.Criteria, label: 'criteria' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12}>
               <CustomButton
-                label="Tạo mới"
+                label={t('create')}
                 onClick={() => {
                   onSubmit(form);
                 }}

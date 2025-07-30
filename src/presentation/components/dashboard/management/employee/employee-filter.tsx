@@ -4,11 +4,13 @@ import * as React from 'react';
 import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomDateTimeFilter } from '@/presentation/components/core/picker/custom-date-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function EmployeeFilters({ onFilter }: { onFilter: (filters: GetEmployeeRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [dateTime, setDateTime] = React.useState<Date | undefined>(undefined);
 
@@ -40,10 +42,10 @@ export function EmployeeFilters({ onFilter }: { onFilter: (filters: GetEmployeeR
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search employee" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchEmployee')} />
 
         <CustomDateTimeFilter
-          label="Start Time"
+          label={t('startTime')}
           value={dateTime ? dateTime.toISOString() : ''}
           onChange={(value) => {
             const parsedDate = DateTimeUtils.parseLocalDateTimeString(value);
@@ -54,10 +56,10 @@ export function EmployeeFilters({ onFilter }: { onFilter: (filters: GetEmployeeR
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

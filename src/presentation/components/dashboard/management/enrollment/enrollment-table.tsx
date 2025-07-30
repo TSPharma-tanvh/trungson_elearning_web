@@ -3,6 +3,7 @@ import { type UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment
 import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { MoreVert } from '@mui/icons-material';
 import { Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -31,6 +32,7 @@ export default function EnrollmentTable({
   onDeleteEnrollments,
   onEditEnrollment,
 }: EnrollmentTableProps) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editEnrollmentData, setEditEnrollmentData] = React.useState<EnrollmentCriteriaDetailResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
@@ -69,21 +71,21 @@ export default function EnrollmentTable({
         onDelete={onDeleteEnrollments}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditEnrollmentData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditEnrollmentData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -91,11 +93,11 @@ export default function EnrollmentTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>Name</TableCell>
-            <TableCell>Detail</TableCell>
-            <TableCell>Target Type</TableCell>
-            <TableCell>Max Capacity</TableCell>
-            <TableCell>Disable Status</TableCell>
+            <TableCell>{t('name')}</TableCell>
+            <TableCell>{t('detail')}</TableCell>
+            <TableCell>{t('targetType')}</TableCell>
+            <TableCell>{t('maxCapacity')}</TableCell>
+            <TableCell>{t('disableStatus')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (

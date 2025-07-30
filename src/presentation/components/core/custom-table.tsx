@@ -15,6 +15,7 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from './dialog/confirm-delete-dialog';
 
@@ -50,8 +51,9 @@ export function CustomTable<T>({
   onRowsPerPageChange,
   onDelete,
   actionMenuItems,
-  deleteConfirmHeaderTitle = 'Delete Selected',
+  deleteConfirmHeaderTitle = 'deleteSelectedItems',
 }: CustomTableProps<T>) {
+  const { t } = useTranslation();
   const rowIds = React.useMemo(() => rows.map(getRowId), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -132,7 +134,7 @@ export function CustomTable<T>({
                 handleOpenDeleteDialog(Array.from(selected));
               }}
             >
-              {deleteConfirmHeaderTitle} ({selected.size})
+              {t(deleteConfirmHeaderTitle)} ({selected.size})
             </Button>
           </Box>
         )}
@@ -168,7 +170,7 @@ export function CustomTable<T>({
                   />
                 </TableCell>
                 {renderHeader()}
-                <TableCell align="right">Actions</TableCell>
+                <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
 
@@ -216,7 +218,11 @@ export function CustomTable<T>({
             rowsPerPage={rowsPerPage}
             onPageChange={onPageChange}
             onRowsPerPageChange={onRowsPerPageChange}
-            labelDisplayedRows={() => `Page ${page + 1} of ${Math.ceil(count / rowsPerPage)}`}
+            labelRowsPerPage={t('rowsPerPage')}
+            labelDisplayedRows={() => {
+              const totalPages = Math.ceil(count / rowsPerPage);
+              return t('paginationInfo', { currentPage: page + 1, totalPages });
+            }}
             sx={{
               '& .MuiTablePagination-actions button': {
                 color: 'var(--mui-palette-primary-main)',

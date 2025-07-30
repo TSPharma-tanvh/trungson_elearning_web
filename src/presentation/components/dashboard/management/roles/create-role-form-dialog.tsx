@@ -21,6 +21,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
@@ -31,6 +32,7 @@ interface CreateRoleFormProps {
 }
 
 export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps): JSX.Element {
+  const { t } = useTranslation();
   const roleUseCase = useDI().roleUseCase;
 
   const [name, setName] = useState('');
@@ -94,12 +96,12 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Create Role</DialogTitle>
+        <DialogTitle>{t('createRole')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={2}>
             <TextField
               required
-              label="Role Name"
+              label={t('roleName')}
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -107,7 +109,7 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
               fullWidth
             />
             <TextField
-              label="Description"
+              label={t('description')}
               value={description}
               onChange={(e) => {
                 setDescription(e.target.value);
@@ -117,7 +119,7 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
               rows={3}
             />
             <FormControl fullWidth>
-              <InputLabel id="permission-select-label">Permissions</InputLabel>
+              <InputLabel id="permission-select-label">{t('permissions')}</InputLabel>
               <Select
                 labelId="permission-select-label"
                 multiple
@@ -125,12 +127,12 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
                 onChange={(e) => {
                   setSelectedPermissions(e.target.value as string[]);
                 }}
-                input={<OutlinedInput label="Permissions" />}
+                input={<OutlinedInput label={t('permissions')} />}
                 renderValue={(selected) => selected.join(', ')}
               >
                 {loading ? (
                   <MenuItem disabled>
-                    <CircularProgress size={20} /> Loading permissions...
+                    <CircularProgress size={20} /> {t('loading')}
                   </MenuItem>
                 ) : (
                   allPermissions.map((perm) => (
@@ -154,7 +156,7 @@ export function CreateRoleForm({ open, onClose, onCreated }: CreateRoleFormProps
               onClose();
             }}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             type="submit"

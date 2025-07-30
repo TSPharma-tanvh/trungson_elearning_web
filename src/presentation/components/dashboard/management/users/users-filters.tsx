@@ -21,8 +21,11 @@ import {
   Typography,
 } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
+import { useTranslation } from 'react-i18next';
 
 export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
+
   const [searchTerm, setSearchTerm] = React.useState('');
   const [roles, setRoles] = React.useState<string[]>([]);
 
@@ -78,7 +81,7 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
             setSearchTerm(e.target.value);
           }}
           fullWidth
-          placeholder="Search User"
+          placeholder={t('searchUser')}
           startAdornment={
             <InputAdornment position="start">
               <MagnifyingGlassIcon
@@ -99,7 +102,7 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
           size="small"
           fullWidth
         >
-          <InputLabel id="role-select-label">Roles</InputLabel>
+          <InputLabel id="role-select-label">{t('roles')}</InputLabel>
           <Select
             multiple
             labelId="role-select-label"
@@ -107,7 +110,7 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
             onChange={(e) => {
               setRoles(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value);
             }}
-            input={<OutlinedInput label="Roles" />}
+            input={<OutlinedInput label={t('roles')} />}
             renderValue={(selected) =>
               selected.length === 0 ? (
                 <Typography color="text.secondary">Select Roles</Typography>
@@ -171,7 +174,7 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
           onClick={handleFilter}
           sx={{ backgroundColor: 'var(--mui-palette-primary-main)', color: 'var(--mui-palette-common-white)' }}
         >
-          Filter
+          {t('filter')}
         </Button>
         <Button
           variant="outlined"
@@ -188,7 +191,7 @@ export function UsersFilters({ onFilter }: { onFilter: (filters: GetUserRequest)
             },
           }}
         >
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

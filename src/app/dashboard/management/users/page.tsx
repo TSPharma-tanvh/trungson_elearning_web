@@ -9,12 +9,15 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
+import { useTranslation } from 'react-i18next';
 
 import { AddUserDialog } from '@/presentation/components/dashboard/management/users/add-user-dialog';
 import { UsersFilters } from '@/presentation/components/dashboard/management/users/users-filters';
 import UsersTable from '@/presentation/components/dashboard/management/users/users-table';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
+
   const userUsecase = useDI().userUsecase;
   const [users, setUsers] = React.useState<UserResponse[]>([]);
   const [showForm, setShowForm] = React.useState(false);
@@ -80,7 +83,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ display: 'flex', flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Users
+            {t('users')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             {/* <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
@@ -102,7 +105,7 @@ export default function Page(): React.JSX.Element {
               setShowForm(true);
             }}
           >
-            Add
+            {t('add')}
           </Button>
         </div>
       </Stack>

@@ -20,6 +20,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -30,10 +31,11 @@ interface CategoryDetailFormProps {
 }
 
 function CategoryDetails({ category, fullScreen }: { category: CategoryDetailResponse; fullScreen: boolean }) {
+  const { t } = useTranslation();
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -48,14 +50,14 @@ function CategoryDetails({ category, fullScreen }: { category: CategoryDetailRes
         <Typography variant="h5">{category.categoryName ?? 'Unnamed Category'}</Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Category Information" />
+        <CardHeader title={t('categoryInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', category.id)}
-            {renderField('Name', category.categoryName)}
-            {renderField('Detail', category.description)}
-            {renderField('Category Type', category.category)}
-            {renderField('Thumbnail ID', category.thumbnail?.id)}
+            {renderField('id', category.id)}
+            {renderField('categoryName', category.categoryName)}
+            {renderField('detail', category.description)}
+            {renderField('categoryType', category.category)}
+            {renderField('thumbnailId', category.thumbnail?.id)}
           </Grid>
         </CardContent>
       </Card>
@@ -64,6 +66,8 @@ function CategoryDetails({ category, fullScreen }: { category: CategoryDetailRes
 }
 
 export default function CategoryDetailForm({ open, categoryId, onClose }: CategoryDetailFormProps) {
+  const { t } = useTranslation();
+
   const { categoryUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<CategoryDetailResponse | null>(null);
@@ -90,7 +94,7 @@ export default function CategoryDetailForm({ open, categoryId, onClose }: Catego
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Category Details
+          {t('categoryDetails')}
         </Typography>
         <Box>
           <IconButton

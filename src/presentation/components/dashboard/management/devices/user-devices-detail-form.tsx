@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { UserDeviceResponse } from '@/domain/models/user-devices/response/user-devices-response';
+import { type UserDeviceResponse } from '@/domain/models/user-devices/response/user-devices-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -15,7 +14,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -56,7 +54,7 @@ function UserDevicesDetails({ userDevice, fullScreen }: { userDevice: UserDevice
             {renderField('Email', u.email)}
             {renderField('Phone', u.phoneNumber)}
             {renderField('Employee ID', u.employeeId)}
-            {emp && renderField('Department', emp.currentDepartmentName)}
+            {emp ? renderField('Department', emp.currentDepartmentName) : null}
           </Grid>
         </CardContent>
       </Card>
@@ -65,14 +63,14 @@ function UserDevicesDetails({ userDevice, fullScreen }: { userDevice: UserDevice
 
   return (
     <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
-      {userDevice.user?.employee?.avatar && (
+      {userDevice.user?.employee?.avatar ? (
         <Box display="flex" alignItems="center" gap={2} mb={3}>
           <Avatar src={userDevice.user.employee.avatar} sx={{ width: 64, height: 64 }}>
             {userDevice.user.employee.name?.[0] ?? '?'}
           </Avatar>
           <Typography variant="h5">{userDevice.user.employee.name ?? userDevice.user.userName}</Typography>
         </Box>
-      )}
+      ) : null}
 
       <Card sx={{ mb: 2 }}>
         <CardHeader title="Device Info" />
@@ -116,8 +114,12 @@ export default function UserDevicesDetailForm({ open, userDevicesId, onClose }: 
       userDevicesUsecase
         .getUserDevicesById(userDevicesId)
         .then(setUserDevice)
-        .catch(() => setUserDevice(null))
-        .finally(() => setLoading(false));
+        .catch(() => {
+          setUserDevice(null);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [open, userDevicesId, userDevicesUsecase]);
 
@@ -128,7 +130,11 @@ export default function UserDevicesDetailForm({ open, userDevicesId, onClose }: 
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', pr: 1 }}>
         <Typography variant="h6">User Device Details</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((ps) => !ps)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((ps) => !ps);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>

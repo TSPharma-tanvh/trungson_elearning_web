@@ -1,10 +1,9 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { GetUserDevicesRequest } from '@/domain/models/user-devices/request/get-user-devices-request';
-import { UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
+import { type GetUserDevicesRequest } from '@/domain/models/user-devices/request/get-user-devices-request';
+import { type UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
 import { UserDeviceResponse } from '@/domain/models/user-devices/response/user-devices-response';
-import { UserDevicesResult } from '@/domain/models/user-devices/response/user-devices-result';
-import { UserDevicesRepository } from '@/domain/repositories/user/device-repository';
-import { ScheduleStatusEnum } from '@/utils/enum/core-enum';
+import { type UserDevicesResult } from '@/domain/models/user-devices/response/user-devices-result';
+import { type UserDevicesRepository } from '@/domain/repositories/user/device-repository';
 
 export class UserDevicesUsecase {
   constructor(private readonly UserDevicesRepo: UserDevicesRepository) {}

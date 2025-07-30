@@ -26,8 +26,8 @@ import {
   useTheme,
 } from '@mui/material';
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
-import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
@@ -41,6 +41,7 @@ interface EditCategoryDialogProps {
 
 export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubmit }: EditCategoryDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { fileUsecase } = useDI();
 
@@ -146,7 +147,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update Category
+          {t('updateCategory')}
         </Typography>
         <Box>
           <IconButton
@@ -165,13 +166,13 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {category?.id}
+            {t('id')}: {category?.id}
           </Typography>
 
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
-                label="Name"
+                label={t('name')}
                 value={formData.categoryName ?? ''}
                 onChange={(value) => {
                   handleChange('categoryName', value);
@@ -183,7 +184,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
 
             <Grid item xs={12}>
               <CustomTextField
-                label="Detail"
+                label={t('description')}
                 value={formData.description ?? 'z'}
                 onChange={(value) => {
                   handleChange('description', value);
@@ -193,7 +194,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <CustomSelectDropDown<CategoryEnum>
                 label="Enrollment Criteria Type"
                 value={formData.category ?? CategoryEnum.Path}
@@ -211,7 +212,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                   { value: CategoryEnum.Criteria, label: 'Tiêu chí' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <ToggleButtonGroup
@@ -224,10 +225,10 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                 sx={{ mb: 2 }}
               >
                 <ToggleButton value="select" aria-label="select from resources">
-                  Select from Resources
+                  {t('selectFromResources')}
                 </ToggleButton>
                 <ToggleButton value="upload" aria-label="upload file">
-                  Upload File
+                  {t('uploadFile')}
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
@@ -239,14 +240,14 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID ?? ''}
                   onChange={handleFileSelectChange}
-                  label="Thumbnail"
+                  label={t('thumbnail')}
                   disabled={isSubmitting}
                 />
               ) : (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Document No"
+                      label={t('thumbnailDocumentNo')}
                       value={formData.thumbDocumentNo ?? ''}
                       onChange={(value) => {
                         handleChange('thumbDocumentNo', value);
@@ -257,7 +258,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Prefix Name"
+                      label={t('thumbnailPrefixName')}
                       value={formData.thumbPrefixName ?? ''}
                       onChange={(value) => {
                         handleChange('thumbPrefixName', value);
@@ -274,7 +275,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                       disabled={isSubmitting}
                       startIcon={<ImageIcon {...iconStyle} />}
                     >
-                      Upload Thumbnail
+                      {t('uploadThumbnail')}
                       <input
                         type="file"
                         hidden
@@ -297,7 +298,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                           disabled={isSubmitting}
                         />
                       }
-                      label="Delete Old Thumbnail"
+                      label={t('deleteOldThumbnail')}
                     />
                   </Grid>
                   {previewUrl ? (
@@ -318,7 +319,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                       >
                         <img
                           src={previewUrl}
-                          alt="Thumbnail Preview"
+                          alt={t('thumbnailPreview')}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
@@ -349,7 +350,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -357,7 +358,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

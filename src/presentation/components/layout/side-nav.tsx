@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 import { CaretUp as CaretUpIcon } from '@phosphor-icons/react/dist/ssr/CaretUp';
+import { useTranslation } from 'react-i18next';
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
@@ -111,6 +112,7 @@ function renderNavItems({
   const children = items.reduce((acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
     const { key, items: subItems, title, icon } = curr;
     const Icon = icon ? navIcons[icon] : null;
+    const { t } = useTranslation();
 
     if (subItems) {
       // Parent menu -- parent menu
@@ -140,7 +142,7 @@ function renderNavItems({
                 component="span"
                 sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 600, lineHeight: '28px' }}
               >
-                {title}
+                {t(title ?? '')}
               </Typography>
             </Box>
             {expanded.includes(key) ? (
@@ -180,6 +182,7 @@ interface NavItemProps extends Omit<NavItemConfig, 'items' | 'key'> {
 }
 
 function NavItem({ disabled, external, href, icon, matcher, pathname, title }: NavItemProps): React.JSX.Element {
+  const { t } = useTranslation();
   const active = isNavItemActive({ disabled, external, href, matcher, pathname });
   const IconItem = icon ? navIcons[icon] : null;
 
@@ -227,7 +230,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
             component="span"
             sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}
           >
-            {title}
+            {t(title ?? '')}
           </Typography>
         </Box>
       </Box>

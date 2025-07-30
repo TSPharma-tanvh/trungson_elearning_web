@@ -1,4 +1,4 @@
-import { UserDeviceResponse } from './user-devices-response';
+import { type UserDeviceResponse } from './user-devices-response';
 
 export interface UserDevicesResult {
   devices: UserDeviceResponse[];

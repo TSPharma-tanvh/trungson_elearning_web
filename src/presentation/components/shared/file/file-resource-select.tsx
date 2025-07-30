@@ -32,6 +32,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import ImagePreviewDialog from './image-preview-dialog';
@@ -53,9 +54,10 @@ export function FileResourceSelect({
   status,
   value,
   onChange,
-  label = 'File Resource',
+  label = 'fileResource',
   disabled = false,
 }: FileResourceSelectProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileResourcesResponse | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -129,7 +131,7 @@ export function FileResourceSelect({
           }}
           input={
             <OutlinedInput
-              label={label}
+              label={t(label)}
               sx={{
                 pr: selectedFile?.resourceUrl ? 5 : undefined,
                 overflow: 'hidden',
@@ -165,7 +167,7 @@ export function FileResourceSelect({
           displayEmpty
         >
           <MenuItem value="" disabled>
-            {selectedFile?.name || 'No file selected'}
+            {selectedFile?.name || t('noFileSelected')}
           </MenuItem>
         </Select>
       </FormControl>
@@ -181,7 +183,8 @@ export function FileResourceSelect({
         fullScreen={fullscreen}
       >
         <DialogTitle>
-          Select File Resource
+          {t('selectFileResources')}
+
           <Box sx={{ position: 'absolute', right: 8, top: 8 }}>
             <IconButton
               onClick={() => {
@@ -201,7 +204,7 @@ export function FileResourceSelect({
         </DialogTitle>
 
         <DialogContent>
-          <CustomSearchInput placeholder="Search..." value={searchText} onChange={setSearchText} />
+          <CustomSearchInput placeholder={t('search')} value={searchText} onChange={setSearchText} />
           <List sx={{ overflow: 'auto' }} ref={listRef}>
             {files.map((file) => {
               const isImage = file.type?.startsWith('image/');
@@ -284,10 +287,10 @@ export function FileResourceSelect({
                 setOpen(false);
               }}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button onClick={handleConfirm} variant="contained">
-              Confirm
+              {t('confirm')}
             </Button>
           </Box>
         </DialogActions>

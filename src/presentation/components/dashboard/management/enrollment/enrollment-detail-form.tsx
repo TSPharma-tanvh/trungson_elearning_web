@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -21,6 +22,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -37,6 +39,7 @@ function EnrollmentDetails({
   enrollment: EnrollmentCriteriaDetailResponse;
   fullScreen: boolean;
 }) {
+  const { t } = useTranslation();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
   const toggleExpanded = (sectionId: string) => {
@@ -49,7 +52,7 @@ function EnrollmentDetails({
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -60,12 +63,19 @@ function EnrollmentDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Course Path" />
+        <CardHeader title={t('coursePath')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Path ID', enrollment.path.id)}
-            {renderField('Name', enrollment.path.name)}
-            {/* Add other fields from CoursePathResponse if available */}
+            {renderField('pathId', enrollment.path.id)}
+            {renderField('name', enrollment.path.name)}
+            {renderField('detail', enrollment.path.detail)}
+            {renderField('isRequired', enrollment.path.isRequired ? t('yes') : t('no'))}
+            {renderField('startTime', enrollment.path.startTime)}
+            {renderField('endTime', enrollment.path.endTime)}
+            {renderField('status', enrollment.path.status)}
+            {renderField('displayType', enrollment.path.displayType)}
+            {renderField('categoryId', enrollment.path.categoryID)}
+            {renderField('thumbnailId', enrollment.path.thumbnailID)}
           </Grid>
         </CardContent>
       </Card>
@@ -77,15 +87,15 @@ function EnrollmentDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Course" />
+        <CardHeader title={t('courses')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Course ID', enrollment.courses.id)}
-            {renderField('Name', enrollment.courses.name)}
-            {renderField('detail', enrollment.courses.detail)}
-            {renderField('isRequired', enrollment.courses.isRequired)}
-            {renderField('disableStatus', enrollment.courses.disableStatus)}
-            {renderField('scheduleStatus', enrollment.courses.scheduleStatus)}
+            {renderField('courseId', enrollment.courses?.id)}
+            {renderField('name', enrollment.courses?.name)}
+            {renderField('detail', enrollment.courses?.detail)}
+            {renderField('isRequired', enrollment.courses?.isRequired)}
+            {renderField('disableStatus', enrollment.courses?.disableStatus)}
+            {renderField('scheduleStatus', enrollment.courses?.scheduleStatus)}
           </Grid>
         </CardContent>
       </Card>
@@ -97,17 +107,25 @@ function EnrollmentDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Class" />
+        <CardHeader title={t('class')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Class ID', enrollment.class.id)}
-            {renderField('Name', enrollment.class.className)}
-            {renderField('classDetail', enrollment.class.classDetail)}
-            {renderField('qrCodeURL', enrollment.class.qrCodeURL)}
-            {/* {renderField('startAt', enrollment.class.startAt)}
-            {renderField('endAt', enrollment.class.endAt)} */}
-            {renderField('minuteLate', enrollment.class.minuteLate)}
-            {renderField('scheduleStatus', enrollment.class.scheduleStatus)}
+            {renderField('classId', enrollment.class?.id)}
+            {renderField('name', enrollment.class?.className)}
+            {renderField('classDetail', enrollment.class?.classDetail)}
+            {renderField('qrCodeURL', enrollment.class?.qrCodeURL)}
+            {renderField(
+              'startAt',
+              enrollment.class?.startAt !== undefined
+                ? DateTimeUtils.formatISODateFromDate(enrollment.class.startAt)
+                : ''
+            )}
+            {renderField(
+              'endAt',
+              enrollment.class?.endAt !== undefined ? DateTimeUtils.formatISODateFromDate(enrollment.class.endAt) : ''
+            )}
+            {renderField('minuteLate', enrollment.class?.minuteLate)}
+            {renderField('scheduleStatus', enrollment.class?.scheduleStatus)}
           </Grid>
         </CardContent>
       </Card>
@@ -119,24 +137,30 @@ function EnrollmentDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Quiz" />
+        <CardHeader title={t('quiz')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Quiz ID', enrollment.quiz.id)}
-            {renderField('Name', enrollment.quiz.title)}
-            {renderField('description', enrollment.quiz.description)}
-            {renderField('status', enrollment.quiz.status)}
-            {/* {renderField('startTime', enrollment.quiz.startTime)}
-            {renderField('endTime', enrollment.quiz.endTime)} */}
-            {renderField('totalScore', enrollment.quiz.totalScore)}
-            {renderField('canStartOver', enrollment.quiz.canStartOver)}
-            {renderField('isRequired', enrollment.quiz.isRequired)}
-            {renderField('isAutoSubmitted', enrollment.quiz.isAutoSubmitted)}
-            {renderField('type', enrollment.quiz.type)}
-            {renderField('time', enrollment.quiz.time)}
-            {renderField('scoreToPass', enrollment.quiz.scoreToPass)}
-            {renderField('totalQuestion', enrollment.quiz.totalQuestion)}
-            {renderField('maxAttempts', enrollment.quiz.maxAttempts)}
+            {renderField('quizId', enrollment.quiz?.id)}
+            {renderField('name', enrollment.quiz?.title)}
+            {renderField('description', enrollment.quiz?.description)}
+            {renderField('status', enrollment.quiz?.status)}
+            {renderField(
+              'startTime',
+              enrollment.quiz?.startTime ? DateTimeUtils.formatISODateFromDate(enrollment.quiz.startTime) : ''
+            )}
+            {renderField(
+              'endTime',
+              enrollment.quiz?.endTime ? DateTimeUtils.formatISODateFromDate(enrollment.quiz.endTime) : ''
+            )}
+            {renderField('totalScore', enrollment.quiz?.totalScore)}
+            {renderField('canStartOver', enrollment.quiz?.canStartOver)}
+            {renderField('isRequired', enrollment.quiz?.isRequired)}
+            {renderField('isAutoSubmitted', enrollment.quiz?.isAutoSubmitted)}
+            {renderField('type', enrollment.quiz?.type)}
+            {renderField('time', enrollment.quiz?.time)}
+            {renderField('scoreToPass', enrollment.quiz?.scoreToPass)}
+            {renderField('totalQuestion', enrollment.quiz?.totalQuestion)}
+            {renderField('maxAttempts', enrollment.quiz?.maxAttempts)}
           </Grid>
         </CardContent>
       </Card>
@@ -148,7 +172,7 @@ function EnrollmentDetails({
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Enrollments" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('enrollment')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {enrollment.enrollments.map((enroll, index) => {
           const enrollId = enroll.id ?? `enrollment-${index}`;
           const isExpanded = expandedSections[enrollId] || false;
@@ -162,7 +186,7 @@ function EnrollmentDetails({
               }}
             >
               <CardHeader
-                title={enroll.id ?? `Enrollment ${index + 1}`}
+                title={enroll.id ?? `${t('enrollment')} ${index + 1}`}
                 action={
                   <IconButton
                     onClick={() => {
@@ -185,7 +209,10 @@ function EnrollmentDetails({
                     {renderField('userID', enroll.userID)}
                     {renderField('targetType', enroll.targetType)}
                     {renderField('targetID', enroll.targetID)}
-                    {/* {renderField('enrollmentDate', enroll.enrollmentDate)} */}
+                    {renderField(
+                      'enrollmentDate',
+                      enroll.enrollmentDate ? DateTimeUtils.formatISODateFromDate(enroll.enrollmentDate) : ''
+                    )}
                     {renderField('status', enroll.status)}
                     {renderField('rejectedReason', enroll.rejectedReason)}
                   </Grid>
@@ -203,7 +230,7 @@ function EnrollmentDetails({
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Course Enrollments" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('courseEnrollments')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {enrollment.courseEnrollments.map((courseEnroll, index) => {
           const courseEnrollId = courseEnroll.id ?? `course-enrollment-${index}`;
           const isExpanded = expandedSections[courseEnrollId] || false;
@@ -217,7 +244,7 @@ function EnrollmentDetails({
               }}
             >
               <CardHeader
-                title={courseEnroll.course?.name ?? `Course Enrollment ${index + 1}`}
+                title={courseEnroll.course?.name ?? `${t('courseEnrollments')} ${index + 1}`}
                 action={
                   <IconButton
                     onClick={() => {
@@ -236,14 +263,27 @@ function EnrollmentDetails({
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', courseEnroll.id)}
-                    {renderField('Enrollment Criteria ID', courseEnroll.enrollmentCriteriaID)}
-                    {renderField('Course ID', courseEnroll.courseID)}
+                    {renderField('id', courseEnroll.id)}
+                    {renderField('enrollmentCriteriaId', courseEnroll.enrollmentCriteriaID)}
+                    {renderField('courseId', courseEnroll.courseID)}
                     {courseEnroll.course ? (
                       <>
-                        {renderField('Course Name', courseEnroll.course.name)}
-                        {renderField('Course ID', courseEnroll.course.id)}
-                        {/* Add other fields from CourseResponse if available */}
+                        {renderField('courseName', courseEnroll.course.name)}
+                        {renderField('courseId', courseEnroll.course.id)}
+                        {renderField('pathId', courseEnroll.course.pathId)}
+                        {renderField('detail', courseEnroll.course.detail)}
+                        {renderField('isRequired', courseEnroll.course.isRequired ? 'Yes' : 'No')}
+                        {renderField('disableStatus', courseEnroll.course.disableStatus)}
+                        {renderField('teacherId', courseEnroll.course.teacherId)}
+                        {renderField('courseType', courseEnroll.course.courseType)}
+                        {renderField('displayType', courseEnroll.course.displayType)}
+                        {renderField('startTime', courseEnroll.course.startTime)}
+                        {renderField('endTime', courseEnroll.course.endTime)}
+                        {renderField('meetingLink', courseEnroll.course.meetingLink)}
+                        {renderField('scheduleStatus', courseEnroll.course.scheduleStatus)}
+                        {renderField('enrollmentCriteriaId', courseEnroll.course.enrollmentCriteriaId)}
+                        {renderField('categoryId', courseEnroll.course.categoryId)}
+                        {renderField('thumbnailId', courseEnroll.course.thumbnailId)}
                       </>
                     ) : null}
                   </Grid>
@@ -259,24 +299,24 @@ function EnrollmentDetails({
   return (
     <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
       <Box display="flex" alignItems="center" gap={2} mb={3}>
-        <Typography variant="h5">{enrollment.name ?? 'Unnamed Enrollment Criteria'}</Typography>
+        <Typography variant="h5">{enrollment.name ?? ''}</Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Enrollment Criteria Information" />
+        <CardHeader title={t('enrollmentCriteriaInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', enrollment.id)}
-            {renderField('Name', enrollment.name)}
-            {renderField('Description', enrollment.desc)}
-            {renderField('Enrollment Criteria Type', enrollment.enrollmentCriteriaType)}
-            {renderField('Enrollment Status', enrollment.enrollmentStatus)}
-            {renderField('Max Capacity', enrollment.maxCapacity)}
-            {renderField('Target Level ID', enrollment.targetLevelID)}
-            {renderField('Path ID', enrollment.pathID)}
-            {renderField('Course ID', enrollment.courseID)}
-            {renderField('Class ID', enrollment.classID)}
-            {renderField('Quiz ID', enrollment.quizID)}
-            {renderField('Target Pharmacy ID', enrollment.targetPharmacyID)}
+            {renderField('id', enrollment.id)}
+            {renderField('name', enrollment.name)}
+            {renderField('desc', enrollment.desc)}
+            {renderField('enrollmentCriteriaType', enrollment.enrollmentCriteriaType)}
+            {renderField('enrollmentStatus', enrollment.enrollmentStatus)}
+            {renderField('maxCapacity', enrollment.maxCapacity)}
+            {renderField('targetLevelID', enrollment.targetLevelID)}
+            {renderField('pathID', enrollment.pathID)}
+            {renderField('courseID', enrollment.courseID)}
+            {renderField('classID', enrollment.classID)}
+            {renderField('quizID', enrollment.quizID)}
+            {renderField('targetPharmacyID', enrollment.targetPharmacyID)}
           </Grid>
         </CardContent>
       </Card>
@@ -291,6 +331,7 @@ function EnrollmentDetails({
 }
 
 export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: EnrollmentDetailProps) {
+  const { t } = useTranslation();
   const { enrollUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [enrollment, setEnrollment] = useState<EnrollmentCriteriaDetailResponse | null>(null);
@@ -316,7 +357,7 @@ export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: En
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Enrollment Criteria Details</Typography>
+        <Typography variant="h6">{t('enrollmentCriteriaDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

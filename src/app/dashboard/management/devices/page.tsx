@@ -2,17 +2,18 @@
 
 import React from 'react';
 import { GetUserDevicesRequest } from '@/domain/models/user-devices/request/get-user-devices-request';
-import { UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
-import { UserDeviceResponse } from '@/domain/models/user-devices/response/user-devices-response';
+import { type UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
+import { type UserDeviceResponse } from '@/domain/models/user-devices/response/user-devices-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { Stack, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { UserDevicesFilters } from '@/presentation/components/dashboard/management/devices/user-devices-filter';
 import UserDevicesTable from '@/presentation/components/dashboard/management/devices/user-devices-table';
 
 export default function Page(): React.JSX.Element {
   const { userDevicesUsecase } = useDI();
+  const { t } = useTranslation();
 
   const [filters, setFilters] = React.useState<GetUserDevicesRequest>(
     new GetUserDevicesRequest({ pageNumber: 1, pageSize: 10 })
@@ -90,7 +91,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            UserDevice
+            {t('userDevice')}
           </Typography>
         </Stack>
       </Stack>

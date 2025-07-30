@@ -38,7 +38,6 @@ import { UserCourseProgressRepoImpl } from './data/repositories/progress/user-co
 import { UserLessonProgressRepoImpl } from './data/repositories/progress/user-lesson-progress-repo-impl';
 import { UserQuizProgressRepoImpl } from './data/repositories/progress/user-quiz-progress-repo-impl';
 import { UserDevicesRepoImpl } from './data/repositories/user/user-devices-repo-impl';
-import { UserDeviceResponse } from './domain/models/user-devices/response/user-devices-response';
 import { AttendanceRecordsUsecase } from './domain/usecases/class/attendance-records-usecase';
 import { EmployeeUsecase } from './domain/usecases/employee/employee-usecase';
 import { UserCourseProgressUsecase } from './domain/usecases/progress/user-course-progress-usecase';

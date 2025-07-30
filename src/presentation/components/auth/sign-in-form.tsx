@@ -21,6 +21,7 @@ import Typography from '@mui/material/Typography';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z as zod } from 'zod';
 
 import { paths } from '@/paths';
@@ -36,6 +37,8 @@ const defaultValues = { email: 'admin', password: 'admin123' } satisfies Values;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
+  const { t } = useTranslation();
+
   const { signInUseCase, userUsecase } = useDI();
 
   const { checkSession } = useUser();
@@ -81,11 +84,11 @@ export function SignInForm(): React.JSX.Element {
   return (
     <Stack spacing={4}>
       <Stack spacing={1}>
-        <Typography variant="h4">Sign in</Typography>
+        <Typography variant="h4">{t('signIn')}</Typography>
         <Typography color="text.secondary" variant="body2">
-          Don&apos;t have an account?{' '}
+          {t('dontHaveAnAccount')}{' '}
           <Link component={RouterLink} href={paths.auth.signUp} underline="hover" variant="subtitle2">
-            Sign up
+            {t('signUp')}
           </Link>
         </Typography>
       </Stack>
@@ -96,8 +99,8 @@ export function SignInForm(): React.JSX.Element {
             name="email"
             render={({ field }) => (
               <FormControl>
-                <InputLabel>Email address</InputLabel>
-                <OutlinedInput {...field} label="Email address" />
+                <InputLabel> {t('email')}</InputLabel>
+                <OutlinedInput {...field} label={t('email')} />
                 {/* {errors.email ? <FormHelperText>{errors.email.message}</FormHelperText> : null} */}
               </FormControl>
             )}
@@ -107,7 +110,7 @@ export function SignInForm(): React.JSX.Element {
             name="password"
             render={({ field }) => (
               <FormControl error={Boolean(errors.password)}>
-                <InputLabel>Password</InputLabel>
+                <InputLabel>{t('password')}</InputLabel>
                 <OutlinedInput
                   {...field}
                   endAdornment={
@@ -129,7 +132,7 @@ export function SignInForm(): React.JSX.Element {
                       />
                     )
                   }
-                  label="Password"
+                  label={t('password')}
                   type={showPassword ? 'text' : 'password'}
                 />
                 {errors.password ? <FormHelperText>{errors.password.message}</FormHelperText> : null}
@@ -138,12 +141,12 @@ export function SignInForm(): React.JSX.Element {
           />
           <div>
             <Link component={RouterLink} href={paths.auth.resetPassword} variant="subtitle2">
-              Forgot password?
+              {t('forgotPassword')}
             </Link>
           </div>
           {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
           <Button disabled={isPending} type="submit" variant="contained">
-            Sign in
+            {t('signIn')}
           </Button>
         </Stack>
       </form>

@@ -20,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import { useTranslation } from 'react-i18next';
 
 interface ViewUserDetailProps {
   open: boolean;
@@ -28,40 +29,41 @@ interface ViewUserDetailProps {
 }
 
 export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
+  const { t } = useTranslation();
   const { userUsecase } = useDI();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
 
   const EMPLOYEE_FIELDS: { label: string; value: (e: EmployeeResponse) => unknown }[] = [
-    { label: 'Full Name', value: (e) => `${e.firstName ?? ''} ${e.lastName ?? ''}` },
-    { label: 'Title', value: (e) => e.title },
-    { label: 'Level', value: (e) => e.levelId },
-    { label: 'Level ID', value: (e) => e.levelId },
-    { label: 'Code', value: (e) => e.code },
-    { label: 'Gender', value: (e) => e.gender },
-    { label: 'Phone Number', value: (e) => e.homePhone },
-    { label: 'Email', value: (e) => e.mail },
-    { label: 'Bank', value: (e) => e.bank },
-    { label: 'Bank Number', value: (e) => e.bankNumber },
-    { label: 'Address', value: (e) => e.address },
-    { label: 'City', value: (e) => e.cityName ?? e.city },
-    { label: 'Region', value: (e) => e.region },
-    { label: 'Postal Code', value: (e) => e.postalCode },
-    { label: 'Country', value: (e) => e.country },
-    { label: 'District', value: (e) => e.districtName },
-    { label: 'Ward', value: (e) => e.wardName },
-    { label: 'Birthday', value: (e) => e.birthDay },
-    { label: 'Status', value: (e) => e.status },
-    { label: 'ASM', value: (e) => e.asm },
-    { label: 'Team Name', value: (e) => e.teamName },
-    { label: 'Team Code', value: (e) => e.teamCode },
-    { label: 'Employee Type', value: (e) => e.currentEmployeeTypeName },
-    { label: 'Department Name', value: (e) => e.currentDepartmentName },
-    { label: 'Department Type', value: (e) => e.currentDepartmentTypeName },
-    { label: 'Position Name', value: (e) => e.currentPositionName },
-    { label: 'Position State', value: (e) => e.currentPositionStateName },
-    { label: 'Created At', value: (e) => e.createdAt },
+    { label: 'fullName', value: (e) => `${e.firstName ?? ''} ${e.lastName ?? ''}` },
+    { label: 'title', value: (e) => e.title },
+    { label: 'level', value: (e) => e.levelId },
+    { label: 'levelId', value: (e) => e.levelId },
+    { label: 'code', value: (e) => e.code },
+    { label: 'gender', value: (e) => e.gender },
+    { label: 'phoneNumber', value: (e) => e.homePhone },
+    { label: 'email', value: (e) => e.mail },
+    { label: 'bank', value: (e) => e.bank },
+    { label: 'bankNumber', value: (e) => e.bankNumber },
+    { label: 'address', value: (e) => e.address },
+    { label: 'city', value: (e) => e.cityName ?? e.city },
+    { label: 'region', value: (e) => e.region },
+    { label: 'postalCode', value: (e) => e.postalCode },
+    { label: 'country', value: (e) => e.country },
+    { label: 'district', value: (e) => e.districtName },
+    { label: 'ward', value: (e) => e.wardName },
+    { label: 'birthday', value: (e) => e.birthDay },
+    { label: 'status', value: (e) => e.status },
+    { label: 'asm', value: (e) => e.asm },
+    { label: 'teamName', value: (e) => e.teamName },
+    { label: 'teamCode', value: (e) => e.teamCode },
+    { label: 'employeeType', value: (e) => e.currentEmployeeTypeName },
+    { label: 'departmentName', value: (e) => e.currentDepartmentName },
+    { label: 'departmentType', value: (e) => e.currentDepartmentTypeName },
+    { label: 'positionName', value: (e) => e.currentPositionName },
+    { label: 'positionState', value: (e) => e.currentPositionStateName },
+    { label: 'createdAt', value: (e) => e.createdAt },
   ];
 
   useEffect(() => {
@@ -91,7 +93,7 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
           pr: 1,
         }}
       >
-        <Typography variant="h6">User Details</Typography>
+        <Typography variant="h6">{t('userDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {
@@ -127,7 +129,7 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
             {/* Basic Info */}
             <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
-                User ID
+                {t('userId')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {user.id}
@@ -135,7 +137,7 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
             </Grid>
             <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
-                Username
+                {t('username')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {user.userName}
@@ -143,7 +145,7 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
             </Grid>
             <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
-                Phone Number
+                {t('phoneNumber')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {user.phoneNumber}
@@ -151,7 +153,7 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
             </Grid>
             <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
-                Email
+                {t('email')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {user.email}
@@ -159,17 +161,17 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
             </Grid>
             <Grid item xs={12} sm={fullScreen ? 4 : 6} md={fullScreen ? 3 : 4}>
               <Typography variant="subtitle2" fontWeight={500}>
-                Is Active
+                {t('isActive')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {user.isActive ? 'Yes' : 'No'}
+                {user.isActive ? t('yes') : t('no')}
               </Typography>
             </Grid>
 
             {/* Roles */}
             <Grid item xs={6}>
               <Typography variant="subtitle2" fontWeight={500}>
-                Roles
+                {t('roles')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {user.roles?.join(', ') || '-'}
@@ -179,7 +181,7 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
             {/* Role Permissions (Grouped) */}
             <Grid item xs={12}>
               <Typography variant="subtitle2" fontWeight={500}>
-                Role Permissions
+                {t('rolePermissions')}
               </Typography>
 
               {Object.entries(user.rolePermissions).map(([role, perms]) => {
@@ -225,7 +227,7 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
               <>
                 <Grid item xs={12}>
                   <Divider sx={{ my: 2 }} />
-                  <Typography variant="h6">Employee Info</Typography>
+                  <Typography variant="h6">{t('employeeInfo')}</Typography>
                 </Grid>
 
                 {EMPLOYEE_FIELDS.map(({ label, value }) => {
@@ -234,7 +236,7 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
                     <Grid item xs={12} sm={fullScreen ? 3 : 6} md={fullScreen ? 3 : 4} key={label}>
                       <Box>
                         <Typography variant="subtitle2" fontWeight={500} fontSize="0.85rem" noWrap>
-                          {label}
+                          {t(label)}
                         </Typography>
                         <Typography
                           variant="body2"

@@ -56,7 +56,7 @@ export class AttendanceRecordsUsecase {
   async deleteAttendanceRecords(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateAttendanceRecordsRequest({
       id: id ?? '',
-      status: CheckinTimeEnum.Absent,
+      status: CheckinTimeEnum[CheckinTimeEnum.Absent],
     });
     const result = await this.AttendanceRecordsRepo.updateAttendanceRecords(newFormData);
     return result;

@@ -12,8 +12,8 @@ export class GetUserDevicesRequest {
   lastAccessFrom?: Date;
   lastAccessTo?: Date;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetUserDevicesRequest>) {
     Object.assign(this, init);

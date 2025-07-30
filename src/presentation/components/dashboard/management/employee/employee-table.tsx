@@ -4,6 +4,7 @@ import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { CheckCircle, XCircle } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -29,6 +30,7 @@ export default function EmployeeTable({
   onRowsPerPageChange,
   onDeleteEmployees,
 }: EmployeeTableProps) {
+  const { t } = useTranslation();
   const [editEmployeeData, setEditEmployeeData] = React.useState<EmployeeResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
@@ -66,7 +68,7 @@ export default function EmployeeTable({
         onDelete={onDeleteEmployees}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditEmployeeData(row);
               setViewOpen(true);
@@ -74,7 +76,7 @@ export default function EmployeeTable({
           },
 
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -82,21 +84,21 @@ export default function EmployeeTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>Code</TableCell>
-            <TableCell>User ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Birthday</TableCell>
-            <TableCell>Hired day</TableCell>
-            <TableCell>Department</TableCell>
-            <TableCell>Department Type</TableCell>
-            <TableCell>Position</TableCell>
-            <TableCell>Position State</TableCell>
-            <TableCell>ASM</TableCell>
-            <TableCell>City</TableCell>
-            <TableCell>District</TableCell>
-            <TableCell>Ward</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell>{t('code')}</TableCell>
+            <TableCell>{t('userId')}</TableCell>
+            <TableCell>{t('name')}</TableCell>
+            <TableCell>{t('gender')}</TableCell>
+            <TableCell>{t('birthday')}</TableCell>
+            <TableCell>{t('hireDate')}</TableCell>
+            <TableCell>{t('department')}</TableCell>
+            <TableCell>{t('departmentType')}</TableCell>
+            <TableCell>{t('position')}</TableCell>
+            <TableCell>{t('positionState')}</TableCell>
+            <TableCell>{t('asm')}</TableCell>
+            <TableCell>{t('city')}</TableCell>
+            <TableCell>{t('district')}</TableCell>
+            <TableCell>{t('ward')}</TableCell>
+            <TableCell>{t('status')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (

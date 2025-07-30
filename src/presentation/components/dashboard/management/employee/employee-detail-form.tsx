@@ -21,6 +21,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
@@ -40,6 +41,7 @@ function EmployeeDetails({
   fullScreen: boolean;
   onAvatarClick: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
       <Box display="flex" alignItems="center" gap={2} mb={3}>
@@ -50,7 +52,7 @@ function EmployeeDetails({
         <Typography variant="h5">{employee.name ?? 'Unnamed Employee'}</Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Employee Information" />
+        <CardHeader title={t('employeeInformation')} />
         <CardContent>
           <Grid container spacing={2}>
             {Object.entries(employee).map(([key, value], index) => {
@@ -64,22 +66,13 @@ function EmployeeDetails({
               }
 
               if (typeof value === 'boolean') {
-                displayValue = value ? 'Yes' : 'No';
+                displayValue = value ? t('yes') : t('no');
               }
-
-              // const label = key
-              //   .replace(/(?:^|[^a-zA-Z])([A-Z])/g, (_, group) => ` ${group}`)
-              //   .replace(/^./, (str) => str.toUpperCase());
-
-              const label = key
-                // eslint-disable-next-line prefer-named-capture-group -- Using unnamed capture group for backward compatibility with older RegExp usage
-                .replace(/(?:^|[^a-zA-Z])([A-Z])/g, (_, group) => ` ${group}`)
-                .replace(/^./, (str) => str.toUpperCase());
 
               return (
                 <Grid item xs={12} sm={fullScreen ? 3 : 4} key={index}>
                   <Typography variant="subtitle2" fontWeight={500}>
-                    {label}
+                    {t(key)}
                   </Typography>
                   <CustomFieldTypography value={displayValue} />
                 </Grid>
@@ -93,6 +86,7 @@ function EmployeeDetails({
 }
 
 export default function EmployeeDetailForm({ open, employeeId, onClose }: EmployeeDetailProps) {
+  const { t } = useTranslation();
   const { employeeUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [employee, setEmployee] = useState<EmployeeResponse | null>(null);
@@ -124,7 +118,7 @@ export default function EmployeeDetailForm({ open, employeeId, onClose }: Employ
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Employee Details</Typography>
+        <Typography variant="h6">{t('employeeDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

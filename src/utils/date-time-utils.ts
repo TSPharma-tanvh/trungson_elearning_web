@@ -1,4 +1,3 @@
- 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
@@ -6,7 +5,7 @@ dayjs.extend(utc);
 
 export const DateTimeUtils = {
   formatISODateFromString(isoString: string): string {
-    return isoString ? dayjs.utc(isoString).format('DD/MM/YYYY hh:mm A') : '';
+    return isoString ? dayjs(isoString).format('DD/MM/YYYY hh:mm A') : '';
   },
 
   formatISODateFromDate(input?: Date): string {

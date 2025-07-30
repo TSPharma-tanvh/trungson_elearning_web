@@ -5,6 +5,7 @@ import { GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request
 import { CategoryEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
 import { StatusEnum } from '@/utils/enum/path-enum';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -14,6 +15,7 @@ export function EnrollmentFilters({
 }: {
   onFilter: (filters: GetEnrollmentCriteriaRequest) => void;
 }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
   const [targetType, setTargetType] = React.useState<CategoryEnum | undefined>(undefined);
@@ -48,11 +50,11 @@ export function EnrollmentFilters({
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search enrollment" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchEnrollment')} />
 
         {/* Status */}
         <CustomSelectFilter<StatusEnum>
-          label="Status"
+          label={t('status')}
           value={status}
           onChange={(val) => {
             setStatus(val);
@@ -62,7 +64,7 @@ export function EnrollmentFilters({
 
         {/* Display Type */}
         <CustomSelectFilter<CategoryEnum>
-          label="Display Type"
+          label={t('displayType')}
           value={targetType}
           onChange={(val) => {
             setTargetType(val);
@@ -71,10 +73,10 @@ export function EnrollmentFilters({
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

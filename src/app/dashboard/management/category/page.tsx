@@ -8,12 +8,14 @@ import { type CategoryDetailResponse } from '@/domain/models/category/response/c
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CreateCategoryDialog } from '@/presentation/components/dashboard/management/category/category-create-form';
 import { CategoryFilters } from '@/presentation/components/dashboard/management/category/category-filter';
 import CategoryTable from '@/presentation/components/dashboard/management/category/category-table';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { categoryUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
@@ -103,7 +105,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Category
+            {t('category')}
           </Typography>
         </Stack>
         <Button
@@ -113,7 +115,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          {t('add')}
         </Button>
       </Stack>
       <CategoryFilters onFilter={handleFilter} />

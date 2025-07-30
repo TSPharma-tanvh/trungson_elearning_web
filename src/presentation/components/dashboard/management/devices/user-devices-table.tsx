@@ -1,9 +1,10 @@
 import React from 'react';
-import { UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
-import { UserDeviceResponse } from '@/domain/models/user-devices/response/user-devices-response';
+import { type UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
+import { type UserDeviceResponse } from '@/domain/models/user-devices/response/user-devices-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -28,10 +29,9 @@ export default function UserDevicesTable({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteUserDevices: onDeleteUserDevicess,
-  onEditUserDevices,
+  onDeleteUserDevices,
 }: UserDevicesTableProps) {
-  const [editOpen, setEditOpen] = React.useState(false);
+  const { t } = useTranslation();
   const [editUserDevicesData, setEditUserDevicesData] = React.useState<UserDeviceResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
@@ -45,7 +45,7 @@ export default function UserDevicesTable({
 
   const handleConfirmDelete = async () => {
     if (pendingDeleteId) {
-      await onDeleteUserDevicess([pendingDeleteId]);
+      await onDeleteUserDevices([pendingDeleteId]);
       setPendingDeleteId(null);
     }
     setDialogOpen(false);
@@ -66,10 +66,10 @@ export default function UserDevicesTable({
         getRowId={(row) => row.id}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
-        onDelete={onDeleteUserDevicess}
+        onDelete={onDeleteUserDevices}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditUserDevicesData(row);
               setViewOpen(true);
@@ -83,7 +83,7 @@ export default function UserDevicesTable({
           //     },
           //   },
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -91,16 +91,15 @@ export default function UserDevicesTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>User Name</TableCell>
-            <TableCell>deviceName</TableCell>
-            <TableCell>deviceType</TableCell>
-            <TableCell>deviceID</TableCell>
-            <TableCell>deviceToken</TableCell>
-            <TableCell>ipAddress</TableCell>
-            <TableCell>signInAt</TableCell>
-            <TableCell>signOutAt</TableCell>
-            <TableCell>lastAccess</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell>{t('userName')}</TableCell>
+            <TableCell>{t('deviceName')}</TableCell>
+            <TableCell>{t('deviceType')}</TableCell>
+            <TableCell>{t('deviceID')}</TableCell>
+            <TableCell>{t('deviceToken')}</TableCell>
+            <TableCell>{t('ipAddress')}</TableCell>
+            <TableCell>{t('signInAt')}</TableCell>
+            <TableCell>{t('signOutAt')}</TableCell>
+            <TableCell>{t('lastAccess')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -121,7 +120,6 @@ export default function UserDevicesTable({
             <TableCell>{row.deviceType}</TableCell>
             <TableCell>{row.deviceID}</TableCell>
             <TableCell>{row.deviceToken}</TableCell>
-            <TableCell>{row.ipAddress}</TableCell>
             <TableCell>{row.ipAddress}</TableCell>
             <TableCell>{DateTimeUtils.formatISODateFromDate(row.signInAt)}</TableCell>
             <TableCell>{DateTimeUtils.formatISODateFromDate(row.signOutAt)}</TableCell>

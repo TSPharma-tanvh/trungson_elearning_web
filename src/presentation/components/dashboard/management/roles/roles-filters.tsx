@@ -4,8 +4,10 @@ import * as React from 'react';
 import { GetRoleRequest } from '@/domain/models/role/request/get-role-request';
 import { Button, Card, InputAdornment, OutlinedInput, Stack } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
+import { useTranslation } from 'react-i18next';
 
 export function RolesFilters({ onFilter }: { onFilter: (filters: GetRoleRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
   const [name, setName] = React.useState('');
   const [_roles, setRoles] = React.useState<string[]>([]);
 
@@ -42,7 +44,7 @@ export function RolesFilters({ onFilter }: { onFilter: (filters: GetRoleRequest)
             setName(e.target.value);
           }}
           fullWidth
-          placeholder="Search Name"
+          placeholder={t('searchRoles')}
           startAdornment={
             <InputAdornment position="start">
               <MagnifyingGlassIcon
@@ -65,7 +67,7 @@ export function RolesFilters({ onFilter }: { onFilter: (filters: GetRoleRequest)
             size="small"
             onClick={handleFilter}
           >
-            Filter
+            {t('filter')}
           </Button>
           <Button
             variant="outlined"
@@ -81,7 +83,7 @@ export function RolesFilters({ onFilter }: { onFilter: (filters: GetRoleRequest)
             size="small"
             onClick={handleClear}
           >
-            Clear
+            {t('clear')}
           </Button>
         </Stack>
       </Stack>

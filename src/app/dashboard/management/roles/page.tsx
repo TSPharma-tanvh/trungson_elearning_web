@@ -7,12 +7,14 @@ import { type RoleResponse } from '@/domain/models/role/response/role-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { RolesFilters } from '@/presentation/components/dashboard/management/roles/roles-filters';
 import RolesTable from '@/presentation/components/dashboard/management/roles/roles-table';
 import { RoleForm } from '@/presentation/components/dashboard/management/roles/update-role-form-dialog';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const roleUseCase = useDI().roleUseCase;
 
   const [filters, setFilters] = useState<GetRoleRequest>(new GetRoleRequest({ pageNumber: 1, pageSize: 10 }));
@@ -75,7 +77,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ display: 'flex', flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Roles
+            {t('roles')}
           </Typography>
         </Stack>
         <div>
@@ -87,7 +89,7 @@ export default function Page(): React.JSX.Element {
               setShowForm(true);
             }}
           >
-            Add
+            {t('add')}
           </Button>
         </div>
       </Stack>

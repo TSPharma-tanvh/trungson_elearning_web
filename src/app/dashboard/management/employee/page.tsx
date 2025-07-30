@@ -7,11 +7,13 @@ import { type EmployeeResponse } from '@/domain/models/employee/response/employe
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { ArrowsClockwise } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { EmployeeFilters } from '@/presentation/components/dashboard/management/employee/employee-filter';
 import EmployeeTable from '@/presentation/components/dashboard/management/employee/employee-table';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { employeeUsecase } = useDI();
 
   const [_showCreateDialog, setShowCreateDialog] = React.useState(false);
@@ -101,7 +103,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Employee
+            {t('employee')}
           </Typography>
         </Stack>
         <Button
@@ -115,7 +117,7 @@ export default function Page(): React.JSX.Element {
             void syncFromHrm(request);
           }}
         >
-          Sync From HRM
+          {t('syncFromHRM')}
         </Button>
       </Stack>
       <EmployeeFilters onFilter={handleFilter} />

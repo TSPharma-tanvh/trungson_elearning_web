@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface CustomFormControlSelectProps<T extends string | number> {
   label: string;
@@ -18,6 +19,7 @@ export function CustomSelectDropDown<T extends string | number>({
   disabled = false,
   options,
 }: CustomFormControlSelectProps<T>) {
+  const { t } = useTranslation();
   const [internalValue, setInternalValue] = useState<T | ''>(value);
 
   useEffect(() => {
@@ -32,9 +34,9 @@ export function CustomSelectDropDown<T extends string | number>({
 
   return (
     <FormControl fullWidth disabled={disabled}>
-      <InputLabel shrink>{label}</InputLabel>
+      <InputLabel shrink>{t(label)}</InputLabel>
       <Select
-        label={label}
+        label={t(label)}
         value={internalValue}
         onChange={handleChange}
         displayEmpty
@@ -48,7 +50,7 @@ export function CustomSelectDropDown<T extends string | number>({
       >
         {options.map((option) => (
           <MenuItem key={String(option.value)} value={option.value}>
-            {option.label}
+            {t(option.label)}
           </MenuItem>
         ))}
       </Select>

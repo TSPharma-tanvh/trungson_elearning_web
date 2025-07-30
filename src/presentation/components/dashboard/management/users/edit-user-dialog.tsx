@@ -42,6 +42,7 @@ import {
   Person,
   Phone,
 } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { EmployeeSelectDialog } from '@/presentation/components/shared/management/employee/employee-select';
 
@@ -56,6 +57,7 @@ interface EditUserDialogProps {
 
 export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [formData, setFormData] = useState<UpdateUserInfoRequest>(new UpdateUserInfoRequest());
@@ -148,7 +150,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
           pr: 1,
         }}
       >
-        <Typography variant="h6">User Details</Typography>
+        <Typography variant="h6">{t('userDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {
@@ -165,13 +167,13 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {user?.id ?? ''}
+            {t('userId')}: {user?.id ?? ''}
           </Typography>
 
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                label="User Name"
+                label={t('userName')}
                 value={formData.userName || ''}
                 onChange={(e) => {
                   handleChange('userName', e.target.value);
@@ -191,7 +193,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
             <Grid item xs={12} sm={6}>
               <TextField
-                label="First Name"
+                label={t('firstName')}
                 value={formData.firstName || ''}
                 onChange={(e) => {
                   handleChange('firstName', e.target.value);
@@ -211,7 +213,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Last Name"
+                label={t('lastName')}
                 value={formData.lastName || ''}
                 onChange={(e) => {
                   handleChange('lastName', e.target.value);
@@ -242,7 +244,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth disabled={isSubmitting}>
-                <InputLabel id="edit-role-select-label">Roles</InputLabel>
+                <InputLabel id="edit-role-select-label">{t('roles')}</InputLabel>
                 <Select
                   multiple
                   labelId="edit-role-select-label"
@@ -253,7 +255,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   input={<OutlinedInput label="Roles" />}
                   renderValue={(selected) =>
                     selected.length === 0
-                      ? 'Select Roles'
+                      ? t('selectRole')
                       : roleOptions
                           .filter((opt) => selected.includes(opt.value))
                           .map((opt) => opt.label)
@@ -304,7 +306,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
             <Grid item xs={12} sm={12}>
               <TextField
-                label="Phone Number"
+                label={t('phoneNumber')}
                 value={formData.phoneNumber || ''}
                 onChange={(e) => {
                   handleChange('phoneNumber', e.target.value);
@@ -324,7 +326,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
             <Grid item xs={12} sm={12}>
               <TextField
-                label="Email"
+                label={t('email')}
                 value={formData.email || ''}
                 onChange={(e) => {
                   handleChange('email', e.target.value);
@@ -344,7 +346,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
             <Grid item xs={12} sm={12}>
               <TextField
-                label="Password"
+                label={t('password')}
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password || ''}
                 onChange={(e) => {
@@ -377,7 +379,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
 
             <Grid item xs={12} sm={12}>
               <TextField
-                label="Confirm Password"
+                label={t('confirmPassword')}
                 type={showPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => {
@@ -388,7 +390,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 error={Boolean(formData.password) && Boolean(confirmPassword) && formData.password !== confirmPassword}
                 helperText={
                   formData.password && confirmPassword && formData.password !== confirmPassword
-                    ? 'Passwords do not match'
+                    ? t('passwordDoNotMatch')
                     : ''
                 }
                 InputLabelProps={{ shrink: true }}
@@ -425,7 +427,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                     disabled={isSubmitting}
                   />
                 }
-                label="Is Active"
+                label={t('isActive')}
               />
             </Grid>
 
@@ -437,7 +439,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                 disabled={isSubmitting}
                 startIcon={<ImageIcon {...iconStyle} />}
               >
-                Upload Thumbnail
+                {t('uploadThumbnail')}
                 <input
                   type="file"
                   hidden
@@ -495,7 +497,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -503,7 +505,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

@@ -3,6 +3,7 @@ import { type UpdateCategoryRequest } from '@/domain/models/category/request/upd
 import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -31,6 +32,7 @@ export default function CategoryTable({
   onDeleteCategories,
   onEditCategory,
 }: CategoryTableProps) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editCategoryData, setEditCategoryData] = React.useState<CategoryDetailResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
@@ -69,21 +71,21 @@ export default function CategoryTable({
         onDelete={onDeleteCategories}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditCategoryData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditCategoryData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -91,9 +93,9 @@ export default function CategoryTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>Name</TableCell>
-            <TableCell>Detail</TableCell>
-            <TableCell>Type</TableCell>
+            <TableCell>{t('name')}</TableCell>
+            <TableCell>{t('detail')}</TableCell>
+            <TableCell>{t('type')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (

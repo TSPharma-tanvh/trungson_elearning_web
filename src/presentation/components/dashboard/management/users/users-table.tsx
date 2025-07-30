@@ -23,6 +23,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 import { EditUserDialog } from './edit-user-dialog';
@@ -49,6 +50,8 @@ export default function UsersTable({
   onDeleteUsers,
   onUpdateUser,
 }: UserTableProps) {
+  const { t } = useTranslation();
+
   const rowIds = React.useMemo(() => rows.map((row) => row.id), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -144,7 +147,7 @@ export default function UsersTable({
                 setDeleteConfirmOpen(true);
               }}
             >
-              Delete Selected ({selected.size})
+              {t('deleteSelectedItems')} ({selected.size})
             </Button>
           </Box>
         )}
@@ -180,13 +183,13 @@ export default function UsersTable({
                     }}
                   />
                 </TableCell>
-                <TableCell>ID</TableCell>
-                <TableCell>User</TableCell>
-                <TableCell>Employee Name</TableCell>
-                <TableCell>Phone Number</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Roles</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell>{t('id')}</TableCell>
+                <TableCell>{t('user')}</TableCell>
+                <TableCell>{t('employeeName')}</TableCell>
+                <TableCell>{t('phoneNumber')}</TableCell>
+                <TableCell>{t('email')}</TableCell>
+                <TableCell>{t('roles')}</TableCell>
+                <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody
@@ -211,11 +214,12 @@ export default function UsersTable({
                     <TableCell sx={{ width: '10%' }}>{row.id}</TableCell>
                     <TableCell sx={{ width: '25%' }}>
                       <Stack direction="row" alignItems="center" spacing={2}>
-                        <Avatar src={row.thumbnail?.resourceUrl}>{row.firstName?.[0]}</Avatar>
+                        <Avatar src={row.thumbnail?.resourceUrl ?? row.employee?.avatar}>{row.firstName?.[0]}</Avatar>
                         <Box>
                           <Typography variant="subtitle2" noWrap>
-                            {row.firstName} {row.lastName}
+                            {row.employee?.name ?? `${row.firstName} ${row.lastName}`}
                           </Typography>
+
                           <Typography variant="body2" color="text.secondary" noWrap>
                             {row.userName}
                           </Typography>
@@ -249,9 +253,10 @@ export default function UsersTable({
             rowsPerPage={rowsPerPage}
             onPageChange={onPageChange}
             onRowsPerPageChange={onRowsPerPageChange}
+            labelRowsPerPage={t('rowsPerPage')}
             labelDisplayedRows={() => {
               const totalPages = Math.ceil(count / rowsPerPage);
-              return `Page ${page + 1} of ${totalPages}`;
+              return t('paginationInfo', { currentPage: page + 1, totalPages });
             }}
             sx={{
               '& .MuiTablePagination-actions button': {
@@ -279,16 +284,16 @@ export default function UsersTable({
             handleMenuClose();
           }}
         >
-          View Details
+          {t('viewDetails')}
         </MenuItem>
-        <MenuItem onClick={handleEditClick}>Edit</MenuItem>
+        <MenuItem onClick={handleEditClick}> {t('edit')}</MenuItem>
         <MenuItem
           onClick={() => {
             handleDeleteOneUser(selectedUser?.id ?? '');
             handleMenuClose();
           }}
         >
-          Delete
+          {t('delete')}
         </MenuItem>
       </Popover>
 

@@ -4,11 +4,13 @@ import * as React from 'react';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
 import { CategoryEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [categoryValue, setCategoryValue] = React.useState<CategoryEnum | undefined>(undefined);
 
@@ -40,11 +42,11 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search course" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchCategory')} />
 
         {/* Status */}
         <CustomSelectFilter<CategoryEnum>
-          label="Category"
+          label={t('category')}
           value={categoryValue}
           onChange={(val) => {
             setCategoryValue(val);

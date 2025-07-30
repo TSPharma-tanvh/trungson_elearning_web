@@ -1,6 +1,6 @@
 'use client';
 
-import React, { type JSX, useEffect, useState } from 'react';
+import React, { useEffect, useState, type JSX } from 'react';
 import { CreateRoleRequest } from '@/domain/models/role/request/create-role-request';
 import { UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
 import { type PermissionResponse } from '@/domain/models/role/response/permission-reponse';
@@ -23,6 +23,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
@@ -34,6 +35,8 @@ interface RoleFormProps {
 }
 
 export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormProps): JSX.Element {
+  const { t } = useTranslation();
+
   const roleUseCase = useDI().roleUseCase;
 
   const [name, setName] = useState('');
@@ -111,12 +114,12 @@ export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormPr
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <form onSubmit={handleSubmit}>
-        <DialogTitle>{isUpdateMode ? 'Update Role' : 'Create Role'}</DialogTitle>
+        <DialogTitle>{isUpdateMode ? t('updateRole') : t('createRole')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={2}>
             <TextField
               required
-              label="Role Name"
+              label={t('roleName')}
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -124,7 +127,7 @@ export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormPr
               fullWidth
             />
             <TextField
-              label="Description"
+              label={t('description')}
               value={description}
               onChange={(e) => {
                 setDescription(e.target.value);
@@ -134,7 +137,7 @@ export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormPr
               rows={3}
             />
             <FormControl fullWidth>
-              <InputLabel id="permission-select-label">Permissions</InputLabel>
+              <InputLabel id="permission-select-label">{t('permissions')}</InputLabel>
               <Select
                 labelId="permission-select-label"
                 multiple
@@ -147,7 +150,7 @@ export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormPr
               >
                 {loading ? (
                   <MenuItem disabled>
-                    <CircularProgress size={20} /> Loading permissions...
+                    <CircularProgress size={20} /> {t('permissions')}
                   </MenuItem>
                 ) : (
                   allPermissions.map((perm) => (
@@ -171,14 +174,14 @@ export function RoleForm({ open, onClose, onCreatedOrUpdated, role }: RoleFormPr
               onClose();
             }}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             type="submit"
             variant="contained"
             disabled={submitting || loading || !name || selectedPermissions.length === 0}
           >
-            {submitting ? <CircularProgress size={20} /> : isUpdateMode ? 'Update' : 'Create'}
+            {submitting ? <CircularProgress size={20} /> : isUpdateMode ? t('update') : t('create')}
           </Button>
         </DialogActions>
       </form>
