@@ -5,7 +5,7 @@ import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollmen
 import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
 import { useEnrollmentSelectLoader } from '@/presentation/hooks/enrollment/use-enrollment-select-loader';
 import { StatusEnum, StatusEnumUtils, type CategoryEnum } from '@/utils/enum/core-enum';
-import { Tag } from '@mui/icons-material';
+import { InfoOutlined, Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -30,8 +30,10 @@ import {
   type SelectChangeEvent,
   type SelectProps,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
+import EnrollmentDetailForm from '../../dashboard/management/enrollment/enrollment-detail-form';
 
 interface EnrollmentSelectProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   enrollmentUsecase: EnrollmentUsecase;
@@ -45,12 +47,14 @@ export function EnrollmentMultiSelect({
   enrollmentUsecase,
   value,
   onChange,
-  label = 'Enrollment Criteria',
+  label = 'enrollmentCriteria',
   disabled = false,
   categoryEnum,
 }: EnrollmentSelectProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
@@ -58,6 +62,8 @@ export function EnrollmentMultiSelect({
   const [selectedEnrollmentMap, setSelectedEnrollmentMap] = useState<Record<string, EnrollmentCriteriaDetailResponse>>(
     {}
   );
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [selectedEnrollment, setSelectedEnrollment] = React.useState<EnrollmentCriteriaDetailResponse | null>(null);
 
   const {
     enrollments,
@@ -133,17 +139,17 @@ export function EnrollmentMultiSelect({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="enrollment-select-label">{label}</InputLabel>
+        <InputLabel id="enrollment-select-label">{t(label)}</InputLabel>
         <Select
           multiple
           labelId="enrollment-select-label"
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
-            selected.map((id: string) => selectedEnrollmentMap[id]?.name || id).join(', ') || 'No Criteria Selected'
+            selected.map((id: string) => selectedEnrollmentMap[id]?.name || id).join(', ') || t('noCriteriaSelected')
           }
           open={false}
         />
@@ -152,7 +158,7 @@ export function EnrollmentMultiSelect({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Enrollment Criteria</Typography>
+            <Typography variant="h6">{t('selectEnrollmentCriteria')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -174,28 +180,33 @@ export function EnrollmentMultiSelect({
               setLocalSearchText(val);
               setSearchText(val);
             }}
-            placeholder="Search enrollment..."
+            placeholder={t('searchEnrollment')}
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 160 }}>
-              <InputLabel>Disable Status</InputLabel>
+              <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus !== undefined ? String(disableStatus) : ''}
                 onChange={(e: SelectChangeEvent) => {
                   setDisableStatus(e.target.value !== '' ? (Number(e.target.value) as StatusEnum) : undefined);
                 }}
-                label="Disable Status"
+                label={t('disableStatus')}
               >
-                {[undefined, StatusEnum.Enable, StatusEnum.Disable].map((opt) => (
-                  <MenuItem key={opt ?? 'all'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'All'}
-                  </MenuItem>
-                ))}
+                {[undefined, StatusEnum.Enable, StatusEnum.Disable].map((opt) => {
+                  const rawKey = opt !== undefined ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'all';
+                  const key = rawKey ? rawKey.charAt(0).toLowerCase() + rawKey.slice(1) : 'all';
+
+                  return (
+                    <MenuItem key={opt ?? 'all'} value={opt !== undefined ? String(opt) : ''}>
+                      {t(key)}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -213,18 +224,29 @@ export function EnrollmentMultiSelect({
               >
                 <Checkbox checked={checked} />
                 <ListItemText primary={item.name} />
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedEnrollment(item);
+                    setViewOpen(true);
+                  }}
+                  aria-label={t('showDetails')}
+                >
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             );
           })}
 
           {loadingEnrollments ? (
             <Typography variant="body2" sx={{ p: 2 }}>
-              Loading...
+              {t('loading')}
             </Typography>
           ) : null}
           {!loadingEnrollments && enrollments.length === 0 && (
             <Typography variant="body2" sx={{ p: 2 }}>
-              No enrollment criteria found
+              {t('empty')}
             </Typography>
           )}
         </Box>
@@ -242,13 +264,23 @@ export function EnrollmentMultiSelect({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained">
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedEnrollment ? (
+        <EnrollmentDetailForm
+          open={viewOpen}
+          enrollmentId={selectedEnrollment.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

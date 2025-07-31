@@ -23,6 +23,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '../../../core/text-field/custom-typhography';
 
@@ -33,13 +34,14 @@ interface LessonDetailFormProps {
 }
 
 function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; fullScreen: boolean }) {
+  const { t } = useTranslation();
   const [quizExpandedLessons, setQuizExpandedLessons] = useState<Record<string, boolean>>({});
   const [progressExpandedLessons, setProgressExpandedLessons] = useState<Record<string, boolean>>({});
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -52,17 +54,17 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Enrollment Criteria" />
+        <CardHeader title={t('enrollment')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', criteria.id)}
-            {renderField('Name', criteria.name)}
-            {renderField('Description', criteria.desc)}
-            {renderField('Target Type', criteria.targetType)}
-            {renderField('Target ID', criteria.targetID)}
-            {renderField('Target Level ID', criteria.targetLevelID)}
-            {renderField('Max Capacity', criteria.maxCapacity)}
-            {renderField('Target Pharmacy ID', criteria.targetPharmacyID)}
+            {renderField('criteriaId', criteria.id)}
+            {renderField('criteriaName', criteria.name)}
+            {renderField('criteriaDescription', criteria.desc)}
+            {renderField('criteriaTargetType', criteria.targetType)}
+            {renderField('criteriaTargetId', criteria.targetID)}
+            {renderField('criteriaTargetLevelId', criteria.targetLevelID)}
+            {renderField('criteriaMaxCapacity', criteria.maxCapacity)}
+            {renderField('criteriaTargetPharmacyId', criteria.targetPharmacyID)}
           </Grid>
         </CardContent>
       </Card>
@@ -81,7 +83,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Quizzes" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('quizzes')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {lesson.quizzes.map((quiz, index) => {
           const lessonId = quiz.id ?? `${index}`;
           const isExpanded = quizExpandedLessons[lessonId] || false;
@@ -95,7 +97,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
               }}
             >
               <CardHeader
-                title={quiz.title ?? `Quiz ${index + 1}`}
+                title={quiz.title ?? `${t('quiz')} ${index + 1}`}
                 action={
                   <IconButton
                     onClick={() => {
@@ -114,13 +116,13 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', quiz.id)}
-                    {renderField('Name', quiz.title)}
-                    {renderField('Detail', quiz.description)}
-                    {renderField('Status', quiz.status)}
-                    {renderField('Start Time', DateTimeUtils.formatISODateFromString(quiz.startTime ?? ''))}
-                    {renderField('End Time', DateTimeUtils.formatISODateFromString(quiz.endTime ?? ''))}
-                    {renderField('Total Score', quiz.totalScore)}
+                    {renderField('quizId', quiz.id)}
+                    {renderField('quizName', quiz.title)}
+                    {renderField('quizDetail', quiz.description)}
+                    {renderField('quizStatus', quiz.status)}
+                    {renderField('quizStartTime', DateTimeUtils.formatISODateFromString(quiz.startTime ?? ''))}
+                    {renderField('quizEndTime', DateTimeUtils.formatISODateFromString(quiz.endTime ?? ''))}
+                    {renderField('quizTotalScore', quiz.totalScore)}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -143,7 +145,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="User Progress" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('userProgress')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {lesson.userLessonProgress.map((progress, index) => {
           const lessonId = progress.id ?? `${index}`;
           const isExpanded = progressExpandedLessons[lessonId] || false;
@@ -176,13 +178,13 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', progress.id)}
-                    {renderField('userID', progress.userID)}
-                    {renderField('lessonID', progress.lessonID)}
-                    {renderField('Start Time', DateTimeUtils.formatISODateFromString(progress.startDate ?? ''))}
-                    {renderField('End Time', DateTimeUtils.formatISODateFromString(progress.endDate ?? ''))}
-                    {renderField('Total Score', progress.lastAccess)}
-                    {renderField('Status', progress.status)}
+                    {renderField('progressId', progress.id)}
+                    {renderField('progressUserID', progress.userID)}
+                    {renderField('progressLessonID', progress.lessonID)}
+                    {renderField('progressStartTime', DateTimeUtils.formatISODateFromString(progress.startDate ?? ''))}
+                    {renderField('progressEndTime', DateTimeUtils.formatISODateFromString(progress.endDate ?? ''))}
+                    {renderField('progressLastAccess', progress.lastAccess)}
+                    {renderField('progressStatus', progress.status)}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -199,26 +201,26 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
         <Avatar src={lesson.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
           {lesson.name?.[0] ?? '?'}
         </Avatar>
-        <Typography variant="h5">{lesson.name ?? 'Unnamed Lesson'}</Typography>
+        <Typography variant="h5">{lesson.name ?? ''}</Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Lesson Information" />
+        <CardHeader title={t('lessonInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', lesson.id)}
-            {renderField('Course ID', lesson.courseID)}
-            {renderField('Name', lesson.name)}
-            {renderField('Detail', lesson.detail)}
-            {renderField('Enable Play', lesson.enablePlay ? 'Yes' : 'No')}
-            {renderField('Status', lesson.status)}
-            {renderField('Lesson Type', lesson.lessonType)}
-            {renderField('Enrollment Criteria ID', lesson.enrollmentCriteriaID)}
-            {renderField('Category ID', lesson.categoryID)}
-            {renderField('Thumbnail ID', lesson.thumbnailID)}
-            {renderField('Video ID', lesson.videoID)}
-            {renderField('Category Name', lesson.category?.categoryName)}
-            {renderField('Thumbnail File Name', lesson.thumbnail?.name)}
-            {renderField('Video File Name', lesson.video?.name)}
+            {renderField('lessonId', lesson.id)}
+            {renderField('lessonCourseID', lesson.courseID)}
+            {renderField('lessonName', lesson.name)}
+            {renderField('lessonDetail', lesson.detail)}
+            {renderField('lessonEnablePlay', lesson.enablePlay ? t('yes') : t('no'))}
+            {renderField('lessonStatus', t(lesson.status.charAt(0).toLowerCase() + t(lesson.status).slice(1)))}
+            {renderField('lessonType', t(lesson.lessonType.charAt(0).toLowerCase() + t(lesson.lessonType).slice(1)))}
+            {renderField('lessonEnrollmentCriteriaID', lesson.enrollmentCriteriaID)}
+            {renderField('lessonCategoryID', lesson.categoryID)}
+            {renderField('lessonThumbnailID', lesson.thumbnailID)}
+            {renderField('lessonVideoID', lesson.videoID)}
+            {renderField('lessonCategoryName', lesson.category?.categoryName)}
+            {renderField('lessonThumbnailFileName', lesson.thumbnail?.name)}
+            {renderField('lessonVideoFileName', lesson.video?.name)}
           </Grid>
         </CardContent>
       </Card>
@@ -230,6 +232,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
 }
 
 export default function LessonDetailForm({ open, lessonId, onClose }: LessonDetailFormProps) {
+  const { t } = useTranslation();
   const { lessonUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [Lesson, setLesson] = useState<LessonDetailResponse | null>(null);
@@ -255,7 +258,7 @@ export default function LessonDetailForm({ open, lessonId, onClose }: LessonDeta
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Lesson Details</Typography>
+        <Typography variant="h6">{t('lessonDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

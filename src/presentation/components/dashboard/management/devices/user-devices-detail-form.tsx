@@ -21,6 +21,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -30,6 +31,7 @@ interface UserDevicesDetailProps {
   onClose: () => void;
 }
 function UserDevicesDetails({ userDevice, fullScreen }: { userDevice: UserDeviceResponse; fullScreen: boolean }) {
+  const { t } = useTranslation();
   const renderField = (label: string, value?: any) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -45,16 +47,16 @@ function UserDevicesDetails({ userDevice, fullScreen }: { userDevice: UserDevice
     const emp = u.employee;
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="User Info" />
+        <CardHeader title={t('userInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('User ID', u.id)}
-            {renderField('Name', `${u.firstName} ${u.lastName}`)}
-            {renderField('Username', u.userName)}
-            {renderField('Email', u.email)}
-            {renderField('Phone', u.phoneNumber)}
-            {renderField('Employee ID', u.employeeId)}
-            {emp ? renderField('Department', emp.currentDepartmentName) : null}
+            {renderField(t('userId'), u.id)}
+            {renderField(t('name'), `${u.firstName} ${u.lastName}`)}
+            {renderField(t('username'), u.userName)}
+            {renderField(t('email'), u.email)}
+            {renderField(t('phone'), u.phoneNumber)}
+            {renderField(t('employeeId'), u.employeeId)}
+            {emp ? renderField(t('department'), emp.currentDepartmentName) : null}
           </Grid>
         </CardContent>
       </Card>
@@ -73,25 +75,25 @@ function UserDevicesDetails({ userDevice, fullScreen }: { userDevice: UserDevice
       ) : null}
 
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Device Info" />
+        <CardHeader title={t('deviceInfo')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Record ID', userDevice.id)}
-            {renderField('Device Name', userDevice.deviceName)}
-            {renderField('Device Type', userDevice.deviceType)}
-            {renderField('Device ID', userDevice.deviceID)}
-            {renderField('Device Token', userDevice.deviceToken)}
-            {renderField('IP Address', userDevice.ipAddress)}
+            {renderField(t('recordId'), userDevice.id)}
+            {renderField(t('deviceName'), userDevice.deviceName)}
+            {renderField(t('deviceType'), userDevice.deviceType)}
+            {renderField(t('deviceId'), userDevice.deviceID)}
+            {renderField(t('deviceToken'), userDevice.deviceToken)}
+            {renderField(t('ipAddress'), userDevice.ipAddress)}
             {renderField(
-              'Signed In At',
+              t('signedInAt'),
               userDevice.signInAt ? DateTimeUtils.formatISODateFromDate(userDevice.signInAt) : undefined
             )}
             {renderField(
-              'Signed Out At',
+              t('signedOutAt'),
               userDevice.signOutAt ? DateTimeUtils.formatISODateFromDate(userDevice.signOutAt) : undefined
             )}
             {renderField(
-              'Last Access',
+              t('lastAccess'),
               userDevice.lastAccess ? DateTimeUtils.formatISODateFromDate(userDevice.lastAccess) : undefined
             )}
           </Grid>
@@ -103,6 +105,7 @@ function UserDevicesDetails({ userDevice, fullScreen }: { userDevice: UserDevice
   );
 }
 export default function UserDevicesDetailForm({ open, userDevicesId, onClose }: UserDevicesDetailProps) {
+  const { t } = useTranslation();
   const { userDevicesUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userDevice, setUserDevice] = useState<UserDeviceResponse | null>(null);
@@ -128,7 +131,7 @@ export default function UserDevicesDetailForm({ open, userDevicesId, onClose }: 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', pr: 1 }}>
-        <Typography variant="h6">User Device Details</Typography>
+        <Typography variant="h6">{t('userDeviceDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

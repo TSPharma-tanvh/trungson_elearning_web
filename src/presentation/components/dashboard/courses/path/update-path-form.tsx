@@ -29,6 +29,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -48,6 +49,7 @@ interface EditPathDialogProps {
 
 export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPathDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { categoryUsecase, courseUsecase, enrollUsecase, fileUsecase } = useDI();
 
@@ -179,14 +181,14 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
   };
 
   const statusOptions = [
-    { value: StatusEnum.Enable, label: 'Enable' },
-    { value: StatusEnum.Disable, label: 'Disable' },
-    { value: StatusEnum.Deleted, label: 'Deleted' },
+    { value: StatusEnum.Enable, label: 'enable' },
+    { value: StatusEnum.Disable, label: 'disable' },
+    { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
   const displayTypeOptions = [
-    { value: DisplayTypeEnum.Public, label: 'Public' },
-    { value: DisplayTypeEnum.Private, label: 'Private' },
+    { value: DisplayTypeEnum.Public, label: 'public' },
+    { value: DisplayTypeEnum.Private, label: 'private' },
   ];
 
   if (!path) return null;
@@ -195,7 +197,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update Course Path
+          {t('updateCoursePath')}
         </Typography>
         <Box>
           <IconButton
@@ -213,12 +215,12 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {path.id}
+            {t('id')}: {path.id}
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
-                label="Name"
+                label={t('name')}
                 value={courseFormData.name}
                 onChange={(value) => {
                   handleChange('name', value);
@@ -229,7 +231,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
             </Grid>
             <Grid item xs={12}>
               <CustomTextField
-                label="Detail"
+                label={t('detail')}
                 value={courseFormData.detail}
                 onChange={(value) => {
                   handleChange('detail', value);
@@ -242,7 +244,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Start Time"
+                label={t('startTime')}
                 value={courseFormData.startTime}
                 onChange={(value) => {
                   handleChange('startTime', value);
@@ -252,7 +254,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="End Time"
+                label={t('endTime')}
                 value={courseFormData.endTime}
                 onChange={(value) => {
                   handleChange('endTime', value);
@@ -262,7 +264,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="Status"
+                label={t('status')}
                 value={courseFormData.status ?? ''}
                 onChange={(value) => {
                   handleChange('status', value);
@@ -273,7 +275,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="Display Type"
+                label={t('displayType')}
                 value={courseFormData.displayType ?? ''}
                 onChange={(value) => {
                   handleChange('displayType', value);
@@ -310,7 +312,6 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                   handleChange('enrollmentCriteriaIDs', value.join(','));
                 }}
                 disabled={isSubmitting}
-                label="Enrollment Criteria"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -334,11 +335,11 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="select" aria-label="select from resources">
-                  Select from Resources
+                <ToggleButton value="select" aria-label={t('selectFromResources')}>
+                  {t('selectFromResources')}
                 </ToggleButton>
-                <ToggleButton value="upload" aria-label="upload file">
-                  Upload File
+                <ToggleButton value="upload" aria-label={t('uploadFiles')}>
+                  {t('uploadFiles')}
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
@@ -350,14 +351,14 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                   status={StatusEnum.Enable}
                   value={courseFormData.thumbnailID}
                   onChange={handleFileSelectChange}
-                  label="Thumbnail"
+                  label={t('thumbnail')}
                   disabled={isSubmitting}
                 />
               ) : (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Document No"
+                      label={t('thumbnailDocumentNo')}
                       value={courseFormData.thumbDocumentNo}
                       onChange={(value) => {
                         handleChange('thumbDocumentNo', value);
@@ -368,7 +369,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Prefix Name"
+                      label={t('thumbnailPrefixName')}
                       value={courseFormData.thumbPrefixName}
                       onChange={(value) => {
                         handleChange('thumbPrefixName', value);
@@ -385,7 +386,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                       disabled={isSubmitting}
                       startIcon={<ImageIcon {...iconStyle} />}
                     >
-                      Upload Thumbnail
+                      {t('uploadThumbnail')}
                       <input
                         type="file"
                         hidden
@@ -410,7 +411,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                     disabled={isSubmitting}
                   />
                 }
-                label="Is Required"
+                label={t('isRequired')}
               />
             </Grid>
             <Grid item xs={12}>
@@ -424,7 +425,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                     disabled={isSubmitting}
                   />
                 }
-                label="Delete Old Thumbnail"
+                label={t('deleteOldThumbnail')}
               />
             </Grid>
             {previewUrl ? (
@@ -445,7 +446,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                 >
                   <img
                     src={previewUrl}
-                    alt="Thumbnail Preview"
+                    alt={t('thumbnailPreview')}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </Box>
@@ -472,7 +473,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -480,7 +481,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

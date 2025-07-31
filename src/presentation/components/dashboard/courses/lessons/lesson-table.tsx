@@ -1,32 +1,15 @@
 import React from 'react';
 import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
-import { MoreVert, Visibility } from '@mui/icons-material';
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  IconButton,
-  MenuItem,
-  MenuList,
-  Popover,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import { CancelOutlined, CheckCircleOutline, MoreVert, Visibility } from '@mui/icons-material';
+import { Avatar, Box, Button, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
+import { CustomTable } from '@/presentation/components/core/custom-table';
+import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 
-import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 import { UpdateLessonFormDialog } from './edit-lesson-form';
 import LessonDetailForm from './lesson-detail-form';
 
@@ -51,20 +34,35 @@ export default function LessonTable({
   onDeleteLessonPaths: onDeleteLesson,
   onEditLesson,
 }: LessonTableProps) {
-  const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
-  const [selected, setSelected] = React.useState<Set<string>>(new Set());
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedRow, setSelectedRow] = React.useState<LessonDetailResponse | null>(null);
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [editCourseData, setEditPathData] = React.useState<LessonDetailResponse | null>(null);
+  const { t } = useTranslation();
+  const [editLessonData, setEditLessonData] = React.useState<LessonDetailResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
-  const isSelected = (id: string) => selected.has(id);
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
+
   const [previewImageOpen, setPreviewImageOpen] = React.useState(false);
   const [previewVideoOpen, setPreviewVideoOpen] = React.useState(false);
   const [previewFile, setPreviewFile] = React.useState<{ url: string; title?: string } | null>(null);
   const [fullscreen, setFullscreen] = React.useState(false);
+
+  const handleRequestDelete = (id: string) => {
+    setPendingDeleteId(id);
+    setDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (pendingDeleteId) {
+      await onDeleteLesson([pendingDeleteId]);
+      setPendingDeleteId(null);
+    }
+    setDialogOpen(false);
+  };
+
+  const handleCancelDelete = () => {
+    setPendingDeleteId(null);
+    setDialogOpen(false);
+  };
 
   const handlePreviewImage = (url: string, title?: string) => {
     setPreviewFile({ url, title });
@@ -76,222 +74,125 @@ export default function LessonTable({
     setPreviewVideoOpen(true);
   };
 
-  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelected(event.target.checked ? new Set(rowIds) : new Set());
-  };
-
-  const handleSelectOne = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
-
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: LessonDetailResponse) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRow(row);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleOpenDeleteDialog = (ids: string[]) => {
-    setIdsToDelete(ids);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    await onDeleteLesson(idsToDelete);
-    setSelected((prev) => {
-      const next = new Set(prev);
-      idsToDelete.forEach((id) => next.delete(id));
-      return next;
-    });
-    setDeleteDialogOpen(false);
-    setIdsToDelete([]);
-  };
-
-  const handleCancelDelete = () => {
-    setDeleteDialogOpen(false);
-    setIdsToDelete([]);
-  };
-
   return (
-    <Card>
-      {selected.size > 0 && (
-        <Box display="flex" justifyContent="flex-end" p={2}>
-          <Button
-            color="error"
-            variant="outlined"
-            onClick={() => {
-              handleOpenDeleteDialog(Array.from(selected));
-            }}
-          >
-            Delete Selected ({selected.size})
-          </Button>
-        </Box>
-      )}
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  checked={selected.size === rows.length && rows.length > 0}
-                  indeterminate={selected.size > 0 && selected.size < rows.length}
-                  onChange={handleSelectAll}
-                />
-              </TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Detail</TableCell>
-              <TableCell>Enable Play</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>LessonType</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Video</TableCell>
-              <TableCell>Quiz</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody />
-          <TableBody>
-            {rows.map((row) => {
-              const isItemSelected = isSelected(row.id!);
-              return (
-                <TableRow key={row.id} selected={isItemSelected} hover>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={isItemSelected}
-                      onChange={() => {
-                        handleSelectOne(row.id!);
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <IconButton
-                        onClick={() => {
-                          if (row.thumbnail?.resourceUrl) {
-                            handlePreviewImage(row.thumbnail.resourceUrl, row.name);
-                          }
-                        }}
-                        sx={{ p: 0 }} // Remove padding for compact avatar click
-                      >
-                        <Avatar src={row.thumbnail?.resourceUrl}>{row.name?.[0]}</Avatar>
-                      </IconButton>
-                      <Box>
-                        <Typography variant="subtitle2" noWrap>
-                          {row.name}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </TableCell>
-
-                  <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
-                    <Typography variant="body2">{row.detail}</Typography>
-                  </TableCell>
-                  <TableCell>{row.enablePlay ? 'Yes' : 'No'}</TableCell>
-                  <TableCell>{row.status}</TableCell>
-                  <TableCell>{row.lessonType}</TableCell>
-                  <TableCell>{row.category?.categoryName}</TableCell>
-                  <TableCell>
-                    {row.video?.resourceUrl ? (
-                      <IconButton
-                        onClick={() => {
-                          handlePreviewVideo(row.video?.resourceUrl ?? '', row.name);
-                        }}
-                      >
-                        <Visibility fontSize="small" />
-                      </IconButton>
-                    ) : (
-                      '-'
-                    )}
-                  </TableCell>
-                  <TableCell>{row.quizzes?.length}</TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      onClick={(event) => {
-                        handleMenuClick(event, row);
-                      }}
-                    >
-                      <MoreVert />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        component="div"
+    <>
+      <CustomTable<LessonDetailResponse>
+        rows={rows}
         count={count}
         page={page}
         rowsPerPage={rowsPerPage}
+        getRowId={(row) => row.id}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
-        labelDisplayedRows={() => `Page ${page + 1} of ${Math.ceil(count / rowsPerPage)}`}
+        onDelete={onDeleteLesson}
+        actionMenuItems={[
+          {
+            label: t('viewDetails'),
+            onClick: (row) => {
+              setEditLessonData(row);
+              setViewOpen(true);
+            },
+          },
+          {
+            label: t('edit'),
+            onClick: (row) => {
+              setEditLessonData(row);
+              setEditOpen(true);
+            },
+          },
+          {
+            label: t('delete'),
+            onClick: (row) => {
+              if (row.id) handleRequestDelete(row.id);
+            },
+          },
+        ]}
+        renderHeader={() => (
+          <>
+            <TableCell>{t('name')}</TableCell>
+            <TableCell>{t('detail')}</TableCell>
+            <TableCell>{t('enablePlay')}</TableCell>
+            <TableCell>{t('status')}</TableCell>
+            <TableCell>{t('lessonType')}</TableCell>
+            <TableCell>{t('category')}</TableCell>
+            <TableCell>{t('video')}</TableCell>
+            <TableCell>{t('quiz')}</TableCell>
+          </>
+        )}
+        renderRow={(row, isSelected, onSelect, onActionClick) => (
+          <>
+            <TableCell>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <IconButton
+                  onClick={() => {
+                    if (row.thumbnail?.resourceUrl) {
+                      handlePreviewImage(row.thumbnail.resourceUrl, row.name);
+                    }
+                  }}
+                  sx={{ p: 0 }}
+                >
+                  <Avatar src={row.thumbnail?.resourceUrl}>{row.name?.[0]}</Avatar>
+                </IconButton>
+                <Box>
+                  <Typography variant="subtitle2" noWrap>
+                    {row.name}
+                  </Typography>
+                </Box>
+              </Stack>
+            </TableCell>
+
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
+              <Typography variant="body2">{row.detail}</Typography>
+            </TableCell>
+
+            <TableCell>
+              {row.enablePlay ? (
+                <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
+              ) : (
+                <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
+              )}
+            </TableCell>
+            <TableCell>{row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}</TableCell>
+            <TableCell>
+              {row.lessonType ? t(row.lessonType.charAt(0).toLowerCase() + t(row.lessonType).slice(1)) : ''}
+            </TableCell>
+
+            <TableCell>{row.category?.categoryName}</TableCell>
+
+            <TableCell>
+              {row.video?.resourceUrl ? (
+                <IconButton
+                  onClick={() => {
+                    handlePreviewVideo(row?.video?.resourceUrl ?? '', row.name);
+                  }}
+                >
+                  <Visibility fontSize="small" />
+                </IconButton>
+              ) : (
+                ''
+              )}
+            </TableCell>
+
+            <TableCell>{row.quizzes?.length ?? 0}</TableCell>
+
+            <TableCell align="right">
+              <IconButton
+                onClick={(e) => {
+                  onActionClick(e as React.MouseEvent<HTMLElement>);
+                }}
+              >
+                <MoreVert />
+              </IconButton>
+            </TableCell>
+          </>
+        )}
       />
 
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleMenuClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <MenuList>
-          <MenuItem
-            onClick={() => {
-              if (selectedRow) {
-                setViewOpen(true);
-              }
-              handleMenuClose();
-            }}
-          >
-            View Details
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              if (selectedRow) {
-                setEditPathData(selectedRow);
-                setEditOpen(true);
-              }
-              handleMenuClose();
-            }}
-          >
-            Edit
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              if (selectedRow?.id) handleOpenDeleteDialog([selectedRow.id]);
-              handleMenuClose();
-            }}
-          >
-            Delete
-          </MenuItem>
-        </MenuList>
-      </Popover>
-
-      {selectedRow ? (
-        <LessonDetailForm
-          open={viewOpen}
-          lessonId={selectedRow?.id ?? null}
-          onClose={() => {
-            setViewOpen(false);
-          }}
-        />
-      ) : null}
-
-      {editCourseData ? (
+      {editLessonData ? (
         <UpdateLessonFormDialog
           open={editOpen}
-          data={editCourseData}
-          onClose={() => {
-            setEditOpen(false);
-          }}
+          data={editLessonData}
+          onClose={() => setEditOpen(false)}
           onSubmit={async (updatedData) => {
             await onEditLesson(updatedData);
             setEditOpen(false);
@@ -299,42 +200,38 @@ export default function LessonTable({
         />
       ) : null}
 
-      {previewFile?.url ? (
+      {editLessonData ? (
+        <LessonDetailForm open={viewOpen} lessonId={editLessonData.id ?? null} onClose={() => setViewOpen(false)} />
+      ) : null}
+
+      {previewFile?.url && (
         <ImagePreviewDialog
           open={previewImageOpen}
-          onClose={() => {
-            setPreviewImageOpen(false);
-          }}
+          onClose={() => setPreviewImageOpen(false)}
           imageUrl={previewFile.url}
           title={previewFile.title}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => {
-            setFullscreen((prev) => !prev);
-          }}
+          onToggleFullscreen={() => setFullscreen((prev) => !prev)}
         />
-      ) : null}
+      )}
 
-      {previewFile?.url ? (
+      {previewFile?.url && (
         <VideoPreviewDialog
           open={previewVideoOpen}
-          onClose={() => {
-            setPreviewVideoOpen(false);
-          }}
+          onClose={() => setPreviewVideoOpen(false)}
           videoUrl={previewFile.url}
           title={previewFile.title}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => {
-            setFullscreen((prev) => !prev);
-          }}
+          onToggleFullscreen={() => setFullscreen((prev) => !prev)}
         />
-      ) : null}
+      )}
 
       <ConfirmDeleteDialog
-        open={deleteDialogOpen}
-        selectedCount={idsToDelete.length}
+        open={dialogOpen}
+        selectedCount={1}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
       />
-    </Card>
+    </>
   );
 }

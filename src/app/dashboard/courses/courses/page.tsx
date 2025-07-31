@@ -8,12 +8,14 @@ import { type CourseDetailResponse } from '@/domain/models/courses/response/cour
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CourseFilters } from '@/presentation/components/dashboard/courses/courses/course-filters';
 import CourseTable from '@/presentation/components/dashboard/courses/courses/course-table';
 import { CreateCourseDialog } from '@/presentation/components/dashboard/courses/courses/create-course-form';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { courseUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
@@ -100,7 +102,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Courses
+            {t('courses')}
           </Typography>
         </Stack>
         <Button
@@ -110,7 +112,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          {t('add')}
         </Button>
       </Stack>
       <CourseFilters onFilter={handleFilter} />

@@ -24,6 +24,8 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { margin } from '@mui/system';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -39,44 +41,45 @@ interface PathInfoCardProps {
   fullScreen: boolean;
 }
 function PathInfoCard({ coursePath, fullScreen }: PathInfoCardProps) {
+  const { t } = useTranslation();
   return (
     <Card sx={{ mb: 2 }}>
-      <CardHeader title="Path Information" />
+      <CardHeader title={t('pathInformation')} />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={fullScreen ? 4 : 6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              ID
+              {t('id')}
             </Typography>
             <CustomFieldTypography value={coursePath.id} />
           </Grid>
           <Grid item xs={12} sm={fullScreen ? 4 : 6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Name
+              {t('name')}
             </Typography>
             <CustomFieldTypography value={coursePath.name} />
           </Grid>
           <Grid item xs={12} sm={fullScreen ? 4 : 6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Description
+              {t('description')}
             </Typography>
             <CustomFieldTypography value={coursePath.detail} />
           </Grid>
           <Grid item xs={12} sm={fullScreen ? 4 : 6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Category Name
+              {t('categoryName')}
             </Typography>
             <CustomFieldTypography value={coursePath.category?.categoryName} />
           </Grid>
           <Grid item xs={12} sm={fullScreen ? 4 : 6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Category ID
+              {t('categoryId')}
             </Typography>
             <CustomFieldTypography value={coursePath.categoryID} />
           </Grid>
           <Grid item xs={12} sm={fullScreen ? 4 : 6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Thumbnail ID
+              {t('thumbnailId')}
             </Typography>
             <CustomFieldTypography value={coursePath.thumbnailID} />
           </Grid>
@@ -91,14 +94,16 @@ interface ScheduleCardProps {
   coursePath: CoursePathResponse;
 }
 function ScheduleCard({ coursePath }: ScheduleCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card sx={{ mb: 2 }}>
-      <CardHeader title="Schedule" />
+      <CardHeader title={t('schedule')} />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Start Time
+              {t('startTime')}
             </Typography>
             <CustomFieldTypography
               value={coursePath.startTime ? DateTimeUtils.formatISODateFromString(coursePath.startTime) : undefined}
@@ -106,7 +111,7 @@ function ScheduleCard({ coursePath }: ScheduleCardProps) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              End Time
+              {t('endTime')}
             </Typography>
             <CustomFieldTypography
               value={coursePath.endTime ? DateTimeUtils.formatISODateFromString(coursePath.endTime) : undefined}
@@ -123,26 +128,27 @@ interface StatusCardProps {
   coursePath: CoursePathResponse;
 }
 function StatusCard({ coursePath }: StatusCardProps) {
+  const { t } = useTranslation();
   return (
     <Card sx={{ mb: 2 }}>
-      <CardHeader title="Status and Requirements" />
+      <CardHeader title={t('statusAndRequirements')} />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Status
+              {t('status')}
             </Typography>
             <CustomFieldTypography value={coursePath.status} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Is Required
+              {t('isRequired')}
             </Typography>
-            <CustomFieldTypography value={coursePath.isRequired ? 'Yes' : 'No'} />
+            <CustomFieldTypography value={coursePath.isRequired ? t('yes') : t('no')} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" fontWeight={500}>
-              Display Type
+              {t('displayType')}
             </Typography>
             <CustomFieldTypography value={coursePath.displayType} />
           </Grid>
@@ -159,6 +165,8 @@ interface EnrollmentCardProps {
 }
 
 export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) {
+  const { t } = useTranslation();
+
   const enrollments = coursePath.enrollmentCriteria ?? [];
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
 
@@ -173,7 +181,7 @@ export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) 
   ) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       {children ?? <CustomFieldTypography value={value} />}
     </Grid>
@@ -183,7 +191,7 @@ export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) 
 
   return (
     <Box sx={{ mb: 2 }}>
-      <CardHeader title="Enrollment Criteria" sx={{ pl: 2, pb: 1, mb: 2 }} />
+      <CardHeader title={t('criteria')} sx={{ pl: 2, pb: 1, mb: 2 }} />
       {enrollments.map((enroll, index) => {
         const isExpanded = expandedIds[enroll.id] ?? false;
 
@@ -197,7 +205,7 @@ export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) 
             }}
           >
             <CardHeader
-              title={enroll.name ?? `Enrollment #${index + 1}`}
+              title={enroll.name ?? `${t('enrollment')} #${index + 1}`}
               action={
                 <IconButton
                   onClick={() => {
@@ -216,13 +224,13 @@ export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) 
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
               <CardContent>
                 <Grid container spacing={2}>
-                  {renderField('ID', enroll.id)}
-                  {renderField('Max Capacity', enroll.maxCapacity)}
-                  {renderField('Target Type', enroll.targetType)}
-                  {renderField('Target ID', enroll.targetID)}
-                  {renderField('Target Level ID', enroll.targetLevelID)}
-                  {renderField('Target Pharmacy ID', enroll.targetPharmacyID)}
-                  {renderField('Description', enroll.desc)}
+                  {renderField('id', enroll.id)}
+                  {renderField('maxCapacity', enroll.maxCapacity)}
+                  {renderField('targetType', enroll.targetType)}
+                  {renderField('targetID', enroll.targetID)}
+                  {renderField('targetLevelID', enroll.targetLevelID)}
+                  {renderField('targetPharmacyID', enroll.targetPharmacyID)}
+                  {renderField('description', enroll.desc)}
                 </Grid>
               </CardContent>
             </Collapse>
@@ -239,6 +247,7 @@ interface CourseDetailsCardProps {
   fullScreen: boolean;
 }
 function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
   const renderField = (
@@ -248,7 +257,7 @@ function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
   ) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       {children ? children : <CustomFieldTypography value={value} />}
     </Grid>
@@ -281,38 +290,35 @@ function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', course.id)}
-            {renderField('Description', course.detail)}
-            {renderField('Is Required', course.isRequired ? 'Yes' : 'No')}
-            {renderField('Course Type', course.courseType)}
-            {renderField('Category ID', course.categoryId)}
-            {renderField('Thumbnail ID', course.thumbnailId)}
-            {renderField('Enrollment Criteria ID', course.enrollmentCriteriaId)}
+            {renderField('id', course.id)}
+            {renderField('detail', course.detail)}
+            {renderField('isRequired', course.isRequired ? 'Yes' : 'No')}
+            {renderField('courseType', course.courseType)}
+            {renderField('categoryId', course.categoryId)}
+            {renderField('thumbnailId', course.thumbnailId)}
+            {renderField('enrollmentCriteriaId', course.enrollmentCriteriaId)}
             {renderField(
-              'Start Time',
+              'startTime',
               course.startTime ? DateTimeUtils.formatISODateFromString(course.startTime) : undefined
             )}
+            {renderField('endTime', course.endTime ? DateTimeUtils.formatISODateFromString(course.endTime) : undefined)}
+            {renderField('disableStatus', course.disableStatus)}
+            {renderField('scheduleStatus', course.scheduleStatus)}
+            {renderField('displayType', course.displayType)}
             {renderField(
-              'End Time',
-              course.endTime ? DateTimeUtils.formatISODateFromString(course.endTime) : undefined
-            )}
-            {renderField('Disable Status', course.disableStatus)}
-            {renderField('Schedule Status', course.scheduleStatus)}
-            {renderField('Display Type', course.displayType)}
-            {renderField(
-              'Meeting Link',
+              'meetingLink',
               undefined,
               course.meetingLink ? (
                 <Typography variant="body2" component="span">
                   <a href={course.meetingLink} target="_blank" rel="noopener noreferrer">
-                    Link
+                    {t('link')}
                   </a>
                 </Typography>
               ) : (
                 <CustomFieldTypography value="-" />
               )
             )}
-            {renderField('Teacher ID', course.teacherId)}
+            {renderField('teacherId', course.teacherId)}
           </Grid>
         </CardContent>
       </Collapse>
@@ -321,6 +327,8 @@ function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
 }
 
 export default function CoursePathDetailForm({ open, coursePathId, onClose }: CoursePathDetailProps) {
+  const { t } = useTranslation();
+
   const { pathUseCase } = useDI();
   const [loading, setLoading] = useState(false);
   const [coursePath, setCoursePath] = useState<CoursePathResponse | null>(null);
@@ -346,7 +354,7 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Co
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', pr: 1 }}>
-        <Typography variant="h6">Course Path Details</Typography>
+        <Typography variant="h6">{t('coursePathDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {
@@ -372,7 +380,7 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Co
               <Avatar src={coursePath.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
                 {coursePath.name?.[0] ?? '?'}
               </Avatar>
-              <Typography variant="h5">{coursePath.name ?? 'Unnamed Path'}</Typography>
+              <Typography variant="h5">{coursePath.name ?? t('unnamedPath')}</Typography>
             </Box>
 
             {/* Grouped Path Details */}
@@ -385,13 +393,15 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Co
             </Box>
             {/* Courses Section */}
             <Box sx={{ mb: 2 }}>
-              <CardHeader title="Included Courses" sx={{ pl: 2, pb: 1, mb: 2 }} />
+              <CardHeader title={t('includedCourses')} sx={{ pl: 2, pb: 1, mb: 2 }} />
               {coursePath.courses.length > 0 ? (
                 coursePath.courses.map((course) => (
                   <CourseDetailsCard key={course.id} course={course} fullScreen={fullScreen} />
                 ))
               ) : (
-                <CustomFieldTypography value={undefined} fallback="No courses included in this path." />
+                <Box sx={{ ml: 2 }}>
+                  <CustomFieldTypography value={undefined} fallback={t('noCoursesIncluded')} />
+                </Box>
               )}
             </Box>
           </Box>

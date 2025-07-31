@@ -4,7 +4,7 @@ import { type CategoryResponse } from '@/domain/models/category/response/categor
 import { type CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { useCategoryLoader } from '@/presentation/hooks/use-category-loader';
 import { type CategoryEnum } from '@/utils/enum/core-enum';
-import { CategoryOutlined } from '@mui/icons-material';
+import { CategoryOutlined, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -30,8 +30,10 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
+import CategoryDetailForm from '../../dashboard/management/category/category-detail-form';
 
 interface CategorySelectDialogProps {
   open: boolean;
@@ -50,11 +52,14 @@ function CategorySelectDialog({
   categoryEnum,
   value,
 }: CategorySelectDialogProps) {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
   const [fullScreen, setFullScreen] = useState(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = React.useState<CategoryDetailResponse | null>(null);
 
   const {
     categories,
@@ -91,7 +96,7 @@ function CategorySelectDialog({
   return (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} fullScreen={fullScreen}>
       <DialogTitle>
-        Select Category
+        {t('selectCategory')}
         <Box sx={{ position: 'absolute', right: 8, top: 8 }}>
           <IconButton
             onClick={() => {
@@ -107,12 +112,12 @@ function CategorySelectDialog({
       </DialogTitle>
 
       <Box px={2} pb={2}>
-        <CustomSearchInput value={searchText} onChange={setSearchText} placeholder="Search..." />
+        <CustomSearchInput value={searchText} onChange={setSearchText} placeholder={t('search')} />
 
         <List ref={listRef} sx={{ overflow: 'auto', maxHeight: 300 }}>
           {categories.length === 0 && !loadingCategories ? (
             <Typography variant="body2" sx={{ p: 2 }}>
-              No categories found
+              {t('empty')}
             </Typography>
           ) : (
             categories.map((cat: CategoryDetailResponse) => (
@@ -125,6 +130,17 @@ function CategorySelectDialog({
                 }}
               >
                 <ListItemText primary={cat.categoryName} />
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedCategory(cat);
+                    setViewOpen(true);
+                  }}
+                  aria-label={t('showDetails')}
+                >
+                  <InfoOutlined fontSize="small" />
+                </IconButton>
               </ListItem>
             ))
           )}
@@ -149,12 +165,22 @@ function CategorySelectDialog({
           </Box>
         )}
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}> {t('cancel')}</Button>
           <Button onClick={handleConfirm} variant="contained" disabled={!selected}>
-            Confirm
+            {t('confirm')}
           </Button>
         </Box>
       </DialogActions>
+
+      {selectedCategory ? (
+        <CategoryDetailForm
+          open={viewOpen}
+          categoryId={selectedCategory.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </Dialog>
   );
 }
@@ -174,10 +200,11 @@ export function CategorySelect({
   value,
   onChange,
   categoryEnum,
-  label = 'Category',
+  label = 'category',
   disabled = false,
   categories = [],
 }: CategorySelectProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<CategoryResponse | undefined>(undefined);
   const [loaded, setLoaded] = useState(false);
@@ -216,7 +243,7 @@ export function CategorySelect({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="category-select-label">{label}</InputLabel>
+        <InputLabel id="category-select-label">{t(label)}</InputLabel>
         <Select
           labelId="category-select-label"
           value={value || ''}
@@ -225,7 +252,7 @@ export function CategorySelect({
           }}
           input={
             <OutlinedInput
-              label={label}
+              label={t(label)}
               startAdornment={
                 <InputAdornment position="start">
                   <CategoryOutlined sx={{ mr: 1 }} />
@@ -238,7 +265,7 @@ export function CategorySelect({
           displayEmpty
         >
           <MenuItem value="" disabled>
-            {selectedCategory?.categoryName || 'No category selected'}
+            {selectedCategory?.categoryName || t('noCategorySelected')}
           </MenuItem>
         </Select>
       </FormControl>

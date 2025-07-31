@@ -7,7 +7,7 @@ import { type ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-
 import { useClassTeacherSelectLoader } from '@/presentation/hooks/teacher/use-class-teacher-loader';
 import { useClassTeacherSelectDebounce } from '@/presentation/hooks/teacher/use-teacher-select-debounce';
 import { type LearningModeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { Book } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -32,6 +32,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
@@ -46,23 +47,17 @@ interface ClassTeacherSelectDialogProps extends Omit<SelectProps<string>, 'value
   pathID?: string;
 }
 
-// const filterOptions = {
-//   courseType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
-//   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
-//   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
-//   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
-// };
-
 export function ClassTeacherSelectDialog({
   classUsecase,
   value,
   onChange,
-  label = 'Class Teacher',
+  label = 'teacher',
   disabled = false,
   pathID,
   ...selectProps
 }: ClassTeacherSelectDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -183,17 +178,17 @@ export function ClassTeacherSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="class-select-label">{label}</InputLabel>
+        <InputLabel id="class-select-label">{t(label)}</InputLabel>
         <Select
           labelId="class-select-label"
           value={loading ? '' : value || ''}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={() =>
             loading
-              ? 'Loading...'
+              ? t('loading')
               : selectedClassTeacherMap[value]?.user
                 ? `${selectedClassTeacherMap[value].user.employee?.name ?? ''} (${
                     selectedClassTeacherMap[value].user.userName ?? ''
@@ -214,7 +209,7 @@ export function ClassTeacherSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Class Teacher</Typography>
+            <Typography variant="h6">{t('selectTeacher')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -241,11 +236,11 @@ export function ClassTeacherSelectDialog({
             <CustomSearchInput
               value={localSearchText}
               onChange={setLocalSearchText}
-              placeholder="Search classes..."
+              placeholder={t('searchTeacher')}
               sx={{ flexGrow: 1, minWidth: 0 }}
             />
             <Button size="small" onClick={handleClearFilters} variant="outlined" sx={{ whiteSpace: 'nowrap' }}>
-              Clear Filters
+              {t('clearFilter')}
             </Button>
           </Box>
         </DialogTitle>
@@ -254,11 +249,11 @@ export function ClassTeacherSelectDialog({
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
             {loadingClassTeacheres ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('loading')}
               </Typography>
             ) : classes.length === 0 ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No classes found
+                {t('empty')}
               </Typography>
             ) : (
               classes.map((cls) => (
@@ -281,16 +276,17 @@ export function ClassTeacherSelectDialog({
                       mr: 1,
                     }}
                   />
-                  <Button
+                  <IconButton
                     size="small"
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedClassTeacher(cls);
                       setViewOpen(true);
                     }}
+                    aria-label={t('showDetails')}
                   >
-                    Show Detail
-                  </Button>
+                    <InfoOutlined fontSize="small" />{' '}
+                  </IconButton>
                 </MenuItem>
               ))
             )}
@@ -310,9 +306,9 @@ export function ClassTeacherSelectDialog({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained" disabled={!localValue}>
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

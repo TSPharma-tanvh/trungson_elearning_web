@@ -31,6 +31,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import EnrollmentDetailForm from '../../dashboard/management/enrollment/enrollment-detail-form';
@@ -48,13 +49,14 @@ export function EnrollmentSingleSelect({
   enrollmentUsecase,
   value,
   onChange,
-  label = 'Enrollment Criteria',
+  label = 'enrollmentCriteria',
   disabled = false,
   categoryEnum,
   ...selectProps
 }: EnrollmentSelectProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string>(value);
@@ -131,12 +133,12 @@ export function EnrollmentSingleSelect({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="enrollment-select-label">{label}</InputLabel>
+        <InputLabel id="enrollment-select-label">{t(label)}</InputLabel>
         <Select
           labelId="enrollment-select-label"
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) => selectedEnrollmentMap[selected]?.name || 'No Criteria Selected'}
@@ -148,7 +150,7 @@ export function EnrollmentSingleSelect({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Enrollment Criteria</Typography>
+            <Typography variant="h6">{t('selectEnrollmentCriteria')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -169,28 +171,33 @@ export function EnrollmentSingleSelect({
             onChange={(val) => {
               setLocalSearchText(val);
             }}
-            placeholder="Search enrollment..."
+            placeholder={t('searchEnrollment')}
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 160 }}>
-              <InputLabel>Disable Status</InputLabel>
+              <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus !== undefined ? String(disableStatus) : ''}
                 onChange={(e: SelectChangeEvent) => {
                   setDisableStatus(e.target.value !== '' ? (Number(e.target.value) as StatusEnum) : undefined);
                 }}
-                label="Disable Status"
+                label={t('disableStatus')}
               >
-                {[undefined, StatusEnum.Enable, StatusEnum.Disable].map((opt) => (
-                  <MenuItem key={opt ?? 'all'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'All'}
-                  </MenuItem>
-                ))}
+                {[undefined, StatusEnum.Enable, StatusEnum.Disable].map((opt) => {
+                  const rawKey = opt !== undefined ? StatusEnumUtils.getStatusKeyFromValue(opt) : 'all';
+                  const key = rawKey ? rawKey.charAt(0).toLowerCase() + rawKey.slice(1) : 'all';
+
+                  return (
+                    <MenuItem key={opt ?? 'all'} value={opt !== undefined ? String(opt) : ''}>
+                      {t(key)}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -215,7 +222,7 @@ export function EnrollmentSingleSelect({
                     setSelectedEnrollment(item);
                     setViewOpen(true);
                   }}
-                  aria-label="Show Details"
+                  aria-label={t('showDetails')}
                 >
                   <InfoOutlined />
                 </IconButton>
@@ -224,12 +231,12 @@ export function EnrollmentSingleSelect({
 
             {loadingEnrollments ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('laoding')}
               </Typography>
             ) : null}
             {!loadingEnrollments && enrollments.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No enrollment criteria found
+                {t('empty')}
               </Typography>
             )}
           </Box>
@@ -248,9 +255,9 @@ export function EnrollmentSingleSelect({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained" disabled={!localValue}>
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -22,6 +23,7 @@ interface CreateCourseProps {
 }
 
 export function CreateCourseDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateCourseProps) {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
 
@@ -73,7 +75,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create Course
+          {t('createCourse')}
         </Typography>
         <Box>
           <IconButton
@@ -116,7 +118,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
           >
             <Grid item xs={12}>
               <CustomTextField
-                label="Tên khóa học"
+                label={t('name')}
                 value={form.name}
                 onChange={(val) => {
                   handleChange('name', val);
@@ -127,7 +129,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
 
             <Grid item xs={12}>
               <CustomTextField
-                label="Chi tiết"
+                label={t('detail')}
                 value={form.detail}
                 onChange={(val) => {
                   handleChange('detail', val);
@@ -146,7 +148,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian bắt đầu"
+                label={t('startTime')}
                 value={form.startTime}
                 onChange={(val) => {
                   handleChange('startTime', val);
@@ -157,7 +159,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian kết thúc"
+                label={t('endTime')}
                 value={form.endTime}
                 onChange={(val) => {
                   handleChange('endTime', val);
@@ -168,37 +170,37 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
-                label="Trạng thái"
+                label={t('disableStatus')}
                 value={form.disableStatus}
                 onChange={(val) => {
                   handleChange('disableStatus', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: StatusEnum.Enable, label: 'Kích hoạt' },
-                  { value: StatusEnum.Disable, label: 'Tạm khóa' },
+                  { value: StatusEnum.Enable, label: t('enable') },
+                  { value: StatusEnum.Disable, label: t('disable') },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<DisplayTypeEnum>
-                label="Kiểu hiển thị"
+                label={t('displayType')}
                 value={form.displayType}
                 onChange={(val) => {
                   handleChange('displayType', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: DisplayTypeEnum.Public, label: 'Công khai' },
-                  { value: DisplayTypeEnum.Private, label: 'Riêng tư' },
+                  { value: DisplayTypeEnum.Public, label: t('public') },
+                  { value: DisplayTypeEnum.Private, label: t('private') },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12}>
               <CustomButton
-                label="Tạo mới"
+                label={t('create')}
                 onClick={() => {
                   onSubmit(form);
                 }}

@@ -40,6 +40,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
@@ -64,11 +65,12 @@ export function LessonMultiSelectDialog({
   lessonUsecase,
   value,
   onChange,
-  label = 'Lessons',
+  label = 'lessons',
   disabled = false,
   ...selectProps
 }: LessonMultiSelectDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -184,13 +186,13 @@ export function LessonMultiSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="Lesson-select-label">{label}</InputLabel>
+        <InputLabel id="Lesson-select-label">{t(label)}</InputLabel>
         <Select
           labelId="Lesson-select-label"
           multiple
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
@@ -204,7 +206,7 @@ export function LessonMultiSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Lessons</Typography>
+            <Typography variant="h6">{t('selectLessons')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -219,20 +221,20 @@ export function LessonMultiSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search Lessons..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchLessons')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Lesson Type</InputLabel>
+              <InputLabel>{t('lessonType')}</InputLabel>
               <Select
                 value={lessonType !== undefined ? String(lessonType) : ''}
                 onChange={(e: SelectChangeEvent) => {
                   setLessonType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
                 }}
-                label="Lesson Type"
+                label={t('lessonType')}
               >
                 {filterOptions.LessonType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
+                    {t(opt !== undefined ? LearningModeDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
@@ -270,23 +272,23 @@ export function LessonMultiSelectDialog({
               </Select>
             </FormControl> */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Disable Status</InputLabel>
+              <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus ?? ''}
                 onChange={(e) => {
                   setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
                 }}
-                label="Disable Status"
+                label={t('disableStatus')}
               >
                 {filterOptions.disableStatus.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? StatusDisplayNames[opt] : 'All'}
+                    {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -309,12 +311,12 @@ export function LessonMultiSelectDialog({
             ))}
             {loadingLessons ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('loading')}
               </Typography>
             ) : null}
             {!loadingLessons && lessons.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No Lessons found
+                {t('empty')}
               </Typography>
             )}
           </Box>
@@ -333,9 +335,9 @@ export function LessonMultiSelectDialog({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained">
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

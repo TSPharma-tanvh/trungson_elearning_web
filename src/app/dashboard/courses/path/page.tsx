@@ -8,6 +8,7 @@ import { type CoursePathResponse } from '@/domain/models/path/response/course-pa
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import CoursePathDetailForm from '@/presentation/components/dashboard/courses/path/course-path-detail-form';
 import { CreateCoursePathDialog } from '@/presentation/components/dashboard/courses/path/create-path-form';
@@ -16,6 +17,7 @@ import CoursePathTable from '@/presentation/components/dashboard/courses/path/pa
 import { UpdatePathFormDialog } from '@/presentation/components/dashboard/courses/path/update-path-form';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { pathUseCase } = useDI();
   const [paths, setPaths] = React.useState<CoursePathResponse[]>([]);
   const [showForm, setShowForm] = React.useState(false);
@@ -99,7 +101,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Path
+            {t('path')}
           </Typography>
         </Stack>
         <Button
@@ -109,7 +111,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          {t('add')}
         </Button>
       </Stack>
       <PathFilters onFilter={handleFilter} />

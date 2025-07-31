@@ -2,8 +2,10 @@ import React from 'react';
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { MoreVert } from '@mui/icons-material';
+import { StatusEnumUtils } from '@/utils/enum/core-enum';
+import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -32,6 +34,7 @@ export default function CourseTable({
   onDeleteCourses,
   onEditCourse,
 }: CourseTableProps) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editCourseData, setEditCourseData] = React.useState<CourseDetailResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
@@ -70,21 +73,21 @@ export default function CourseTable({
         onDelete={onDeleteCourses}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditCourseData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditCourseData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -92,15 +95,16 @@ export default function CourseTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>Name</TableCell>
-            <TableCell>Detail</TableCell>
-            <TableCell>Required</TableCell>
-            <TableCell>Start Time</TableCell>
-            <TableCell>End Time</TableCell>
-            <TableCell>Disable Status</TableCell>
-            <TableCell>Course Type</TableCell>
-            <TableCell>Schedule Status</TableCell>
-            <TableCell>Display Type</TableCell>
+            <TableCell>{t('name')}</TableCell>
+            <TableCell>{t('detail')}</TableCell>
+            <TableCell>{t('pathName')}</TableCell>
+            <TableCell>{t('required')}</TableCell>
+            <TableCell>{t('startTime')}</TableCell>
+            <TableCell>{t('endTime')}</TableCell>
+            <TableCell>{t('disableStatus')}</TableCell>
+            <TableCell>{t('courseType')}</TableCell>
+            <TableCell>{t('scheduleStatus')}</TableCell>
+            <TableCell>{t('displayType')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -118,13 +122,28 @@ export default function CourseTable({
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
               <Typography variant="body2">{row.detail}</Typography>
             </TableCell>
-            <TableCell>{row.isRequired ? 'Yes' : 'No'}</TableCell>
+            <TableCell>{row.coursePath?.name}</TableCell>
+            <TableCell>
+              {row.isRequired ? (
+                <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
+              ) : (
+                <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
+              )}
+            </TableCell>{' '}
             <TableCell>{DateTimeUtils.formatISODateFromDate(row.startTime)}</TableCell>
             <TableCell>{DateTimeUtils.formatISODateFromDate(row.endTime)}</TableCell>
-            <TableCell>{row.disableStatus}</TableCell>
-            <TableCell>{row.courseType}</TableCell>
-            <TableCell>{row.scheduleStatus}</TableCell>
-            <TableCell>{row.displayType}</TableCell>
+            <TableCell>
+              {row.disableStatus ? t(row.disableStatus.charAt(0).toLowerCase() + t(row.disableStatus).slice(1)) : ''}
+            </TableCell>
+            <TableCell>
+              {row.courseType ? t(row.courseType.charAt(0).toLowerCase() + t(row.courseType).slice(1)) : ''}
+            </TableCell>
+            <TableCell>
+              {row.scheduleStatus ? t(row.scheduleStatus.charAt(0).toLowerCase() + t(row.scheduleStatus).slice(1)) : ''}
+            </TableCell>
+            <TableCell>
+              {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + t(row.displayType).slice(1)) : ''}
+            </TableCell>
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

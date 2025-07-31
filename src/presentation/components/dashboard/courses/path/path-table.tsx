@@ -4,7 +4,7 @@ import React from 'react';
 import { type UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { MoreVert } from '@mui/icons-material';
+import { Cancel, CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -25,6 +25,8 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { CheckCircle } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 import CoursePathDetailForm from './course-path-detail-form';
@@ -51,6 +53,7 @@ export default function CoursePathTable({
   onDeleteCoursePaths,
   onEditCoursePath,
 }: CoursePathTableProps) {
+  const { t } = useTranslation();
   const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -169,15 +172,15 @@ export default function CoursePathTable({
                     }}
                   />
                 </TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Detail</TableCell>
-                <TableCell>Required</TableCell>
-                <TableCell>Start Time</TableCell>
-                <TableCell>End Time</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Display</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell>{t('name')}</TableCell>
+                <TableCell>{t('detail')}</TableCell>
+                <TableCell>{t('required')}</TableCell>
+                <TableCell>{t('startTime')}</TableCell>
+                <TableCell>{t('endTime')}</TableCell>
+                <TableCell>{t('status')}</TableCell>
+                <TableCell>{t('display')}</TableCell>
+                <TableCell>{t('category')}</TableCell>
+                <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody
@@ -210,7 +213,13 @@ export default function CoursePathTable({
                       </Stack>
                     </TableCell>
                     <TableCell>{row.detail}</TableCell>
-                    <TableCell>{row.isRequired ? 'Yes' : 'No'}</TableCell>
+                    <TableCell>
+                      {row.isRequired ? (
+                        <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
+                      ) : (
+                        <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
+                      )}
+                    </TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromString(row.startTime ?? '')}</TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromString(row.endTime ?? '')}</TableCell>
                     <TableCell>{row.status}</TableCell>
@@ -239,7 +248,11 @@ export default function CoursePathTable({
           rowsPerPage={rowsPerPage}
           onPageChange={onPageChange}
           onRowsPerPageChange={onRowsPerPageChange}
-          labelDisplayedRows={() => `Page ${page + 1} of ${Math.ceil(count / rowsPerPage)}`}
+          labelRowsPerPage={t('rowsPerPage')}
+          labelDisplayedRows={() => {
+            const totalPages = Math.ceil(count / rowsPerPage);
+            return t('paginationInfo', { currentPage: page + 1, totalPages });
+          }}
           sx={{
             '& .MuiTablePagination-actions button': {
               color: 'var(--mui-palette-primary-main)',
@@ -267,7 +280,7 @@ export default function CoursePathTable({
               handleMenuClose();
             }}
           >
-            View Details
+            {t('viewDetails')}
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -278,7 +291,7 @@ export default function CoursePathTable({
               handleMenuClose();
             }}
           >
-            Edit
+            {t('edit')}
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -286,7 +299,7 @@ export default function CoursePathTable({
               handleMenuClose();
             }}
           >
-            Delete
+            {t('delete')}
           </MenuItem>
         </MenuList>
       </Popover>

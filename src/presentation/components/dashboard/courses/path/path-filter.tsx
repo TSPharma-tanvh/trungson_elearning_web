@@ -15,8 +15,10 @@ import {
   Stack,
 } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
@@ -60,7 +62,7 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
             setSearchText(e.target.value);
           }}
           fullWidth
-          placeholder="Search path"
+          placeholder={t('searchPath')}
           startAdornment={
             <InputAdornment position="start">
               <MagnifyingGlassIcon
@@ -81,10 +83,10 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
           size="small"
           sx={{ minWidth: 150, '& .MuiInputLabel-root': { color: 'var(--mui-palette-primary-main)' } }}
         >
-          <InputLabel>Is Required</InputLabel>
+          <InputLabel>{t('isRequired')}</InputLabel>
           <Select
             value={isRequired === undefined ? '' : isRequired ? 'true' : 'false'}
-            label="Is Required"
+            label={t('isRequired')}
             onChange={(e) => {
               const val = e.target.value;
               setIsRequired(val === '' ? undefined : val === 'true');
@@ -97,9 +99,9 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
               '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
             }}
           >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="true">Required</MenuItem>
-            <MenuItem value="false">Optional</MenuItem>
+            <MenuItem value="">{t('all')}</MenuItem>
+            <MenuItem value="true">{t('required')}</MenuItem>
+            <MenuItem value="false">{t('optional')}</MenuItem>
           </Select>
         </FormControl>
 
@@ -108,13 +110,13 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
           size="small"
           sx={{ minWidth: 150, '& .MuiInputLabel-root': { color: 'var(--mui-palette-primary-main)' } }}
         >
-          <InputLabel>Status</InputLabel>
+          <InputLabel>{t('status')}</InputLabel>
           <Select
             value={status !== undefined ? status.toString() : ''}
             onChange={(e) => {
               setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum));
             }}
-            label="Status"
+            label={t('status')}
             sx={{
               '& .MuiSelect-select': {
                 backgroundColor: 'var(--mui-palette-common-white)',
@@ -123,10 +125,10 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
               '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
             }}
           >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={StatusEnum.Enable}>Enable</MenuItem>
-            <MenuItem value={StatusEnum.Disable}>Disable</MenuItem>
-            <MenuItem value={StatusEnum.Deleted}>Deleted</MenuItem>
+            <MenuItem value="">{t('all')}</MenuItem>
+            <MenuItem value={StatusEnum.Enable}>{t('enable')}</MenuItem>
+            <MenuItem value={StatusEnum.Disable}>{t('disable')}</MenuItem>
+            <MenuItem value={StatusEnum.Deleted}>{t('deleted')}</MenuItem>
           </Select>
         </FormControl>
 
@@ -135,9 +137,9 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
           size="small"
           sx={{ minWidth: 150, '& .MuiInputLabel-root': { color: 'var(--mui-palette-primary-main)' } }}
         >
-          <InputLabel>Display Type</InputLabel>
+          <InputLabel>{t('displayType')}</InputLabel>
           <Select
-            label="Display Type"
+            label={t('displayType')}
             value={displayType !== undefined ? displayType.toString() : ''}
             onChange={(e) => {
               setDisplayType(e.target.value === '' ? undefined : (Number(e.target.value) as DisplayTypeEnum));
@@ -150,9 +152,9 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
               '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--mui-palette-primary-main)' },
             }}
           >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={DisplayTypeEnum.Public}>Public</MenuItem>
-            <MenuItem value={DisplayTypeEnum.Private}>Private</MenuItem>
+            <MenuItem value="">{t('all')}</MenuItem>
+            <MenuItem value={DisplayTypeEnum.Public}>{t('public')}</MenuItem>
+            <MenuItem value={DisplayTypeEnum.Private}>{t('private')}</MenuItem>
           </Select>
         </FormControl>
 
@@ -162,7 +164,7 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
           size="small"
           onClick={handleFilter}
         >
-          Filter
+          {t('filter')}
         </Button>
         <Button
           variant="outlined"
@@ -178,7 +180,7 @@ export function PathFilters({ onFilter }: { onFilter: (filters: GetPathRequest) 
           size="small"
           onClick={handleClear}
         >
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

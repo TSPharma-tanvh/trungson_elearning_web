@@ -23,6 +23,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -33,38 +34,70 @@ interface CourseDetailProps {
 }
 
 function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; fullScreen: boolean }) {
+  const { t } = useTranslation();
   const [courseExpandedLessons, setCourseExpandedLessons] = useState<Record<string, boolean>>({});
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
   );
+
+  const renderCoursePath = () => {
+    const coursePath = course.coursePath;
+    if (!coursePath) return null;
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title={t('coursePathInformation')} />
+        <CardContent>
+          <Grid container spacing={2}>
+            {renderField('id', coursePath.id)}
+            {renderField('name', coursePath.name)}
+            {renderField('detail', coursePath.detail)}
+            {renderField('isRequired', coursePath.isRequired ? 'Yes' : 'No')}
+            {renderField(
+              'startTime',
+              coursePath.startTime ? DateTimeUtils.formatISODateFromString(coursePath.startTime) : undefined
+            )}
+            {renderField(
+              'endTime',
+              coursePath.endTime ? DateTimeUtils.formatISODateFromString(coursePath.endTime) : undefined
+            )}
+            {renderField('status', coursePath.status)}
+            {renderField('displayType', coursePath.displayType)}
+            {renderField('categoryId', coursePath.categoryID)}
+            {renderField('thumbnailId', coursePath.thumbnailID)}
+          </Grid>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const renderEnrollmentCriteria = () => {
     if (!course.enrollmentCriteria || course.enrollmentCriteria.length === 0) return null;
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Enrollment Criteria" />
+        <CardHeader title={t('criteria')} />
         <CardContent>
           {course.enrollmentCriteria.map((criteria, index) => (
             <Box key={criteria.id ?? index} sx={{ mb: 2 }}>
               <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-                Criteria #{index + 1}
+                {t('criteria')} #{index + 1}
               </Typography>
               <Grid container spacing={2}>
-                {renderField('ID', criteria.id)}
-                {renderField('Name', criteria.name)}
-                {renderField('Description', criteria.desc)}
-                {renderField('Target Type', criteria.targetType)}
-                {renderField('Target ID', criteria.targetID)}
-                {renderField('Target Level ID', criteria.targetLevelID)}
-                {renderField('Max Capacity', criteria.maxCapacity)}
-                {renderField('Target Pharmacy ID', criteria.targetPharmacyID)}
+                {renderField('id', criteria.id)}
+                {renderField('name', criteria.name)}
+                {renderField('description', criteria.desc)}
+                {renderField('targetType', criteria.targetType)}
+                {renderField('targetID', criteria.targetID)}
+                {renderField('targetLevelID', criteria.targetLevelID)}
+                {renderField('maxCapacity', criteria.maxCapacity)}
+                {renderField('targetPharmacyID', criteria.targetPharmacyID)}
               </Grid>
             </Box>
           ))}
@@ -85,7 +118,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Lessons" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('lessons')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {course.lessons.map((lesson, index) => {
           const lessonId = lesson.id ?? `lesson-${index}`;
           const isExpanded = courseExpandedLessons[lessonId] || false;
@@ -118,15 +151,15 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', lesson.id)}
-                    {renderField('Detail', lesson.detail)}
-                    {renderField('Enable Play', lesson.enablePlay ? 'Yes' : 'No')}
-                    {renderField('Status', lesson.status)}
-                    {renderField('Lesson Type', lesson.lessonType)}
-                    {renderField('Enrollment Criteria ID', lesson.enrollmentCriteriaID)}
-                    {renderField('Category ID', lesson.categoryID)}
-                    {renderField('Thumbnail ID', lesson.thumbnailID)}
-                    {renderField('Video ID', lesson.videoID)}
+                    {renderField('id', lesson.id)}
+                    {renderField('detail', lesson.detail)}
+                    {renderField('enablePlay', lesson.enablePlay ? 'Yes' : 'No')}
+                    {renderField('status', lesson.status)}
+                    {renderField('lessonType', lesson.lessonType)}
+                    {renderField('enrollmentCriteriaID', lesson.enrollmentCriteriaID)}
+                    {renderField('categoryID', lesson.categoryID)}
+                    {renderField('thumbnailID', lesson.thumbnailID)}
+                    {renderField('videoID', lesson.videoID)}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -143,33 +176,34 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
         <Avatar src={course.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
           {course.name?.[0] ?? '?'}
         </Avatar>
-        <Typography variant="h5">{course.name ?? 'Unnamed Course'}</Typography>
+        <Typography variant="h5">{course.name ?? t('unnamedCourse')}</Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Course Information" />
+        <CardHeader title={t('courseInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', course.id)}
-            {renderField('Name', course.name)}
-            {renderField('Detail', course.detail)}
-            {renderField('Is Required', course.isRequired ? 'Yes' : 'No')}
-            {renderField('Course Type', course.courseType)}
-            {renderField('Display Type', course.displayType)}
-            {renderField('Disable Status', course.disableStatus)}
-            {renderField('Schedule Status', course.scheduleStatus)}
-            {renderField('Teacher ID', course.teacherId)}
-            {renderField('Meeting Link', course.meetingLink)}
+            {renderField('id', course.id)}
+            {renderField('name', course.name)}
+            {renderField('detail', course.detail)}
+            {renderField('isRequired', course.isRequired ? t('yes') : t('no'))}
+            {renderField('courseType', course.courseType)}
+            {renderField('displayType', course.displayType)}
+            {renderField('disableStatus', course.disableStatus)}
+            {renderField('scheduleStatus', course.scheduleStatus)}
+            {renderField('teacherId', course.teacherId)}
+            {renderField('meetingLink', course.meetingLink)}
             {renderField(
-              'Start Time',
+              'startTime',
               course.startTime ? DateTimeUtils.formatISODateFromDate(course.startTime) : undefined
             )}
-            {renderField('End Time', course.endTime ? DateTimeUtils.formatISODateFromDate(course.endTime) : undefined)}
-            {/* {renderField('Enrollment Criteria ID', course.enrollmentCriteria)} */}
-            {renderField('Category ID', course.categoryId)}
-            {renderField('Thumbnail ID', course.thumbnailId)}
+            {renderField('endTime', course.endTime ? DateTimeUtils.formatISODateFromDate(course.endTime) : undefined)}
+            {/* {renderField('enrollmentCriteriaId', course.enrollmentCriteria.id)} */}
+            {renderField('categoryId', course.categoryId)}
+            {renderField('thumbnailId', course.thumbnailId)}
           </Grid>
         </CardContent>
       </Card>
+      {renderCoursePath()}
       {renderEnrollmentCriteria()}
       {renderLessons()}
     </Box>
@@ -177,6 +211,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
 }
 
 export default function CourseDetailForm({ open, courseId, onClose }: CourseDetailProps) {
+  const { t } = useTranslation();
   const { courseUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [course, setCourse] = useState<CourseDetailResponse | null>(null);
@@ -202,7 +237,7 @@ export default function CourseDetailForm({ open, courseId, onClose }: CourseDeta
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Course Details</Typography>
+        <Typography variant="h6">{t('courseDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

@@ -95,6 +95,7 @@ export function useLessonSelectLoader({
       setTotalPages(1);
       setHasMore(true);
       void loadLessons(1, true);
+      setIsSelectOpen(false);
     }
 
     return () => {
@@ -106,7 +107,7 @@ export function useLessonSelectLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen, searchText, disableStatus, lessonType, loadLessons]);
+  }, [isOpen]);
 
   return {
     lessons,

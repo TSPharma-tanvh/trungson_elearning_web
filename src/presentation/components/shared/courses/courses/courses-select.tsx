@@ -13,7 +13,7 @@ import {
   ScheduleStatusEnum,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -39,9 +39,11 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
+import CourseDetailForm from '@/presentation/components/dashboard/courses/courses/course-detail-form';
 
 interface CourseSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   courseUsecase: CourseUsecase | null;
@@ -63,12 +65,14 @@ export function CourseSelectDialog({
   courseUsecase,
   value,
   onChange,
-  label = 'Courses',
+  label = 'courses',
   disabled = false,
   pathID,
   ...selectProps
 }: CourseSelectDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -76,7 +80,8 @@ export function CourseSelectDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useCourseSelectDebounce(localSearchText, 300);
   const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
-
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [selectedCourse, setSelectedCourse] = React.useState<CourseDetailResponse | null>(null);
   const {
     courses,
     loadingCourses,
@@ -185,12 +190,12 @@ export function CourseSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="course-select-label">{label}</InputLabel>
+        <InputLabel id="course-select-label">{t(label)}</InputLabel>
         <Select
           labelId="course-select-label"
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) => selectedCourseMap[selected]?.name || 'No Course Selected'}
@@ -202,7 +207,7 @@ export function CourseSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Course</Typography>
+            <Typography variant="h6">{t('selectCourses')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -220,7 +225,7 @@ export function CourseSelectDialog({
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Course Type</InputLabel>
+              <InputLabel>{t('courseType')}</InputLabel>
               <Select
                 value={courseType !== undefined ? String(courseType) : ''}
                 onChange={(e: SelectChangeEvent) => {
@@ -236,7 +241,7 @@ export function CourseSelectDialog({
               </Select>
             </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -254,16 +259,27 @@ export function CourseSelectDialog({
               >
                 <Checkbox checked={localValue === course.id} />
                 <ListItemText primary={course.name} />
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedCourse(course);
+                    setViewOpen(true);
+                  }}
+                  aria-label={t('showDetails')}
+                >
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
             {loadingCourses ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('loading')}
               </Typography>
             ) : null}
             {!loadingCourses && courses.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No courses found
+                {t('empty')}
               </Typography>
             )}
           </Box>
@@ -282,13 +298,23 @@ export function CourseSelectDialog({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained" disabled={!localValue}>
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedCourse ? (
+        <CourseDetailForm
+          open={viewOpen}
+          courseId={selectedCourse.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

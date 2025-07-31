@@ -123,23 +123,23 @@ export const StatusEnumUtils = {
 };
 
 export const LearningModeDisplayNames: Record<LearningModeEnum, string> = {
-  [LearningModeEnum.Online]: 'Online',
-  [LearningModeEnum.Offline]: 'Offline',
+  [LearningModeEnum.Online]: 'online',
+  [LearningModeEnum.Offline]: 'offline',
 };
 
 export const DisplayTypeDisplayNames: Record<DisplayTypeEnum, string> = {
-  [DisplayTypeEnum.Public]: 'Public',
-  [DisplayTypeEnum.Private]: 'Private',
+  [DisplayTypeEnum.Public]: 'public',
+  [DisplayTypeEnum.Private]: 'private',
 };
 
 export const ScheduleStatusDisplayNames: Record<ScheduleStatusEnum, string> = {
-  [ScheduleStatusEnum.Schedule]: 'Scheduled',
-  [ScheduleStatusEnum.Ongoing]: 'Ongoing',
-  [ScheduleStatusEnum.Cancelled]: 'Cancelled',
+  [ScheduleStatusEnum.Schedule]: 'scheduled',
+  [ScheduleStatusEnum.Ongoing]: 'ongoing',
+  [ScheduleStatusEnum.Cancelled]: 'cancelled',
 };
 
 export const StatusDisplayNames: Record<StatusEnum, string> = {
-  [StatusEnum.Enable]: 'Enabled',
-  [StatusEnum.Disable]: 'Disabled',
-  [StatusEnum.Deleted]: 'Deleted',
+  [StatusEnum.Enable]: 'enabled',
+  [StatusEnum.Disable]: 'disabled',
+  [StatusEnum.Deleted]: 'deleted',
 };

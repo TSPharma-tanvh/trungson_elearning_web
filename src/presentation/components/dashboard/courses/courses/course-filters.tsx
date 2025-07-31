@@ -5,11 +5,13 @@ import { GetCourseRequest } from '@/domain/models/courses/request/get-course-req
 import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
@@ -51,22 +53,22 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search course" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchCourses')} />
 
         {/* Is Required */}
         <CustomSelectFilter<boolean>
-          label="Is Required"
+          label={t('isRequired')}
           value={isRequired}
           onChange={setIsRequired}
           options={[
-            { value: true, label: 'Required' },
-            { value: false, label: 'Optional' },
+            { value: true, label: 'required' },
+            { value: false, label: 'optional' },
           ]}
         />
 
         {/* Course Type */}
         <CustomSelectFilter<LearningModeEnum>
-          label="Type"
+          label={t('type')}
           value={courseType}
           onChange={(val) => {
             setCourseType(val);
@@ -76,7 +78,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
 
         {/* Status */}
         <CustomSelectFilter<StatusEnum>
-          label="Status"
+          label={t('status')}
           value={status}
           onChange={(val) => {
             setStatus(val);
@@ -86,7 +88,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
 
         {/* Display Type */}
         <CustomSelectFilter<DisplayTypeEnum>
-          label="Display Type"
+          label={t('displayType')}
           value={displayType}
           onChange={(val) => {
             setDisplayType(val);
@@ -96,7 +98,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
 
         {/* Schedule status */}
         <CustomSelectFilter<ScheduleStatusEnum>
-          label="Status"
+          label={t('status')}
           value={scheduleStatus}
           onChange={(val) => {
             setScheduleStatus(val);
@@ -105,10 +107,10 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

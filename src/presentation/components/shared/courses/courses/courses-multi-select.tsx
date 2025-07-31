@@ -15,7 +15,7 @@ import {
   StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -41,9 +41,12 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
+import CourseDetailForm from '@/presentation/components/dashboard/courses/courses/course-detail-form';
 
 interface CourseMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   courseUsecase: CourseUsecase | null;
@@ -65,11 +68,12 @@ export function CourseMultiSelectDialog({
   courseUsecase,
   value,
   onChange,
-  label = 'Courses',
+  label = 'courses',
   disabled = false,
   ...selectProps
 }: CourseMultiSelectDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -77,7 +81,8 @@ export function CourseMultiSelectDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useCourseSelectDebounce(localSearchText, 300);
   const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
-
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [selectedCourse, setSelectedCourse] = React.useState<CourseDetailResponse | null>(null);
   const {
     courses,
     loadingCourses,
@@ -193,13 +198,13 @@ export function CourseMultiSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="course-select-label">{label}</InputLabel>
+        <InputLabel id="course-select-label">{t(label)}</InputLabel>
         <Select
           labelId="course-select-label"
           multiple
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
@@ -213,7 +218,7 @@ export function CourseMultiSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Courses</Typography>
+            <Typography variant="h6">{t('selectCourses')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -228,74 +233,74 @@ export function CourseMultiSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchCourses')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Course Type</InputLabel>
+              <InputLabel>{t('courseType')}</InputLabel>
               <Select
                 value={courseType !== undefined ? String(courseType) : ''}
                 onChange={(e: SelectChangeEvent) => {
                   setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
                 }}
-                label="Course Type"
+                label={t('courseType')}
               >
                 {filterOptions.courseType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
+                    {t(opt !== undefined ? LearningModeDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Display Type</InputLabel>
+              <InputLabel>{t('displayType')}</InputLabel>
               <Select
                 value={displayType !== undefined ? String(displayType) : ''}
                 onChange={(e: SelectChangeEvent) => {
                   setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined);
                 }}
-                label="Display Type"
+                label={t('displayType')}
               >
                 {filterOptions.displayType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? DisplayTypeDisplayNames[opt] : 'All'}
+                    {t(opt !== undefined ? DisplayTypeDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Schedule Status</InputLabel>
+              <InputLabel>{t('scheduleStatus')}</InputLabel>
               <Select
                 value={scheduleStatus ?? ''}
                 onChange={(e) => {
                   setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined);
                 }}
-                label="Schedule Status"
+                label={t('scheduleStatus')}
               >
                 {filterOptions.scheduleStatus.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'All'}
+                    {t(opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'All')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Disable Status</InputLabel>
+              <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus ?? ''}
                 onChange={(e) => {
                   setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
                 }}
-                label="Disable Status"
+                label={t('disableStatus')}
               >
                 {filterOptions.disableStatus.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? StatusDisplayNames[opt] : 'All'}
+                    {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -314,16 +319,27 @@ export function CourseMultiSelectDialog({
               >
                 <Checkbox checked={localValue.includes(course.id)} />
                 <ListItemText primary={course.name} />
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedCourse(course);
+                    setViewOpen(true);
+                  }}
+                  aria-label={t('showDetails')}
+                >
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
             {loadingCourses ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('loading')}
               </Typography>
             ) : null}
             {!loadingCourses && courses.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No courses found
+                {t('empty')}
               </Typography>
             )}
           </Box>
@@ -342,13 +358,23 @@ export function CourseMultiSelectDialog({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained">
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedCourse ? (
+        <CourseDetailForm
+          open={viewOpen}
+          courseId={selectedCourse.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }
