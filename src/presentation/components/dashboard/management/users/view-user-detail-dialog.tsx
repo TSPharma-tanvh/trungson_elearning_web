@@ -117,11 +117,11 @@ export function ViewUserDialog({ open, userId, onClose }: ViewUserDetailProps) {
             {/* Thumbnail */}
             <Grid item xs={12}>
               <Box display="flex" alignItems="center" gap={2}>
-                <Avatar src={user.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
+                <Avatar src={user.thumbnail?.resourceUrl ?? user?.employee?.avatar} sx={{ width: 64, height: 64 }}>
                   {user.firstName?.[0]}
                 </Avatar>
                 <Typography variant="h6">
-                  {user.firstName} {user.lastName}
+                  {user.employee?.name} ({user.userName})
                 </Typography>
               </Box>
             </Grid>

@@ -14,6 +14,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CardMedia,
   CircularProgress,
   Collapse,
   Dialog,
@@ -24,6 +25,9 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
+import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
 import CustomFieldTypography from '../../../core/text-field/custom-typhography';
 
@@ -37,6 +41,9 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
   const { t } = useTranslation();
   const [quizExpandedLessons, setQuizExpandedLessons] = useState<Record<string, boolean>>({});
   const [progressExpandedLessons, setProgressExpandedLessons] = useState<Record<string, boolean>>({});
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
+  const [imageFullscreen, setImageFullscreen] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -195,39 +202,65 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
     );
   };
 
-  return (
-    <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
-      <Box display="flex" alignItems="center" gap={2} mb={3}>
-        <Avatar src={lesson.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
-          {lesson.name?.[0] ?? '?'}
-        </Avatar>
-        <Typography variant="h5">{lesson.name ?? ''}</Typography>
-      </Box>
+  const renderVideoPreview = () => {
+    if (!lesson.video?.resourceUrl) return null;
+
+    return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('lessonInformation')} />
+        <CardHeader title={t('videoPreview')} />
         <CardContent>
-          <Grid container spacing={2}>
-            {renderField('lessonId', lesson.id)}
-            {renderField('lessonCourseID', lesson.courseID)}
-            {renderField('lessonName', lesson.name)}
-            {renderField('lessonDetail', lesson.detail)}
-            {renderField('lessonEnablePlay', lesson.enablePlay ? t('yes') : t('no'))}
-            {renderField('lessonStatus', t(lesson.status.charAt(0).toLowerCase() + t(lesson.status).slice(1)))}
-            {renderField('lessonType', t(lesson.lessonType.charAt(0).toLowerCase() + t(lesson.lessonType).slice(1)))}
-            {renderField('lessonEnrollmentCriteriaID', lesson.enrollmentCriteriaID)}
-            {renderField('lessonCategoryID', lesson.categoryID)}
-            {renderField('lessonThumbnailID', lesson.thumbnailID)}
-            {renderField('lessonVideoID', lesson.videoID)}
-            {renderField('lessonCategoryName', lesson.category?.categoryName)}
-            {renderField('lessonThumbnailFileName', lesson.thumbnail?.name)}
-            {renderField('lessonVideoFileName', lesson.video?.name)}
-          </Grid>
+          <CustomVideoPlayer src={lesson.video.resourceUrl} fullscreen />
         </CardContent>
       </Card>
-      {renderEnrollmentCriteria()}
-      {renderQuizzes()}
-      {renderUserProgress()}
-    </Box>
+    );
+  };
+
+  return (
+    <>
+      <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
+        <Box display="flex" alignItems="center" gap={2} mb={3}>
+          <Box onClick={() => setImagePreviewOpen(true)} sx={{ cursor: 'pointer' }}>
+            <Avatar src={lesson.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
+              {lesson.name?.[0] ?? '?'}
+            </Avatar>
+          </Box>
+          <Typography variant="h5">{lesson.name ?? ''}</Typography>
+        </Box>
+        <Card sx={{ mb: 2 }}>
+          <CardHeader title={t('lessonInformation')} />
+          <CardContent>
+            <Grid container spacing={2}>
+              {renderField('lessonId', lesson.id)}
+              {renderField('lessonCourseID', lesson.courseID)}
+              {renderField('lessonName', lesson.name)}
+              {renderField('lessonDetail', lesson.detail)}
+              {renderField('lessonEnablePlay', lesson.enablePlay ? t('yes') : t('no'))}
+              {renderField('lessonStatus', t(lesson.status.charAt(0).toLowerCase() + t(lesson.status).slice(1)))}
+              {renderField('lessonType', t(lesson.lessonType.charAt(0).toLowerCase() + t(lesson.lessonType).slice(1)))}
+              {renderField('lessonEnrollmentCriteriaID', lesson.enrollmentCriteriaID)}
+              {renderField('lessonCategoryID', lesson.categoryID)}
+              {renderField('lessonThumbnailID', lesson.thumbnailID)}
+              {renderField('lessonVideoID', lesson.videoID)}
+              {renderField('lessonCategoryName', lesson.category?.categoryName)}
+              {renderField('lessonThumbnailFileName', lesson.thumbnail?.name)}
+              {renderField('lessonVideoFileName', lesson.video?.name)}
+            </Grid>
+          </CardContent>
+        </Card>
+        {renderVideoPreview()}
+        {renderEnrollmentCriteria()}
+        {renderQuizzes()}
+        {renderUserProgress()}
+      </Box>
+      <ImagePreviewDialog
+        open={imagePreviewOpen}
+        onClose={() => setImagePreviewOpen(false)}
+        imageUrl={lesson.thumbnail?.resourceUrl || ''}
+        title={lesson.name || t('thumbnailPreview')}
+        fullscreen={imageFullscreen}
+        onToggleFullscreen={() => setImageFullscreen((prev) => !prev)}
+      />
+    </>
   );
 }
 

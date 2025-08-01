@@ -12,7 +12,7 @@ import {
   ScheduleStatusEnum,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -38,6 +38,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
@@ -63,12 +64,13 @@ export function ClassMultiSelectDialog({
   classUsecase,
   value,
   onChange,
-  label = 'Classes',
+  label = 'class',
   disabled = false,
   ...selectProps
 }: ClassMultiSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
@@ -179,20 +181,20 @@ export function ClassMultiSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="class-multi-select-label">{label}</InputLabel>
+        <InputLabel id="class-multi-select-label">{t(label)}</InputLabel>
         <Select
           labelId="class-multi-select-label"
           multiple
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
             selected
               .map((id) => selectedClassMap[id]?.className)
               .filter(Boolean)
-              .join(', ') || 'No Class Selected'
+              .join(', ') || t('noClassSelected')
           }
           open={false}
           {...selectProps}
@@ -202,7 +204,7 @@ export function ClassMultiSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Class</Typography>
+            <Typography variant="h6">{t('selectClass')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -217,26 +219,26 @@ export function ClassMultiSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search classes..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchClass')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Class Type</InputLabel>
+              <InputLabel>{t('classType')}</InputLabel>
               <Select
                 value={classType !== undefined ? String(classType) : ''}
                 onChange={(e: SelectChangeEvent) => {
                   setClassType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
                 }}
-                label="Class Type"
+                label={t('classType')}
               >
                 {filterOptions.courseType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
+                    {t(opt !== undefined ? LearningModeDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -265,26 +267,27 @@ export function ClassMultiSelectDialog({
                     mr: 1,
                   }}
                 />
-                <Button
+                <IconButton
                   size="small"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedClass(cls);
                     setViewOpen(true);
                   }}
+                  aria-label={t('showDetails')}
                 >
-                  Show Detail
-                </Button>
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
             {loadingClasses ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('loading')}
               </Typography>
             ) : null}
             {!loadingClasses && classes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No classes found
+                {t('empty')}
               </Typography>
             )}
           </Box>
@@ -303,9 +306,9 @@ export function ClassMultiSelectDialog({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained" disabled={localValue.length === 0}>
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

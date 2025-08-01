@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -31,6 +32,7 @@ export function CreateClassTeacherDialog({
   open,
   onClose,
 }: CreateTeacherFormProps) {
+  const { t } = useTranslation();
   const { userUsecase, courseUsecase, classUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
@@ -96,7 +98,7 @@ export function CreateClassTeacherDialog({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Tạo lớp học</Typography>
+        <Typography variant="h6">{t('createTeacher')}</Typography>
         <Box>
           <IconButton
             onClick={() => {
@@ -125,7 +127,7 @@ export function CreateClassTeacherDialog({
 
           <Grid item xs={12}>
             <CustomTextField
-              label="Mô tả"
+              label={t('description')}
               value={form.description || ''}
               onChange={(val) => {
                 handleChange('description', val);
@@ -136,7 +138,7 @@ export function CreateClassTeacherDialog({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <CourseMultiSelectDialog
               courseUsecase={courseUsecase}
               value={form.courseID ? form.courseID.split(',').filter((id) => id) : []}
@@ -147,7 +149,7 @@ export function CreateClassTeacherDialog({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <ClassMultiSelectDialog
               classUsecase={classUsecase}
               value={form.classID ? form.classID.split(',').filter((id) => id) : []}
@@ -158,24 +160,24 @@ export function CreateClassTeacherDialog({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <CustomSelectDropDown<string>
-              label="Trạng thái"
+              label={t('status')}
               value={form.status}
               onChange={(val) => {
                 handleChange('status', val);
               }}
               disabled={disabled}
               options={[
-                { value: ActiveEnum[ActiveEnum.Active], label: 'Kích hoạt' },
-                { value: ActiveEnum[ActiveEnum.Inactive], label: 'Tạm khóa' },
+                { value: ActiveEnum[ActiveEnum.Active], label: 'active' },
+                { value: ActiveEnum[ActiveEnum.Inactive], label: 'inactive' },
               ]}
             />
           </Grid>
 
           <Grid item xs={12}>
             <CustomButton
-              label="Tạo lớp"
+              label={t('create')}
               onClick={() => {
                 onSubmit(form);
               }}

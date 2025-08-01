@@ -6,11 +6,12 @@ import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { type UserUsecase } from '@/domain/usecases/user/user-usecase';
 import { useUserSelectDebounce } from '@/presentation/hooks/user/use-user-select-debounced';
 import { useUserSelectLoader } from '@/presentation/hooks/user/use-user-select-loader';
-import { AccountCircle } from '@mui/icons-material';
+import { AccountCircle, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
@@ -31,6 +32,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../core/text-field/custom-search-input';
@@ -48,12 +50,13 @@ export function UserMultiSelectDialog({
   userUsecase,
   value,
   onChange,
-  label = 'Users',
+  label = 'users',
   disabled = false,
   ...selectProps
 }: UserSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
@@ -152,21 +155,21 @@ export function UserMultiSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="user-select-label">{label}</InputLabel>
+        <InputLabel id="user-select-label">{t(label)}</InputLabel>
         <Select
           labelId="user-select-label"
           multiple
           value={loading ? [] : value || []}
           input={
             <OutlinedInput
-              label={label}
+              label={t(label)}
               startAdornment={<AccountCircle sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />}
             />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
             loading
-              ? 'Loading...'
+              ? 'loading'
               : selected
                   .map((id) => {
                     const user = selectedUserMap[id];
@@ -179,7 +182,7 @@ export function UserMultiSelectDialog({
         >
           {Object.values(selectedUserMap).map((user) => (
             <MenuItem key={user.id} value={user.id}>
-              {`${user.firstName} ${user.lastName}`}
+              {`${user.employee?.name} (${user.userName})`}
             </MenuItem>
           ))}
         </Select>
@@ -188,7 +191,7 @@ export function UserMultiSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm">
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography mb={1}>Select Users</Typography>
+            <Typography mb={1}>{t('selectUser')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -202,7 +205,7 @@ export function UserMultiSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchUser')} />
         </DialogTitle>
 
         <DialogContent dividers>
@@ -218,8 +221,13 @@ export function UserMultiSelectDialog({
                   }}
                 >
                   <Checkbox checked={isSelected} />
+                  <Avatar
+                    src={user?.employee?.avatar}
+                    alt={user?.employee?.name}
+                    sx={{ width: 32, height: 32, marginRight: 2 }}
+                  />
                   <ListItemText
-                    primary={`${user.firstName} ${user.lastName}`}
+                    primary={`${user.employee?.name} (${user.userName})`}
                     sx={{
                       overflow: 'hidden',
                       whiteSpace: 'nowrap',
@@ -228,16 +236,17 @@ export function UserMultiSelectDialog({
                       mr: 1,
                     }}
                   />
-                  <Button
+                  <IconButton
                     size="small"
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedUser(user);
                       setViewOpen(true);
                     }}
+                    aria-label="Show Details"
                   >
-                    Show Detail
-                  </Button>
+                    <InfoOutlined />
+                  </IconButton>
                 </MenuItem>
               );
             })}

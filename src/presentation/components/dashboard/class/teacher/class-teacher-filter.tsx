@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
-import { ActiveEnum } from '@/utils/enum/core-enum';
+import { ActiveEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
 import {
   Button,
   Card,
@@ -15,20 +15,25 @@ import {
   Stack,
 } from '@mui/material';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
+
+import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
+import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function ClassTeacherFilters({
   onFilter,
 }: {
   onFilter: (filters: GetClassTeacherRequest) => void;
 }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [_isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
-  const [status, setStatus] = React.useState<string | undefined>(undefined);
+  const [status, setStatus] = React.useState<ActiveEnum | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetClassTeacherRequest({
       searchText: searchText || undefined,
-      status: status !== undefined ? status.toString() : undefined,
+      status: status !== undefined ? ActiveEnum[status] : undefined,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -44,45 +49,32 @@ export function ClassTeacherFilters({
   };
 
   return (
-    <Card sx={{ p: 2 }}>
+    <Card
+      sx={{
+        p: 2,
+        backgroundColor: 'var(--mui-palette-common-white)',
+        color: 'var(--mui-palette-primary-main)',
+        border: '1px solid var(--mui-palette-primary-main)',
+      }}
+    >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <OutlinedInput
-          size="small"
-          value={searchText}
-          onChange={(e) => {
-            setSearchText(e.target.value);
-          }}
-          fullWidth
-          placeholder="Search course"
-          startAdornment={
-            <InputAdornment position="start">
-              <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
-            </InputAdornment>
-          }
-          sx={{ maxWidth: 250 }}
-        />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchTeacher')} />
 
         {/* Status */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            value={status ?? ''}
-            onChange={(e) => {
-              setStatus(e.target.value === '' ? undefined : e.target.value);
-            }}
-            label="Status"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={ActiveEnum[ActiveEnum.Active]}>Active</MenuItem>
-            <MenuItem value={ActiveEnum[ActiveEnum.Inactive]}>Inactive</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<ActiveEnum>
+          label={t('status')}
+          value={status}
+          onChange={(val: ActiveEnum | undefined) => {
+            setStatus(val);
+          }}
+          options={CoreEnumUtils.getEnumOptions(ActiveEnum)}
+        />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

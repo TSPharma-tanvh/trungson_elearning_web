@@ -4,7 +4,7 @@ export class CreateClassRequest {
   duration!: string; // TimeSpan in .NET = string in format HH:mm:ss
   locationID?: string;
   teacherID?: string;
-  qrCodeURL?: string;
+  isCreateQrCode?: boolean;
   startAt!: Date;
   endAt!: Date;
   minuteLate = 10;
@@ -40,7 +40,7 @@ export class CreateClassRequest {
       duration: json.duration,
       locationID: json.locationID,
       teacherID: json.teacherID,
-      qrCodeURL: json.qrCodeURL,
+      isCreateQrCode: json.isCreateQrCode,
       startAt: new Date(json.startAt),
       endAt: new Date(json.endAt),
       minuteLate: json.minuteLate,
@@ -72,7 +72,7 @@ export class CreateClassRequest {
       duration: this.duration,
       locationID: this.locationID,
       teacherID: this.teacherID,
-      qrCodeURL: this.qrCodeURL,
+      isCreateQrCode: this.isCreateQrCode,
       startAt: this.startAt?.toISOString(),
       endAt: this.endAt?.toISOString(),
       minuteLate: this.minuteLate,
@@ -109,7 +109,7 @@ export class CreateClassRequest {
     if (this.classDetail) fd.append('ClassDetail', this.classDetail);
     if (this.locationID) fd.append('LocationID', this.locationID);
     if (this.teacherID) fd.append('TeacherID', this.teacherID);
-    if (this.qrCodeURL) fd.append('QRCodeURL', this.qrCodeURL);
+    if (this.isCreateQrCode !== undefined) fd.append('IsCreateQrCode', String(this.isCreateQrCode));
     if (this.enrollmentCriteriaIDs) fd.append('EnrollmentCriteriaIDs', this.enrollmentCriteriaIDs);
     if (this.meetingLink) fd.append('MeetingLink', this.meetingLink);
     if (this.categoryID) fd.append('CategoryID', this.categoryID);

@@ -4,6 +4,7 @@ import * as React from 'react';
 import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
 import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
+import { t } from 'i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -47,21 +48,25 @@ export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
         {/* Search Text */}
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search class" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchClass')} />
 
         {/* Class Type */}
         <CustomSelectFilter<LearningModeEnum>
-          label="Class Type"
+          label={t('classType')}
           value={classType}
-          onChange={(val) => { setClassType(val); }}
+          onChange={(val) => {
+            setClassType(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(LearningModeEnum)}
         />
 
         {/* Schedule Status */}
         <CustomSelectFilter<ScheduleStatusEnum>
-          label="Schedule Status"
+          label={t('scheduleStatus')}
           value={scheduleStatus}
-          onChange={(val) => { setScheduleStatus(val); }}
+          onChange={(val) => {
+            setScheduleStatus(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(ScheduleStatusEnum)}
           minWidth={180}
         />
@@ -73,7 +78,7 @@ export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest
           onClick={handleFilter}
           sx={{ backgroundColor: 'var(--mui-palette-primary-main)', color: 'var(--mui-palette-common-white)' }}
         >
-          Filter
+          {t('filter')}
         </Button>
         <Button
           variant="outlined"
@@ -90,7 +95,7 @@ export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest
             },
           }}
         >
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

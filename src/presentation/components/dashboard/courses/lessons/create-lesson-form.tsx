@@ -6,6 +6,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 import { Image as ImageIcon, VideoCamera } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 
@@ -28,6 +29,7 @@ export function CreateLessonDialog({
   open,
   onClose,
 }: CreateLessonFormProps) {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
@@ -74,20 +76,16 @@ export function CreateLessonDialog({
 
   const handleSubmit = () => {
     if (!form.name) {
-      CustomSnackBar.showSnackbar('Vui lòng nhập tên bài học.', 'error');
+      CustomSnackBar.showSnackbar(t('missingLessonName'), 'error');
       return;
     }
     if (!form.video) {
-      CustomSnackBar.showSnackbar('Vui lòng tải lên video.', 'error');
-      return;
-    }
-    if (!form.video) {
-      CustomSnackBar.showSnackbar('Vui lòng tải lên video.', 'error');
+      CustomSnackBar.showSnackbar(t('missingVideo'), 'error');
       return;
     }
 
     if (!form.thumbnail) {
-      CustomSnackBar.showSnackbar('Vui lòng tải lên thumbnail.', 'error');
+      CustomSnackBar.showSnackbar(t('missingThumbnail'), 'error');
       return;
     }
 
@@ -97,7 +95,7 @@ export function CreateLessonDialog({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Tạo mới bài học</Typography>
+        <Typography variant="h6">{t('createLesson')}</Typography>
         <Box>
           <IconButton
             onClick={() => {
@@ -114,9 +112,9 @@ export function CreateLessonDialog({
 
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', padding: 2 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={12} mt={1}>
             <CustomTextField
-              label="Tên bài học"
+              label={t('name')}
               value={form.name}
               onChange={(val) => {
                 handleChange('name', val);
@@ -127,7 +125,7 @@ export function CreateLessonDialog({
 
           <Grid item xs={12}>
             <CustomTextField
-              label="Chi tiết"
+              label={t('detail')}
               value={form.detail}
               onChange={(val) => {
                 handleChange('detail', val);
@@ -141,11 +139,13 @@ export function CreateLessonDialog({
 
           {/* Video Upload */}
           <Grid item xs={12}>
-            <Typography variant="h6">Video (bắt buộc)</Typography>
+            <Typography variant="h6">
+              {t('video')} ({t('required')})
+            </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <CustomTextField
-              label="Video Document No"
+              label={t('videoDocumentNo')}
               value={form.videoDocumentNo}
               onChange={(val) => {
                 handleChange('videoDocumentNo', val);
@@ -156,7 +156,7 @@ export function CreateLessonDialog({
           </Grid>
           <Grid item xs={12} sm={6}>
             <CustomTextField
-              label="Video Prefix Name"
+              label={t('videoPrefixName')}
               value={form.videoPrefixName}
               onChange={(val) => {
                 handleChange('videoPrefixName', val);
@@ -173,7 +173,7 @@ export function CreateLessonDialog({
               disabled={disabled}
               startIcon={<VideoCamera size={20} />}
             >
-              Upload Video
+              {t('uploadVideo')}
               <input
                 type="file"
                 hidden
@@ -196,11 +196,13 @@ export function CreateLessonDialog({
 
           {/* Thumbnail Upload */}
           <Grid item xs={12}>
-            <Typography variant="h6">Thumbnail (bắt buộc)</Typography>
+            <Typography variant="h6">
+              {t('thumbnail')} ({t('required')})
+            </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <CustomTextField
-              label="Thumbnail Document No"
+              label={t('thumbnailDocumentNo')}
               value={form.thumbDocumentNo}
               onChange={(val) => {
                 handleChange('thumbDocumentNo', val);
@@ -211,7 +213,7 @@ export function CreateLessonDialog({
           </Grid>
           <Grid item xs={12} sm={6}>
             <CustomTextField
-              label="Thumbnail Prefix Name"
+              label={t('thumbnailPrefixName')}
               value={form.thumbPrefixName}
               onChange={(val) => {
                 handleChange('thumbPrefixName', val);
@@ -228,7 +230,7 @@ export function CreateLessonDialog({
               disabled={disabled}
               startIcon={<ImageIcon size={20} />}
             >
-              Upload Thumbnail
+              {t('uploadThumbnail')}
               <input
                 type="file"
                 hidden
@@ -261,7 +263,7 @@ export function CreateLessonDialog({
               >
                 <img
                   src={thumbnailPreviewUrl}
-                  alt="Thumbnail Preview"
+                  alt={t('thumbnailPreview')}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </Box>
@@ -269,7 +271,7 @@ export function CreateLessonDialog({
           ) : null}
 
           <Grid item xs={12}>
-            <CustomButton label="Tạo mới" onClick={handleSubmit} loading={loading} disabled={disabled} />
+            <CustomButton label={t('create')} onClick={handleSubmit} loading={loading} disabled={disabled} />
           </Grid>
         </Grid>
       </DialogContent>

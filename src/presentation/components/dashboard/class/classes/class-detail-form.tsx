@@ -21,6 +21,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
@@ -33,12 +34,14 @@ interface ClassDetailProps {
 }
 
 function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; fullScreen: boolean }) {
+  const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [fullScreenQR, setFullScreenQR] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -49,22 +52,27 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Enrollment Criteria" />
+        <CardHeader title={t('enrollment')} />
         <CardContent>
           {classes.enrollmentCriteria.map((criteria, index) => (
             <Box key={criteria.id ?? index} sx={{ mb: 2 }}>
               <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-                Criteria #{index + 1}
+                {t('criteria')} #{index + 1}
               </Typography>
               <Grid container spacing={2}>
-                {renderField('ID', criteria.id)}
-                {renderField('Name', criteria.name)}
-                {renderField('Description', criteria.desc)}
-                {renderField('Target Type', criteria.targetType)}
-                {renderField('Target ID', criteria.targetID)}
-                {renderField('Target Level ID', criteria.targetLevelID)}
-                {renderField('Max Capacity', criteria.maxCapacity)}
-                {renderField('Target Pharmacy ID', criteria.targetPharmacyID)}
+                {renderField('id', criteria.id)}
+                {renderField('name', criteria.name)}
+                {renderField('description', criteria.desc)}
+                {renderField(
+                  'targetType',
+                  criteria.targetType !== undefined
+                    ? t(criteria.targetType?.charAt(0).toLowerCase() + t(criteria.targetType).slice(1))
+                    : ''
+                )}
+                {renderField('targetId', criteria.targetID)}
+                {renderField('targetLevelId', criteria.targetLevelID)}
+                {renderField('maxCapacity', criteria.maxCapacity)}
+                {renderField('targetPharmacyId', criteria.targetPharmacyID)}
               </Grid>
             </Box>
           ))}
@@ -78,7 +86,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Attached Files" />
+        <CardHeader title={t('attachedFiles')} />
         <CardContent>
           <Grid container spacing={2}>
             {classes.fileClassRelation.map((r) => {
@@ -149,7 +157,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                           alignItems: 'center',
                         }}
                       >
-                        <Typography variant="body2">No preview</Typography>
+                        <Typography variant="body2">{t('noPreview')}</Typography>
                       </Box>
                     ) : null}
                   </Box>
@@ -161,22 +169,6 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
               );
             })}
           </Grid>
-
-          {/* Preview image modal */}
-          {previewUrl ? (
-            <ImagePreviewDialog
-              open={Boolean(previewUrl)}
-              onClose={() => {
-                setPreviewUrl(null);
-              }}
-              imageUrl={previewUrl}
-              title="Image Preview"
-              fullscreen={fullScreen}
-              onToggleFullscreen={() => {
-                undefined;
-              }}
-            />
-          ) : null}
         </CardContent>
       </Card>
     );
@@ -188,35 +180,50 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
         <Avatar src={classes.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
           {classes.className?.[0] ?? '?'}
         </Avatar>
-        <Typography variant="h5">{classes.className ?? 'Unnamed Class'}</Typography>
+        <Typography variant="h5">{classes.className ?? ''}</Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Class Information" />
+        <CardHeader title={t('classInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', classes.id)}
-            {renderField('Class Name', classes.className)}
-            {renderField('Class Detail', classes.classDetail)}
-            {renderField('Duration', classes.duration)}
-            {renderField('Location ID', classes.locationID)}
-            {renderField('Teacher ID', classes.teacherID)}
-            {renderField('Class Type', classes.classType)}
-            {renderField('Meeting Link', classes.meetingLink)}
-            {renderField('Schedule Status', classes.scheduleStatus)}
-            {renderField('Category ID', classes.categoryID)}
-            {renderField('Thumbnail ID', classes.thumbnailID)}
-            {renderField('Minute Late', classes.minuteLate)}
+            {renderField('id', classes.id)}
+            {renderField('className', classes.className)}
+            {renderField('classDetail', classes.classDetail)}
+            {renderField('duration', classes.duration)}
+            {renderField('locationId', classes.locationID)}
+            {renderField('teacherId', classes.teacherID)}
             {renderField(
-              'Start At',
-              classes.startAt ? DateTimeUtils.formatISODateFromDate(classes.startAt) : undefined
+              'classType',
+              classes.classType !== undefined
+                ? t(classes.classType?.charAt(0).toLowerCase() + t(classes.classType).slice(1))
+                : ''
             )}
-            {renderField('End At', classes.endAt ? DateTimeUtils.formatISODateFromDate(classes.endAt) : undefined)}
-            {classes.qrCodeURL ? (
+            {renderField('meetingLink', classes.meetingLink)}
+            {renderField(
+              'scheduleStatus',
+              classes.scheduleStatus !== undefined
+                ? t(classes.scheduleStatus?.charAt(0).toLowerCase() + t(classes.scheduleStatus).slice(1))
+                : ''
+            )}
+            {renderField('categoryId', classes.categoryID)}
+            {renderField('thumbnailId', classes.thumbnailID)}
+            {renderField('minuteLate', classes.minuteLate)}
+            {renderField('startAt', classes.startAt ? DateTimeUtils.formatISODateFromDate(classes.startAt) : undefined)}
+            {renderField('endAt', classes.endAt ? DateTimeUtils.formatISODateFromDate(classes.endAt) : undefined)}
+            {classes.qrCode?.resourceUrl ? (
               <Grid item xs={12} sm={fullScreen ? 4 : 6}>
                 <Typography variant="subtitle2" fontWeight={500}>
-                  QR Code
+                  {t('qrCode')}
                 </Typography>
-                <Box component="img" src={classes.qrCodeURL} alt="QR Code" sx={{ maxWidth: '100%', height: 'auto' }} />
+                <Box
+                  component="img"
+                  src={classes.qrCode?.resourceUrl}
+                  alt="QR Code"
+                  sx={{ maxWidth: '80px', height: 'auto' }}
+                  onClick={() => {
+                    setPreviewUrl(classes.qrCode?.resourceUrl ?? '');
+                  }}
+                />
               </Grid>
             ) : null}
           </Grid>
@@ -225,11 +232,27 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
 
       {renderEnrollmentCriteria()}
       {renderFileResources()}
+
+      {previewUrl ? (
+        <ImagePreviewDialog
+          open={Boolean(previewUrl)}
+          onClose={() => {
+            setPreviewUrl(null);
+          }}
+          imageUrl={previewUrl}
+          title={t('imagePreview')}
+          fullscreen={fullScreenQR}
+          onToggleFullscreen={() => {
+            setFullScreenQR((prev) => !prev);
+          }}
+        />
+      ) : null}
     </Box>
   );
 }
 
 export default function ClassDetailForm({ open, classId, onClose }: ClassDetailProps) {
+  const { t } = useTranslation();
   const { classUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [classes, setClass] = useState<ClassResponse | null>(null);
@@ -255,7 +278,7 @@ export default function ClassDetailForm({ open, classId, onClose }: ClassDetailP
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Class Details</Typography>
+        <Typography variant="h6">{t('classDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

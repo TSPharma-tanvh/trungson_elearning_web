@@ -18,6 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Box, useMediaQuery, useTheme } from '@mui/system';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
@@ -35,6 +36,8 @@ interface EditClassTeacherDialogProps {
 export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onSubmit }: EditClassTeacherDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
+
   const { userUsecase, courseUsecase, classUsecase } = useDI();
   const [detailRows, _setDetailRows] = useState(3);
 
@@ -76,7 +79,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update Teacher
+          {t('updateTeacher')}
         </Typography>
         <Box>
           <IconButton
@@ -107,7 +110,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
 
           <Grid item xs={12}>
             <CustomTextField
-              label="Mô tả"
+              label={t('description')}
               value={formData.description || ''}
               onChange={(val) => {
                 handleChange('description', val);
@@ -141,14 +144,14 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
           </Grid>
           <Grid item xs={12}>
             <CustomSelectDropDown<string>
-              label="Trạng thái"
+              label={t('status')}
               value={formData.status}
               onChange={(val) => {
                 handleChange('status', val);
               }}
               options={[
-                { value: ActiveEnum[ActiveEnum.Active], label: 'Kích hoạt' },
-                { value: ActiveEnum[ActiveEnum.Inactive], label: 'Tạm khóa' },
+                { value: ActiveEnum[ActiveEnum.Active], label: 'active' },
+                { value: ActiveEnum[ActiveEnum.Inactive], label: 'inactive' },
               ]}
             />
           </Grid>
@@ -173,7 +176,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -181,7 +184,7 @@ export function UpdateClassTeacherFormDialog({ open, data: teacher, onClose, onS
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

@@ -26,6 +26,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
@@ -45,6 +46,7 @@ interface EditLessonDialogProps {
 
 export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }: EditLessonDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { categoryUsecase, fileUsecase, quizUsecase } = useDI();
 
@@ -78,7 +80,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               ? LearningModeEnum[lesson.lessonType as keyof typeof LearningModeEnum]
               : undefined,
           quizIDs: lesson?.quizzes !== undefined ? lesson?.quizzes?.map((quiz) => quiz.id).join(',') : undefined,
-
           categoryID: lesson.categoryID || undefined,
           thumbnailID: lesson.thumbnailID || undefined,
           categoryEnum: CategoryEnum.Lesson,
@@ -254,8 +255,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
   };
 
   const lessonTypeOptions = [
-    { value: LearningModeEnum.Online, label: 'Online' },
-    { value: LearningModeEnum.Offline, label: 'Offline' },
+    { value: LearningModeEnum.Online, label: 'online' },
+    { value: LearningModeEnum.Offline, label: 'offline' },
+  ];
+
+  const statusTypeOptions = [
+    { value: StatusEnum.Enable, label: 'enable' },
+    { value: StatusEnum.Disable, label: 'disable' },
+    { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
   if (!lesson) return null;
@@ -264,7 +271,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update Lesson
+          {t('updateLessons')}
         </Typography>
         <Box>
           <IconButton
@@ -283,13 +290,13 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {lesson?.id}
+            {t('id')}: {lesson?.id}
           </Typography>
 
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
-                label="Name"
+                label={t('name')}
                 value={formData.name}
                 onChange={(value) => {
                   handleChange('name', value);
@@ -301,7 +308,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
 
             <Grid item xs={12}>
               <CustomTextField
-                label="Detail"
+                label={t('detail')}
                 value={formData.detail}
                 onChange={(value) => {
                   handleChange('detail', value);
@@ -312,13 +319,37 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="Lesson Type"
+                label={t('lessonType')}
                 value={formData.lessonType ?? ''}
                 onChange={(value) => {
                   handleChange('lessonType', value);
                 }}
                 disabled={isSubmitting}
                 options={lessonTypeOptions}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label={t('status')}
+                value={formData.status ?? ''}
+                onChange={(value) => {
+                  handleChange('status', value);
+                }}
+                disabled={isSubmitting}
+                options={statusTypeOptions}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={formData.categoryID}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
+                categoryEnum={CategoryEnum.Lesson}
+                disabled={isSubmitting}
               />
             </Grid>
 
@@ -345,22 +376,11 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                 label="Enrollment Criteria"
               />
             </Grid> */}
-            <Grid item xs={12} sm={6}>
-              <CategorySelect
-                categoryUsecase={categoryUsecase}
-                value={formData.categoryID}
-                onChange={(value) => {
-                  handleChange('categoryID', value);
-                }}
-                categoryEnum={CategoryEnum.Lesson}
-                disabled={isSubmitting}
-              />
-            </Grid>
 
             {/* Image */}
 
             <Grid item xs={12}>
-              <Typography variant="h6">Update Thumbnail</Typography>
+              <Typography variant="h6">{t('updateThumbnail')}</Typography>
             </Grid>
 
             <Grid item xs={12}>
@@ -373,11 +393,11 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="select" aria-label="select from resources">
-                  Select from Resources
+                <ToggleButton value="select" aria-label={t('selectFromResources')}>
+                  {t('selectFromResources')}
                 </ToggleButton>
-                <ToggleButton value="upload" aria-label="upload file">
-                  Upload File
+                <ToggleButton value="upload" aria-label={t('uploadFile')}>
+                  {t('uploadFile')}
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
@@ -389,14 +409,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
                   onChange={handleThumbnailSelectChange}
-                  label="Thumbnail"
+                  label={t('thumbnail')}
                   disabled={isSubmitting}
                 />
               ) : (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Document No"
+                      label={t('thumbnailDocumentNo')}
                       value={formData.thumbDocumentNo}
                       onChange={(value) => {
                         handleChange('thumbDocumentNo', value);
@@ -407,7 +427,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Prefix Name"
+                      label={t('thumbnailPrefixName')}
                       value={formData.thumbPrefixName}
                       onChange={(value) => {
                         handleChange('thumbPrefixName', value);
@@ -424,7 +444,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                       disabled={isSubmitting}
                       startIcon={<ImageIcon {...iconStyle} />}
                     >
-                      Upload Thumbnail
+                      {t('uploadThumbnail')}
                       <input
                         type="file"
                         hidden
@@ -447,7 +467,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                           disabled={isSubmitting}
                         />
                       }
-                      label="Delete Old Thumbnail"
+                      label={t('deleteOldThumbnail')}
                     />
                   </Grid>
                 </Grid>
@@ -472,7 +492,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                 >
                   <img
                     src={previewUrl ?? lesson.thumbnail?.resourceUrl ?? ''}
-                    alt="Thumbnail Preview"
+                    alt={t('thumbnailPreview')}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </Box>
@@ -482,7 +502,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             {/* Video */}
 
             <Grid item xs={12}>
-              <Typography variant="h6">Update Video</Typography>
+              <Typography variant="h6">{t('updateVideo')}</Typography>
             </Grid>
 
             <Grid item xs={12}>
@@ -490,16 +510,16 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                 value={videoSource}
                 exclusive
                 onChange={handleVideoSourceChange}
-                aria-label="thumbnail source"
+                aria-label={t('thumbnailSource')}
                 fullWidth
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="select" aria-label="select from resources">
-                  Select from Resources
+                <ToggleButton value="select" aria-label={t('selectFromResources')}>
+                  {t('selectFromResources')}
                 </ToggleButton>
-                <ToggleButton value="upload" aria-label="upload file">
-                  Upload File
+                <ToggleButton value="upload" aria-label={t('uploadFiles')}>
+                  {t('uploadFiles')}
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
@@ -511,14 +531,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   status={StatusEnum.Enable}
                   value={formData.videoID}
                   onChange={handleVideoSelectChange}
-                  label="Video"
+                  label={t('video')}
                   disabled={isSubmitting}
                 />
               ) : (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Video Document No"
+                      label={t('videoDocumentNo')}
                       value={formData.thumbDocumentNo}
                       onChange={(value) => {
                         handleChange('thumbDocumentNo', value);
@@ -529,7 +549,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Video Prefix Name"
+                      label={t('videoPrefixName')}
                       value={formData.thumbPrefixName}
                       onChange={(value) => {
                         handleChange('thumbPrefixName', value);
@@ -546,7 +566,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                       disabled={isSubmitting}
                       startIcon={<ImageIcon {...iconStyle} />}
                     >
-                      Upload Video
+                      {t('uploadVideo')}
                       <input
                         type="file"
                         hidden
@@ -587,7 +607,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -595,7 +615,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

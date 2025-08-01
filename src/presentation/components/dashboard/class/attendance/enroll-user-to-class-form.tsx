@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -30,6 +31,7 @@ export function CreateAttendanceRecordsDialog({
   open,
   onClose,
 }: CreateAttendanceRecordsProps) {
+  const { t } = useTranslation();
   const { userUsecase, enrollUsecase, classUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
   const [form, setForm] = useState<EnrollUserListToClassRequest>(
@@ -49,7 +51,7 @@ export function CreateAttendanceRecordsDialog({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Tạo lớp học</Typography>
+        <Typography variant="h6">{t('enrollUser')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

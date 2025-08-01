@@ -13,7 +13,7 @@ export class UpdateClassRequest {
   duration?: string;
   locationID?: string;
   teacherID?: string;
-  qrCodeURL?: string;
+  isUpdateQrCode?: boolean;
   startAt?: Date;
   endAt?: Date;
   minuteLate?: number;
@@ -50,7 +50,7 @@ export class UpdateClassRequest {
       duration: json.duration,
       locationID: json.locationID,
       teacherID: json.teacherID,
-      qrCodeURL: json.qrCodeURL,
+      isUpdateQrCode: json.isUpdateQrCode,
       startAt: json.startAt ? DateTimeUtils.parseLocalDateTimeString(json.startAt) : undefined,
       endAt: json.endAt ? DateTimeUtils.parseLocalDateTimeString(json.endAt) : undefined,
       minuteLate: json.minuteLate,
@@ -84,7 +84,7 @@ export class UpdateClassRequest {
       duration: this.duration,
       locationID: this.locationID,
       teacherID: this.teacherID,
-      qrCodeURL: this.qrCodeURL,
+      isUpdateQrCode: this.isUpdateQrCode,
       startAt: DateTimeUtils.formatISODateToString(this.startAt),
       endAt: DateTimeUtils.formatISODateToString(this.endAt),
       minuteLate: this.minuteLate,
@@ -121,7 +121,7 @@ export class UpdateClassRequest {
     appendIfExist('Duration', this.duration);
     appendIfExist('LocationID', this.locationID);
     appendIfExist('TeacherID', this.teacherID);
-    appendIfExist('QRCodeURL', this.qrCodeURL);
+    appendIfExist('IsUpdateQrCode', this.isUpdateQrCode);
     if (this.startAt) appendIfExist('StartAt', DateTimeUtils.formatISODateToString(this.startAt));
     if (this.endAt) appendIfExist('EndAt', DateTimeUtils.formatISODateToString(this.endAt));
     appendIfExist('MinuteLate', this.minuteLate);

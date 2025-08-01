@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
@@ -211,6 +212,8 @@ export function EmployeeSelectDialog({
                 }}
               >
                 <Checkbox checked={localValue === employee.id} />
+                <Avatar src={employee.avatar} alt={employee.name} sx={{ width: 32, height: 32, marginRight: 2 }} />
+
                 <ListItemText primary={employee.name} />
                 <IconButton
                   size="small"

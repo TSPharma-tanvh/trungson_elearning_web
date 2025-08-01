@@ -35,6 +35,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import ImagePreviewDialog from './image-preview-dialog';
@@ -59,12 +60,13 @@ export function FileResourceMultiSelect({
   status,
   value = [],
   onChange,
-  label = 'File Resources',
+  label = 'fileResources',
   disabled = false,
   showTypeSwitcher = false,
   allowAllTypes = false,
   defaultType,
 }: FileResourcesMultiSelectProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileResourcesResponse[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -151,7 +153,7 @@ export function FileResourceMultiSelect({
     <>
       <FormControl fullWidth disabled={disabled}>
         <InputLabel id="file-multi-select-label" shrink>
-          {label}
+          {t(label)}
         </InputLabel>
         <Select
           labelId="file-multi-select-label"
@@ -161,12 +163,14 @@ export function FileResourceMultiSelect({
             setOpen(true);
           }}
           input={<OutlinedInput label={label} />}
-          renderValue={() => (selectedFiles.length ? selectedFiles.map((f) => f.name).join(', ') : 'No files selected')}
+          renderValue={() =>
+            selectedFiles.length ? selectedFiles.map((f) => f.name).join(', ') : t('noFilesSelected')
+          }
           open={false}
           displayEmpty
         >
           <MenuItem disabled value="">
-            {selectedFiles.length ? selectedFiles.map((f) => f.name).join(', ') : 'No files selected'}
+            {selectedFiles.length ? selectedFiles.map((f) => f.name).join(', ') : t('noFilesSelected')}
           </MenuItem>
         </Select>
       </FormControl>
@@ -181,7 +185,7 @@ export function FileResourceMultiSelect({
         fullScreen={fullscreen}
       >
         <DialogTitle>
-          Select File Resources
+          {t('selectFileResources')}
           <Box sx={{ position: 'absolute', right: 8, top: 8 }}>
             <IconButton
               onClick={() => {
@@ -201,17 +205,17 @@ export function FileResourceMultiSelect({
         </DialogTitle>
 
         <DialogContent>
-          <CustomSearchInput placeholder="Search..." value={searchText} onChange={setSearchText} />
+          <CustomSearchInput placeholder={t('search')} value={searchText} onChange={setSearchText} />
 
           <Box display="flex" gap={2} alignItems="center" mt={2} mb={2}>
             {showTypeSwitcher ? (
               <>
                 <FormControl fullWidth>
-                  <InputLabel id="filter-type-label">File Type</InputLabel>
+                  <InputLabel id="filter-type-label">{t('fileType')}</InputLabel>
                   <Select
                     labelId="filter-type-label"
                     value={selectedType ?? ''}
-                    label="File Type"
+                    label={t('fileType')}
                     disabled={!filterTypeEnabled}
                     onChange={(e) => {
                       setSelectedType(e.target.value as FileResourceEnum);
@@ -219,7 +223,7 @@ export function FileResourceMultiSelect({
                   >
                     {Object.values(FileResourceEnum).map((fileType) => (
                       <MenuItem key={fileType} value={fileType}>
-                        {fileType}
+                        {t(fileType.charAt(0).toLowerCase() + t(fileType).slice(1))}
                       </MenuItem>
                     ))}
                   </Select>
@@ -235,7 +239,7 @@ export function FileResourceMultiSelect({
                         }}
                       />
                     }
-                    label="Enable Type Filter"
+                    label={t('enableTypeFilter')}
                   />
                 ) : null}
               </>
@@ -312,10 +316,10 @@ export function FileResourceMultiSelect({
                 setOpen(false);
               }}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button onClick={handleConfirm} variant="contained">
-              Confirm
+              {t('confirm')}
             </Button>
           </Box>
         </DialogActions>

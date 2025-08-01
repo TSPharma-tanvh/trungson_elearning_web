@@ -5,9 +5,21 @@ import { CreateClassRequest } from '@/domain/models/class/request/create-class-r
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
+import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
@@ -20,18 +32,20 @@ interface CreateClassProps {
 }
 
 export function CreateClassDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateClassProps) {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
   const [form, setForm] = useState<CreateClassRequest>(
     new CreateClassRequest({
       className: '',
       classDetail: '',
-      duration: '00:00:00',
+      duration: '00:30:00',
       startAt: new Date(),
-      endAt: new Date(),
-      minuteLate: 10,
+      endAt: new Date(new Date().setDate(new Date().getDate() + 1)),
+      minuteLate: 5,
       classType: 0,
       scheduleStatus: 0,
+      isCreateQrCode: true,
     })
   );
 
@@ -69,7 +83,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Tạo lớp học</Typography>
+        <Typography variant="h6">{t('createClass')}</Typography>
         <Box>
           <IconButton
             onClick={() => {
@@ -87,7 +101,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
         <Grid container spacing={fullScreen ? (window.innerWidth < 600 ? 0.8 : 2.6) : 4}>
           <Grid item xs={12} sm={12} mt={1}>
             <CustomTextField
-              label="Tên lớp"
+              label={t('name')}
               value={form.className}
               onChange={(val) => {
                 handleChange('className', val);
@@ -98,7 +112,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
 
           <Grid item xs={12}>
             <CustomTextField
-              label="Chi tiết"
+              label={t('detail')}
               value={form.classDetail || ''}
               onChange={(val) => {
                 handleChange('classDetail', val);
@@ -111,7 +125,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
 
           <Grid item xs={12} sm={6}>
             <CustomDateTimePicker
-              label="Thời gian bắt đầu"
+              label={t('startAt')}
               value={form.startAt?.toISOString()}
               onChange={(val) => {
                 handleChange('startAt', new Date(val));
@@ -122,7 +136,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
 
           <Grid item xs={12} sm={6}>
             <CustomDateTimePicker
-              label="Thời gian kết thúc"
+              label={t('endAt')}
               value={form.endAt?.toISOString()}
               onChange={(val) => {
                 handleChange('endAt', new Date(val));
@@ -132,7 +146,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
           </Grid>
           <Grid item xs={12} sm={6}>
             <CustomTextField
-              label="Thời lượng (HH:mm:ss)"
+              label={`${t('duration')} (HH:mm:ss)`}
               value={form.duration}
               onChange={(val) => {
                 handleChange('duration', val);
@@ -142,7 +156,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
           </Grid>
           <Grid item xs={12} sm={6}>
             <CustomTextField
-              label="Số phút trễ cho phép"
+              label={t('minuteLate')}
               type="number"
               value={form.minuteLate}
               onChange={(val) => {
@@ -152,9 +166,24 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             />
           </Grid>
 
+          <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={form.isCreateQrCode === true}
+                  onChange={(e) => {
+                    handleChange('isCreateQrCode', e.target.checked);
+                  }}
+                  disabled={false}
+                />
+              }
+              label={t('isCreateQrCode')}
+            />
+          </Grid>
+
           <Grid item xs={12}>
             <CustomButton
-              label="Tạo lớp"
+              label={t('createClass')}
               onClick={() => {
                 onSubmit(form);
               }}

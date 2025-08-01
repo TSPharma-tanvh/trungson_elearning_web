@@ -4,6 +4,7 @@ import * as React from 'react';
 import { GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/get-attendance-records-request';
 import { CheckinTimeEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -13,6 +14,7 @@ export function AttendanceRecordsFilters({
 }: {
   onFilter: (filters: GetAttendanceRecordsRequest) => void;
 }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [status, setStatus] = React.useState<CheckinTimeEnum | undefined>(undefined);
 
@@ -44,11 +46,11 @@ export function AttendanceRecordsFilters({
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search attendance" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchAttendance')} />
 
         {/* Status */}
         <CustomSelectFilter<CheckinTimeEnum>
-          label="Status"
+          label={t('status')}
           value={status}
           onChange={(val) => {
             setStatus(val);
@@ -57,10 +59,10 @@ export function AttendanceRecordsFilters({
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

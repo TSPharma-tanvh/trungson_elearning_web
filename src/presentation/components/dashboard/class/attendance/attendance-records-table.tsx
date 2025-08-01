@@ -4,6 +4,7 @@ import { type AttendanceRecordDetailResponse } from '@/domain/models/attendance/
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -32,6 +33,7 @@ export default function AttendanceRecordsTable({
   onEditAttendanceRecords,
   onDeleteAttendanceRecords,
 }: AttendanceRecordsTableProps) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editAttendanceRecordsData, setEditAttendanceRecordsData] =
     React.useState<AttendanceRecordDetailResponse | null>(null);
@@ -71,21 +73,21 @@ export default function AttendanceRecordsTable({
         onDelete={onDeleteAttendanceRecords}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditAttendanceRecordsData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditAttendanceRecordsData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -93,13 +95,13 @@ export default function AttendanceRecordsTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>User Name</TableCell>
-            <TableCell>Class ID</TableCell>
-            <TableCell>Class Name</TableCell>
-            <TableCell>Checkin Time</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>enrollmentDate</TableCell>
-            <TableCell>approvedAt</TableCell>
+            <TableCell>{t('userName')}</TableCell>
+            <TableCell>{t('classId')}</TableCell>
+            <TableCell>{t('className')}</TableCell>
+            <TableCell>{t('checkinTime')}</TableCell>
+            <TableCell>{t('status')}</TableCell>
+            <TableCell>{t('enrollmentDate')}</TableCell>
+            <TableCell>{t('approvedAt')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (

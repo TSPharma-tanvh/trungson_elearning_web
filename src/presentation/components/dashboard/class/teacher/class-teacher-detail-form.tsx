@@ -21,6 +21,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -31,6 +32,7 @@ interface ClassTeacherDetailFormProps {
 }
 
 export default function ClassTeacherDetailForm({ open, classId: teacherId, onClose }: ClassTeacherDetailFormProps) {
+  const { t } = useTranslation();
   const { classTeacherUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [teacher, setTeacher] = useState<ClassTeacherResponse | null>(null);
@@ -54,7 +56,7 @@ export default function ClassTeacherDetailForm({ open, classId: teacherId, onClo
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Teacher Details</Typography>
+        <Typography variant="h6">{t('teacherDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {
@@ -82,13 +84,14 @@ export default function ClassTeacherDetailForm({ open, classId: teacherId, onClo
 }
 
 function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse; fullScreen: boolean }) {
+  const { t } = useTranslation();
   const [classExpandedLessons, setClassExpandedLessons] = useState<Record<string, boolean>>({});
   const [courseExpandedLessons, setCourseExpandedLessons] = useState<Record<string, boolean>>({});
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -106,9 +109,9 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Courses" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('courses')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {teacher.courses.map((course, index) => {
-          const lessonId = course.id ?? `lesson-${index}`;
+          const lessonId = course.id ?? `${t('courses')} ${index}`;
           const isExpanded = courseExpandedLessons[lessonId] || false;
 
           return (
@@ -139,16 +142,16 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', course.id)}
-                    {renderField('Name', course.name)}
-                    {renderField('Detail', course.detail)}
-                    {renderField('Required', course.isRequired ? 'Yes' : 'No')}
-                    {renderField('Status', course.disableStatus)}
-                    {renderField('Course Type', course.courseType)}
-                    {renderField('Display Type', course.displayType)}
-                    {renderField('Start Time', DateTimeUtils.formatISODateFromDate(course.startTime))}
-                    {renderField('End Time', DateTimeUtils.formatISODateFromDate(course.endTime))}
-                    {renderField('Meeting link', course.meetingLink)}
+                    {renderField(t('id'), course.id)}
+                    {renderField(t('name'), course.name)}
+                    {renderField(t('detail'), course.detail)}
+                    {renderField(t('required'), course.isRequired ? t('yes') : t('no'))}
+                    {renderField(t('status'), course.disableStatus)}
+                    {renderField(t('courseType'), course.courseType)}
+                    {renderField(t('displayType'), course.displayType)}
+                    {renderField(t('startTime'), DateTimeUtils.formatISODateFromDate(course.startTime))}
+                    {renderField(t('endTime'), DateTimeUtils.formatISODateFromDate(course.endTime))}
+                    {renderField(t('meetingLink'), course.meetingLink)}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -172,9 +175,9 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Courses" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('class')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {teacher.classes.map((classData, index) => {
-          const lessonId = classData.id ?? `lesson-${index}`;
+          const lessonId = classData.id ?? `${t('classes')} ${index}`;
           const isExpanded = classExpandedLessons[lessonId] || false;
 
           return (
@@ -186,7 +189,7 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
               }}
             >
               <CardHeader
-                title={classData.className ?? `Lesson ${index + 1}`}
+                title={classData.className ?? `${t('classes')} ${index + 1}`}
                 action={
                   <IconButton
                     onClick={() => {
@@ -205,17 +208,27 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', classData.id)}
-                    {renderField('Name', classData.className)}
-                    {renderField('Detail', classData.classDetail)}
-                    {renderField('Duration', classData.duration)}
-                    {renderField('Start Time', DateTimeUtils.formatISODateFromDate(classData.startAt))}
-                    {renderField('End Time', DateTimeUtils.formatISODateFromDate(classData.endAt))}
-                    {renderField('QR Code URL', classData.qrCodeURL)}
-                    {renderField('Minute Late', classData.minuteLate)}
-                    {renderField('Class Type', classData.classType)}
-                    {renderField('Meeting link', classData.meetingLink)}
-                    {renderField('Schedule Status', classData.scheduleStatus)}
+                    {renderField('id', classData.id)}
+                    {renderField('className', classData.className)}
+                    {renderField('classDetail', classData.classDetail)}
+                    {renderField('duration', classData.duration)}
+                    {renderField('startAt', DateTimeUtils.formatISODateFromDate(classData.startAt))}
+                    {renderField('endAt', DateTimeUtils.formatISODateFromDate(classData.endAt))}
+                    {renderField('qrCodeUrl', classData.qrCode?.resourceUrl)}
+                    {renderField('minuteLate', classData.minuteLate)}
+                    {renderField(
+                      'classType',
+                      classData.classType
+                        ? t(classData.classType.charAt(0).toLowerCase() + classData.classType.slice(1))
+                        : ''
+                    )}
+                    {renderField('meetingLink', classData.meetingLink)}
+                    {renderField(
+                      'scheduleStatus',
+                      classData.scheduleStatus
+                        ? t(classData.scheduleStatus.charAt(0).toLowerCase() + classData.scheduleStatus.slice(1))
+                        : ''
+                    )}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -229,21 +242,24 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
   return (
     <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
       <Box display="flex" alignItems="center" gap={2} mb={3}>
-        <Avatar src={teacher?.user?.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
+        <Avatar
+          src={teacher.user?.thumbnail?.resourceUrl ?? teacher.user?.employee?.avatar}
+          sx={{ width: 64, height: 64 }}
+        >
           {teacher?.user?.firstName?.[0] ?? '?'}
         </Avatar>
         <Typography variant="h5">
-          {teacher?.user?.firstName} {teacher?.user?.lastName}
+          {teacher.user?.employee?.name} ({teacher.user?.userName})
         </Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Teacher Information" />
+        <CardHeader title={t('teacherInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Teacher Name', teacher.user?.firstName)}
-            {renderField('Email', teacher.user?.email)}
-            {renderField('Phone', teacher.user?.phoneNumber)}
-            {renderField('Active', teacher.user?.isActive ? 'Yes' : 'No')}
+            {renderField('teacherName', teacher.user?.firstName)}
+            {renderField('email', teacher.user?.email)}
+            {renderField('phone', teacher.user?.phoneNumber)}
+            {renderField('active', teacher.user?.isActive ? t('yes') : t('no'))}
           </Grid>
         </CardContent>
       </Card>

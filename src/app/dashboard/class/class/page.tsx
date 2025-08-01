@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/system';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
+import { useTranslation } from 'react-i18next';
 
 import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
 import ClassTable from '@/presentation/components/dashboard/class/classes/class-table';
@@ -19,6 +20,7 @@ import { CreateClassDialog } from '@/presentation/components/dashboard/class/cla
 export default function Page(): React.JSX.Element {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   const { classUsecase } = useDI();
 
@@ -105,7 +107,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Class
+            {t("class")}
           </Typography>
         </Stack>
         <Button
@@ -115,7 +117,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          {t("add")}
         </Button>
       </Stack>
       <ClassFilters onFilter={handleFilter} />

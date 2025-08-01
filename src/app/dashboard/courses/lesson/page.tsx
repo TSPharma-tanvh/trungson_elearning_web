@@ -9,12 +9,14 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { Plus } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CreateLessonDialog } from '@/presentation/components/dashboard/courses/lessons/create-lesson-form';
 import LessonTable from '@/presentation/components/dashboard/courses/lessons/lesson-table';
 import { LessonsFilters } from '@/presentation/components/dashboard/courses/lessons/lessons-filter';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { lessonUsecase } = useDI();
   const [filters, setFilters] = React.useState<GetLessonRequest>(new GetLessonRequest({ pageNumber: 1, pageSize: 10 }));
   const [page, setPage] = React.useState(0);
@@ -100,7 +102,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Lessons
+            {t('lessons')}
           </Typography>
         </Stack>
         <Button
@@ -110,7 +112,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          {t('add')}
         </Button>
       </Stack>
       <LessonsFilters onFilter={handleFilter} />

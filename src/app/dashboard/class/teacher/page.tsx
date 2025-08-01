@@ -10,12 +10,14 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
+import { useTranslation } from 'react-i18next';
 
 import { ClassTeacherFilters } from '@/presentation/components/dashboard/class/teacher/class-teacher-filter';
 import TeacherTable from '@/presentation/components/dashboard/class/teacher/class-teacher-table';
 import { CreateClassTeacherDialog } from '@/presentation/components/dashboard/class/teacher/create-teacher-form';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { classTeacherUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
@@ -104,7 +106,7 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Class Teacher</Typography>
+          <Typography variant="h4">{t('teacher')}</Typography>
         </Stack>
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
@@ -113,7 +115,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          {t('add')}
         </Button>
       </Stack>
       <ClassTeacherFilters onFilter={handleFilter} />

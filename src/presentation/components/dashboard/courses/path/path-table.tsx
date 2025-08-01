@@ -137,7 +137,7 @@ export default function CoursePathTable({
                 handleOpenDeleteDialog(Array.from(selected));
               }}
             >
-              Delete Selected ({selected.size})
+              {t('deleteSelectedItems')} ({selected.size})
             </Button>
           </Box>
         )}

@@ -6,11 +6,12 @@ import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { type UserUsecase } from '@/domain/usecases/user/user-usecase';
 import { useUserSelectDebounce } from '@/presentation/hooks/user/use-user-select-debounced';
 import { useUserSelectLoader } from '@/presentation/hooks/user/use-user-select-loader';
-import { AccountCircle } from '@mui/icons-material';
+import { AccountCircle, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
@@ -31,6 +32,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '../core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '../core/text-field/custom-search-input';
@@ -48,12 +50,13 @@ export function UserSelectDialog({
   userUsecase,
   value,
   onChange,
-  label = 'User',
+  label = 'user',
   disabled = false,
   ...selectProps
 }: UserSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string>(value);
@@ -148,23 +151,23 @@ export function UserSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="user-select-label">{label}</InputLabel>
+        <InputLabel id="user-select-label">{t(label)}</InputLabel>
         <Select
           labelId="user-select-label"
           value={loading ? '' : value || ''}
           input={
             <OutlinedInput
-              label={label}
+              label={t(label)}
               startAdornment={<AccountCircle sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />}
             />
           }
           onClick={handleOpen}
           renderValue={() =>
             loading
-              ? 'Loading...'
+              ? t('loading')
               : selectedUserMap[value]
                 ? `${selectedUserMap[value]?.employee?.name} (${selectedUserMap[value].userName})`
-                : 'Select User'
+                : t('selectUser')
           }
           open={false}
           {...selectProps}
@@ -180,7 +183,7 @@ export function UserSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm">
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography mb={1}>Select User</Typography>
+            <Typography mb={1}>{t('selectUser')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -194,7 +197,7 @@ export function UserSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchUser')} />
         </DialogTitle>
 
         <DialogContent dividers>
@@ -208,6 +211,11 @@ export function UserSelectDialog({
                 }}
               >
                 <Checkbox checked={localValue === user.id} />
+                <Avatar
+                  src={user?.employee?.avatar}
+                  alt={user?.employee?.name}
+                  sx={{ width: 32, height: 32, marginRight: 2 }}
+                />
                 <ListItemText
                   primary={`${user?.employee?.name} (${user.userName})`}
                   sx={{
@@ -218,16 +226,17 @@ export function UserSelectDialog({
                     mr: 1,
                   }}
                 />
-                <Button
+                <IconButton
                   size="small"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedUser(user);
                     setViewOpen(true);
                   }}
+                  aria-label={t('showDetails')}
                 >
-                  Show Detail
-                </Button>
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
           </Box>
@@ -236,9 +245,9 @@ export function UserSelectDialog({
         <DialogActions sx={{ flexDirection: 'column', gap: 2 }}>
           {totalPages > 1 && <Pagination count={totalPages} page={pageNumber} onChange={handlePageChange} />}
           <Box display="flex" gap={1}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained">
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

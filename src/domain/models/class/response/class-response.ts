@@ -11,7 +11,6 @@ export class ClassResponse {
   duration!: string; // ISO string for TimeSpan equivalent
   locationID?: string;
   teacherID?: string;
-  qrCodeURL?: string;
   startAt!: Date;
   endAt!: Date;
   minuteLate!: number;
@@ -24,6 +23,7 @@ export class ClassResponse {
   thumbnailID?: string;
   enrollmentCriteria?: EnrollmentCriteriaResponse[];
   thumbnail?: FileResourcesResponse;
+  qrCode?: FileResourcesResponse;
   fileClassRelation?: FileClassRelationResponse[];
 
   constructor(init?: Partial<ClassResponse>) {
@@ -38,7 +38,6 @@ export class ClassResponse {
       duration: json.duration, // ISO string, e.g., "00:45:00"
       locationID: json.locationID,
       teacherID: json.teacherID,
-      qrCodeURL: json.qrCodeURL,
       startAt: json.startAt ? new Date(json.startAt) : undefined,
       endAt: json.endAt ? new Date(json.endAt) : undefined,
       minuteLate: json.minuteLate,
@@ -51,6 +50,7 @@ export class ClassResponse {
       thumbnailID: json.thumbnailID,
       enrollmentCriteria: json.enrollmentCriteria?.map((x: any) => EnrollmentCriteriaResponse.fromJSON(x)),
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
+      qrCode: json.qrCode ? FileResourcesResponse.fromJson(json.qrCode) : undefined,
       fileClassRelation: json.fileClassRelation?.map((x: any) => FileClassRelationResponse.fromJson(x)),
     });
   }
@@ -63,7 +63,6 @@ export class ClassResponse {
       duration: this.duration,
       locationID: this.locationID,
       teacherID: this.teacherID,
-      qrCodeURL: this.qrCodeURL,
       startAt: this.startAt?.toISOString(),
       endAt: this.endAt?.toISOString(),
       minuteLate: this.minuteLate,
@@ -76,6 +75,7 @@ export class ClassResponse {
       thumbnailID: this.thumbnailID,
       enrollmentCriteria: this.enrollmentCriteria?.map((x) => x.toJSON()),
       thumbnail: this.thumbnail?.toJson(),
+      qrCode: this.qrCode?.toJson(),
       fileClassRelation: this.fileClassRelation?.map((x) => x.toJson()),
     };
   }

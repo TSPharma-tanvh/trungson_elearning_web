@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/system';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
+import { useTranslation } from 'react-i18next';
 
 import { AttendanceRecordsFilters } from '@/presentation/components/dashboard/class/attendance/attendance-records-filter';
 import AttendanceRecordsTable from '@/presentation/components/dashboard/class/attendance/attendance-records-table';
@@ -19,6 +20,7 @@ import { CreateAttendanceRecordsDialog } from '@/presentation/components/dashboa
 export default function Page(): React.JSX.Element {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   const { attendanceRecordsUsecase } = useDI();
 
@@ -107,7 +109,7 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Attendance</Typography>
+          <Typography variant="h4">{t('attendance')}</Typography>
         </Stack>
         <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
@@ -116,7 +118,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Enroll user
+          {t('enrollUser')}
         </Button>
       </Stack>
       <AttendanceRecordsFilters onFilter={handleFilter} />
