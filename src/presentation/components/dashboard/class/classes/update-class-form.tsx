@@ -26,12 +26,11 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, Image as ImageIcon, QrCode, Tag } from '@phosphor-icons/react';
+import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { Clock } from '@phosphor-icons/react/dist/ssr';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTimePicker } from '@/presentation/components/core/picker/custom-time-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -223,10 +222,10 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
     { value: LearningModeEnum.Offline, label: 'offline' },
   ];
 
-  const qrCodeOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
+  // const qrCodeOptions = [
+  //   { value: 'true', label: 'yes' },
+  //   { value: 'false', label: 'no' },
+  // ];
 
   const scheduleStatusOptions = [
     { value: ScheduleStatusEnum.Schedule, label: 'schedule' },
@@ -288,7 +287,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('minuteLate')}
                 value={formData.minuteLate?.toString() ?? ''}
@@ -303,9 +302,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                   setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
                 }}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startTime')}
                 value={formData.startAt ? DateTimeUtils.formatISODateToString(formData.startAt) : undefined}
@@ -325,7 +324,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 }}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomTimePicker

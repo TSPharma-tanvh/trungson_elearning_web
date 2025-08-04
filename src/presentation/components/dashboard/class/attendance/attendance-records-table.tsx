@@ -71,6 +71,10 @@ export default function AttendanceRecordsTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteAttendanceRecords}
+        deleteConfirmHeaderTitle={'markAllLate'}
+        dialogTitle={'markAllLate'}
+        dialogContent={'confirmMarkLateItem'}
+        dialogDeleteTitle={'confirm'}
         actionMenuItems={[
           {
             label: t('viewDetails'),
@@ -97,7 +101,11 @@ export default function AttendanceRecordsTable({
           <>
             <TableCell>{t('userName')}</TableCell>
             <TableCell>{t('classId')}</TableCell>
+            <TableCell>{t('enrollmentId')}</TableCell>
+            <TableCell>{t('enrollmentCriteriaName')}</TableCell>
             <TableCell>{t('className')}</TableCell>
+            <TableCell>{t('startAt')}</TableCell>
+            <TableCell>{t('endAt')}</TableCell>
             <TableCell>{t('checkinTime')}</TableCell>
             <TableCell>{t('status')}</TableCell>
             <TableCell>{t('enrollmentDate')}</TableCell>
@@ -113,18 +121,31 @@ export default function AttendanceRecordsTable({
                   <Typography variant="subtitle2" noWrap>
                     {row.user?.employee?.name}
                   </Typography>
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    {row.user?.userName}
+                  </Typography>
                 </Box>
               </Stack>
             </TableCell>
-            <TableCell>{row.classID}</TableCell>
+
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120, maxWidth: 150 }}>
+              <Typography variant="body2">{row.classID}</Typography>
+            </TableCell>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120, maxWidth: 150 }}>
+              <Typography variant="body2">{row.enrollment?.id}</Typography>
+            </TableCell>
+            <TableCell>{row.enrollment?.enrollmentCriteria?.name}</TableCell>
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
               <Typography variant="body2">{row.class?.className}</Typography>
             </TableCell>
+            <TableCell>{DateTimeUtils.formatISODateFromDate(row.startAt)}</TableCell>
+
+            <TableCell>{DateTimeUtils.formatISODateFromDate(row.endAt)}</TableCell>
+
             <TableCell>{DateTimeUtils.formatISODateFromDate(row.checkinTime)}</TableCell>
-            <TableCell>{row.status}</TableCell>
+            <TableCell>{row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}</TableCell>
             <TableCell>{DateTimeUtils.formatISODateFromDate(row.enrollment?.enrollmentDate)}</TableCell>
             <TableCell>{DateTimeUtils.formatISODateFromDate(row.enrollment?.approvedAt)}</TableCell>
-
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

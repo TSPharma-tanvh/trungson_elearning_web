@@ -1,8 +1,10 @@
 import { AttendanceRecordResponse } from '../../attendance/response/attendance-record-response';
 import { CategoryResponse } from '../../category/response/category-response';
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
+import { FileClassQRRelationResponse } from '../../file/response/file-class-qr-relation-response';
 import { FileClassRelationResponse } from '../../file/response/file-class-relation-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
+import { ClassTeacherResponse } from '../../teacher/response/class-teacher-response';
 
 export class ClassResponse {
   id!: string;
@@ -25,6 +27,8 @@ export class ClassResponse {
   thumbnail?: FileResourcesResponse;
   qrCode?: FileResourcesResponse;
   fileClassRelation?: FileClassRelationResponse[];
+  classTeacher?: ClassTeacherResponse;
+  fileClassQRRelation?: FileClassQRRelationResponse[];
 
   constructor(init?: Partial<ClassResponse>) {
     Object.assign(this, init);
@@ -52,6 +56,8 @@ export class ClassResponse {
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
       qrCode: json.qrCode ? FileResourcesResponse.fromJson(json.qrCode) : undefined,
       fileClassRelation: json.fileClassRelation?.map((x: any) => FileClassRelationResponse.fromJson(x)),
+      classTeacher: json.classTeacher ? ClassTeacherResponse.fromJson(json.classTeacher) : undefined,
+      fileClassQRRelation: json.fileClassQRRelation?.map((x: any) => FileClassQRRelationResponse.fromJson(x)),
     });
   }
 
@@ -77,6 +83,8 @@ export class ClassResponse {
       thumbnail: this.thumbnail?.toJson(),
       qrCode: this.qrCode?.toJson(),
       fileClassRelation: this.fileClassRelation?.map((x) => x.toJson()),
+      classTeacher: this.classTeacher?.toJson(),
+      fileClassQRRelation: this.fileClassQRRelation?.map((x) => x.toJson()),
     };
   }
 }

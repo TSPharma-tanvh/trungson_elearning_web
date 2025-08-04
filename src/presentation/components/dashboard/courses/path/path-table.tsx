@@ -4,7 +4,7 @@ import React from 'react';
 import { type UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { Cancel, CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
+import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -25,7 +25,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { CheckCircle } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';

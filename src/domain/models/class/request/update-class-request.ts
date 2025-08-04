@@ -14,9 +14,9 @@ export class UpdateClassRequest {
   locationID?: string;
   teacherID?: string;
   isUpdateQrCode?: boolean;
-  startAt?: Date;
-  endAt?: Date;
-  minuteLate?: number;
+  // startAt?: Date;
+  // endAt?: Date;
+  // minuteLate?: number;
   enrollmentCriteriaIDs?: string;
   classType?: LearningModeEnum;
   meetingLink?: string;
@@ -85,9 +85,9 @@ export class UpdateClassRequest {
       locationID: this.locationID,
       teacherID: this.teacherID,
       isUpdateQrCode: this.isUpdateQrCode,
-      startAt: DateTimeUtils.formatISODateToString(this.startAt),
-      endAt: DateTimeUtils.formatISODateToString(this.endAt),
-      minuteLate: this.minuteLate,
+      // startAt: DateTimeUtils.formatISODateToString(this.startAt),
+      // endAt: DateTimeUtils.formatISODateToString(this.endAt),
+      // minuteLate: this.minuteLate,
       enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
       classType: this.classType,
       meetingLink: this.meetingLink,
@@ -122,9 +122,9 @@ export class UpdateClassRequest {
     appendIfExist('LocationID', this.locationID);
     appendIfExist('TeacherID', this.teacherID);
     appendIfExist('IsUpdateQrCode', this.isUpdateQrCode);
-    if (this.startAt) appendIfExist('StartAt', DateTimeUtils.formatISODateToString(this.startAt));
-    if (this.endAt) appendIfExist('EndAt', DateTimeUtils.formatISODateToString(this.endAt));
-    appendIfExist('MinuteLate', this.minuteLate);
+    // if (this.startAt) appendIfExist('StartAt', DateTimeUtils.formatISODateToString(this.startAt));
+    // if (this.endAt) appendIfExist('EndAt', DateTimeUtils.formatISODateToString(this.endAt));
+    // appendIfExist('MinuteLate', this.minuteLate);
     appendIfExist('EnrollmentCriteriaIDs', this.enrollmentCriteriaIDs);
     appendIfExist('ClassType', this.classType);
     appendIfExist('MeetingLink', this.meetingLink);

@@ -592,5 +592,22 @@
   "late": "Late",
   "absent": "Absent",
   "checkinTime": "Check In Time",
-  "approvedAt": "Approve Time"
+  "approvedAt": "Approve Time",
+  "enrollStatus": "Enrollment Status",
+  "approve": "Approve",
+  "reject": "Reject",
+  "enroll": "Enroll",
+  "updateAttendanceRecords": "Update Attendance Records",
+  "enrollmentId": "Enrollment ID",
+  "classInfo": "Class Information",
+  "userInfo": "User Information",
+  "attendanceRecordInfo": "Attendance Record Information",
+  "attendanceRecordDetails": "Attendance Record Details",
+  "enrollmentCriteriaName": "Enrollment Criteria Name",
+  "enrollmentInfo": "Enrollment Info",
+  "markAllLate": "Mark All Late",
+  "confirmMarkLateItem": "Are you sure you want to mark all {{count}} as late?",
+  "attendanceRecordsCount": "Attendance Records Count",
+  "enrollmentCriteriaCount": "Enrollment Criteria Count",
+  "qrCodeFiles": "QR Code Files"
 }

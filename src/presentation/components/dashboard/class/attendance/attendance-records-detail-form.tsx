@@ -21,6 +21,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -36,10 +37,12 @@ function AttendanceRecordDetails({
   attendanceRecord: AttendanceRecordDetailResponse;
   fullScreen: boolean;
 }) {
+  const { t } = useTranslation();
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -51,13 +54,13 @@ function AttendanceRecordDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Enrollment Info" />
+        <CardHeader title={t('enrollmentInfo')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Enrollment ID', enrollment.id)}
-            {renderField('Enrollment Criteria ID', enrollment.enrollmentCriteriaID)}
-            {renderField('Enrollment Date', DateTimeUtils.formatISODateFromDate(enrollment.enrollmentDate))}
-            {renderField('Approved At', DateTimeUtils.formatISODateFromDate(enrollment.approvedAt))}
+            {renderField('enrollmentId', enrollment.id)}
+            {renderField('enrollmentCriteriaId', enrollment.enrollmentCriteriaID)}
+            {renderField('enrollmentDate', DateTimeUtils.formatISODateFromDate(enrollment.enrollmentDate))}
+            {renderField('approvedAt', DateTimeUtils.formatISODateFromDate(enrollment.approvedAt))}
           </Grid>
         </CardContent>
       </Card>
@@ -70,17 +73,18 @@ function AttendanceRecordDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Class Info" />
+        <CardHeader title={t('classInfo')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Class ID', cls.id)}
-            {renderField('Class Name', cls.className)}
-            {renderField('Class Detail', cls.classDetail)}
-            {renderField('Class Type', cls.classType)}
-            {renderField('Duration', cls.duration)}
-            {renderField('Start At', DateTimeUtils.formatISODateFromDate(cls.startAt))}
-            {renderField('End At', DateTimeUtils.formatISODateFromDate(cls.endAt))}
-            {renderField('QR Code', cls.qrCodeURL)}
+            {renderField('classId', cls.id)}
+            {renderField('className', cls.className)}
+            {renderField('classDetail', cls.classDetail)}
+            {renderField(
+              'classType',
+              cls.classType ? t(cls.classType.charAt(0).toLowerCase() + t(cls.classType).slice(1)) : ''
+            )}
+            {renderField('duration', cls.duration)}
+            {renderField('qrCode', cls.qrCode?.resourceUrl)}
           </Grid>
         </CardContent>
       </Card>
@@ -94,16 +98,16 @@ function AttendanceRecordDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="User Info" />
+        <CardHeader title={t('userInfo')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Employee Name', emp.name)}
-            {renderField('Gender', emp.gender)}
-            {renderField('Phone Number', user.phoneNumber)}
-            {renderField('Email', user.email)}
-            {renderField('Department', emp.currentDepartmentName)}
-            {renderField('Position', emp.currentPositionName)}
-            {renderField('City', emp.cityName)}
+            {renderField('employeeName', emp.name)}
+            {renderField('gender', emp.gender)}
+            {renderField('phoneNumber', user.phoneNumber)}
+            {renderField('email', user.email)}
+            {renderField('department', emp.currentDepartmentName)}
+            {renderField('position', emp.currentPositionName)}
+            {renderField('city', emp.cityName)}
           </Grid>
         </CardContent>
       </Card>
@@ -120,13 +124,40 @@ function AttendanceRecordDetails({
       </Box>
 
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Attendance Record Info" />
+        <CardHeader title={t('attendanceRecordInfo')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('Record ID', attendanceRecord.id)}
-            {renderField('Status', attendanceRecord.status)}
-            {renderField('User ID', attendanceRecord.userID)}
-            {renderField('Class ID', attendanceRecord.classID)}
+            {renderField('recordId', attendanceRecord.id)}
+            {renderField(
+              'status',
+              attendanceRecord.status
+                ? t(attendanceRecord.status.charAt(0).toLowerCase() + t(attendanceRecord.status).slice(1))
+                : ''
+            )}
+            {renderField('userId', attendanceRecord.userID)}
+            {renderField('classId', attendanceRecord.classID)}
+            {renderField('classId', attendanceRecord.classID)}
+
+            {renderField(
+              'checkinTime',
+              attendanceRecord.checkinTime !== undefined
+                ? DateTimeUtils.formatISODateFromDate(attendanceRecord.checkinTime)
+                : ''
+            )}
+
+            {renderField(
+              'startAt',
+              attendanceRecord.startAt !== undefined
+                ? DateTimeUtils.formatISODateFromDate(attendanceRecord.startAt)
+                : ''
+            )}
+
+            {renderField(
+              'endAt',
+              attendanceRecord.endAt !== undefined ? DateTimeUtils.formatISODateFromDate(attendanceRecord.endAt) : ''
+            )}
+
+            {renderField('minuteLate', attendanceRecord.minuteLate)}
           </Grid>
         </CardContent>
       </Card>
@@ -139,6 +170,7 @@ function AttendanceRecordDetails({
 }
 
 export default function AttendanceRecordDetailForm({ open, attendanceRecordId, onClose }: AttendanceRecordDetailProps) {
+  const { t } = useTranslation();
   const { attendanceRecordsUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [attendanceRecord, setAttendanceRecord] = useState<AttendanceRecordDetailResponse | null>(null);
@@ -164,7 +196,7 @@ export default function AttendanceRecordDetailForm({ open, attendanceRecordId, o
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">AttendanceRecord Details</Typography>
+        <Typography variant="h6">{t('attendanceRecordDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

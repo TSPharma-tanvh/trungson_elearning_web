@@ -2,7 +2,7 @@ import React from 'react';
 import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { CancelOutlined, CheckCircleOutline, MoreVert, Visibility } from '@mui/icons-material';
-import { Avatar, Box, Button, Checkbox, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
@@ -192,7 +192,9 @@ export default function LessonTable({
         <UpdateLessonFormDialog
           open={editOpen}
           data={editLessonData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditLesson(updatedData);
             setEditOpen(false);
@@ -201,30 +203,44 @@ export default function LessonTable({
       ) : null}
 
       {editLessonData ? (
-        <LessonDetailForm open={viewOpen} lessonId={editLessonData.id ?? null} onClose={() => setViewOpen(false)} />
+        <LessonDetailForm
+          open={viewOpen}
+          lessonId={editLessonData.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
       ) : null}
 
-      {previewFile?.url && (
+      {previewFile?.url ? (
         <ImagePreviewDialog
           open={previewImageOpen}
-          onClose={() => setPreviewImageOpen(false)}
+          onClose={() => {
+            setPreviewImageOpen(false);
+          }}
           imageUrl={previewFile.url}
           title={previewFile.title}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => setFullscreen((prev) => !prev)}
+          onToggleFullscreen={() => {
+            setFullscreen((prev) => !prev);
+          }}
         />
-      )}
+      ) : null}
 
-      {previewFile?.url && (
+      {previewFile?.url ? (
         <VideoPreviewDialog
           open={previewVideoOpen}
-          onClose={() => setPreviewVideoOpen(false)}
+          onClose={() => {
+            setPreviewVideoOpen(false);
+          }}
           videoUrl={previewFile.url}
           title={previewFile.title}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => setFullscreen((prev) => !prev)}
+          onToggleFullscreen={() => {
+            setFullscreen((prev) => !prev);
+          }}
         />
-      )}
+      ) : null}
 
       <ConfirmDeleteDialog
         open={dialogOpen}

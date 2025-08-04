@@ -12,6 +12,8 @@ import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
+import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
+import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { ClassSelectDialog } from '@/presentation/components/shared/classes/class/class-select';
 import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
@@ -36,6 +38,9 @@ export function CreateAttendanceRecordsDialog({
   const [fullScreen, setFullScreen] = useState(false);
   const [form, setForm] = useState<EnrollUserListToClassRequest>(
     new EnrollUserListToClassRequest({
+      startAt: new Date(),
+      endAt: new Date(new Date().setDate(new Date().getDate() + 1)),
+      minuteLate: 5,
       status: CheckinTimeEnum[CheckinTimeEnum.Absent],
       enrollStatus: ApproveStatusEnum.Approve,
     })
@@ -80,7 +85,6 @@ export function CreateAttendanceRecordsDialog({
 
           <Grid item xs={12}>
             <EnrollmentSingleSelect
-              label="Class Enrollment"
               enrollmentUsecase={enrollUsecase}
               value={form.enrollmentCriteriaID ?? ''}
               onChange={(value: string) => {
@@ -103,39 +107,73 @@ export function CreateAttendanceRecordsDialog({
           </Grid>
 
           <Grid item xs={12} sm={6}>
+            <CustomDateTimePicker
+              label={t('startAt')}
+              value={form.startAt?.toISOString()}
+              onChange={(val) => {
+                handleChange('startAt', new Date(val));
+              }}
+              disabled={disabled}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <CustomDateTimePicker
+              label={t('endAt')}
+              value={form.endAt?.toISOString()}
+              onChange={(val) => {
+                handleChange('endAt', new Date(val));
+              }}
+              disabled={disabled}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <CustomTextField
+              label={t('minuteLate')}
+              type="number"
+              value={form.minuteLate}
+              onChange={(val) => {
+                handleChange('minuteLate', Number(val));
+              }}
+              disabled={disabled}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<string>
-              label="Trạng thái"
+              label={t('status')}
               value={form.status ?? ''}
               onChange={(val) => {
                 handleChange('status', val ?? '');
               }}
               disabled={disabled}
               options={[
-                { value: CheckinTimeEnum[CheckinTimeEnum.Absent], label: 'Vắng mặt' },
-                { value: CheckinTimeEnum[CheckinTimeEnum.OnTime], label: 'Đúng giờ' },
-                { value: CheckinTimeEnum[CheckinTimeEnum.Late], label: 'Trễ' },
+                { value: CheckinTimeEnum[CheckinTimeEnum.Absent], label: 'absent' },
+                { value: CheckinTimeEnum[CheckinTimeEnum.OnTime], label: 'onTime' },
+                { value: CheckinTimeEnum[CheckinTimeEnum.Late], label: 'late' },
               ]}
             />
           </Grid>
 
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<ApproveStatusEnum>
-              label="Duyệt"
+              label={t('enrollStatus')}
               value={form.enrollStatus!}
               onChange={(val) => {
                 handleChange('enrollStatus', val);
               }}
               disabled={disabled}
               options={[
-                { value: ApproveStatusEnum.Approve, label: 'Chấp nhận' },
-                { value: ApproveStatusEnum.Reject, label: 'Từ chối' },
+                { value: ApproveStatusEnum.Approve, label: 'approve' },
+                { value: ApproveStatusEnum.Reject, label: 'reject' },
               ]}
             />
           </Grid>
 
           <Grid item xs={12}>
             <CustomButton
-              label="Tạo lớp"
+              label={t('enroll')}
               onClick={() => {
                 onSubmit(form);
               }}

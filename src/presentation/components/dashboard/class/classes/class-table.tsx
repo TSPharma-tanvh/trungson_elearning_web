@@ -86,9 +86,9 @@ export default function ClassTable({
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('duration')}</TableCell>
             <TableCell>{t('qrCodeUrl')}</TableCell>
-            <TableCell>{t('startTime')}</TableCell>
-            <TableCell>{t('endTime')}</TableCell>
-            <TableCell>{t('minuteLate')}</TableCell>
+            <TableCell>{t('attendanceRecordsCount')}</TableCell>
+            <TableCell>{t('enrollmentCriteriaCount')}</TableCell>
+            <TableCell>{t('teacherId')}</TableCell>
             <TableCell>{t('classType')}</TableCell>
             <TableCell>{t('scheduleStatus')}</TableCell>
             <TableCell>{t('category')}</TableCell>
@@ -127,9 +127,15 @@ export default function ClassTable({
                 ''
               )}
             </TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.startAt)}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.endAt)}</TableCell>
-            <TableCell>{row.minuteLate}</TableCell>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 30, maxWidth: 80 }}>
+              <Typography variant="body2">
+                {row.attendanceRecords !== undefined ? row.attendanceRecords.length : ''}
+              </Typography>
+            </TableCell>
+            <TableCell>{row.enrollmentCriteria !== undefined ? row.enrollmentCriteria.length : ''}</TableCell>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 30, maxWidth: 80 }}>
+              <Typography variant="body2">{row.teacherID}</Typography>
+            </TableCell>
             <TableCell>
               {row.classType ? t(row.classType.charAt(0).toLowerCase() + t(row.classType).slice(1)) : ''}
             </TableCell>

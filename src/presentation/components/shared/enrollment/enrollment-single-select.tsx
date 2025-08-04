@@ -231,7 +231,7 @@ export function EnrollmentSingleSelect({
 
             {loadingEnrollments ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                {t('laoding')}
+                {t('loading')}
               </Typography>
             ) : null}
             {!loadingEnrollments && enrollments.length === 0 && (

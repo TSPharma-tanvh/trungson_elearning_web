@@ -3,18 +3,7 @@
 import * as React from 'react';
 import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-class-teacher-request';
 import { ActiveEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
-import {
-  Button,
-  Card,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Stack,
-} from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';

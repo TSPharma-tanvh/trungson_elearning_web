@@ -2,7 +2,6 @@ import React from 'react';
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { StatusEnumUtils } from '@/utils/enum/core-enum';
 import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';

@@ -41,7 +41,6 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';

@@ -37,6 +37,10 @@ interface CustomTableProps<T> {
   onDelete: (ids: string[]) => Promise<void>;
   actionMenuItems: { label: string; onClick: (row: T) => void }[];
   deleteConfirmHeaderTitle?: string;
+  dialogTitle?: string;
+  dialogContent?: string;
+  dialogDeleteTitle?: string;
+  dialogCancelTitle?: string;
 }
 
 export function CustomTable<T>({
@@ -52,6 +56,10 @@ export function CustomTable<T>({
   onDelete,
   actionMenuItems,
   deleteConfirmHeaderTitle = 'deleteSelectedItems',
+  dialogTitle: title = 'confirmDelete',
+  dialogContent: content = 'confirmDeleteItem',
+  dialogDeleteTitle: deleteTitle = 'delete',
+  dialogCancelTitle: cancelTitle = 'cancel',
 }: CustomTableProps<T>) {
   const { t } = useTranslation();
   const rowIds = React.useMemo(() => rows.map(getRowId), [rows]);
@@ -271,6 +279,10 @@ export function CustomTable<T>({
         selectedCount={idsToDelete.length}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
+        title={title}
+        content={content}
+        deleteTitle={deleteTitle}
+        cancelTitle={cancelTitle}
       />
     </>
   );

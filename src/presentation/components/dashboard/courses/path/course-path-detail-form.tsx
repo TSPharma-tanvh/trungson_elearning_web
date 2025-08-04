@@ -24,7 +24,6 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import { margin } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';

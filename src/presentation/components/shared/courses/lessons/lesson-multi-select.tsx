@@ -301,11 +301,11 @@ export function LessonMultiSelectDialog({
                 value={lesson.id}
                 onClick={() => {
                   setLocalValue((prev) =>
-                    prev.includes(lesson.id!) ? prev.filter((id) => id !== lesson.id!) : [...prev, lesson.id!]
+                    prev.includes(lesson.id) ? prev.filter((id) => id !== lesson.id) : [...prev, lesson.id]
                   );
                 }}
               >
-                <Checkbox checked={localValue.includes(lesson.id!)} />
+                <Checkbox checked={localValue.includes(lesson.id)} />
                 <ListItemText primary={lesson.name} />
               </MenuItem>
             ))}

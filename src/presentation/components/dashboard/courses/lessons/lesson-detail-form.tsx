@@ -14,7 +14,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardMedia,
   CircularProgress,
   Collapse,
   Dialog,
@@ -41,7 +40,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
   const { t } = useTranslation();
   const [quizExpandedLessons, setQuizExpandedLessons] = useState<Record<string, boolean>>({});
   const [progressExpandedLessons, setProgressExpandedLessons] = useState<Record<string, boolean>>({});
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
   const [imageFullscreen, setImageFullscreen] = useState(false);
 
@@ -219,7 +218,12 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
     <>
       <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
         <Box display="flex" alignItems="center" gap={2} mb={3}>
-          <Box onClick={() => setImagePreviewOpen(true)} sx={{ cursor: 'pointer' }}>
+          <Box
+            onClick={() => {
+              setImagePreviewOpen(true);
+            }}
+            sx={{ cursor: 'pointer' }}
+          >
             <Avatar src={lesson.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
               {lesson.name?.[0] ?? '?'}
             </Avatar>
@@ -254,11 +258,15 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
       </Box>
       <ImagePreviewDialog
         open={imagePreviewOpen}
-        onClose={() => setImagePreviewOpen(false)}
+        onClose={() => {
+          setImagePreviewOpen(false);
+        }}
         imageUrl={lesson.thumbnail?.resourceUrl || ''}
         title={lesson.name || t('thumbnailPreview')}
         fullscreen={imageFullscreen}
-        onToggleFullscreen={() => setImageFullscreen((prev) => !prev)}
+        onToggleFullscreen={() => {
+          setImageFullscreen((prev) => !prev);
+        }}
       />
     </>
   );

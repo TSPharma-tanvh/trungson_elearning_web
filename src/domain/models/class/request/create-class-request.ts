@@ -5,9 +5,9 @@ export class CreateClassRequest {
   locationID?: string;
   teacherID?: string;
   isCreateQrCode?: boolean;
-  startAt!: Date;
-  endAt!: Date;
-  minuteLate = 10;
+  // startAt!: Date;
+  // endAt!: Date;
+  // minuteLate = 10;
   enrollmentCriteriaIDs?: string;
   classType = 0;
   meetingLink?: string;
@@ -73,9 +73,9 @@ export class CreateClassRequest {
       locationID: this.locationID,
       teacherID: this.teacherID,
       isCreateQrCode: this.isCreateQrCode,
-      startAt: this.startAt?.toISOString(),
-      endAt: this.endAt?.toISOString(),
-      minuteLate: this.minuteLate,
+      // startAt: this.startAt?.toISOString(),
+      // endAt: this.endAt?.toISOString(),
+      // minuteLate: this.minuteLate,
       enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
       classType: this.classType,
       meetingLink: this.meetingLink,
@@ -100,9 +100,9 @@ export class CreateClassRequest {
     const fd = new FormData();
     fd.append('ClassName', this.className);
     fd.append('Duration', this.duration);
-    fd.append('StartAt', this.startAt.toISOString());
-    fd.append('EndAt', this.endAt.toISOString());
-    fd.append('MinuteLate', String(this.minuteLate));
+    // fd.append('StartAt', this.startAt.toISOString());
+    // fd.append('EndAt', this.endAt.toISOString());
+    // fd.append('MinuteLate', String(this.minuteLate));
     fd.append('ClassType', String(this.classType));
     fd.append('ScheduleStatus', String(this.scheduleStatus));
 

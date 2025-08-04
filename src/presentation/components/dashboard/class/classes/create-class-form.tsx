@@ -19,7 +19,6 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
-import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
@@ -40,9 +39,9 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
       className: '',
       classDetail: '',
       duration: '00:30:00',
-      startAt: new Date(),
-      endAt: new Date(new Date().setDate(new Date().getDate() + 1)),
-      minuteLate: 5,
+      // startAt: new Date(),
+      // endAt: new Date(new Date().setDate(new Date().getDate() + 1)),
+      // minuteLate: 5,
       classType: 0,
       scheduleStatus: 0,
       isCreateQrCode: true,
@@ -83,7 +82,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">{t('createClass')}</Typography>
+        <Typography variant="subtitle1">{t('createClass')}</Typography>
         <Box>
           <IconButton
             onClick={() => {
@@ -123,7 +122,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <CustomDateTimePicker
               label={t('startAt')}
               value={form.startAt?.toISOString()}
@@ -143,7 +142,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
               }}
               disabled={disabled}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={6}>
             <CustomTextField
               label={`${t('duration')} (HH:mm:ss)`}
@@ -154,7 +153,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
               disabled={disabled}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <CustomTextField
               label={t('minuteLate')}
               type="number"
@@ -164,7 +163,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
               }}
               disabled={disabled}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} sm={6}>
             <FormControlLabel

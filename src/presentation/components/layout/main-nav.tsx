@@ -115,10 +115,10 @@ export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.J
               </Badge>
             </Tooltip> */}
             <Avatar
-              key={user?.thumbnail?.resourceUrl}
+              key={user?.thumbnail?.resourceUrl ?? user?.employee?.avatar}
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}
-              src={user?.thumbnail?.resourceUrl}
+              src={user?.thumbnail?.resourceUrl ?? user?.employee?.avatar}
               sx={{ cursor: 'pointer' }}
             />
           </Stack>

@@ -299,7 +299,7 @@ export function LessonSingleSelectDialog({
                   setLocalValue(lesson.id ?? '');
                 }}
               >
-                <Checkbox checked={localValue.includes(lesson.id!)} />
+                <Checkbox checked={localValue.includes(lesson.id)} />
                 <ListItemText primary={lesson.name} />
               </MenuItem>
             ))}

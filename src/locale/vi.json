@@ -592,5 +592,22 @@
   "late": "Đi trễ",
   "absent": "Vắng mặt",
   "checkinTime": "Thời gian điểm danh",
-  "approvedAt": "Ngày phê duyệt"
+  "approvedAt": "Ngày phê duyệt",
+  "enrollStatus": "Trạng thái ghi danh",
+  "approve": "Chấp nhận",
+  "reject": "Từ chối",
+  "enroll": "Ghi danh",
+  "updateAttendanceRecords": "Cập nhật điểm danh",
+  "enrollmentId": "Mã ghi danh",
+  "classInfo": "Thông tin lớp học",
+  "userInfo": "Thông tin người dùng",
+  "attendanceRecordInfo": "Thông tin điểm danh",
+  "attendanceRecordDetails": "Chi tiết điểm danh",
+  "enrollmentCriteriaName": "Tên tiêu chí ghi danh",
+  "enrollmentInfo": "Thông tin ghi danh",
+  "markAllLate": "Đánh dấu tất cả đi trễ",
+  "confirmMarkLateItem": "Bạn có chắc muốn đánh dấu tất cả {{count}} là đi trễ không?",
+  "attendanceRecordsCount": "Số lượt điểm danh",
+  "enrollmentCriteriaCount": "Số tiêu chí ghi danh",
+  "qrCodeFiles": "Tệp mã QR"
 }

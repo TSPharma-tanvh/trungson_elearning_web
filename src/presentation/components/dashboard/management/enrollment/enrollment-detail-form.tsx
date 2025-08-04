@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useState } from 'react';
 import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
@@ -113,7 +113,7 @@ function EnrollmentDetails({
             {renderField('classId', enrollment.class?.id)}
             {renderField('name', enrollment.class?.className)}
             {renderField('classDetail', enrollment.class?.classDetail)}
-            {renderField('qrCodeURL', enrollment.class?.qrCodeURL)}
+            {renderField('qrCodeURL', enrollment.class?.qrCode?.resourceUrl)}
             {renderField(
               'startAt',
               enrollment.class?.startAt !== undefined

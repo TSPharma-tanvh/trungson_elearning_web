@@ -116,30 +116,22 @@ export function EmployeeSelectDialog({
   }, [value]);
 
   useEffect(() => {
-    if (employeeUsecase && value) {
-      const fetchSelectedEmployees = async () => {
+    if (employeeUsecase && value && !selectedEmployeeMap[value]) {
+      const fetchEmployee = async () => {
         try {
-          const request = new GetEmployeeRequest({});
-          const result = await employeeUsecase.getEmployeeListInfo(request);
-          const newMap = { ...selectedEmployeeMap };
-          let updated = false;
-          for (const employee of result.employees) {
-            if (!newMap[employee.id ?? '']) {
-              newMap[employee.id ?? ''] = employee;
-              updated = true;
-            }
-          }
-          if (updated) {
-            setSelectedEmployeeMap(newMap);
-          }
+          const employee = await employeeUsecase.getEmployeeById(value);
+          setSelectedEmployeeMap((prevMap) => ({
+            ...prevMap,
+            [employee.id ?? '']: employee,
+          }));
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : 'An error has occurred.';
           CustomSnackBar.showSnackbar(message, 'error');
         }
       };
-      void fetchSelectedEmployees();
+      void fetchEmployee();
     }
-  }, [employeeUsecase, value, pathID, selectedEmployeeMap]);
+  }, [employeeUsecase, value, selectedEmployeeMap]);
 
   useEffect(() => {
     if (dialogOpen) {
@@ -177,7 +169,7 @@ export function EmployeeSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">{t('searchEmployee')}</Typography>
+            <Typography>{t('searchEmployee')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {

@@ -21,9 +21,11 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
+import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
 interface EditAttendanceRecordsDialogProps {
   open: boolean;
@@ -40,6 +42,7 @@ export function UpdateAttendanceRecordsFormDialog({
 }: EditAttendanceRecordsDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const { fileUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -52,6 +55,9 @@ export function UpdateAttendanceRecordsFormDialog({
         id: attendanceRecord.id || '',
         checkinTime: attendanceRecord.checkinTime || undefined,
         status: attendanceRecord.status || undefined,
+        startAt: attendanceRecord.startAt || undefined,
+        endAt: attendanceRecord.endAt || undefined,
+        minuteLate: attendanceRecord.minuteLate || undefined,
       });
       setFormData(newFormData);
     }
@@ -82,7 +88,7 @@ export function UpdateAttendanceRecordsFormDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update AttendanceRecords
+          {t('updateAttendanceRecords')}
         </Typography>
         <Box>
           <IconButton
@@ -101,13 +107,13 @@ export function UpdateAttendanceRecordsFormDialog({
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {attendanceRecord?.id}
+            {t('id')}: {attendanceRecord?.id}
           </Typography>
 
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Checkin Time"
+                label={t('checkinTime')}
                 value={formData.checkinTime ? DateTimeUtils.formatISODateToString(formData.checkinTime) : undefined}
                 onChange={(value) => {
                   handleChange('checkinTime', DateTimeUtils.parseLocalDateTimeString(value));
@@ -118,17 +124,51 @@ export function UpdateAttendanceRecordsFormDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<string>
-                label="Trạng thái"
+                label={t('status')}
                 value={formData.status ?? ''}
                 onChange={(val) => {
                   handleChange('status', val ?? '');
                 }}
                 disabled={false}
                 options={[
-                  { value: CheckinTimeEnum[CheckinTimeEnum.Absent], label: 'Vắng mặt' },
-                  { value: CheckinTimeEnum[CheckinTimeEnum.OnTime], label: 'Đúng giờ' },
-                  { value: CheckinTimeEnum[CheckinTimeEnum.Late], label: 'Trễ' },
+                  { value: CheckinTimeEnum[CheckinTimeEnum.Absent], label: 'absent' },
+                  { value: CheckinTimeEnum[CheckinTimeEnum.OnTime], label: 'onTime' },
+                  { value: CheckinTimeEnum[CheckinTimeEnum.Late], label: 'late' },
                 ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('startAt')}
+                value={formData.startAt?.toISOString()}
+                onChange={(val) => {
+                  handleChange('startAt', new Date(val));
+                }}
+                disabled={false}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('endAt')}
+                value={formData.endAt?.toISOString()}
+                onChange={(val) => {
+                  handleChange('endAt', new Date(val));
+                }}
+                disabled={false}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                label={t('minuteLate')}
+                type="number"
+                value={formData.minuteLate}
+                onChange={(val) => {
+                  handleChange('minuteLate', Number(val));
+                }}
+                disabled={false}
               />
             </Grid>
           </Grid>
@@ -153,7 +193,7 @@ export function UpdateAttendanceRecordsFormDialog({
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -161,7 +201,7 @@ export function UpdateAttendanceRecordsFormDialog({
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

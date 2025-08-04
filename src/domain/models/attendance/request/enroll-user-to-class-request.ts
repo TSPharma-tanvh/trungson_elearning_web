@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { type ApproveStatusEnum } from '@/utils/enum/core-enum';
 
 export class EnrollUserListToClassRequest {
@@ -5,6 +6,9 @@ export class EnrollUserListToClassRequest {
   classID!: string;
   levelID?: string;
   checkinTime?: Date;
+  startAt!: Date;
+  endAt!: Date;
+  minuteLate!: number;
   status?: string;
   enrollmentCriteriaID?: string;
   userID?: string;
@@ -12,6 +16,7 @@ export class EnrollUserListToClassRequest {
   approvedBy?: string;
   approvedAt?: Date;
   rejectedReason?: string;
+
   constructor(init?: Partial<EnrollUserListToClassRequest>) {
     Object.assign(this, init);
   }
@@ -22,6 +27,9 @@ export class EnrollUserListToClassRequest {
       classID: json.classID,
       levelID: json.levelID,
       checkinTime: json.checkinTime ? new Date(json.checkinTime) : undefined,
+      startAt: json.startAt ? new Date(json.startAt) : undefined,
+      endAt: json.endAt ? new Date(json.endAt) : undefined,
+      minuteLate: json.minuteLate,
       status: json.status,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
       userID: json.userID,
@@ -37,13 +45,16 @@ export class EnrollUserListToClassRequest {
       userIDs: this.userIDs,
       classID: this.classID,
       levelID: this.levelID,
-      checkinTime: this.checkinTime?.toISOString(),
+      checkinTime: this.checkinTime ? DateTimeUtils.formatISODateToString(this.checkinTime) : undefined,
+      startAt: this.startAt ? DateTimeUtils.formatISODateToString(this.startAt) : undefined,
+      endAt: this.endAt ? DateTimeUtils.formatISODateToString(this.endAt) : undefined,
+      minuteLate: this.minuteLate,
       status: this.status,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
       userID: this.userID,
       enrollStatus: this.enrollStatus,
       approvedBy: this.approvedBy,
-      approvedAt: this.approvedAt?.toISOString(),
+      approvedAt: this.approvedAt ? DateTimeUtils.formatISODateToString(this.approvedAt) : undefined,
       rejectedReason: this.rejectedReason,
     };
   }

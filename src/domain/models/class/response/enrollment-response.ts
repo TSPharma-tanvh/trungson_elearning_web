@@ -1,14 +1,17 @@
+import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
+
 export class EnrollmentResponse {
   id?: string;
-  userID?: number;
+  userID?: string;
   targetType?: string;
   targetID?: number;
   enrollmentDate?: Date;
   status?: string;
-  approvedBy?: number;
+  approvedBy?: string;
   approvedAt?: Date;
   rejectedReason?: string;
   enrollmentCriteriaID?: string;
+  enrollmentCriteria?: EnrollmentCriteriaResponse;
 
   constructor(init?: Partial<EnrollmentResponse>) {
     Object.assign(this, init);
@@ -26,6 +29,9 @@ export class EnrollmentResponse {
       approvedAt: json.approvedAt ? new Date(json.approvedAt) : undefined,
       rejectedReason: json.rejectedReason,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
+      enrollmentCriteria: json.enrollmentCriteria
+        ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
+        : undefined,
     });
   }
 
@@ -41,6 +47,7 @@ export class EnrollmentResponse {
       approvedAt: this.approvedAt?.toISOString(),
       rejectedReason: this.rejectedReason,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
+      enrollmentCriteria: this.enrollmentCriteria?.toJSON(),
     };
   }
 }
