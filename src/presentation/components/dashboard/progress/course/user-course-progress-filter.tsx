@@ -4,6 +4,7 @@ import * as React from 'react';
 import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
 import { CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
@@ -13,6 +14,7 @@ export function UserCourseProgressFilters({
 }: {
   onFilter: (filters: GetUserCourseProgressRequest) => void;
 }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [_sRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<UserProgressEnum | undefined>(undefined);
@@ -46,11 +48,11 @@ export function UserCourseProgressFilters({
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search progress" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchProgress')} />
 
         {/* Status */}
         <CustomSelectFilter<UserProgressEnum>
-          label="Status"
+          label={t('status')}
           value={status}
           onChange={(val) => {
             setStatus(val);
@@ -59,10 +61,10 @@ export function UserCourseProgressFilters({
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

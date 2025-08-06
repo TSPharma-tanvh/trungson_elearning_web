@@ -21,6 +21,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -40,6 +41,7 @@ export function UpdateUserPathProgressFormDialog({
 }: EditUserPathProgressDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   const { userUsecase, pathUseCase, enrollUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
@@ -88,7 +90,7 @@ export function UpdateUserPathProgressFormDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update UserPathProgress
+          {t('updateUserPathProgress')}
         </Typography>
         <Box>
           <IconButton
@@ -107,7 +109,7 @@ export function UpdateUserPathProgressFormDialog({
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {userPathProgress?.id}
+            {t('id')}: {userPathProgress?.id}
           </Typography>
 
           <Grid container spacing={2}>
@@ -141,7 +143,7 @@ export function UpdateUserPathProgressFormDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian bắt đầu"
+                label={t('startTime')}
                 value={formData.startDate ? DateTimeUtils.formatISODateToString(formData.startDate) : undefined}
                 onChange={(value) => {
                   handleChange('startDate', value);
@@ -152,7 +154,7 @@ export function UpdateUserPathProgressFormDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian kết thúc"
+                label={t('endTime')}
                 value={formData.endDate ? DateTimeUtils.formatISODateToString(formData.endDate) : undefined}
                 onChange={(value) => {
                   handleChange('endDate', value);
@@ -164,16 +166,16 @@ export function UpdateUserPathProgressFormDialog({
             <Grid item xs={12}>
               {' '}
               <CustomSelectDropDown<string>
-                label="Trạng thái"
+                label={t('status')}
                 value={formData.status}
                 onChange={(val) => {
                   handleChange('status', val);
                 }}
                 disabled={false}
                 options={[
-                  { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'Chưa bắt đầu' },
-                  { value: UserProgressEnum[UserProgressEnum.Ongoing], label: 'Đang làm' },
-                  { value: UserProgressEnum[UserProgressEnum.Done], label: 'Hoàn thành' },
+                  { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'notStarted' },
+                  { value: UserProgressEnum[UserProgressEnum.Ongoing], label: 'ongoing' },
+                  { value: UserProgressEnum[UserProgressEnum.Done], label: 'done' },
                 ]}
               />
             </Grid>
@@ -199,7 +201,7 @@ export function UpdateUserPathProgressFormDialog({
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -207,7 +209,7 @@ export function UpdateUserPathProgressFormDialog({
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

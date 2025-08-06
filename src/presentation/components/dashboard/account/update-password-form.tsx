@@ -15,8 +15,10 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
+import { useTranslation } from 'react-i18next';
 
 export function UpdatePasswordForm(): React.JSX.Element {
+  const { t } = useTranslation();
   const { userUsecase } = useDI();
   const [oldPassword, setOldPassword] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
@@ -44,15 +46,23 @@ export function UpdatePasswordForm(): React.JSX.Element {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card>
-        <CardHeader subheader="Update password" title="Password" />
+      <Card
+        sx={{
+          p: 0,
+          backgroundColor: 'var(--mui-palette-common-white)',
+          color: 'var(--mui-palette-primary-main)',
+          border: '1px solid var(--mui-palette-primary-main)',
+          borderRadius: '16px',
+        }}
+      >
+        <CardHeader subheader={t('updatePassword')} title={t('password')} />
         <Divider />
         <CardContent>
           <Stack spacing={3} sx={{ maxWidth: 'sm' }}>
             <FormControl fullWidth>
-              <InputLabel>Old Password</InputLabel>
+              <InputLabel>{t('oldPassword')}</InputLabel>
               <OutlinedInput
-                label="Old Password"
+                label={t('oldPassword')}
                 name="oldPassword"
                 type="password"
                 value={oldPassword}
@@ -62,9 +72,9 @@ export function UpdatePasswordForm(): React.JSX.Element {
               />
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel>New Password</InputLabel>
+              <InputLabel>{t('newPassword')}</InputLabel>
               <OutlinedInput
-                label="New Password"
+                label={t('newPassword')}
                 name="newPassword"
                 type="password"
                 value={newPassword}
@@ -74,9 +84,9 @@ export function UpdatePasswordForm(): React.JSX.Element {
               />
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel>Confirm Password</InputLabel>
+              <InputLabel>{t('confirmPassword')}</InputLabel>
               <OutlinedInput
-                label="Confirm Password"
+                label={t('confirmPassword')}
                 name="confirmPassword"
                 type="password"
                 value={confirmPassword}
@@ -90,7 +100,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
           <Button variant="contained" type="submit">
-            Update
+            {t('update')}
           </Button>
         </CardActions>
       </Card>

@@ -29,6 +29,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
@@ -46,12 +47,13 @@ export function QuizSingleSelect({
   quizUsecase,
   value,
   onChange,
-  label = 'Quiz',
+  label = 'quiz',
   disabled = false,
   ...selectProps
 }: QuizSingleSelectProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string>(value);
@@ -121,24 +123,28 @@ export function QuizSingleSelect({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="quiz-select-label">{label}</InputLabel>
+        <InputLabel id="quiz-select-label">{t(label)}</InputLabel>
         <Select
           labelId="quiz-select-label"
-          value={value}
+          value={value || ''}
           input={
-            <OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedQuizMap[selected]?.title || 'No Quiz Selected'}
+          renderValue={(selected) => selectedQuizMap[selected]?.title || ''}
           open={false}
           {...selectProps}
-        />
+        >
+          <MenuItem value="" disabled>
+            {t('selectQuiz')}
+          </MenuItem>
+        </Select>
       </FormControl>
 
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Quiz</Typography>
+            <Typography variant="h6">{t('selectQuiz')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -159,12 +165,12 @@ export function QuizSingleSelect({
             onChange={(val) => {
               setLocalSearchText(val);
             }}
-            placeholder="Search quizzes..."
+            placeholder={t('searchQuizzes')}
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -189,7 +195,7 @@ export function QuizSingleSelect({
                     setSelectedQuiz(item);
                     setViewOpen(true);
                   }}
-                  aria-label="Show Details"
+                  aria-label={t('showDetails')}
                 >
                   <InfoOutlined />
                 </IconButton>
@@ -198,12 +204,12 @@ export function QuizSingleSelect({
 
             {loadingQuizzes ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('loading')}
               </Typography>
             ) : null}
             {!loadingQuizzes && quizzes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No quizzes found
+                {t('empty')}{' '}
               </Typography>
             )}
           </Box>
@@ -222,9 +228,9 @@ export function QuizSingleSelect({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained" disabled={!localValue}>
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

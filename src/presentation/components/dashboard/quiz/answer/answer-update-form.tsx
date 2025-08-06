@@ -27,6 +27,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Image as ImageIcon, Tag } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -47,6 +48,7 @@ interface EditAnswerDialogProps {
 export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }: EditAnswerDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const { categoryUsecase, fileUsecase, questionUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -133,14 +135,14 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
   };
 
   const statusOptions = [
-    { value: StatusEnum.Enable, label: 'Enable' },
-    { value: StatusEnum.Disable, label: 'Disable' },
-    { value: StatusEnum.Deleted, label: 'Deleted' },
+    { value: StatusEnum.Enable, label: 'enable' },
+    { value: StatusEnum.Disable, label: 'disable' },
+    { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
   const booleanOptions = [
-    { value: 'true', label: 'Yes' },
-    { value: 'false', label: 'No' },
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
   ];
 
   if (!answer) return null;
@@ -149,7 +151,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update Answer
+          {t('updateAnswer')}
         </Typography>
         <Box>
           <IconButton
@@ -168,13 +170,13 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {answer?.id}
+            {t('id')}: {answer?.id}
           </Typography>
 
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
-                label="answerText"
+                label={t('title')}
                 value={formData.answerText}
                 onChange={(value) => {
                   handleChange('answerText', value);
@@ -186,7 +188,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="isCorrect"
+                label={t('correct')}
                 value={String(formData.isCorrect ?? '')}
                 onChange={(value) => {
                   handleChange('isCorrect', value === 'true');
@@ -198,7 +200,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="Status"
+                label={t('status')}
                 value={formData.status ?? 0}
                 onChange={(value) => {
                   handleChange('status', value as StatusEnum);
@@ -234,22 +236,22 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
 
             <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
-                Upload Thumbnail
+                {t('uploadThumbnail')}
               </Typography>
               <ToggleButtonGroup
                 value={thumbnailSource}
                 exclusive
                 onChange={handleThumbnailSourceChange}
-                aria-label="thumbnail source"
+                aria-label={t('thumbnailSource')}
                 fullWidth
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="select" aria-label="select from resources">
-                  Select from Resources
+                <ToggleButton value="select" aria-label={t('selectFromResources')}>
+                  {t('selectFromResources')}
                 </ToggleButton>
-                <ToggleButton value="upload" aria-label="upload file">
-                  Upload File
+                <ToggleButton value="upload" aria-label={t('uploadFile')}>
+                  {t('uploadFile')}
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
@@ -263,7 +265,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                   onChange={(ids) => {
                     handleChange('thumbnailID', ids);
                   }}
-                  label="Thumbnail"
+                  label={t('thumbnail')}
                   disabled={isSubmitting}
                 />
               ) : (

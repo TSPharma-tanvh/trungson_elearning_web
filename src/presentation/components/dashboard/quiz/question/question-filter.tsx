@@ -3,11 +3,13 @@
 import * as React from 'react';
 import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomRangeSlider } from '@/presentation/components/core/custom-range-slider';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function QuestionFilters({ onFilter }: { onFilter: (filters: GetQuestionRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [minMaxAnswers, setMinMaxAnswers] = React.useState<[number, number]>([0, 10]);
   const [quizID, setQuizID] = React.useState('');
@@ -45,15 +47,15 @@ export function QuestionFilters({ onFilter }: { onFilter: (filters: GetQuestionR
       }}
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search questions" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchQuestions')} />
 
-        <CustomRangeSlider label="Answers Range" value={minMaxAnswers} onChange={setMinMaxAnswers} />
+        <CustomRangeSlider label={t('answersRange')} value={minMaxAnswers} onChange={setMinMaxAnswers} />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

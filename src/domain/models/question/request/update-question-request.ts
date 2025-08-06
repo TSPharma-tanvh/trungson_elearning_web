@@ -6,7 +6,7 @@ export class UpdateQuestionRequest {
   questionText?: string;
   questionType?: QuestionEnum;
   point?: number;
-  canShuffle?: boolean = true;
+  canShuffle?: boolean;
   totalAnswer?: number;
   categoryID?: string;
   answerIDs?: string;
@@ -44,7 +44,9 @@ export class UpdateQuestionRequest {
     if (this.resourceIDs) form.append('resourceIDs', this.resourceIDs);
     if (this.status !== undefined) form.append('Status', this.status.toString());
 
-    this.resources?.forEach((file) => { form.append('resources', file); });
+    this.resources?.forEach((file) => {
+      form.append('resources', file);
+    });
     if (this.resourceDocumentNo) form.append('resourceDocumentNo', this.resourceDocumentNo);
     if (this.resourcePrefixName) form.append('resourcePrefixName', this.resourcePrefixName);
 

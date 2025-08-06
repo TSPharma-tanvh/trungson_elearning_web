@@ -27,6 +27,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Image as ImageIcon, Tag } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -48,6 +49,7 @@ interface EditQuestionDialogProps {
 export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubmit }: EditQuestionDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const { categoryUsecase, fileUsecase, answerUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -75,6 +77,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
             ? QuestionEnum[question.questionType as keyof typeof QuestionEnum]
             : undefined,
         point: question.point,
+        canShuffle: question.canShuffle,
         totalAnswer: question.totalAnswer,
         status: question.status !== undefined ? StatusEnum[question.status as keyof typeof StatusEnum] : undefined,
         categoryID: question.categoryId || undefined,
@@ -90,6 +93,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
+      console.log(newFormData);
     }
   }, [question, open, fileUsecase]);
 
@@ -158,16 +162,21 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
   };
 
   const statusOptions = [
-    { value: StatusEnum.Enable, label: 'Enable' },
-    { value: StatusEnum.Disable, label: 'Disable' },
-    { value: StatusEnum.Deleted, label: 'Deleted' },
+    { value: StatusEnum.Enable, label: 'enable' },
+    { value: StatusEnum.Disable, label: 'disable' },
+    { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
   const questionOptions = [
-    { value: QuestionEnum.SingleChoice, label: 'SingleChoice' },
-    { value: QuestionEnum.MultipleChoice, label: 'MultipleChoice' },
-    { value: QuestionEnum.ShortAnswer, label: 'ShortAnswer' },
-    { value: QuestionEnum.LongAnswer, label: 'LongAnswer' },
+    { value: QuestionEnum.SingleChoice, label: 'singleChoice' },
+    { value: QuestionEnum.MultipleChoice, label: 'multipleChoice' },
+    { value: QuestionEnum.ShortAnswer, label: 'shortAnswer' },
+    { value: QuestionEnum.LongAnswer, label: 'longAnswer' },
+  ];
+
+  const booleanOptions = [
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
   ];
 
   if (!question) return null;
@@ -176,7 +185,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update Question
+          {t('updateQuestion')}
         </Typography>
         <Box>
           <IconButton
@@ -195,13 +204,13 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {question?.id}
+            {t('id')}: {question?.id}
           </Typography>
 
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
-                label="questionText"
+                label={t('title')}
                 value={formData.questionText}
                 onChange={(value) => {
                   handleChange('questionText', value);
@@ -213,7 +222,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="Question Type"
+                label={t('questionType')}
                 value={formData.questionType ?? ''}
                 onChange={(value) => {
                   handleChange('questionType', value);
@@ -224,7 +233,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="Status"
+                label={t('status')}
                 value={formData.status ?? 0}
                 onChange={(value) => {
                   handleChange('status', value as StatusEnum);
@@ -255,11 +264,24 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                 disabled={isSubmitting}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label={t('canShuffle')}
+                value={String(formData.canShuffle ?? '')}
+                onChange={(value) => {
+                  handleChange('canShuffle', value === 'true');
+                }}
+                disabled={isSubmitting}
+                options={booleanOptions}
+              />
+            </Grid>
+
             {/* Upload file resources */}
 
             <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
-                Upload Files
+                {t('uploadFiles')}
               </Typography>
               <ToggleButtonGroup
                 value={fileSelectSource}
@@ -271,8 +293,8 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                 fullWidth
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="multi-select">Select from File Resources</ToggleButton>
-                <ToggleButton value="upload">Upload Files</ToggleButton>
+                <ToggleButton value="multi-select"> {t('selectFromResources')}</ToggleButton>
+                <ToggleButton value="upload"> {t('uploadFiles')}</ToggleButton>
               </ToggleButtonGroup>
             </Grid>
             {fileSelectSource === 'multi-select' ? (
@@ -284,7 +306,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   onChange={(ids) => {
                     handleChange('resourceIDs', ids.join(','));
                   }}
-                  label="Select Files"
+                  label={t('selectFiles')}
                   disabled={false}
                   showTypeSwitcher
                   allowAllTypes
@@ -299,7 +321,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   disabled={isSubmitting}
                   startIcon={<ImageIcon {...iconStyle} />}
                 >
-                  Upload Files
+                  {t('uploadFiles')}
                   <input
                     type="file"
                     multiple
@@ -316,7 +338,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
             {formData.resourceIDs && formData.resourceIDs.length > 0 ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
-                  Selected Files
+                  {t('selectedFiles')}
                 </Typography>
                 <Grid container spacing={1} direction="column">
                   {formData.resourceIDs.split(',').map((id) => {
@@ -349,7 +371,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
             {uploadedFiles.length > 0 && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
-                  Uploaded Files
+                  {t('uploadedFiles')}
                 </Typography>
                 <Grid container spacing={1} direction="column">
                   {uploadedFiles.map((file, index) => (
@@ -380,7 +402,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
 
             <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
-                Upload Thumbnail
+                {t('uploadThumbnail')}
               </Typography>
               <ToggleButtonGroup
                 value={thumbnailSource}
@@ -392,10 +414,10 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                 sx={{ mb: 2 }}
               >
                 <ToggleButton value="select" aria-label="select from resources">
-                  Select from Resources
+                  {t('selectFromResource')}
                 </ToggleButton>
                 <ToggleButton value="upload" aria-label="upload file">
-                  Upload File
+                  {t('uploadFile')}
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
@@ -409,14 +431,14 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   onChange={(ids) => {
                     handleChange('thumbnailID', ids);
                   }}
-                  label="Thumbnail"
+                  label={t('thumbnail')}
                   disabled={isSubmitting}
                 />
               ) : (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Document No"
+                      label={t('thumbnailDocumentNo')}
                       value={formData.thumbDocumentNo}
                       onChange={(value) => {
                         handleChange('thumbDocumentNo', value);
@@ -427,7 +449,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Prefix Name"
+                      label={t('thumbnailPrefixName')}
                       value={formData.thumbPrefixName}
                       onChange={(value) => {
                         handleChange('thumbPrefixName', value);
@@ -444,7 +466,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                       disabled={isSubmitting}
                       startIcon={<ImageIcon {...iconStyle} />}
                     >
-                      Upload Thumbnail
+                      {t('uploadThumbnail')}
                       <input
                         type="file"
                         hidden
@@ -478,7 +500,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                           disabled={isSubmitting}
                         />
                       }
-                      label="Delete Old Thumbnail"
+                      label={t('deleteOldThumbnail')}
                     />
                   </Grid>
                   {previewUrl ? (
@@ -499,7 +521,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                       >
                         <img
                           src={previewUrl}
-                          alt="Thumbnail Preview"
+                          alt={t('thumbnailPreview')}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
@@ -530,7 +552,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -538,7 +560,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

@@ -23,6 +23,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -37,6 +38,7 @@ interface QuestionInformationFormProps {
 
 function QuestionDetails({ question, fullScreen }: { question: QuestionResponse; fullScreen: boolean }) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [expandedAnswers, setExpandedAnswers] = useState<Record<string, boolean>>({}); // ✅ move here
 
@@ -50,7 +52,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -100,9 +102,9 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', answer.id)}
-                    {renderField('Detail', answer.answerText)}
-                    {renderField('isCorrect', answer.isCorrect)}
+                    {renderField('id', answer.id)}
+                    {renderField('detail', answer.answerText)}
+                    {renderField('isCorrect', answer.isCorrect ? t('correct') : t('false'))}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -118,7 +120,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Attached Files" />
+        <CardHeader title={t('attachedFiles')} />
         <CardContent>
           <Grid container spacing={2}>
             {question.fileQuestionRelation.map((r) => {
@@ -189,7 +191,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
                           alignItems: 'center',
                         }}
                       >
-                        <Typography variant="body2">No preview</Typography>
+                        <Typography variant="body2">{t('noPreview')}</Typography>
                       </Box>
                     ) : null}
                   </Box>
@@ -210,7 +212,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
                 setPreviewUrl(null);
               }}
               imageUrl={previewUrl}
-              title="Image Preview"
+              title={t('imagePreview')}
               fullscreen={fullScreen}
               onToggleFullscreen={undefined}
             />
@@ -229,17 +231,22 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
         <Typography variant="h5">{question.questionText ?? 'Unnamed Question'}</Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Question Information" />
+        <CardHeader title={t('questionInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', question.id)}
+            {renderField('id', question.id)}
             {renderField('questionText', question.questionText)}
             {renderField('point', question.point)}
-            {renderField('canShuffle', question.canShuffle ? 'Yes' : 'No')}
+            {renderField('canShuffle', question.canShuffle ? t('yes') : t('no'))}
             {renderField('totalAnswer', question.totalAnswer)}
-            {renderField('questionType', question.questionType)}
-            {renderField('Category ID', question.categoryId)}
-            {renderField('Thumbnail ID', question.thumbnailId)}
+            {renderField(
+              'questionType',
+              question.questionType
+                ? t(question.questionType.charAt(0).toLowerCase() + t(question.questionType).slice(1))
+                : ''
+            )}
+            {renderField('categoryId', question.categoryId)}
+            {renderField('thumbnailId', question.thumbnailId)}
           </Grid>
         </CardContent>
       </Card>
@@ -250,6 +257,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
 }
 
 export default function QuestionInformationForm({ open, questionId, onClose }: QuestionInformationFormProps) {
+  const { t } = useTranslation();
   const { questionUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState<QuestionResponse | null>(null);
@@ -275,7 +283,7 @@ export default function QuestionInformationForm({ open, questionId, onClose }: Q
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Question Information</Typography>
+        <Typography variant="h6">{t('questionInformation')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

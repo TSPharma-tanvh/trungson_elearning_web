@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
@@ -27,11 +26,9 @@ import {
   useTheme,
 } from '@mui/material';
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
-import { Clock } from '@phosphor-icons/react/dist/ssr';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTimePicker } from '@/presentation/components/core/picker/custom-time-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
@@ -71,7 +68,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
     type?: string;
   } | null>(null);
 
-  const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
+  const [fieldValidations, _setFieldValidations] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (classes && open) {
@@ -83,9 +80,9 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
         locationID: classes.locationID || undefined,
         teacherID: classes.teacherID || undefined,
         isUpdateQrCode: false,
-        startAt: classes.startAt ? classes.startAt : undefined,
-        endAt: classes.endAt ? classes.endAt : undefined,
-        minuteLate: classes.minuteLate || undefined,
+        // startAt: classes.startAt ? classes.startAt : undefined,
+        // endAt: classes.endAt ? classes.endAt : undefined,
+        // minuteLate: classes.minuteLate || undefined,
         classType:
           classes.classType !== undefined
             ? LearningModeEnum[classes.classType as keyof typeof LearningModeEnum]

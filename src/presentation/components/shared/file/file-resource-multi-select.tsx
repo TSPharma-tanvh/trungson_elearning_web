@@ -285,7 +285,21 @@ export function FileResourceMultiSelect({
                 >
                   <Checkbox edge="start" checked={selectedIds.includes(file.id ?? '')} tabIndex={-1} disableRipple />
                   <ListItemAvatar>{icon}</ListItemAvatar>
-                  <ListItemText primary={file.name} secondary={file.type} />
+                  <ListItemText
+                    primary={
+                      <Box
+                        sx={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          maxWidth: '100%',
+                        }}
+                      >
+                        {file.name}
+                      </Box>
+                    }
+                    secondary={file.type}
+                  />
                 </ListItem>
               );
             })}

@@ -21,6 +21,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -37,10 +38,12 @@ function UserPathProgressDetails({
   userPathProgress: UserPathProgressDetailResponse;
   fullScreen: boolean;
 }) {
+  const { t } = useTranslation();
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -52,22 +55,30 @@ function UserPathProgressDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Enrollment Criteria" />
+        <CardHeader title={t('enrollmentCriteria')} />
         <CardContent>
           <Box key={coursePath.id} sx={{ mb: 2 }}>
             <Grid container spacing={2}>
-              {renderField('ID', coursePath.id)}
-              {renderField('Name', coursePath.name)}
-              {renderField('Description', coursePath.detail)}
-              {renderField('Target Type', coursePath.isRequired ? 'Required' : 'Optional')}
-              {renderField('Start Time', coursePath.startTime ? new Date(coursePath.startTime).toLocaleString() : '')}
-              {renderField('End Time', coursePath.endTime ? new Date(coursePath.endTime).toLocaleString() : '')}
-              {renderField('Status', coursePath.status)}
-              {renderField('Display Type', coursePath.displayType)}
-              {renderField('Category ID', coursePath.categoryID)}
-              {renderField('Category Name', coursePath.category?.categoryName)}
-              {renderField('Thumbnail ID', coursePath.thumbnailID)}
-              {renderField('Thumbnail Name', coursePath.thumbnail?.name)}
+              {renderField('id', coursePath.id)}
+              {renderField('name', coursePath.name)}
+              {renderField('description', coursePath.detail)}
+              {renderField('isRequired', coursePath.isRequired ? t('yes') : t('no'))}
+              {renderField('startTime', coursePath.startTime ? new Date(coursePath.startTime).toLocaleString() : '')}
+              {renderField('endTime', coursePath.endTime ? new Date(coursePath.endTime).toLocaleString() : '')}
+              {renderField(
+                'status',
+                coursePath.status ? t(coursePath.status.charAt(0).toLowerCase() + t(coursePath.status.slice(1))) : ''
+              )}
+              {renderField(
+                'displayType',
+                coursePath.displayType
+                  ? t(coursePath.displayType.charAt(0).toLowerCase() + t(coursePath.displayType.slice(1)))
+                  : ''
+              )}
+              {renderField('categoryId', coursePath.categoryID)}
+              {renderField('categoryName', coursePath.category?.categoryName)}
+              {renderField('thumbnailId', coursePath.thumbnailID)}
+              {renderField('thumbnailName', coursePath.thumbnail?.name)}
             </Grid>
           </Box>
         </CardContent>
@@ -141,7 +152,12 @@ function UserPathProgressDetails({
             {renderField('startDate', userPathProgress.startDate)}
             {renderField('endDate', userPathProgress.endDate)}
             {renderField('lastAccess', userPathProgress.lastAccess)}
-            {renderField('status', userPathProgress.status)}
+            {renderField(
+              'status',
+              userPathProgress.status
+                ? t(userPathProgress.status.charAt(0).toLowerCase() + t(userPathProgress.status.slice(1)))
+                : ''
+            )}
             {renderField('enrollmentID', userPathProgress.enrollmentID)}
           </Grid>
         </CardContent>

@@ -8,12 +8,14 @@ import { type QuestionResponse } from '@/domain/models/question/response/questio
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { QuestionCreateForm } from '@/presentation/components/dashboard/quiz/question/question-create-form';
 import { QuestionFilters } from '@/presentation/components/dashboard/quiz/question/question-filter';
 import QuestionTable from '@/presentation/components/dashboard/quiz/question/question-table';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { questionUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
@@ -102,7 +104,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            Questions
+            {t('questions')}
           </Typography>
         </Stack>
         <Button
@@ -112,7 +114,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Add
+          {t('add')}
         </Button>
       </Stack>
       <QuestionFilters onFilter={handleFilter} />

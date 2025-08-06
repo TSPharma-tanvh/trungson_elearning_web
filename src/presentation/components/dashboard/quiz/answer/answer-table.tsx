@@ -4,6 +4,7 @@ import { type AnswerDetailResponse } from '@/domain/models/answer/response/answe
 import { Cancel, CheckCircle, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -33,6 +34,7 @@ export default function AnswerTable({
   onEditAnswer,
 }: AnswerTableProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [editOpen, setEditOpen] = React.useState(false);
   const [editAnswerData, setEditAnswerData] = React.useState<AnswerDetailResponse | null>(null);
@@ -72,21 +74,21 @@ export default function AnswerTable({
         onDelete={onDeleteAnswers}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditAnswerData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditAnswerData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -94,10 +96,10 @@ export default function AnswerTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>Name</TableCell>
-            <TableCell>Is Correct</TableCell>
-            <TableCell>Category</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell>{t('name')}</TableCell>
+            <TableCell>{t('isCorrect')}</TableCell>
+            <TableCell>{t('category')}</TableCell>
+            <TableCell>{t('status')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -123,7 +125,7 @@ export default function AnswerTable({
 
             <TableCell>{row.category?.categoryName}</TableCell>
 
-            <TableCell>{row.status}</TableCell>
+            <TableCell>{row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}</TableCell>
 
             <TableCell align="right">
               <IconButton

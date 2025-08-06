@@ -5,11 +5,13 @@ import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-requ
 import { CoreEnumUtils } from '@/utils/enum/core-enum';
 import { StatusEnum } from '@/utils/enum/path-enum';
 import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [isCorrect, setIsCorrect] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
@@ -44,22 +46,22 @@ export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerReque
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder="Search answers" />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchAnswers')} />
 
         {/* Is Required */}
         <CustomSelectFilter<boolean>
-          label="Is Correct"
+          label={t('correct')}
           value={isCorrect}
           onChange={setIsCorrect}
           options={[
-            { value: true, label: 'Correct' },
-            { value: false, label: 'False' },
+            { value: true, label: 'correct' },
+            { value: false, label: 'false' },
           ]}
         />
 
         {/* Status */}
         <CustomSelectFilter<StatusEnum>
-          label="Status"
+          label={t('status')}
           value={status}
           onChange={(val) => {
             setStatus(val);
@@ -68,10 +70,10 @@ export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerReque
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

@@ -45,7 +45,7 @@ export const navItems = [
       { key: 'quiz', title: 'quiz', href: paths.dashboard.quiz, icon: 'quiz' },
       { key: 'question', title: 'question', href: paths.dashboard.question, icon: 'question' },
       { key: 'answers', title: 'answers', href: paths.dashboard.answers, icon: 'answer' },
-      { key: 'form', title: 'form', href: paths.dashboard.form, icon: 'form' },
+      // { key: 'form', title: 'form', href: paths.dashboard.form, icon: 'form' },
     ],
   },
   {
@@ -74,20 +74,14 @@ export const navItems = [
     title: 'system',
     icon: 'setting',
     items: [
-      { key: 'integrations', title: 'integrations', href: paths.dashboard.integrations, icon: 'plugs-connected' },
-      { key: 'settings', title: 'settings', href: paths.dashboard.settings, icon: 'gear-six' },
-      { key: 'system', title: 'system', href: paths.dashboard.system, icon: 'system' },
+      // { key: 'integrations', title: 'integrations', href: paths.dashboard.integrations, icon: 'plugs-connected' },
+      // { key: 'settings', title: 'settings', href: paths.dashboard.settings, icon: 'gear-six' },
+      // { key: 'system', title: 'system', href: paths.dashboard.system, icon: 'system' },
+      { key: 'account', title: 'account', href: paths.dashboard.account, icon: 'user' },
+      // { key: 'email', title: 'email', href: paths.dashboard.email, icon: 'email' },
+      // { key: 'notification', title: 'notification', href: paths.dashboard.notification, icon: 'notification' },
     ],
   },
-  {
-    key: 'communication',
-    title: 'communication',
-    icon: 'chat',
-    items: [
-      { key: 'email', title: 'email', href: paths.dashboard.email, icon: 'email' },
-      { key: 'notification', title: 'notification', href: paths.dashboard.notification, icon: 'notification' },
-    ],
-  },
-  { key: 'account', title: 'account', href: paths.dashboard.account, icon: 'user' },
-  { key: 'error', title: 'error', href: paths.errors.notFound, icon: 'x-square' },
+
+  // { key: 'error', title: 'error', href: paths.errors.notFound, icon: 'x-square' },
 ] satisfies NavItemConfig[];

@@ -23,6 +23,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -42,13 +43,14 @@ function UserQuizProgressDetails({
   userQuizProgress: UserQuizProgressDetailResponse;
   fullScreen: boolean;
 }) {
+  const { t } = useTranslation();
   const [openQuizDetail, setOpenQuizDetail] = useState(false);
   const [openUserDetail, setOpenUserDetail] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -65,7 +67,7 @@ function UserQuizProgressDetails({
     return (
       <Card sx={{ mb: 2 }}>
         <CardHeader
-          title="Quiz Detail"
+          title={t('quizDetails')}
           action={
             <IconButton onClick={handleViewQuizDetail}>
               <InfoOutlined />
@@ -82,16 +84,15 @@ function UserQuizProgressDetails({
           </Box>
           <Box key={quiz.id} sx={{ mb: 2 }}>
             <Grid container spacing={2}>
-              {renderField('ID', quiz.id)}
-              {renderField('Name', quiz.title)}
-              {renderField('Description', quiz.description)}
+              {renderField('id', quiz.id)}
+              {renderField('name', quiz.title)}
+              {renderField('description', quiz.description)}
               {/* {renderField('enablePlay', quiz.enablePlay ? 'Required' : 'Optional')} */}
-              {renderField('Status', quiz.status)}
+              {renderField('status', quiz.status)}
               {/* {renderField('Quiz Type', quiz.quizType)} */}
-              {renderField('Category ID', quiz.categoryID)}
-              {renderField('Category Name', quiz.category?.categoryName)}
-              {renderField('Thumbnail ID', quiz.thumbnailID)}
-              {renderField('Thumbnail Name', quiz.thumbnail?.name)}
+              {renderField('categoryId', quiz.categoryID)}
+              {renderField('categoryName', quiz.category?.categoryName)}
+              {renderField('thumbnailId', quiz.thumbnailID)}
             </Grid>
             {/* <Box mt={4}>
               {quiz?.video?.resourceUrl !== undefined && (
@@ -123,7 +124,7 @@ function UserQuizProgressDetails({
     return (
       <Card sx={{ mb: 2 }}>
         <CardHeader
-          title="User Information"
+          title={t('userInformation')}
           action={
             <IconButton onClick={handleViewQuizDetail}>
               <InfoOutlined />
@@ -152,17 +153,17 @@ function UserQuizProgressDetails({
             ) : null}
 
             <Grid container spacing={2}>
-              {renderField('ID', user.id)}
-              {renderField('Username', user.userName)}
-              {renderField('Email', user.email)}
-              {renderField('First Name', user.firstName)}
-              {renderField('Last Name', user.lastName)}
-              {renderField('Phone Number', user.phoneNumber)}
-              {renderField('Is Active', user.isActive ? 'Yes' : 'No')}
-              {renderField('Employee ID', user.employeeId)}
-              {renderField('Thumbnail ID', user.thumbnailId)}
-              {renderField('Thumbnail Name', user.thumbnail?.name)}
-              {renderField('Roles', user.roles?.join(', '))}
+              {renderField('id', user.id)}
+              {renderField('username', user.userName)}
+              {renderField('email', user.email)}
+              {renderField('firstName', user.firstName)}
+              {renderField('lastName', user.lastName)}
+              {renderField('phoneNumber', user.phoneNumber)}
+              {renderField('isActive', user.isActive ? 'Yes' : 'No')}
+              {renderField('employeeId', user.employeeId)}
+              {renderField('thumbnailId', user.thumbnailId)}
+              {renderField('thumbnailName', user.thumbnail?.name)}
+              {renderField('roles', user.roles?.join(', '))}
             </Grid>
           </Box>
         </CardContent>
@@ -187,33 +188,33 @@ function UserQuizProgressDetails({
         <Typography variant="h5">{userQuizProgress.name ?? 'Unnamed UserQuizProgress'}</Typography>
       </Box> */}
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="UserQuizProgress Information" />
+        <CardHeader title={t('userQuizProgressInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', userQuizProgress.id)}
-            {renderField('User ID', userQuizProgress.userId)}
-            {renderField('Quiz ID', userQuizProgress.quizId)}
-            {renderField('Progress Status', userQuizProgress.progressStatus)}
-            {renderField('Active Status', userQuizProgress.activeStatus)}
-            {renderField('Assigned At', DateTimeUtils.formatISODateToString(userQuizProgress.assignedAt))}
-            {renderField('Custom Start Time', DateTimeUtils.formatISODateToString(userQuizProgress.customStartTime))}
-            {renderField('Custom End Time', DateTimeUtils.formatISODateToString(userQuizProgress.customEndTime))}
-            {renderField('Duration', userQuizProgress.duration)}
-            {renderField('Score', userQuizProgress.score?.toString())}
-            {renderField('Attempts', userQuizProgress.attempts?.toString())}
-            {renderField('Started At', DateTimeUtils.formatISODateToString(userQuizProgress.startedAt))}
-            {renderField('Completed At', DateTimeUtils.formatISODateToString(userQuizProgress.completedAt))}
-            {renderField('Last Access', DateTimeUtils.formatISODateToString(userQuizProgress.lastAccess))}
-            {renderField('Session ID', userQuizProgress.sessionId)}
-            {renderField('IP Address', userQuizProgress.ipAddress)}
-            {renderField('User Agent', userQuizProgress.userAgent)}
-            {renderField('Device Info', userQuizProgress.deviceInfo)}
-            {renderField('Device ID', userQuizProgress.deviceId)}
-            {renderField('Device Name', userQuizProgress.deviceName)}
-            {renderField('OS', userQuizProgress.os)}
-            {renderField('Location', userQuizProgress.location)}
-            {renderField('Enrollment ID', userQuizProgress.enrollmentId)}
-            {renderField('Quiz Title', userQuizProgress.quiz?.title)}
+            {renderField('id', userQuizProgress.id)}
+            {renderField('userId', userQuizProgress.userId)}
+            {renderField('quizId', userQuizProgress.quizId)}
+            {renderField('progressStatus', userQuizProgress.progressStatus)}
+            {renderField('activeStatus', userQuizProgress.activeStatus)}
+            {renderField('assignedAt', DateTimeUtils.formatISODateToString(userQuizProgress.assignedAt))}
+            {renderField('customStartTime', DateTimeUtils.formatISODateToString(userQuizProgress.customStartTime))}
+            {renderField('customEndTime', DateTimeUtils.formatISODateToString(userQuizProgress.customEndTime))}
+            {renderField('duration', userQuizProgress.duration)}
+            {renderField('score', userQuizProgress.score?.toString())}
+            {renderField('attempts', userQuizProgress.attempts?.toString())}
+            {renderField('startedAt', DateTimeUtils.formatISODateToString(userQuizProgress.startedAt))}
+            {renderField('completedAt', DateTimeUtils.formatISODateToString(userQuizProgress.completedAt))}
+            {renderField('lastAccess', DateTimeUtils.formatISODateToString(userQuizProgress.lastAccess))}
+            {renderField('sessionId', userQuizProgress.sessionId)}
+            {renderField('ipAddress', userQuizProgress.ipAddress)}
+            {renderField('userAgent', userQuizProgress.userAgent)}
+            {renderField('deviceInfo', userQuizProgress.deviceInfo)}
+            {renderField('deviceId', userQuizProgress.deviceId)}
+            {renderField('deviceName', userQuizProgress.deviceName)}
+            {renderField('os', userQuizProgress.os)}
+            {renderField('location', userQuizProgress.location)}
+            {renderField('enrollmentId', userQuizProgress.enrollmentId)}
+            {renderField('quizTitle', userQuizProgress.quiz?.title)}
           </Grid>
         </CardContent>
       </Card>{' '}
@@ -228,6 +229,7 @@ export default function UserQuizProgressDetailForm({
   userQuizProgressId,
   onClose,
 }: UserQuizProgressDetailsProps) {
+  const { t } = useTranslation();
   const { userQuizProgressUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userQuizProgress, setUserQuizProgress] = useState<UserQuizProgressDetailResponse | null>(null);
@@ -253,7 +255,7 @@ export default function UserQuizProgressDetailForm({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">UserQuizProgress Details</Typography>
+        <Typography variant="h6">{t('userQuizProgressDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

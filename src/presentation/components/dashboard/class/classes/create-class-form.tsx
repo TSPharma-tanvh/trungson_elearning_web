@@ -19,7 +19,6 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
 interface CreateClassProps {

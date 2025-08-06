@@ -22,6 +22,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
@@ -39,10 +40,12 @@ function UserLessonProgressDetails({
   userLessonProgress: UserLessonProgressDetailResponse;
   fullScreen: boolean;
 }) {
+  const { t } = useTranslation();
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -54,7 +57,7 @@ function UserLessonProgressDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Lesson Detail" />
+        <CardHeader title={t('lessonDetails')} />
         <CardContent>
           <Box display="flex" alignItems="center" gap={2} mb={3}>
             <Avatar src={lesson.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
@@ -64,16 +67,16 @@ function UserLessonProgressDetails({
           </Box>
           <Box key={lesson.id} sx={{ mb: 2 }}>
             <Grid container spacing={2}>
-              {renderField('ID', lesson.id)}
-              {renderField('Name', lesson.name)}
-              {renderField('Description', lesson.detail)}
-              {renderField('enablePlay', lesson.enablePlay ? 'Required' : 'Optional')}
-              {renderField('Status', lesson.status)}
-              {renderField('Lesson Type', lesson.lessonType)}
-              {renderField('Category ID', lesson.categoryID)}
-              {renderField('Category Name', lesson.category?.categoryName)}
-              {renderField('Thumbnail ID', lesson.thumbnailID)}
-              {renderField('Thumbnail Name', lesson.thumbnail?.name)}
+              {renderField('id', lesson.id)}
+              {renderField('name', lesson.name)}
+              {renderField('description', lesson.detail)}
+              {renderField('enablePlay', lesson.enablePlay ? t('yes') : t('no'))}
+              {renderField('status', lesson.status)}
+              {renderField('lessonType', lesson.lessonType)}
+              {renderField('categoryId', lesson.categoryID)}
+              {renderField('categoryName', lesson.category?.categoryName)}
+              {renderField('thumbnailId', lesson.thumbnailID)}
+              {renderField('thumbnailName', lesson.thumbnail?.name)}
             </Grid>
             <Box mt={4}>
               {lesson?.video?.resourceUrl !== undefined && (
@@ -92,7 +95,7 @@ function UserLessonProgressDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="User Information" />
+        <CardHeader title={t('userInformation')} />
         <CardContent>
           <Box key={user.id} sx={{ mb: 2 }}>
             {/* Avatar */}
@@ -115,17 +118,17 @@ function UserLessonProgressDetails({
             ) : null}
 
             <Grid container spacing={2}>
-              {renderField('ID', user.id)}
-              {renderField('Username', user.userName)}
-              {renderField('Email', user.email)}
-              {renderField('First Name', user.firstName)}
-              {renderField('Last Name', user.lastName)}
-              {renderField('Phone Number', user.phoneNumber)}
-              {renderField('Is Active', user.isActive ? 'Yes' : 'No')}
-              {renderField('Employee ID', user.employeeId)}
-              {renderField('Thumbnail ID', user.thumbnailId)}
-              {renderField('Thumbnail Name', user.thumbnail?.name)}
-              {renderField('Roles', user.roles?.join(', '))}
+              {renderField('id', user.id)}
+              {renderField('username', user.userName)}
+              {renderField('email', user.email)}
+              {renderField('firstName', user.firstName)}
+              {renderField('lastName', user.lastName)}
+              {renderField('phoneNumber', user.phoneNumber)}
+              {renderField('isActive', user.isActive ? t('yes') : t('no'))}
+              {renderField('employeeId', user.employeeId)}
+              {renderField('thumbnailId', user.thumbnailId)}
+              {renderField('thumbnailName', user.thumbnail?.name)}
+              {renderField('roles', user.roles?.join(', '))}
             </Grid>
           </Box>
         </CardContent>
@@ -142,12 +145,12 @@ function UserLessonProgressDetails({
         <Typography variant="h5">{userLessonProgress.name ?? 'Unnamed UserLessonProgress'}</Typography>
       </Box> */}
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="UserLessonProgress Information" />
+        <CardHeader title={t('userLessonProgressInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', userLessonProgress.id)}
+            {renderField('id', userLessonProgress.id)}
             {renderField('userID', userLessonProgress.userID)}
-            {renderField('lessonID', userLessonProgress.lessonID)}
+            {renderField('lessonId', userLessonProgress.lessonID)}
             {renderField('progress', userLessonProgress.progress)}
             {renderField('startDate', DateTimeUtils.formatISODateToString(userLessonProgress.startDate))}
             {renderField('endDate', DateTimeUtils.formatISODateToString(userLessonProgress.endDate))}
@@ -167,6 +170,8 @@ export default function UserLessonProgressDetailForm({
   userLessonProgressId,
   onClose,
 }: UserLessonProgressDetailProps) {
+  const { t } = useTranslation();
+
   const { userLessonProgressUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userLessonProgress, setUserLessonProgress] = useState<UserLessonProgressDetailResponse | null>(null);
@@ -192,7 +197,7 @@ export default function UserLessonProgressDetailForm({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">UserLessonProgress Details</Typography>
+        <Typography variant="h6">{t('userLessonProgressDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

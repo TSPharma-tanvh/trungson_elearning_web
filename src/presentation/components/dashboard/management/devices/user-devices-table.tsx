@@ -76,7 +76,7 @@ export default function UserDevicesTable({
             },
           },
           //   {
-          //     label: 'Edit',
+          //     label: t("edit"),
           //     onClick: (row) => {
           //       setEditUserDevicesData(row);
           //       setEditOpen(true);

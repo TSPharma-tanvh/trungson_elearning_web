@@ -2,22 +2,17 @@
 
 import * as React from 'react';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
-import { QuizTypeEnum } from '@/utils/enum/core-enum';
+import { CoreEnumUtils, QuizTypeEnum } from '@/utils/enum/core-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
-import {
-  Button,
-  Card,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Stack,
-} from '@mui/material';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { Button, Card, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
+import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
+import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
 export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) => void }): React.JSX.Element {
+  const { t } = useTranslation();
+
   const [searchText, setSearchText] = React.useState('');
   const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
@@ -45,95 +40,64 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
   };
 
   return (
-    <Card sx={{ p: 2 }}>
+    <Card
+      sx={{
+        p: 2,
+        backgroundColor: 'var(--mui-palette-common-white)',
+        color: 'var(--mui-palette-primary-main)',
+        border: '1px solid var(--mui-palette-primary-main)',
+      }}
+    >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <OutlinedInput
-          size="small"
-          value={searchText}
-          onChange={(e) => {
-            setSearchText(e.target.value);
-          }}
-          fullWidth
-          placeholder="Search course"
-          startAdornment={
-            <InputAdornment position="start">
-              <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
-            </InputAdornment>
-          }
-          sx={{ maxWidth: 250 }}
-        />
+        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchQuiz')} />
 
         {/* Is Required */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Is Required</InputLabel>
-          <Select
-            value={isRequired === undefined ? '' : isRequired ? 'true' : 'false'}
-            label="Is Required"
-            onChange={(e) => {
-              const val = e.target.value;
-              setIsRequired(val === '' ? undefined : val === 'true');
-            }}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="true">Required</MenuItem>
-            <MenuItem value="false">Optional</MenuItem>
-          </Select>
-        </FormControl>
+
+        <CustomSelectFilter<boolean>
+          label={t('isRequired')}
+          value={isRequired}
+          onChange={setIsRequired}
+          options={[
+            { value: true, label: 'required' },
+            { value: false, label: 'optional' },
+          ]}
+        />
 
         {/* Quiz Type */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Type</InputLabel>
-          <Select
-            value={quizType !== undefined ? quizType.toString() : ''}
-            onChange={(e) => {
-              setQuizType(e.target.value === '' ? undefined : (Number(e.target.value) as QuizTypeEnum));
-            }}
-            label="Type"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={QuizTypeEnum.LessonQuiz}>LessonQuiz</MenuItem>
-            <MenuItem value={QuizTypeEnum.ExamQuiz}>ExamQuiz</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<QuizTypeEnum>
+          label={t('type')}
+          value={quizType}
+          onChange={(val) => {
+            setQuizType(val);
+          }}
+          options={CoreEnumUtils.getEnumOptions(QuizTypeEnum)}
+        />
 
         {/* Status */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            value={status !== undefined ? status.toString() : ''}
-            onChange={(e) => {
-              setStatus(e.target.value === '' ? undefined : (Number(e.target.value) as StatusEnum));
-            }}
-            label="Status"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={StatusEnum.Enable}>Enable</MenuItem>
-            <MenuItem value={StatusEnum.Disable}>Disable</MenuItem>
-            <MenuItem value={StatusEnum.Deleted}>Deleted</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<StatusEnum>
+          label={t('status')}
+          value={status}
+          onChange={(val) => {
+            setStatus(val);
+          }}
+          options={CoreEnumUtils.getEnumOptions(StatusEnum)}
+        />
 
         {/* Display Type */}
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Display Type</InputLabel>
-          <Select
-            label="Display Type"
-            value={displayType !== undefined ? displayType.toString() : ''}
-            onChange={(e) => {
-              setDisplayType(e.target.value === '' ? undefined : (Number(e.target.value) as DisplayTypeEnum));
-            }}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={DisplayTypeEnum.Public}>Public</MenuItem>
-            <MenuItem value={DisplayTypeEnum.Private}>Private</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomSelectFilter<DisplayTypeEnum>
+          label={t('displayType')}
+          value={displayType}
+          onChange={(val) => {
+            setDisplayType(val);
+          }}
+          options={CoreEnumUtils.getEnumOptions(DisplayTypeEnum)}
+        />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
-          Filter
+          {t('filter')}
         </Button>
         <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
-          Clear
+          {t('clear')}
         </Button>
       </Stack>
     </Card>

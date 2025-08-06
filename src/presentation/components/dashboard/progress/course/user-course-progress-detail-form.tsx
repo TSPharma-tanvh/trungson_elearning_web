@@ -21,6 +21,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 
@@ -37,10 +38,11 @@ function UserCourseProgressDetails({
   userCourseProgress: UserCourseProgressResponse;
   fullScreen: boolean;
 }) {
+  const { t } = useTranslation();
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -52,23 +54,36 @@ function UserCourseProgressDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Enrollment Criteria" />
+        <CardHeader title={t('enrollmentCriteria')} />
         <CardContent>
           <Box key={course.id} sx={{ mb: 2 }}>
             <Grid container spacing={2}>
-              {renderField('ID', course.id)}
-              {renderField('Name', course.name)}
-              {renderField('Description', course.detail)}
-              {renderField('Target Type', course.isRequired ? 'Required' : 'Optional')}
-              {renderField('Start Time', course.startTime ? new Date(course.startTime).toLocaleString() : '')}
-              {renderField('End Time', course.endTime ? new Date(course.endTime).toLocaleString() : '')}
-              {renderField('Status', course.disableStatus)}
-              {renderField('scheduleStatus', course.scheduleStatus)}
-              {renderField('Display Type', course.displayType)}
-              {renderField('Category ID', course.categoryId)}
-              {renderField('Category Name', course.category?.categoryName)}
-              {renderField('Thumbnail ID', course.thumbnailId)}
-              {renderField('Thumbnail Name', course.thumbnail?.name)}
+              {renderField('id', course.id)}
+              {renderField('name', course.name)}
+              {renderField('description', course.detail)}
+              {renderField('isRequired', course.isRequired ? t('yes') : t('no'))}
+              {renderField('startTime', course.startTime ? new Date(course.startTime).toLocaleString() : '')}
+              {renderField('endTime', course.endTime ? new Date(course.endTime).toLocaleString() : '')}
+              {renderField(
+                'status',
+                course.disableStatus
+                  ? t(course.disableStatus.charAt(0).toLowerCase() + t(course.disableStatus).slice(1))
+                  : ''
+              )}
+              {renderField(
+                'scheduleStatus',
+                course.scheduleStatus
+                  ? t(course.scheduleStatus.charAt(0).toLowerCase() + t(course.scheduleStatus).slice(1))
+                  : ''
+              )}
+              {renderField(
+                'displayType',
+                course.displayType ? t(course.displayType.charAt(0).toLowerCase() + t(course.displayType).slice(1)) : ''
+              )}
+              {renderField('categoryId', course.categoryId)}
+              {renderField('categoryName', course.category?.categoryName)}
+              {renderField('thumbnailId', course.thumbnailId)}
+              {renderField('thumbnailName', course.thumbnail?.name)}
             </Grid>
           </Box>
         </CardContent>
@@ -82,7 +97,7 @@ function UserCourseProgressDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="User Information" />
+        <CardHeader title={t('userInformation')} />
         <CardContent>
           <Box key={user.id} sx={{ mb: 2 }}>
             {/* Avatar */}
@@ -105,17 +120,17 @@ function UserCourseProgressDetails({
             ) : null}
 
             <Grid container spacing={2}>
-              {renderField('ID', user.id)}
-              {renderField('Username', user.userName)}
-              {renderField('Email', user.email)}
-              {renderField('First Name', user.firstName)}
-              {renderField('Last Name', user.lastName)}
-              {renderField('Phone Number', user.phoneNumber)}
-              {renderField('Is Active', user.isActive ? 'Yes' : 'No')}
-              {renderField('Employee ID', user.employeeId)}
-              {renderField('Thumbnail ID', user.thumbnailId)}
-              {renderField('Thumbnail Name', user.thumbnail?.name)}
-              {renderField('Roles', user.roles?.join(', '))}
+              {renderField('id', user.id)}
+              {renderField('username', user.userName)}
+              {renderField('email', user.email)}
+              {renderField('firstName', user.firstName)}
+              {renderField('lastName', user.lastName)}
+              {renderField('phoneNumber', user.phoneNumber)}
+              {renderField('isActive', user.isActive ? t('yes') : t('no'))}
+              {renderField('employeeId', user.employeeId)}
+              {renderField('thumbnailId', user.thumbnailId)}
+              {renderField('thumbnailName', user.thumbnail?.name)}
+              {renderField('roles', user.roles?.join(', '))}
             </Grid>
           </Box>
         </CardContent>
@@ -132,17 +147,22 @@ function UserCourseProgressDetails({
         <Typography variant="h5">{userCourseProgress.name ?? 'Unnamed UserCourseProgress'}</Typography>
       </Box> */}
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="UserCourseProgress Information" />
+        <CardHeader title={t('userCourseProgressInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', userCourseProgress.id)}
+            {renderField('id', userCourseProgress.id)}
             {renderField('userID', userCourseProgress.userID)}
             {renderField('courseID', userCourseProgress.courseID)}
             {renderField('progress', userCourseProgress.progress)}
             {renderField('startDate', userCourseProgress.startDate)}
             {renderField('endDate', userCourseProgress.endDate)}
             {renderField('lastAccess', userCourseProgress.lastAccess)}
-            {renderField('status', userCourseProgress.status)}
+            {renderField(
+              'status',
+              userCourseProgress.status
+                ? t(userCourseProgress.status.charAt(0).toLowerCase() + t(userCourseProgress.status).slice(1))
+                : ''
+            )}
             {renderField('enrollmentID', userCourseProgress.enrollmentID)}
           </Grid>
         </CardContent>
@@ -154,6 +174,7 @@ function UserCourseProgressDetails({
 }
 
 export default function UserCourseProgressDetailForm({ open, userCourseProgressId, onClose }: UserCourseProgressProps) {
+  const { t } = useTranslation();
   const { userCourseProgressUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [userCourseProgress, setUserCourseProgress] = useState<UserCourseProgressResponse | null>(null);
@@ -179,7 +200,7 @@ export default function UserCourseProgressDetailForm({ open, userCourseProgressI
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">UserCourseProgress Details</Typography>
+        <Typography variant="h6">{t('userCourseProgressDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

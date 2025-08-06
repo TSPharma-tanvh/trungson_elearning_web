@@ -8,7 +8,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
-import { Image as ImageIcon, Tag } from '@phosphor-icons/react';
+import { Exam, Image as ImageIcon } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -27,6 +28,7 @@ interface QuizImportFormProps {
 }
 
 export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, open, onClose }: QuizImportFormProps) {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   // const [detailRows, setDetailRows] = useState(3);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,7 +78,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
 
   const handleFileUpload = (file: File | null) => {
     if (file === null) {
-      CustomSnackBar.showSnackbar('File is required.', 'error');
+      CustomSnackBar.showSnackbar(t('fileIsRequired'), 'error');
       return;
     }
 
@@ -93,7 +95,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
     try {
       const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
-        CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
+        CustomSnackBar.showSnackbar(t('someFieldsAreInvalid'), 'error');
         return;
       }
 
@@ -150,8 +152,8 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6" component="div">
-          Import Quiz
+        <Typography variant="subtitle1" component="div">
+          {t('importQuiz')}
         </Typography>
         <Box>
           <IconButton
@@ -194,7 +196,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
           >
             <Grid item xs={12}>
               <CustomTextField
-                label="Point to Pass"
+                label={t('pointToPass')}
                 inputMode="numeric"
                 required
                 value={form.scoreToPass?.toString() ?? ''}
@@ -203,7 +205,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                   handleChange('scoreToPass', numericValue);
                 }}
                 disabled={isSubmitting}
-                icon={<Tag {...iconStyle} />}
+                icon={<Exam {...iconStyle} />}
                 onValidationChange={(isValid) => {
                   setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
                 }}
@@ -214,7 +216,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.questionCategoryID}
-                label="Question category"
+                label={t('questionCategory')}
                 onChange={(value) => {
                   handleChange('questionCategoryID', value);
                 }}
@@ -227,7 +229,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.answerCategoryID}
-                label="Answer category"
+                label={t('answerCategory')}
                 onChange={(value) => {
                   handleChange('answerCategoryID', value);
                 }}
@@ -241,7 +243,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                 quizUsecase={quizUsecase}
                 value={form.quizID}
                 onChange={(value) => {
-                  handleChange('quizID', value ?? '');
+                  handleChange('quizID', value);
                 }}
                 disabled={isSubmitting}
               />
@@ -256,7 +258,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                 disabled={isSubmitting}
                 startIcon={<ImageIcon {...iconStyle} />}
               >
-                Upload File
+                {t('uploadFile')}
                 <input
                   type="file"
                   hidden
@@ -270,7 +272,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               <Grid item spacing={2}>
                 <Grid item xs={12}>
                   <Typography variant="subtitle2" mb={1}>
-                    Uploaded Files
+                    {t('uploadedFiles')}
                   </Typography>
 
                   <Grid item>
@@ -301,13 +303,13 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               <Grid item xs={12}>
                 {' '}
                 <Typography variant="body2" color="text.secondary">
-                  No file uploaded yet.
+                  {t('noFileUploadedYet')}
                 </Typography>
               </Grid>
             )}
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => handleSave()} loading={loading} disabled={disabled} />
+              <CustomButton label={t('import')} onClick={() => handleSave()} loading={loading} disabled={disabled} />
             </Grid>
           </Grid>
         </Box>

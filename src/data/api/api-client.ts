@@ -128,20 +128,24 @@ class ApiClient {
   private static getAuthToken(): string | null {
     return StoreLocalManager.getLocalData(AppStrings.ACCESS_TOKEN) || null;
   }
+
   private static clearAuthTokens(): void {
     StoreLocalManager.removeLocalData(AppStrings.ACCESS_TOKEN);
     StoreLocalManager.removeLocalData(AppStrings.REFRESH_TOKEN);
     StoreLocalManager.removeLocalData(AppStrings.USER_ID);
     StoreLocalManager.removeLocalData(AppStrings.USER_DATA);
   }
+
   private static redirectToSignIn(): void {
     window.location.href = paths.auth.signIn;
   }
+
   private static clearTokenAndRedirectToSignIn(): void {
     CustomSnackBar.showSnackbar('Session expired. Please sign in again.', 'error');
     ApiClient.clearAuthTokens();
     ApiClient.redirectToSignIn();
   }
+
   private static async handleTokenRefresh(refreshToken: string): Promise<boolean> {
     try {
       const refreshClient = axios.create({

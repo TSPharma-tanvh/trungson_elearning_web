@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -31,6 +32,7 @@ export function CreateUserLessonProgressDialog({
   open,
   onClose,
 }: CreateUserLessonProgressProps) {
+  const { t } = useTranslation();
   const { userUsecase, lessonUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -82,7 +84,7 @@ export function CreateUserLessonProgressDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create UserLessonProgress
+          {t('createUserLessonProgress')}
         </Typography>
         <Box>
           <IconButton
@@ -156,7 +158,7 @@ export function CreateUserLessonProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian bắt đầu"
+                label={t('startTime')}
                 value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
                 onChange={(value) => {
                   handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value));
@@ -167,7 +169,7 @@ export function CreateUserLessonProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian kết thúc"
+                label={t('endTime')}
                 value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
                 onChange={(value) => {
                   handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value));
@@ -178,23 +180,23 @@ export function CreateUserLessonProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<string>
-                label="Trạng thái"
+                label={t('status')}
                 value={form.status ?? ''}
                 onChange={(val) => {
                   handleChange('status', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'Chưa bắt đầu' },
-                  { value: UserProgressEnum[UserProgressEnum.Ongoing], label: 'Đang làm' },
-                  { value: UserProgressEnum[UserProgressEnum.Done], label: 'Hoàn thành' },
+                  { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'notStarted' },
+                  { value: UserProgressEnum[UserProgressEnum.Ongoing], label: 'ongoing' },
+                  { value: UserProgressEnum[UserProgressEnum.Done], label: 'done' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12}>
               <CustomButton
-                label="Tạo mới"
+                label={t('create')}
                 onClick={() => {
                   onSubmit(form);
                 }}

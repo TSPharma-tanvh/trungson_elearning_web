@@ -206,12 +206,11 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                       mb: 1,
                     }}
                   >
-                    {isImage && (
-                      <Box
+                    {isImage ? <Box
                         component="img"
                         src={res.resourceUrl}
                         alt={res.name}
-                        onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                        onClick={() => { setPreviewUrl(res.resourceUrl ?? ''); }}
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -221,11 +220,9 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                           objectFit: 'contain',
                           cursor: 'pointer',
                         }}
-                      />
-                    )}
+                      /> : null}
 
-                    {isVideo && (
-                      <Box
+                    {isVideo ? <Box
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -235,11 +232,9 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                         }}
                       >
                         <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
-                      </Box>
-                    )}
+                      </Box> : null}
 
-                    {isOther && (
-                      <Box
+                    {isOther ? <Box
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -253,8 +248,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                         }}
                       >
                         <Typography variant="body2">{t('noPreview')}</Typography>
-                      </Box>
-                    )}
+                      </Box> : null}
                   </Box>
 
                   <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>

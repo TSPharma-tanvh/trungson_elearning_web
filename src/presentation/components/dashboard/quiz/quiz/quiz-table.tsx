@@ -23,6 +23,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 import QuizDetailForm from './quiz-detail-form';
@@ -49,6 +50,8 @@ export default function QuizTable({
   onDeleteQuizs,
   onEditQuiz,
 }: QuizTableProps) {
+  const { t } = useTranslation();
+
   const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -78,7 +81,9 @@ export default function QuizTable({
     setSelectedRow(row);
   };
 
-  const handleMenuClose = () => { setAnchorEl(null); };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleOpenDeleteDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -103,43 +108,96 @@ export default function QuizTable({
 
   return (
     <>
-      <Card>
+      <Card
+        sx={{
+          p: 0,
+          backgroundColor: 'var(--mui-palette-common-white)',
+          color: 'var(--mui-palette-primary-main)',
+          border: '1px solid var(--mui-palette-primary-main)',
+          borderRadius: '16px',
+        }}
+      >
         {selected.size > 0 && (
-          <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button color="error" variant="outlined" onClick={() => { handleOpenDeleteDialog(Array.from(selected)); }}>
-              Delete Selected ({selected.size})
+          <Box
+            display="flex"
+            justifyContent="flex-end"
+            p={2}
+            sx={{ backgroundColor: 'var(--mui-palette-primary-main)' }}
+          >
+            <Button
+              sx={{
+                backgroundColor: 'var(--mui-palette-secondary-main)',
+                color: 'var(--mui-palette-common-white)',
+                '&:hover': { backgroundColor: 'var(--mui-palette-secondary-dark)' },
+              }}
+              variant="outlined"
+              onClick={() => {
+                handleOpenDeleteDialog(Array.from(selected));
+              }}
+            >
+              {t('deleteSelectedItems')} ({selected.size}){' '}
             </Button>
           </Box>
         )}
 
         <TableContainer>
           <Table>
-            <TableHead>
+            <TableHead
+              sx={{
+                '& .MuiTableCell-head': {
+                  backgroundColor: 'var(--mui-palette-primary-main)',
+                  color: 'var(--mui-palette-common-white)',
+                },
+                '& .MuiTableCell-body': {
+                  borderBottom: '1px solid var(--mui-palette-primary-main)',
+                },
+              }}
+            >
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={selected.size === rows.length && rows.length > 0}
                     indeterminate={selected.size > 0 && selected.size < rows.length}
                     onChange={handleSelectAll}
+                    sx={{
+                      color: 'var(--mui-palette-common-white)',
+                      '&.Mui-checked': {
+                        color: 'var(--mui-palette-common-white)',
+                      },
+                      '&.MuiCheckbox-indeterminate': {
+                        color: 'var(--mui-palette-common-white)',
+                      },
+                    }}
                   />
                 </TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>Detail</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>StartTime</TableCell>
-                <TableCell>EndTime</TableCell>
-                <TableCell>Total Score</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell>{t('title')}</TableCell>
+                <TableCell>{t('detail')}</TableCell>
+                <TableCell>{t('status')}</TableCell>
+                <TableCell>{t('startTime')}</TableCell>
+                <TableCell>{t('endTime')}</TableCell>
+                <TableCell>{t('totalScore')}</TableCell>
+                <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
 
-            <TableBody>
+            <TableBody
+              sx={{
+                '& .MuiTableCell-body': {
+                  borderBottom: '1px solid var(--mui-palette-primary-main)',
+                },
+              }}
+            >
               {rows.map((row) => {
                 const isItemSelected = isSelected(row.id!);
                 return (
                   <TableRow key={row.id} selected={isItemSelected} hover>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={() => { handleSelectOne(row.id!); }} />
+                      <Checkbox
+                        checked={isItemSelected}
+                        onChange={() => {
+                          handleSelectOne(row.id!);
+                        }}
+                      />
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" alignItems="center" spacing={2}>
@@ -154,7 +212,10 @@ export default function QuizTable({
                     <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
                       <Typography variant="body2">{row.description}</Typography>
                     </TableCell>
-                    <TableCell>{row.status}</TableCell>
+                    <TableCell>
+                      {' '}
+                      {row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}
+                    </TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromDate(row.startTime)}</TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromDate(row.endTime)}</TableCell>
                     <TableCell>{row.totalScore}</TableCell>
@@ -162,7 +223,11 @@ export default function QuizTable({
                     <TableCell>{row.scheduleStatus}</TableCell>
                     <TableCell>{row.displayType}</TableCell> */}
                     <TableCell align="right">
-                      <IconButton onClick={(event) => { handleMenuClick(event, row); }}>
+                      <IconButton
+                        onClick={(event) => {
+                          handleMenuClick(event, row);
+                        }}
+                      >
                         <MoreVert />
                       </IconButton>
                     </TableCell>
@@ -179,7 +244,26 @@ export default function QuizTable({
           rowsPerPage={rowsPerPage}
           onPageChange={onPageChange}
           onRowsPerPageChange={onRowsPerPageChange}
-          labelDisplayedRows={() => `Page ${page + 1} of ${Math.ceil(count / rowsPerPage)}`}
+          labelRowsPerPage={t('rowsPerPage')}
+          labelDisplayedRows={() => {
+            const totalPages = Math.ceil(count / rowsPerPage);
+            return t('paginationInfo', { currentPage: page + 1, totalPages });
+          }}
+          sx={{
+            '& .MuiTablePagination-actions button': {
+              color: 'var(--mui-palette-primary-main)',
+              '&.Mui-disabled': {
+                color: 'var(--mui-palette-action-disabled)',
+              },
+            },
+
+            // '& .MuiTablePagination-select': {
+            //   color: 'var(--mui-palette-primary-main)',
+            // },
+            // '& .MuiTablePagination-displayedRows': {
+            //   color: 'var(--mui-palette-primary-main)',
+            // },
+          }}
         />
       </Card>
 
@@ -199,7 +283,7 @@ export default function QuizTable({
               handleMenuClose();
             }}
           >
-            View Details
+            {t('viewDetails')}
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -210,7 +294,7 @@ export default function QuizTable({
               handleMenuClose();
             }}
           >
-            Edit
+            {t('edit')}
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -218,22 +302,34 @@ export default function QuizTable({
               handleMenuClose();
             }}
           >
-            Delete
+            {t('delete')}
           </MenuItem>
         </MenuList>
       </Popover>
 
-      {editQuizData ? <UpdateQuizFormDialog
+      {editQuizData ? (
+        <UpdateQuizFormDialog
           open={editOpen}
           data={editQuizData}
-          onClose={() => { setEditOpen(false); }}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditQuiz(updatedData);
             setEditOpen(false);
           }}
-        /> : null}
+        />
+      ) : null}
 
-      {selectedRow ? <QuizDetailForm open={viewOpen} quizId={selectedRow?.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
+      {selectedRow ? (
+        <QuizDetailForm
+          open={viewOpen}
+          quizId={selectedRow?.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}

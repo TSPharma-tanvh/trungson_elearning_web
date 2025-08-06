@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { InputAdornment, TextField } from '@mui/material';
 import { type SxProps, type Theme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 interface CustomTextFieldProps {
   label: string;
@@ -37,6 +38,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
   onValidationChange,
   required = false,
 }) => {
+  const { t } = useTranslation();
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState('');
 
@@ -44,7 +46,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
     let valid = true;
 
     if (required && val.trim() === '') {
-      setHelperText('Trường này là bắt buộc');
+      setHelperText(t('requiredField'));
       setError(true);
       onValidationChange?.(false);
       return false;
@@ -55,28 +57,28 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
         if (pattern) {
           const regex = new RegExp(pattern);
           valid = regex.test(val);
-          if (!valid) setHelperText(`Định dạng không hợp lệ: ${patternError}`);
+          if (!valid) setHelperText(t('invalidFormat', { patternError }));
         }
         break;
 
       case 'numeric':
         valid = /^\d*$/.test(val);
-        if (!valid) setHelperText('Chỉ được nhập số');
+        if (!valid) setHelperText(t('numericOnly'));
         break;
 
       case 'decimal':
         valid = /^\d*\.?\d*$/.test(val);
-        if (!valid) setHelperText('Chỉ được nhập số thực');
+        if (!valid) setHelperText(t('decimalOnly'));
         break;
 
       case 'tel':
         valid = /^[0-9+\-()\s]*$/.test(val);
-        if (!valid) setHelperText('Số điện thoại không hợp lệ');
+        if (!valid) setHelperText(t('invalidPhone'));
         break;
 
       case 'email':
         valid = val === '' || /^[\w-.]+@(?:[\w-]+\.)+[\w-]{2,4}$/.test(val);
-        if (!valid) setHelperText('Email không hợp lệ');
+        if (!valid) setHelperText(t('invalidEmail'));
         break;
 
       case 'url':
@@ -85,7 +87,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
             const _ = new URL(val);
           } catch {
             valid = false;
-            setHelperText('URL không hợp lệ');
+            setHelperText(t('invalidUrl'));
           }
         }
         break;

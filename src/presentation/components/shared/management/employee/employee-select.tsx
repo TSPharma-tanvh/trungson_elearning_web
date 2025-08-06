@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
 import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { type EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
 import { useEmployeeSelectLoader } from '@/presentation/hooks/employee/use-employee-select-loader';
@@ -53,7 +52,6 @@ export function EmployeeSelectDialog({
   onChange,
   label = 'employee',
   disabled = false,
-  pathID,
   ...selectProps
 }: EmployeeSelectDialogProps) {
   const theme = useTheme();

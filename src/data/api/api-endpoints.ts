@@ -198,7 +198,7 @@ const endpoints: EndpointDefinitions = {
     changePassword: 'Identity/ChangePassword',
   },
   token: {
-    refreshToken: 'Token/Get-Access-Token',
+    refreshToken: 'Identity/RefreshToken',
   },
   user: {
     getAll: 'User/GetUsers',

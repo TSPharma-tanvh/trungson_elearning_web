@@ -25,6 +25,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
@@ -39,6 +40,7 @@ interface QuizDetailFormProps {
 }
 
 function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boolean }) {
+  const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedQuestion, setSelectedQuestion] = React.useState<UserQuestionResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
@@ -48,7 +50,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -59,22 +61,22 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Enrollment Criteria" />
+        <CardHeader title="enrollmentCriteria" />
         <CardContent>
           {quiz.enrollmentCriteria.map((criteria, index) => (
             <Box key={criteria.id ?? index} sx={{ mb: 2 }}>
               <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-                Criteria #{index + 1}
+                criteriaNumber #{index + 1}
               </Typography>
               <Grid container spacing={2}>
-                {renderField('ID', criteria.id)}
-                {renderField('Name', criteria.name)}
-                {renderField('Description', criteria.desc)}
-                {renderField('Target Type', criteria.targetType)}
-                {renderField('Target ID', criteria.targetID)}
-                {renderField('Target Level ID', criteria.targetLevelID)}
-                {renderField('Max Capacity', criteria.maxCapacity)}
-                {renderField('Target Pharmacy ID', criteria.targetPharmacyID)}
+                {renderField('id', criteria.id)}
+                {renderField('name', criteria.name)}
+                {renderField('description', criteria.desc)}
+                {renderField('targetType', criteria.targetType)}
+                {renderField('targetId', criteria.targetID)}
+                {renderField('targetLevelId', criteria.targetLevelID)}
+                {renderField('maxCapacity', criteria.maxCapacity)}
+                {renderField('targetPharmacyId', criteria.targetPharmacyID)}
               </Grid>
             </Box>
           ))}
@@ -95,9 +97,9 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Quizzes" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('quizzes')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {quiz.quizQuestions.map((question, index) => {
-          const lessonId = question.question?.id ?? `lesson-${index}`;
+          const lessonId = question.question?.id ?? `${t('lesson')}-${index}`;
           const isExpanded = expandedLessons[lessonId] || false;
 
           return (
@@ -109,7 +111,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
               }}
             >
               <CardHeader
-                title={question.question?.questionText ?? `Lesson ${index + 1}`}
+                title={question.question?.questionText ?? `${t('lesson')} ${index + 1}`}
                 action={
                   <Box>
                     <IconButton
@@ -146,9 +148,17 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Grid container spacing={2}>
-                    {renderField('ID', question.question?.id)}
-                    {renderField('Detail', question.question?.questionText)}
-                    {renderField('questionType', question.question?.questionType)}
+                    {renderField('id', question.question?.id)}
+                    {renderField('detail', question.question?.questionText)}
+                    {renderField(
+                      'questionType',
+                      question.question?.questionType
+                        ? t(
+                            question.question?.questionType.charAt(0).toLowerCase() +
+                              t(question.question?.questionType).slice(1)
+                          )
+                        : ''
+                    )}
                     {renderField('point', question.question?.point)}
                     {renderField('canShuffle', question.question?.canShuffle)}
                     {renderField('totalAnswer', question.question?.totalAnswer)}
@@ -239,7 +249,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                           alignItems: 'center',
                         }}
                       >
-                        <Typography variant="body2">No preview</Typography>
+                        <Typography variant="body2">{t('noPreview')}</Typography>
                       </Box>
                     ) : null}
                   </Box>
@@ -260,7 +270,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                 setPreviewUrl(null);
               }}
               imageUrl={previewUrl}
-              title="Image Preview"
+              title={t('imagePreview')}
               fullscreen={previewFullScreen}
               onToggleFullscreen={() => {
                 setPreviewFullScreen((prev) => !prev);
@@ -278,31 +288,30 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
         <Avatar src={quiz.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
           {quiz.title?.[0] ?? '?'}
         </Avatar>
-        <Typography variant="h5">{quiz.title ?? 'Unnamed Quiz'}</Typography>
+        <Typography variant="h5">{quiz.title ?? ''}</Typography>
       </Box>
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Quiz Information" />
+        <CardHeader title={t('quizInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', quiz.id)}
-            {renderField('Title', quiz.title)}
-            {renderField('Description', quiz.description)}
-            {renderField('Status', quiz.status)}
-            {renderField(
-              'Start Time',
-              quiz.startTime ? DateTimeUtils.formatISODateFromDate(quiz.startTime) : undefined
-            )}
-            {renderField('End Time', quiz.endTime ? DateTimeUtils.formatISODateFromDate(quiz.endTime) : undefined)}
-            {renderField('Total Score', quiz.totalScore)}
+            {renderField('id', quiz.id)}
+            {renderField('title', quiz.title)}
+            {renderField('description', quiz.description)}
+            {renderField('status', quiz.status)}
+            {renderField('startTime', quiz.startTime ? DateTimeUtils.formatISODateFromDate(quiz.startTime) : undefined)}
+            {renderField('endTime', quiz.endTime ? DateTimeUtils.formatISODateFromDate(quiz.endTime) : undefined)}
+            {renderField('totalScore', quiz.totalScore)}
             {renderField('time', quiz.time)}
-            {renderField('type', quiz.type)}
-            {renderField('scoreToPass', quiz.scoreToPass)}
+            {renderField(
+              'type',
+              quiz.type ? t(quiz.type.toString().charAt(0).toLowerCase() + t(quiz.type.toString().slice(1))) : ''
+            )}
             {renderField('scoreToPass', quiz.scoreToPass)}
             {renderField('maxAttempts', quiz.maxAttempts)}
-            {renderField('canStartOver', quiz.canStartOver ? 'Yes' : 'No')}
-            {renderField('canShuffle', quiz.canShuffle ? 'Yes' : 'No')}
-            {renderField('isRequired', quiz.isRequired ? 'Yes' : 'No')}
-            {renderField('isAutoSubmitted', quiz.isAutoSubmitted ? 'Yes' : 'No')}
+            {renderField('canStartOver', quiz.canStartOver ? t('yes') : t('no'))}
+            {renderField('canShuffle', quiz.canShuffle ? t('yes') : t('no'))}
+            {renderField('isRequired', quiz.isRequired ? t('yes') : t('no'))}
+            {renderField('isAutoSubmitted', quiz.isAutoSubmitted ? t('yes') : t('no'))}
           </Grid>
         </CardContent>
       </Card>
@@ -325,6 +334,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
 }
 
 export default function QuizDetailForm({ open, quizId, onClose }: QuizDetailFormProps) {
+  const { t } = useTranslation();
   const { quizUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [course, setQuiz] = useState<QuizResponse | null>(null);
@@ -350,7 +360,7 @@ export default function QuizDetailForm({ open, quizId, onClose }: QuizDetailForm
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6">Quiz Details</Typography>
+        <Typography variant="h6">{t('quizDetails')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

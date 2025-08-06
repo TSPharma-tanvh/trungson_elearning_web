@@ -1,8 +1,9 @@
 import React from 'react';
 import { type UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
 import { type QuestionResponse } from '@/domain/models/question/response/question-response';
-import { MoreVert } from '@mui/icons-material';
+import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -31,6 +32,7 @@ export default function QuestionTable({
   onDeleteQuestions,
   onEditQuestion,
 }: QuestionTableProps) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editQuestionData, setEditQuestionData] = React.useState<QuestionResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
@@ -69,21 +71,21 @@ export default function QuestionTable({
         onDelete={onDeleteQuestions}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditQuestionData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditQuestionData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -91,12 +93,12 @@ export default function QuestionTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>Name</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Can Shuffle</TableCell>
-            <TableCell>Point</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Total Answers</TableCell>
+            <TableCell>{t('name')}</TableCell>
+            <TableCell>{t('type')}</TableCell>
+            <TableCell>{t('canShuffle')}</TableCell>
+            <TableCell>{t('point')}</TableCell>
+            <TableCell>{t('status')}</TableCell>
+            <TableCell>{t('totalAnswers')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -112,13 +114,21 @@ export default function QuestionTable({
               </Stack>
             </TableCell>
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
-              <Typography variant="body2">{row.questionType}</Typography>
+              <Typography variant="body2">
+                {row.questionType ? t(row.questionType.charAt(0).toLowerCase() + t(row.questionType).slice(1)) : ''}
+              </Typography>
             </TableCell>
-            <TableCell>{row.canShuffle ? 'Yes' : 'No'}</TableCell>
+            <TableCell>
+              {row.canShuffle ? (
+                <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
+              ) : (
+                <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
+              )}
+            </TableCell>
 
             <TableCell>{row.point}</TableCell>
 
-            <TableCell>{row.status}</TableCell>
+            <TableCell>{row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}</TableCell>
 
             <TableCell>{row.totalAnswer}</TableCell>
 

@@ -23,10 +23,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { UpdatePasswordForm } from './update-password-form';
 
 export function AccountForm(): React.JSX.Element {
+  const { t } = useTranslation();
   const { userUsecase } = useDI();
   const { user, loading } = useUserInfo();
   const [formData, setFormData] = useState<UpdateUserInfoRequest>(new UpdateUserInfoRequest());
@@ -96,9 +98,26 @@ export function AccountForm(): React.JSX.Element {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
-        <Divider />
+      <div>
+        <Typography variant="h4" marginBottom={4} sx={{ color: 'var(--mui-palette-secondary-main)' }}>
+          {t('account')}
+        </Typography>
+      </div>
+      <Card
+        sx={{
+          p: 0,
+          backgroundColor: 'var(--mui-palette-common-white)',
+          color: 'var(--mui-palette-primary-main)',
+          border: '1px solid var(--mui-palette-primary-main)',
+          borderRadius: '16px',
+        }}
+      >
+        <CardHeader subheader={t('theInformationCanBeEdited')} title={t('profile')} />
+        <Divider
+          sx={{
+            color: 'var(--mui-palette-primary-main)',
+          }}
+        />
         <CardContent>
           <Grid container spacing={3}>
             {/* Left: Avatar */}
@@ -110,11 +129,11 @@ export function AccountForm(): React.JSX.Element {
                     {localUser?.firstName ?? '...'} {localUser?.lastName ?? ''}
                   </Typography>
                   <Typography color="text.secondary" variant="body2">
-                    {localUser?.employee?.city ?? ''}, {localUser?.employee?.country ?? ''}
+                    {localUser?.employee?.address ?? ''}
                   </Typography>
                 </Stack>
                 <Button variant="text" component="label">
-                  Upload picture
+                  {t('uploadPicture')}
                   <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
                 </Button>
               </Stack>
@@ -125,10 +144,10 @@ export function AccountForm(): React.JSX.Element {
               <Grid container spacing={3}>
                 <Grid item md={6} xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="first-name">First name</InputLabel>
+                    <InputLabel htmlFor="first-name">{t('firstName')}</InputLabel>
                     <OutlinedInput
                       id="first-name"
-                      label="First name"
+                      label={t('firstName')}
                       value={formData.firstName || ''}
                       onChange={(e) => {
                         handleChange('firstName', e.target.value);
@@ -138,10 +157,10 @@ export function AccountForm(): React.JSX.Element {
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="last-name">Last name</InputLabel>
+                    <InputLabel htmlFor="last-name">{t('lastName')}</InputLabel>
                     <OutlinedInput
                       id="last-name"
-                      label="Last name"
+                      label={t('lastName')}
                       value={formData.lastName || ''}
                       onChange={(e) => {
                         handleChange('lastName', e.target.value);
@@ -151,10 +170,10 @@ export function AccountForm(): React.JSX.Element {
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="email">Email</InputLabel>
+                    <InputLabel htmlFor="email">{t('email')}</InputLabel>
                     <OutlinedInput
                       id="email"
-                      label="Email"
+                      label={t('email')}
                       value={formData.email || ''}
                       onChange={(e) => {
                         handleChange('email', e.target.value);
@@ -165,10 +184,10 @@ export function AccountForm(): React.JSX.Element {
 
                 <Grid item md={6} xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="phoneNumber">Phone Number</InputLabel>
+                    <InputLabel htmlFor="phoneNumber">{t('phoneNumber')}</InputLabel>
                     <OutlinedInput
                       id="phoneNumber"
-                      label="Phone Number"
+                      label={t('phoneNumber')}
                       value={formData.phoneNumber || ''}
                       onChange={(e) => {
                         handleChange('phoneNumber', e.target.value);
@@ -181,10 +200,14 @@ export function AccountForm(): React.JSX.Element {
           </Grid>
         </CardContent>
 
-        <Divider />
+        <Divider
+          sx={{
+            color: 'var(--mui-palette-primary-main)',
+          }}
+        />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
           <Button variant="contained" type="submit">
-            Save details
+            {t('save')}
           </Button>
         </CardActions>
       </Card>

@@ -5,7 +5,7 @@ import { type AnswerResponse } from '@/domain/models/answer/response/answer-resp
 import { type AnswerUsecase } from '@/domain/usecases/answer/answer-usecase';
 import { useAnswerSelectLoader } from '@/presentation/hooks/answer/use-answer-select-loader';
 import { useAnswerSelectDebounce } from '@/presentation/hooks/answer/use-question-select-debounce';
-import { Book } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -30,11 +30,12 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
 import AnswerInformationForm from './answer-information-form';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface AnswerMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   answerUsecase: AnswerUsecase | null;
@@ -48,12 +49,13 @@ export function AnswerMultiSelectDialog({
   answerUsecase,
   value,
   onChange,
-  label = 'Answers',
+  label = 'answers',
   disabled = false,
   ...selectProps
 }: AnswerMultiSelectDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
@@ -159,13 +161,13 @@ export function AnswerMultiSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="course-select-label">{label}</InputLabel>
+        <InputLabel id="answer-select-label">{t(label)}</InputLabel>
         <Select
-          labelId="course-select-label"
+          labelId="answer-select-label"
           multiple
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
@@ -179,7 +181,7 @@ export function AnswerMultiSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Answers</Typography>
+            <Typography variant="h6">{t('selectAnswers')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -194,10 +196,10 @@ export function AnswerMultiSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchAnswers')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
@@ -226,26 +228,27 @@ export function AnswerMultiSelectDialog({
                     color: answer.isCorrect ? theme.palette.primary.light : theme.palette.error.main,
                   }}
                 />
-                <Button
+                <IconButton
                   size="small"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedAnswer(answer);
                     setViewOpen(true);
                   }}
+                  aria-label={t('showDetails')}
                 >
-                  Show Detail
-                </Button>
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
             {loadingAnswers ? (
               <Typography variant="body2" sx={{ p: 2 }}>
-                Loading...
+                {t('loading')}
               </Typography>
             ) : null}
             {!loadingAnswers && answers.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                No answers found
+                {t('empty')}
               </Typography>
             )}
           </Box>
@@ -264,9 +267,9 @@ export function AnswerMultiSelectDialog({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained">
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

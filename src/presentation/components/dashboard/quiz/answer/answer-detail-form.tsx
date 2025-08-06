@@ -22,6 +22,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
@@ -33,6 +34,7 @@ interface AnswerDetailsProps {
 }
 
 function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailResponse; fullScreen: boolean }) {
+  const { t } = useTranslation();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
@@ -43,7 +45,7 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
-        {label}
+        {t(label)}
       </Typography>
       <CustomFieldTypography value={value} />
     </Grid>
@@ -55,27 +57,27 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
         <Avatar src={answer.thumbnail?.resourceUrl} sx={{ width: 64, height: 64 }}>
           {answer.answerText?.[0] ?? '?'}
         </Avatar>
-        <Typography variant="h5">{answer.answerText ?? 'Unnamed Answer'}</Typography>
+        <Typography variant="h5">{answer.answerText ?? ''}</Typography>
       </Box>
 
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Answer Information" />
+        <CardHeader title={t('answerInformation')} />
         <CardContent>
           <Grid container spacing={2}>
-            {renderField('ID', answer.id)}
-            {renderField('Answer Text', answer.answerText)}
-            {renderField('Is Correct', answer.isCorrect ? 'Yes' : 'No')}
-            {renderField('Question ID', answer.questionID)}
-            {renderField('Category ID', answer.categoryID)}
-            {renderField('Thumbnail ID', answer.thumbnailID)}
-            {renderField('Category Name', answer.category?.categoryName)}
+            {renderField('id', answer.id)}
+            {renderField('title', answer.answerText)}
+            {renderField('isCorrect', answer.isCorrect ? t('yes') : t('no'))}
+            {renderField('questionID', answer.questionID)}
+            {renderField('categoryID', answer.categoryID)}
+            {renderField('thumbnailID', answer.thumbnailID)}
+            {renderField('categoryName', answer.category?.categoryName)}
           </Grid>
         </CardContent>
       </Card>
 
       {answer.userAnswerAnswersRelations.length > 0 && (
         <Box sx={{ mb: 2 }}>
-          <CardHeader title="User Answer Relations" sx={{ pl: 1, pb: 1 }} />
+          <CardHeader title={t('userAnswerRelations')} sx={{ pl: 1, pb: 1 }} />
           {answer.userAnswerAnswersRelations.map((rel, index) => {
             const relId = `${rel.answerID}-${rel.userAnswerID}`;
             const isExpanded = expanded[relId] || false;
@@ -83,7 +85,7 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
             return (
               <Card key={relId} sx={{ mb: 2 }}>
                 <CardHeader
-                  title={`Relation ${index + 1}`}
+                  title={`${t('answer')} ${index + 1}`}
                   action={
                     <IconButton
                       onClick={() => {
@@ -102,12 +104,12 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
                 <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                   <CardContent>
                     <Grid container spacing={2}>
-                      {renderField('Answer ID', rel.answerID)}
-                      {renderField('User Answer ID', rel.userAnswerID)}
-                      {renderField('User ID', rel.userAnswer?.userID)}
-                      {renderField('Quiz ID', rel.userAnswer?.quizID)}
-                      {renderField('Question ID', rel.userAnswer?.questionID)}
-                      {renderField('User Quiz Progress ID', rel.userAnswer?.userQuizProgressID)}
+                      {renderField('answerID', rel.answerID)}
+                      {renderField('userAnswerID', rel.userAnswerID)}
+                      {renderField('userID', rel.userAnswer?.userID)}
+                      {renderField('quizID', rel.userAnswer?.quizID)}
+                      {renderField('questionID', rel.userAnswer?.questionID)}
+                      {renderField('userQuizProgressID', rel.userAnswer?.userQuizProgressID)}
                     </Grid>
                   </CardContent>
                 </Collapse>
@@ -124,7 +126,7 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
             setPreviewImage(null);
           }}
           imageUrl={previewImage}
-          title="Image Preview"
+          title={t('imagePreview')}
           fullscreen={fullScreen}
           onToggleFullscreen={() => {
             undefined;
@@ -136,6 +138,7 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
 }
 
 export default function AnswerDetailForm({ open, answerId, onClose }: AnswerDetailsProps) {
+  const { t } = useTranslation();
   const { answerUsecase } = useDI();
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState<AnswerDetailResponse | null>(null);
@@ -161,7 +164,7 @@ export default function AnswerDetailForm({ open, answerId, onClose }: AnswerDeta
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6">Answer Information</Typography>
+        <Typography variant="h6">{t('answerInformation')}</Typography>
         <Box>
           <IconButton
             onClick={() => {

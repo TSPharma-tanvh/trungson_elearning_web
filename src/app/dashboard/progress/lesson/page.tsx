@@ -8,12 +8,14 @@ import { type UserLessonProgressDetailResponse } from '@/domain/models/user-less
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Stack, Typography } from '@mui/material';
 import { Plus } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CreateUserLessonProgressDialog } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-create';
 import { UserLessonProgressFilters } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-filter';
 import UserLessonProgressTable from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-table';
 
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { userLessonProgressUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
@@ -103,7 +105,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            User Lesson Progress
+            {t('userLessonProgress')}
           </Typography>
         </Stack>
         <Button
@@ -113,7 +115,7 @@ export default function Page(): React.JSX.Element {
             setShowCreateDialog(true);
           }}
         >
-          Enroll Users
+          {t('enrollUsers')}
         </Button>
       </Stack>
       <UserLessonProgressFilters onFilter={handleFilter} />

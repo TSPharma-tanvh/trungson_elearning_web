@@ -14,7 +14,7 @@ export class QuestionUsecase {
     const result = await this.courseRepo.getQuestionListInfo(request);
 
     if (!result || !Array.isArray(result.result)) {
-      throw new Error('Failed to load user list.');
+      throw new Error('Failed to load question list.');
     }
 
     // const data = result.result.map(QuestionResponse.fromJSON);

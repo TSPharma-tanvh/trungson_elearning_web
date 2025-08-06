@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { type QuestionUsecase } from '@/domain/usecases/question/question-usecase';
 import { useQuestionSelectLoader } from '@/presentation/hooks/question/use-question-select-loader';
-import { Tag } from '@mui/icons-material';
+import { InfoOutlined, QuestionMarkOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -28,9 +28,11 @@ import {
   useTheme,
   type SelectProps,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
+import QuestionDetailForm from '@/presentation/components/dashboard/quiz/question/question-detail';
 
 interface QuestionSelectProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   questionUsecase: QuestionUsecase;
@@ -44,16 +46,19 @@ export function QuestionMultiSelect({
   questionUsecase,
   value,
   onChange,
-  label = 'Questions',
+  label = 'questions',
   disabled = false,
 }: QuestionSelectProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
   const [selectedQuestionMap, setSelectedQuestionMap] = useState<Record<string, QuestionResponse>>({});
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState<QuestionResponse | null>(null);
 
   const { questions, loadingQuestions, pageNumber, totalPages, setSearchText, listRef, loadQuestions } =
     useQuestionSelectLoader({
@@ -120,18 +125,20 @@ export function QuestionMultiSelect({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="question-select-label">{label}</InputLabel>
+        <InputLabel id="question-select-label">{t(label)}</InputLabel>
         <Select
           multiple
           labelId="question-select-label"
           value={value}
           input={
-            <OutlinedInput label={label} startAdornment={<Tag sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput
+              label={t(label)}
+              startAdornment={<QuestionMarkOutlined sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />}
+            />
           }
           onClick={handleOpen}
           renderValue={(selected) =>
-            selected.map((id: string) => selectedQuestionMap[id]?.questionText || id).join(', ') ||
-            'No Questions Selected'
+            selected.map((id: string) => selectedQuestionMap[id]?.questionText || id).join(', ') || ''
           }
           open={false}
         />
@@ -140,7 +147,7 @@ export function QuestionMultiSelect({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Select Questions</Typography>
+            <Typography variant="h6">{t('selectQuestions')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -162,11 +169,11 @@ export function QuestionMultiSelect({
               setLocalSearchText(val);
               setSearchText(val);
             }}
-            placeholder="Search questions..."
+            placeholder={t('searchQuestions')}
           />
 
           <Button size="small" onClick={handleClearFilters} variant="outlined">
-            Clear Filters
+            {t('clearFilters')}
           </Button>
         </DialogTitle>
 
@@ -183,18 +190,29 @@ export function QuestionMultiSelect({
               >
                 <Checkbox checked={checked} />
                 <ListItemText primary={item.questionText} />
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedQuestion(item);
+                    setViewOpen(true);
+                  }}
+                  aria-label={t('showDetails')}
+                >
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             );
           })}
 
           {loadingQuestions ? (
             <Typography variant="body2" sx={{ p: 2 }}>
-              Loading...
+              {t('loading')}
             </Typography>
           ) : null}
           {!loadingQuestions && questions.length === 0 && (
             <Typography variant="body2" sx={{ p: 2 }}>
-              No questions found
+              {t('empty')}
             </Typography>
           )}
         </Box>
@@ -212,13 +230,23 @@ export function QuestionMultiSelect({
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained">
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedQuestion ? (
+        <QuestionDetailForm
+          open={viewOpen}
+          questionId={selectedQuestion.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

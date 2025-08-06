@@ -54,7 +54,7 @@ export function FileResourceSelect({
   status,
   value,
   onChange,
-  label = 'fileResource',
+  label = 'fileResources',
   disabled = false,
 }: FileResourceSelectProps) {
   const { t } = useTranslation();
@@ -122,7 +122,7 @@ export function FileResourceSelect({
     <>
       {/* Select dropdown (readonly, fake trigger) */}
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="file-select-label">{label}</InputLabel>
+        <InputLabel id="file-select-label">{t(label)}</InputLabel>
         <Select
           labelId="file-select-label"
           value={value || ''}

@@ -26,6 +26,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Image as ImageIcon, Tag } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -45,6 +46,7 @@ interface EditAnswerDialogProps {
 export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
   const { categoryUsecase, fileUsecase, questionUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -124,21 +126,21 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
   };
 
   const statusOptions = [
-    { value: StatusEnum.Enable, label: 'Enable' },
-    { value: StatusEnum.Disable, label: 'Disable' },
-    { value: StatusEnum.Deleted, label: 'Deleted' },
+    { value: StatusEnum.Enable, label: 'enable' },
+    { value: StatusEnum.Disable, label: 'disable' },
+    { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
   const booleanOptions = [
-    { value: 'true', label: 'Yes' },
-    { value: 'false', label: 'No' },
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
   ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create Answer
+          {t('createAnswer')}
         </Typography>
         <Box>
           <IconButton
@@ -159,7 +161,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
-                label="answerText"
+                label={t('title')}
                 value={formData.answerText}
                 onChange={(value) => {
                   handleChange('answerText', value);
@@ -171,7 +173,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="isCorrect"
+                label={t('correct')}
                 value={String(formData.isCorrect ?? '')}
                 onChange={(value) => {
                   handleChange('isCorrect', value === 'true');
@@ -183,7 +185,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label="Status"
+                label={t('status')}
                 value={formData.status ?? 0}
                 onChange={(value) => {
                   handleChange('status', value as StatusEnum);
@@ -219,22 +221,22 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
 
             <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
-                Upload Thumbnail
+                {t('uploadThumbnail')}
               </Typography>
               <ToggleButtonGroup
                 value={thumbnailSource}
                 exclusive
                 onChange={handleThumbnailSourceChange}
-                aria-label="thumbnail source"
+                aria-label={t('uploadThumbnail')}
                 fullWidth
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="select" aria-label="select from resources">
-                  Select from Resources
+                <ToggleButton value="select" aria-label={t('selectFromResource')}>
+                  {t('selectFromResource')}
                 </ToggleButton>
-                <ToggleButton value="upload" aria-label="upload file">
-                  Upload File
+                <ToggleButton value="upload" aria-label={t('uploadFile')}>
+                  {t('uploadFile')}
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
@@ -248,14 +250,14 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                   onChange={(ids) => {
                     handleChange('thumbnailID', ids);
                   }}
-                  label="Thumbnail"
+                  label={t('thumbnail')}
                   disabled={isSubmitting}
                 />
               ) : (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Document No"
+                      label={t('thumbnailDocumentNo')}
                       value={formData.thumbDocumentNo}
                       onChange={(value) => {
                         handleChange('thumbDocumentNo', value);
@@ -266,7 +268,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Prefix Name"
+                      label={t('thumbnailPrefixName')}
                       value={formData.thumbPrefixName}
                       onChange={(value) => {
                         handleChange('thumbPrefixName', value);
@@ -283,7 +285,8 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                       disabled={isSubmitting}
                       startIcon={<ImageIcon {...iconStyle} />}
                     >
-                      Upload Thumbnail
+                      {t('uploadThumbnail')}
+
                       <input
                         type="file"
                         hidden
@@ -306,7 +309,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                           disabled={isSubmitting}
                         />
                       }
-                      label="Delete Old Thumbnail"
+                      label={t('deleteOldThumbnail')}
                     />
                   </Grid>
                   {previewUrl ? (
@@ -327,7 +330,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                       >
                         <img
                           src={previewUrl}
-                          alt="Thumbnail Preview"
+                          alt={t('thumbnailPreview')}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
@@ -358,7 +361,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -366,7 +369,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

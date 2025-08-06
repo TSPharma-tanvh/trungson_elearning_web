@@ -13,13 +13,18 @@ import Typography from '@mui/material/Typography';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
+import { useTranslation } from 'react-i18next';
 
 import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
 import { ImportQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-import-form';
 import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
+var excelLink =
+  'https://docs.google.com/spreadsheets/d/1yY7ECNkNb4X5yKKt8kcX2fMH71igopqk/edit?usp=drive_link&ouid=117172840822163372784&rtpof=true&sd=true';
+
 export default function Page(): React.JSX.Element {
+  const { t } = useTranslation();
   const { quizUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
@@ -116,7 +121,9 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Quizzes</Typography>
+          <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
+            {t('quizzes')}
+          </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button
               color="inherit"
@@ -125,10 +132,14 @@ export default function Page(): React.JSX.Element {
                 setShowImportDialog(true);
               }}
             >
-              Import Questions to Quiz
+              {t('importQuestionsToQuiz')}
             </Button>
-            <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-              Download Example File
+            <Button
+              color="inherit"
+              startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => window.open(excelLink, '_blank', 'noopener,noreferrer')}
+            >
+              {t('downloadExampleFile')}
             </Button>
           </Stack>
         </Stack>
@@ -140,7 +151,7 @@ export default function Page(): React.JSX.Element {
               setShowCreateDialog(true);
             }}
           >
-            Add
+            {t('add')}
           </Button>
         </div>
       </Stack>

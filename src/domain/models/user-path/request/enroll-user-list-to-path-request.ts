@@ -10,6 +10,7 @@ export class EnrollUserListToPathRequest {
   lastAccess?: Date;
   status!: UserProgressEnum;
   enrollmentCriteriaID?: string;
+  quizEnrollmentCriteriaID?: string;
   userID?: string;
   enrollStatus?: ApproveStatusEnum;
   approvedBy?: string;
@@ -30,6 +31,7 @@ export class EnrollUserListToPathRequest {
       lastAccess: json.lastAccess ? new Date(json.lastAccess) : undefined,
       status: json.status,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
+      quizEnrollmentCriteriaID: json.quizEnrollmentCriteriaID,
       userID: json.userID,
       enrollStatus: json.enrollStatus,
       approvedBy: json.approvedBy,
@@ -48,6 +50,7 @@ export class EnrollUserListToPathRequest {
       lastAccess: this.lastAccess?.toISOString(),
       status: this.status,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
+      quizEnrollmentCriteriaID: this.quizEnrollmentCriteriaID,
       userID: this.userID,
       enrollStatus: this.enrollStatus,
       approvedBy: this.approvedBy,

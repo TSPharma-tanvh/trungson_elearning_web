@@ -3,7 +3,7 @@ import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-c
 import { FileResourcesResponse } from './file-resources-response';
 
 export class FileClassQRRelationResponse {
-  id: string = '';
+  id = '';
   classId?: string;
   fileResourceId?: string;
   enrollmentCriteriaId?: string;

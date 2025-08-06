@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -34,6 +35,7 @@ export function CreateUserQuizProgressDialog({
   open,
   onClose,
 }: CreateQuizUserProressProps) {
+  const { t } = useTranslation();
   const { userUsecase, quizUsecase, enrollUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -89,7 +91,7 @@ export function CreateUserQuizProgressDialog({
     try {
       const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
-        CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
+        CustomSnackBar.showSnackbar(t('someFieldsAreInvalid'), 'error');
         return;
       }
 
@@ -106,7 +108,7 @@ export function CreateUserQuizProgressDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create UserQuizProgress
+          {t('createUserQuizProgress')}
         </Typography>
         <Box>
           <IconButton
@@ -183,7 +185,7 @@ export function CreateUserQuizProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian bắt đầu"
+                label={t('customStartTime')}
                 value={form.customStartTime ? DateTimeUtils.formatISODateToString(form.customStartTime) : undefined}
                 onChange={(value) => {
                   handleChange('customStartTime', DateTimeUtils.parseLocalDateTimeString(value));
@@ -194,7 +196,7 @@ export function CreateUserQuizProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian kết thúc"
+                label={t('customEndTime')}
                 value={form.customEndTime ? DateTimeUtils.formatISODateToString(form.customEndTime) : undefined}
                 onChange={(value) => {
                   handleChange('customEndTime', DateTimeUtils.parseLocalDateTimeString(value));
@@ -218,31 +220,31 @@ export function CreateUserQuizProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<UserProgressEnum>
-                label="Trạng thái"
+                label={t('status')}
                 value={form.progressStatus ?? ''}
                 onChange={(val) => {
                   handleChange('progressStatus', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: UserProgressEnum.NotStarted, label: 'Chưa bắt đầu' },
-                  { value: UserProgressEnum.Ongoing, label: 'Đang làm' },
-                  { value: UserProgressEnum.Done, label: 'Hoàn thành' },
+                  { value: UserProgressEnum.NotStarted, label: 'notStarted' },
+                  { value: UserProgressEnum.Ongoing, label: 'ongoing' },
+                  { value: UserProgressEnum.Done, label: 'done' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<ApproveStatusEnum>
-                label="Trạng thái duyệt"
+                label={t('enrollStatus')}
                 value={form.enrollStatus ?? ''}
                 onChange={(val) => {
                   handleChange('enrollStatus', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: ApproveStatusEnum.Approve, label: 'Chấp nhận' },
-                  { value: ApproveStatusEnum.Reject, label: 'Từ chối' },
+                  { value: ApproveStatusEnum.Approve, label: 'approve' },
+                  { value: ApproveStatusEnum.Reject, label: 'reject' },
                 ]}
               />
             </Grid>
@@ -250,7 +252,7 @@ export function CreateUserQuizProgressDialog({
             {form.enrollStatus === ApproveStatusEnum.Reject && (
               <Grid item xs={12}>
                 <CustomTextField
-                  label="Lý do từ chối"
+                  label="rejectedReason"
                   value={form.rejectedReason ?? ''}
                   onChange={(val) => {
                     handleChange('rejectedReason', val);
@@ -267,7 +269,7 @@ export function CreateUserQuizProgressDialog({
             )}
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => handleSave()} loading={loading} disabled={disabled} />
+              <CustomButton label={t('create')} onClick={() => handleSave()} loading={loading} disabled={disabled} />
             </Grid>
           </Grid>
         </Box>

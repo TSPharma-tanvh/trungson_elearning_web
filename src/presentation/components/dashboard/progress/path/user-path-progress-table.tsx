@@ -5,6 +5,7 @@ import { DateTimeUtils } from '@/utils/date-time-utils';
 import { UserProgressEnum } from '@/utils/enum/core-enum';
 import { CancelOutlined, CheckCircleOutline, DataUsage, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -33,6 +34,7 @@ export default function UserPathProgressTable({
   onDeleteUserPathProgresss,
   onEditUserPathProgress,
 }: UserPathProgressTableProps) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editUserPathProgressData, setEditUserPathProgressData] = React.useState<UserPathProgressDetailResponse | null>(
     null
@@ -63,24 +65,24 @@ export default function UserPathProgressTable({
     switch (status) {
       case UserProgressEnum[UserProgressEnum.NotStarted]:
         return (
-          <Tooltip title="Not Started">
+          <Tooltip title={t('notStarted')}>
             <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
           </Tooltip>
         );
       case UserProgressEnum[UserProgressEnum.Ongoing]:
         return (
-          <Tooltip title="In Progress">
+          <Tooltip title={t('inProgress')}>
             <DataUsage sx={{ color: 'var(--mui-palette-secondary-main)' }} />
           </Tooltip>
         );
       case UserProgressEnum[UserProgressEnum.Done]:
         return (
-          <Tooltip title="Completed">
+          <Tooltip title={t('completed')}>
             <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
           </Tooltip>
         );
       default:
-        return <span>Unknown</span>;
+        return <span>{t('unknown')}</span>;
     }
   };
 
@@ -95,24 +97,24 @@ export default function UserPathProgressTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteUserPathProgresss}
-        deleteConfirmHeaderTitle="Mark done"
+        deleteConfirmHeaderTitle={t('markDone')}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditUserPathProgressData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditUserPathProgressData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Mark done',
+            label: t('markDone'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -120,15 +122,15 @@ export default function UserPathProgressTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>ID</TableCell>
-            <TableCell>Path Name</TableCell>
-            <TableCell>User Name</TableCell>
-            <TableCell>Full Name</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>progress</TableCell>
-            <TableCell>startDate</TableCell>
-            <TableCell>endDate</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell>{t('id')}</TableCell>
+            <TableCell>{t('pathName')}</TableCell>
+            <TableCell>{t('userName')}</TableCell>
+            <TableCell>{t('fullName')}</TableCell>
+            <TableCell>{t('gender')}</TableCell>
+            <TableCell>{t('progress')}</TableCell>
+            <TableCell>{t('startDate')}</TableCell>
+            <TableCell>{t('endDate')}</TableCell>
+            <TableCell>{t('status')}</TableCell>
             <TableCell
               sx={{
                 minWidth: 100,
@@ -137,7 +139,7 @@ export default function UserPathProgressTable({
                 paddingY: 1,
               }}
             >
-              current Position Name
+              {t('currentPositionName')}
             </TableCell>
             <TableCell
               sx={{
@@ -147,7 +149,7 @@ export default function UserPathProgressTable({
                 paddingY: 1,
               }}
             >
-              current Position State Name
+              {t('currentPositionStateName')}
             </TableCell>
             <TableCell
               sx={{
@@ -157,7 +159,7 @@ export default function UserPathProgressTable({
                 paddingY: 1,
               }}
             >
-              current Department Name
+              {t('currentDepartmentName')}
             </TableCell>
             <TableCell
               sx={{
@@ -167,10 +169,10 @@ export default function UserPathProgressTable({
                 paddingY: 1,
               }}
             >
-              current Position State Name
+              {t('currentPositionStateName')}
             </TableCell>
 
-            <TableCell>cityName</TableCell>
+            <TableCell>{t('cityName')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => {

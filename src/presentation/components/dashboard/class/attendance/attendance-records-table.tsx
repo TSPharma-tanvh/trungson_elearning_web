@@ -71,10 +71,10 @@ export default function AttendanceRecordsTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteAttendanceRecords}
-        deleteConfirmHeaderTitle={'markAllLate'}
-        dialogTitle={'markAllLate'}
-        dialogContent={'confirmMarkLateItem'}
-        dialogDeleteTitle={'confirm'}
+        deleteConfirmHeaderTitle="markAllLate"
+        dialogTitle="markAllLate"
+        dialogContent="confirmMarkLateItem"
+        dialogDeleteTitle="confirm"
         actionMenuItems={[
           {
             label: t('viewDetails'),

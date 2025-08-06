@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { type UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { type ClassResponse } from '@/domain/models/class/response/class-response';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';

@@ -173,7 +173,7 @@ export function UserMultiSelectDialog({
               : selected
                   .map((id) => {
                     const user = selectedUserMap[id];
-                    return user ? `${user.firstName} ${user.lastName}` : id;
+                    return user ? `${user.employee?.name} (${user.userName})` : id;
                   })
                   .join(', ')
           }

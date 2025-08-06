@@ -9,6 +9,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 import { Clock } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -27,6 +28,7 @@ interface CreateQuizProps {
 }
 
 export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateQuizProps) {
+  const { t } = useTranslation();
   const { categoryUsecase, questionUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -56,7 +58,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
     try {
       const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
-        CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
+        CustomSnackBar.showSnackbar(t('someFieldsAreInvalid'), 'error');
         return;
       }
       onSubmit(form);
@@ -122,7 +124,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create Quiz
+          {t('createQuiz')}
         </Typography>
 
         <Box>
@@ -166,7 +168,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
           >
             <Grid item xs={12}>
               <CustomTextField
-                label="Tên bài kiểm tra"
+                label={t('title')}
                 value={form.title}
                 onChange={(val) => {
                   handleChange('title', val);
@@ -177,7 +179,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
 
             <Grid item xs={12}>
               <CustomTextField
-                label="Chi tiết"
+                label={t('description')}
                 value={form.description}
                 onChange={(val) => {
                   handleChange('description', val);
@@ -196,7 +198,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian bắt đầu"
+                label={t('startTime')}
                 value={form.startTime?.toISOString()}
                 onChange={(val) => {
                   handleChange('startTime', new Date(val));
@@ -207,7 +209,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian kết thúc"
+                label={t('endTime')}
                 value={form.endTime?.toISOString()}
                 onChange={(val) => {
                   handleChange('endTime', new Date(val));
@@ -218,37 +220,37 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
-                label="Trạng thái"
+                label={t('status')}
                 value={form.status!}
                 onChange={(val) => {
                   handleChange('status', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: StatusEnum.Enable, label: 'Kích hoạt' },
-                  { value: StatusEnum.Disable, label: 'Tạm khóa' },
+                  { value: StatusEnum.Enable, label: 'enable' },
+                  { value: StatusEnum.Disable, label: 'disable' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<QuizTypeEnum>
-                label="Kiểu kiểm tra"
+                label={t('quizType')}
                 value={form.type}
                 onChange={(val) => {
                   handleChange('type', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: QuizTypeEnum.LessonQuiz, label: 'Kiểm tra sau khi học' },
-                  { value: QuizTypeEnum.ExamQuiz, label: 'Kiểm tra lẻ' },
+                  { value: QuizTypeEnum.LessonQuiz, label: 'lessonQuiz' },
+                  { value: QuizTypeEnum.ExamQuiz, label: 'examQuiz' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label="Time"
+                label={t('time')}
                 value={form.time}
                 required
                 onChange={(value) => {
@@ -266,7 +268,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label="maxCapacity"
+                label={t('maxCapacity')}
                 required
                 value={form.maxCapacity?.toString() ?? ''}
                 onChange={(value) => {
@@ -283,7 +285,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label="maxAttempts"
+                label={t('maxAttempts')}
                 required
                 value={form.maxAttempts?.toString() ?? ''}
                 onChange={(value) => {
@@ -321,7 +323,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               />
             </Grid>
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={() => handleSave()} loading={loading} disabled={disabled} />
+              <CustomButton label={t('create')} onClick={() => handleSave()} loading={loading} disabled={disabled} />
             </Grid>
           </Grid>
         </Box>

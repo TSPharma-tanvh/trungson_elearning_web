@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -32,6 +33,7 @@ export function CreateUserPathProgressDialog({
   open,
   onClose,
 }: CreateUserPathProgressProps) {
+  const { t } = useTranslation();
   const { userUsecase, pathUseCase, enrollUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -83,8 +85,8 @@ export function CreateUserPathProgressDialog({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
-        <Typography variant="h6" component="div">
-          Create UserPathProgress
+        <Typography variant="subtitle1" component="div">
+          {t('createUserPathProgress')}
         </Typography>
         <Box>
           <IconButton
@@ -165,12 +167,26 @@ export function CreateUserPathProgressDialog({
                 }}
                 disabled={false}
                 categoryEnum={CategoryEnum.Path}
+                label="pathEnrollmentCriteria"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <EnrollmentSingleSelect
+                enrollmentUsecase={enrollUsecase}
+                value={form.quizEnrollmentCriteriaID ?? ''}
+                onChange={(value: string) => {
+                  handleChange('quizEnrollmentCriteriaID', value);
+                }}
+                disabled={false}
+                categoryEnum={CategoryEnum.Quiz}
+                label="quizEnrollmentCriteria"
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian bắt đầu"
+                label={t('startTime')}
                 value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
                 onChange={(value) => {
                   handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value));
@@ -181,7 +197,7 @@ export function CreateUserPathProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian kết thúc"
+                label={t('endTime')}
                 value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
                 onChange={(value) => {
                   handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value));
@@ -192,38 +208,38 @@ export function CreateUserPathProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<UserProgressEnum>
-                label="Trạng thái"
+                label={t('status')}
                 value={form.status}
                 onChange={(val) => {
                   handleChange('status', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: UserProgressEnum.NotStarted, label: 'Chưa bắt đầu' },
-                  { value: UserProgressEnum.Ongoing, label: 'Đang làm' },
-                  { value: UserProgressEnum.Done, label: 'Hoàn thành' },
+                  { value: UserProgressEnum.NotStarted, label: 'notStarted' },
+                  { value: UserProgressEnum.Ongoing, label: 'ongoing' },
+                  { value: UserProgressEnum.Done, label: 'done' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<ApproveStatusEnum>
-                label="Duyệt"
+                label={t('enrollStatus')}
                 value={form.enrollStatus!}
                 onChange={(val) => {
                   handleChange('enrollStatus', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: ApproveStatusEnum.Approve, label: 'Chấp nhận' },
-                  { value: ApproveStatusEnum.Reject, label: 'Từ chối' },
+                  { value: ApproveStatusEnum.Approve, label: 'approve' },
+                  { value: ApproveStatusEnum.Reject, label: 'reject' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12}>
               <CustomButton
-                label="Tạo mới"
+                label={t('create')}
                 onClick={() => {
                   onSubmit(form);
                 }}

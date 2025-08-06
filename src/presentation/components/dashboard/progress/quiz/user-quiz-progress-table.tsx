@@ -14,6 +14,7 @@ import {
   ThumbUpOutlined,
 } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -42,6 +43,7 @@ export default function UserQuizProgressTable({
   onDeleteUserQuizProgress,
   onEditUserQuizProgress,
 }: UserQuizProgressTableProps) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editUserQuizProgressData, setEditUserQuizProgressData] = React.useState<UserQuizProgressDetailResponse | null>(
     null
@@ -76,30 +78,30 @@ export default function UserQuizProgressTable({
     switch (status) {
       case UserQuizProgressEnum[UserQuizProgressEnum.NotStarted]:
         return (
-          <Tooltip title="Not Started">
+          <Tooltip title={t('notStarted')}>
             <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
           </Tooltip>
         );
       case UserQuizProgressEnum[UserQuizProgressEnum.Doing]:
         return (
-          <Tooltip title="In Progress">
+          <Tooltip title={t('inProgress')}>
             <DataUsage sx={{ color: 'var(--mui-palette-secondary-main)' }} />
           </Tooltip>
         );
       case UserQuizProgressEnum[UserQuizProgressEnum.Pass]:
         return (
-          <Tooltip title="Pass">
+          <Tooltip title={t('pass')}>
             <ThumbUpOutlined sx={{ color: 'var(--mui-palette-primary-main)' }} />
           </Tooltip>
         );
       case UserQuizProgressEnum[UserQuizProgressEnum.Fail]:
         return (
-          <Tooltip title="Fail">
+          <Tooltip title={t('fail')}>
             <ThumbDownOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
           </Tooltip>
         );
       default:
-        return <span>Unknown</span>;
+        return <span>{t('unknown')}</span>;
     }
   };
 
@@ -107,25 +109,25 @@ export default function UserQuizProgressTable({
     switch (status) {
       case StatusEnum[StatusEnum.Enable]:
         return (
-          <Tooltip title="Not Started">
+          <Tooltip title={t('enable')}>
             <Check sx={{ color: 'var(--mui-palette-primary-main)' }} />
           </Tooltip>
         );
       case StatusEnum[StatusEnum.Disable]:
         return (
-          <Tooltip title="Not Started">
+          <Tooltip title={t('disable')}>
             <Close sx={{ color: 'var(--mui-palette-secondary-main)' }} />
           </Tooltip>
         );
       case StatusEnum[StatusEnum.Deleted]:
         return (
-          <Tooltip title="Not Started">
+          <Tooltip title={t('deleted')}>
             <DeleteOutline sx={{ color: 'var(--mui-palette-error-main)' }} />
           </Tooltip>
         );
 
       default:
-        return <span>Unknown</span>;
+        return <span>{t('unknown')}</span>;
     }
   };
 
@@ -150,21 +152,21 @@ export default function UserQuizProgressTable({
         deleteConfirmHeaderTitle="Delete"
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditUserQuizProgressData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditUserQuizProgressData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Delete',
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -172,16 +174,16 @@ export default function UserQuizProgressTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>ID</TableCell>
-            <TableCell>Quiz Name</TableCell>
-            <TableCell>User Name</TableCell>
-            <TableCell>Full Name</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Score</TableCell>
-            <TableCell>startDate</TableCell>
-            <TableCell>endDate</TableCell>
-            <TableCell>Progress Status</TableCell>
-            <TableCell>Active Status</TableCell>
+            <TableCell>{t('id')}</TableCell>
+            <TableCell>{t('quizName')}</TableCell>
+            <TableCell>{t('userName')}</TableCell>
+            <TableCell>{t('fullName')}</TableCell>
+            <TableCell>{t('gender')}</TableCell>
+            <TableCell>{t('score')}</TableCell>
+            <TableCell>{t('startDate')}</TableCell>
+            <TableCell>{t('endDate')}</TableCell>
+            <TableCell>{t('progressStatus')}</TableCell>
+            <TableCell>{t('activeStatus')}</TableCell>
             <TableCell
               sx={{
                 minWidth: 100,
@@ -190,7 +192,7 @@ export default function UserQuizProgressTable({
                 paddingY: 1,
               }}
             >
-              current Position Name
+              {t('currentPositionName')}
             </TableCell>
             <TableCell
               sx={{
@@ -200,7 +202,7 @@ export default function UserQuizProgressTable({
                 paddingY: 1,
               }}
             >
-              current Position State Name
+              {t('currentPositionStateName')}
             </TableCell>
             <TableCell
               sx={{
@@ -210,7 +212,7 @@ export default function UserQuizProgressTable({
                 paddingY: 1,
               }}
             >
-              current Department Name
+              {t('currentDepartmentName')}
             </TableCell>
             <TableCell
               sx={{
@@ -220,10 +222,10 @@ export default function UserQuizProgressTable({
                 paddingY: 1,
               }}
             >
-              current Position State Name
+              {t('currentPositionStateName')}
             </TableCell>
 
-            <TableCell>cityName</TableCell>
+            <TableCell>{t('cityName')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => {

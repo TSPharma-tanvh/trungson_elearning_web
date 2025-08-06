@@ -5,6 +5,7 @@ import { DateTimeUtils } from '@/utils/date-time-utils';
 import { UserProgressEnum } from '@/utils/enum/core-enum';
 import { CancelOutlined, CheckCircleOutline, DataUsage, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
@@ -33,6 +34,7 @@ export default function UserCourseProgressTable({
   onDeleteUserCourseProgresss,
   onEditUserCourseProgress,
 }: UserCourseProgressTableProps) {
+  const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editUserCourseProgressData, setEditUserCourseProgressData] = React.useState<UserCourseProgressResponse | null>(
     null
@@ -63,24 +65,24 @@ export default function UserCourseProgressTable({
     switch (status) {
       case UserProgressEnum[UserProgressEnum.NotStarted]:
         return (
-          <Tooltip title="Not Started">
+          <Tooltip title={t('notStarted')}>
             <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
           </Tooltip>
         );
       case UserProgressEnum[UserProgressEnum.Ongoing]:
         return (
-          <Tooltip title="In Progress">
+          <Tooltip title={t('inProgress')}>
             <DataUsage sx={{ color: 'var(--mui-palette-secondary-main)' }} />
           </Tooltip>
         );
       case UserProgressEnum[UserProgressEnum.Done]:
         return (
-          <Tooltip title="Completed">
+          <Tooltip title={t('completed')}>
             <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
           </Tooltip>
         );
       default:
-        return <span>Unknown</span>;
+        return <span>{t('unknown')}</span>;
     }
   };
 
@@ -95,24 +97,24 @@ export default function UserCourseProgressTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteUserCourseProgresss}
-        deleteConfirmHeaderTitle="Mark done"
+        deleteConfirmHeaderTitle={t('markDone')}
         actionMenuItems={[
           {
-            label: 'View Details',
+            label: t('viewDetails'),
             onClick: (row) => {
               setEditUserCourseProgressData(row);
               setViewOpen(true);
             },
           },
           {
-            label: 'Edit',
+            label: t('edit'),
             onClick: (row) => {
               setEditUserCourseProgressData(row);
               setEditOpen(true);
             },
           },
           {
-            label: 'Mark done',
+            label: t('markDone'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -120,8 +122,8 @@ export default function UserCourseProgressTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>ID</TableCell>
-            <TableCell>Course Name</TableCell>
+            <TableCell>{t('id')}</TableCell>
+            <TableCell>{t('courseName')}</TableCell>
             <TableCell
               sx={{
                 minWidth: 100,
@@ -130,15 +132,15 @@ export default function UserCourseProgressTable({
                 paddingY: 1,
               }}
             >
-              Path Id
+              {t('pathId')}
             </TableCell>
-            <TableCell>User Name</TableCell>
-            <TableCell>Full Name</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Progress</TableCell>
-            <TableCell>startDate</TableCell>
-            <TableCell>endDate</TableCell>
-            <TableCell>Progress Status</TableCell>
+            <TableCell>{t('userName')}</TableCell>
+            <TableCell>{t('fullName')}</TableCell>
+            <TableCell>{t('gender')}</TableCell>
+            <TableCell>{t('progress')}</TableCell>
+            <TableCell>{t('startDate')}</TableCell>
+            <TableCell>{t('endDate')}</TableCell>
+            <TableCell>{t('progressStatus')}</TableCell>
             <TableCell
               sx={{
                 minWidth: 100,
@@ -147,17 +149,7 @@ export default function UserCourseProgressTable({
                 paddingY: 1,
               }}
             >
-              current Position Name
-            </TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              current Position State Name
+              {t('currentPositionName')}
             </TableCell>
             <TableCell
               sx={{
@@ -167,7 +159,7 @@ export default function UserCourseProgressTable({
                 paddingY: 1,
               }}
             >
-              current Department Name
+              {t('currentPositionStateName')}
             </TableCell>
             <TableCell
               sx={{
@@ -177,10 +169,20 @@ export default function UserCourseProgressTable({
                 paddingY: 1,
               }}
             >
-              current Position State Name
+              {t('currentDepartmentName')}
+            </TableCell>
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              {t('currentPositionStateName')}
             </TableCell>
 
-            <TableCell>cityName</TableCell>
+            <TableCell>{t('cityName')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => {

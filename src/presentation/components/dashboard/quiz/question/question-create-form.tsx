@@ -24,6 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Clock } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -49,6 +50,7 @@ export function QuestionCreateForm({
   open,
   onClose,
 }: QuestionCreateFormProps) {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const { categoryUsecase, fileUsecase, answerUsecase } = useDI();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -146,7 +148,7 @@ export function QuestionCreateForm({
     try {
       const allValid = Object.values(fieldValidations).every((v) => v);
       if (!allValid) {
-        CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
+        CustomSnackBar.showSnackbar(t('someFieldsAreInvalid'), 'error');
         return;
       }
 
@@ -165,11 +167,16 @@ export function QuestionCreateForm({
     }
   }, [open]);
 
+  const booleanOptions = [
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
+  ];
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create Question
+          {t('createQuestion')}
         </Typography>
         <Box>
           <IconButton
@@ -212,7 +219,7 @@ export function QuestionCreateForm({
           >
             <Grid item xs={12}>
               <CustomTextField
-                label="Tên câu hỏi"
+                label={t('title')}
                 value={form.questionText}
                 onChange={(val) => {
                   handleChange('questionText', val);
@@ -223,7 +230,7 @@ export function QuestionCreateForm({
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label="point"
+                label={t('point')}
                 required
                 value={form.point?.toString() ?? ''}
                 onChange={(value) => {
@@ -253,32 +260,32 @@ export function QuestionCreateForm({
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<QuestionEnum>
-                label="questionType"
+                label={t('questionType')}
                 value={form.questionType ?? ''}
                 onChange={(val) => {
                   handleChange('questionType', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: QuestionEnum.SingleChoice, label: 'SingleChoice' },
-                  { value: QuestionEnum.MultipleChoice, label: 'MultipleChoice' },
-                  { value: QuestionEnum.ShortAnswer, label: 'ShortAnswer' },
-                  { value: QuestionEnum.LongAnswer, label: 'LongAnswer' },
+                  { value: QuestionEnum.SingleChoice, label: 'singleChoice' },
+                  { value: QuestionEnum.MultipleChoice, label: 'multipleChoice' },
+                  { value: QuestionEnum.ShortAnswer, label: 'shortAnswer' },
+                  { value: QuestionEnum.LongAnswer, label: 'longAnswer' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
-                label="Trạng thái"
+                label={t('status')}
                 value={form.status!}
                 onChange={(val) => {
                   handleChange('status', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: StatusEnum.Enable, label: 'Kích hoạt' },
-                  { value: StatusEnum.Disable, label: 'Tạm khóa' },
+                  { value: StatusEnum.Enable, label: 'enable' },
+                  { value: StatusEnum.Disable, label: 'disable' },
                 ]}
               />
             </Grid>
@@ -293,11 +300,23 @@ export function QuestionCreateForm({
                 disabled={isSubmitting}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label={t('canShuffle')}
+                value={String(form.canShuffle ?? '')}
+                onChange={(value) => {
+                  handleChange('canShuffle', value === 'true');
+                }}
+                disabled={isSubmitting}
+                options={booleanOptions}
+              />
+            </Grid>
             {/* Upload file resources */}
 
             <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
-                Upload Files
+                {t('uploadFiles')}
               </Typography>
               <ToggleButtonGroup
                 value={fileSelectSource}
@@ -305,12 +324,12 @@ export function QuestionCreateForm({
                 onChange={(e, newValue: 'upload' | 'multi-select') => {
                   if (newValue) setFileSelectSource(newValue);
                 }}
-                aria-label="file select source"
+                aria-label={t('uploadFiles')}
                 fullWidth
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="multi-select">Select from File Resources</ToggleButton>
-                <ToggleButton value="upload">Upload Files</ToggleButton>
+                <ToggleButton value="multi-select"> {t('selectFromResources')}</ToggleButton>
+                <ToggleButton value="upload"> {t('uploadFiles')}</ToggleButton>
               </ToggleButtonGroup>
             </Grid>
             {fileSelectSource === 'multi-select' ? (
@@ -322,7 +341,7 @@ export function QuestionCreateForm({
                   onChange={(ids) => {
                     handleChange('resourceIDs', ids.join(','));
                   }}
-                  label="Select Files"
+                  label={t('selectFiles')}
                   disabled={false}
                   showTypeSwitcher
                   allowAllTypes
@@ -331,7 +350,7 @@ export function QuestionCreateForm({
             ) : (
               <Grid item xs={12}>
                 <Button variant="outlined" component="label" fullWidth disabled={isSubmitting} startIcon={<Image />}>
-                  Upload Files
+                  {t('uploadFiles')}
                   <input
                     type="file"
                     multiple
@@ -348,7 +367,7 @@ export function QuestionCreateForm({
             {uploadedFiles.length > 0 && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
-                  Uploaded Files
+                  {t('uploadedFiles')}
                 </Typography>
                 <Grid container spacing={1} direction="column">
                   {uploadedFiles.map((file, index) => (
@@ -376,22 +395,22 @@ export function QuestionCreateForm({
 
             <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
-                Upload Thumbnail
+                {t('uploadThumbnail')}
               </Typography>
               <ToggleButtonGroup
                 value={thumbnailSource}
                 exclusive
                 onChange={handleThumbnailSourceChange}
-                aria-label="thumbnail source"
+                aria-label={t('uploadThumbnail')}
                 fullWidth
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
                 <ToggleButton value="select" aria-label="select from resources">
-                  Select from Resources
+                  {t('selectFromResources')}
                 </ToggleButton>
                 <ToggleButton value="upload" aria-label="upload file">
-                  Upload File
+                  {t('uploadFile')}
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
@@ -405,14 +424,14 @@ export function QuestionCreateForm({
                   onChange={(ids) => {
                     handleChange('thumbnailID', ids);
                   }}
-                  label="Thumbnail"
+                  label={t('thumbnail')}
                   disabled={isSubmitting}
                 />
               ) : (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Document No"
+                      label={t('thumbnailDocumentNo')}
                       value={form.thumbDocumentNo}
                       onChange={(value) => {
                         handleChange('thumbDocumentNo', value);
@@ -423,7 +442,7 @@ export function QuestionCreateForm({
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Prefix Name"
+                      label={t('thumbnailPrefixName')}
                       value={form.thumbPrefixName}
                       onChange={(value) => {
                         handleChange('thumbPrefixName', value);
@@ -434,7 +453,7 @@ export function QuestionCreateForm({
                   </Grid>
                   <Grid item xs={12}>
                     <Button variant="outlined" component="label" fullWidth disabled={isSubmitting}>
-                      Upload Thumbnail
+                      {t('uploadThumbnail')}
                       <input
                         type="file"
                         hidden
@@ -468,7 +487,7 @@ export function QuestionCreateForm({
                           disabled={isSubmitting}
                         />
                       }
-                      label="Delete Old Thumbnail"
+                      label={t('deleteOldThumbnail')}
                     />
                   </Grid>
                   {previewUrl ? (
@@ -489,7 +508,7 @@ export function QuestionCreateForm({
                       >
                         <img
                           src={previewUrl}
-                          alt="Thumbnail Preview"
+                          alt={t('thumbnailPreview')}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </Box>
@@ -500,7 +519,7 @@ export function QuestionCreateForm({
             </Grid>
 
             <Grid item xs={12}>
-              <CustomButton label="Tạo mới" onClick={handleSave} loading={loading} disabled={disabled} />
+              <CustomButton label={t('create')} onClick={handleSave} loading={loading} disabled={disabled} />
             </Grid>
           </Grid>
         </Box>

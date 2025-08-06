@@ -22,6 +22,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { ArrowClockwise } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -43,6 +44,7 @@ export function UpdateUserQuizProgressFormDialog({
 }: EditUserQuizProgressDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   const { userUsecase, quizUsecase, enrollUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
@@ -104,7 +106,7 @@ export function UpdateUserQuizProgressFormDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Update UserQuizProgress
+          {t('updateUserQuizProgress')}
         </Typography>
         <Box>
           <IconButton
@@ -123,7 +125,7 @@ export function UpdateUserQuizProgressFormDialog({
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
-            ID: {userQuizProgress?.id}
+            {t('id')}: {userQuizProgress?.id}
           </Typography>
 
           <Grid container spacing={2}>
@@ -157,7 +159,7 @@ export function UpdateUserQuizProgressFormDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian bắt đầu"
+                label={t('startTime')}
                 value={formData.startedAt ? DateTimeUtils.formatISODateToString(formData.startedAt) : undefined}
                 onChange={(value) => {
                   handleChange('startedAt', DateTimeUtils.parseLocalDateTimeString(value));
@@ -168,7 +170,7 @@ export function UpdateUserQuizProgressFormDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label="Thời gian kết thúc"
+                label={t('endTime')}
                 value={formData.completedAt ? DateTimeUtils.formatISODateToString(formData.completedAt) : undefined}
                 onChange={(value) => {
                   handleChange('completedAt', DateTimeUtils.parseLocalDateTimeString(value));
@@ -180,40 +182,40 @@ export function UpdateUserQuizProgressFormDialog({
             <Grid item xs={12}>
               {' '}
               <CustomSelectDropDown<UserQuizProgressEnum>
-                label="Trạng thái"
+                label="status"
                 value={formData.progressStatus ?? ''}
                 onChange={(val) => {
                   handleChange('progressStatus', val);
                 }}
                 disabled={false}
                 options={[
-                  { value: UserQuizProgressEnum.NotStarted, label: 'Chưa bắt đầu' },
-                  { value: UserQuizProgressEnum.Doing, label: 'Đang làm' },
-                  { value: UserQuizProgressEnum.Pass, label: 'Vượt qua' },
-                  { value: UserQuizProgressEnum.Fail, label: 'Không vượt qua' },
+                  { value: UserQuizProgressEnum.NotStarted, label: 'notStarted' },
+                  { value: UserQuizProgressEnum.Doing, label: 'doing' },
+                  { value: UserQuizProgressEnum.Pass, label: 'pass' },
+                  { value: UserQuizProgressEnum.Fail, label: 'fail' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
-                label="Trạng thái"
+                label={t('status')}
                 value={formData.activeStatus ?? ''}
                 onChange={(val) => {
                   handleChange('activeStatus', val);
                 }}
                 disabled={false}
                 options={[
-                  { value: StatusEnum.Enable, label: 'Kích hoạt' },
-                  { value: StatusEnum.Disable, label: 'Tạm khóa' },
-                  { value: StatusEnum.Deleted, label: 'Xoá' },
+                  { value: StatusEnum.Enable, label: 'enable' },
+                  { value: StatusEnum.Disable, label: 'disable' },
+                  { value: StatusEnum.Deleted, label: 'deleted' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label="attempts"
+                label={t('attempts')}
                 value={formData.attempts?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
@@ -249,7 +251,7 @@ export function UpdateUserQuizProgressFormDialog({
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -257,7 +259,7 @@ export function UpdateUserQuizProgressFormDialog({
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>
