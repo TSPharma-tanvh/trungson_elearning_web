@@ -44,7 +44,7 @@ function UserQuizProgressDetails({
   fullScreen: boolean;
 }) {
   const { t } = useTranslation();
-  const [openQuizDetail, setOpenQuizDetail] = useState(false);
+  const [openQuizDetailId, setOpenQuizDetailId] = useState<string | null>(null);
   const [openUserDetail, setOpenUserDetail] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
@@ -60,8 +60,8 @@ function UserQuizProgressDetails({
     const quiz = userQuizProgress.quiz;
     if (!quiz) return null;
 
-    const handleViewQuizDetail = () => {
-      setOpenQuizDetail(true);
+    const handleViewQuizDetail = (quizId: string) => {
+      setOpenQuizDetailId(quizId);
     };
 
     return (
@@ -69,7 +69,7 @@ function UserQuizProgressDetails({
         <CardHeader
           title={t('quizDetails')}
           action={
-            <IconButton onClick={handleViewQuizDetail}>
+            <IconButton onClick={() => handleViewQuizDetail(quiz.id ?? '')}>
               <InfoOutlined />
             </IconButton>
           }
@@ -103,10 +103,10 @@ function UserQuizProgressDetails({
         </CardContent>
 
         <QuizDetailForm
-          open={openQuizDetail}
+          open={openQuizDetailId === quiz.id}
           quizId={quiz?.id ?? null}
           onClose={() => {
-            setOpenQuizDetail(false);
+            setOpenQuizDetailId(null);
           }}
         />
       </Card>
@@ -117,7 +117,7 @@ function UserQuizProgressDetails({
     const user = userQuizProgress.user;
     if (!user) return null;
 
-    const handleViewQuizDetail = () => {
+    const handleViewUserDetail = () => {
       setOpenUserDetail(true);
     };
 
@@ -126,7 +126,7 @@ function UserQuizProgressDetails({
         <CardHeader
           title={t('userInformation')}
           action={
-            <IconButton onClick={handleViewQuizDetail}>
+            <IconButton onClick={handleViewUserDetail}>
               <InfoOutlined />
             </IconButton>
           }

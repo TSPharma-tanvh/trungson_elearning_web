@@ -712,5 +712,16 @@
   "signOut": "Đăng xuất",
   "quizEnrollmentCriteria": "Tiêu chí đăng ký bài kiểm tra",
   "pathEnrollmentCriteria": "Tiêu chí ghi danh lộ trình",
-  "activeStatus": "Trạng thái hoạt động"
+  "activeStatus": "Trạng thái hoạt động",
+  "canAnswersShuffle": "Câu trả lời xáo trộn",
+  "assignedAt": "Được đăng ký lúc",
+  "userPathProgressInformation": "Thông tin tiến trình lộ trình người dùng",
+  "userPathProgressDetails": "Chi tiết tiến trình lộ trình người dùng",
+  "startedAt": "Bắt đầu lúc",
+  "completedAt": "Hoàn thành lúc",
+  "sessionId": "ID phiên",
+  "userAgent": "Tác nhân người dùng",
+  "location": "Vị trí",
+  "os": "Hệ điều hành",
+  "quizTitle": "Tiêu đề bài kiểm tra"
 }

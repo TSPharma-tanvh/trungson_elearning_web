@@ -97,8 +97,10 @@ class ApiClient {
           // Handle 401
           if (status === 401) {
             const refreshToken = StoreLocalManager.getLocalData(AppStrings.REFRESH_TOKEN);
+            const accessToken = StoreLocalManager.getLocalData(AppStrings.ACCESS_TOKEN) ?? '';
+
             if (refreshToken) {
-              const refreshed = await ApiClient.handleTokenRefresh(refreshToken);
+              const refreshed = await ApiClient.handleTokenRefresh(refreshToken, accessToken);
               if (refreshed) {
                 const originalConfig = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
                 if (originalConfig && !originalConfig._retry) {
@@ -146,7 +148,7 @@ class ApiClient {
     ApiClient.redirectToSignIn();
   }
 
-  private static async handleTokenRefresh(refreshToken: string): Promise<boolean> {
+  private static async handleTokenRefresh(refreshToken: string, accessToken: string): Promise<boolean> {
     try {
       const refreshClient = axios.create({
         baseURL: getBaseUrl(),
@@ -155,10 +157,11 @@ class ApiClient {
       });
       const response = await refreshClient.post(apiEndpoints.token.refreshToken, {
         RefreshToken: refreshToken,
+        AccessToken: accessToken,
       });
       const data = response.data;
       if (data.IsSuccess && data.Result && data.StatusCode >= 200 && data.StatusCode < 300) {
-        StoreLocalManager.saveLocalData(AppStrings.ACCESS_TOKEN, data.Result.AccessToken);
+        StoreLocalManager.saveLocalData(AppStrings.ACCESS_TOKEN, data.Result.Token);
         StoreLocalManager.saveLocalData(AppStrings.REFRESH_TOKEN, data.Result.RefreshToken);
         return true;
       }

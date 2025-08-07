@@ -1,5 +1,7 @@
 import { EnrollmentResponse } from '../../class/response/enrollment-response';
 import { CourseDetailResponse } from '../../courses/response/course-detail-response';
+import { UserLessonProgressDetailResponse } from '../../user-lesson/response/user-lesson-detail-response';
+import { UserQuizProgressionResponse } from '../../user-quiz/response/user-quiz-progress-response';
 import { UserDetailResponse } from '../../user/response/user-detail-response';
 
 export class UserCourseProgressResponse {
@@ -15,6 +17,8 @@ export class UserCourseProgressResponse {
   enrollment?: EnrollmentResponse;
   courses?: CourseDetailResponse;
   user?: UserDetailResponse;
+  userLessonProgressResponse?: UserLessonProgressDetailResponse[];
+  userQuizProgressResponse?: UserQuizProgressionResponse[];
 
   constructor(init?: Partial<UserCourseProgressResponse>) {
     Object.assign(this, init);
@@ -26,6 +30,12 @@ export class UserCourseProgressResponse {
       courses: data.courses ? CourseDetailResponse.fromJSON(data.courses) : undefined,
       user: data.user ? UserDetailResponse.fromJSON(data.user) : undefined,
       enrollment: data.enrollment ? EnrollmentResponse.fromJson(data.user) : undefined,
+      userLessonProgressResponse: Array.isArray(data.userLessonProgressResponse)
+        ? data.userLessonProgressResponse.map((x: any) => UserLessonProgressDetailResponse.fromJSON(x))
+        : [],
+      userQuizProgressResponse: Array.isArray(data.userQuizProgressResponse)
+        ? data.userQuizProgressResponse.map((x: any) => UserQuizProgressionResponse.fromJSON(x))
+        : [],
     });
   }
 

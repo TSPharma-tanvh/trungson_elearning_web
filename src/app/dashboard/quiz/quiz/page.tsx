@@ -20,7 +20,7 @@ import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-
 import { ImportQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-import-form';
 import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
-var excelLink =
+const excelLink =
   'https://docs.google.com/spreadsheets/d/1yY7ECNkNb4X5yKKt8kcX2fMH71igopqk/edit?usp=drive_link&ouid=117172840822163372784&rtpof=true&sd=true';
 
 export default function Page(): React.JSX.Element {

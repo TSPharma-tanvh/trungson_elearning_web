@@ -34,6 +34,26 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
     setExpanded((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
   };
 
+  React.useEffect(() => {
+    const activeParents: string[] = [];
+
+    navItems.forEach((item) => {
+      if (item.items) {
+        const hasActiveChild = item.items.some((child) =>
+          isNavItemActive({
+            pathname,
+            href: child.href,
+          })
+        );
+        if (hasActiveChild) {
+          activeParents.push(item.key);
+        }
+      }
+    });
+
+    setExpanded((prev) => Array.from(new Set([...prev, ...activeParents])));
+  }, [pathname]);
+
   return (
     <Drawer
       PaperProps={{

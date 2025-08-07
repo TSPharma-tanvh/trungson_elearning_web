@@ -93,7 +93,6 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
-      console.log(newFormData);
     }
   }, [question, open, fileUsecase]);
 

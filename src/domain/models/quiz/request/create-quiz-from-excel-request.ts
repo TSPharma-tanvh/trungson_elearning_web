@@ -4,6 +4,7 @@ export class CreateQuizFromExcelRequest {
   excelFile!: File;
   quizID!: string;
   scoreToPass!: number;
+  canShuffle!: boolean;
 
   questionCategoryID!: string;
   questionCategoryEnum!: CategoryEnum;
@@ -26,6 +27,7 @@ export class CreateQuizFromExcelRequest {
     formData.append('ExcelFile', this.excelFile);
     formData.append('QuizID', this.quizID);
     formData.append('ScoreToPass', this.scoreToPass.toString());
+    formData.append('canShuffle', this.canShuffle.toString());
     formData.append('QuestionCategoryID', this.questionCategoryID);
     formData.append('QuestionCategoryEnum', this.questionCategoryEnum.toString());
     formData.append('AnswerCategoryID', this.answerCategoryID);

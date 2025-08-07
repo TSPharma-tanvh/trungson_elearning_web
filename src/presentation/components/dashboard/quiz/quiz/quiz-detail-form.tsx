@@ -5,11 +5,11 @@ import { type UserQuestionResponse } from '@/domain/models/question/response/use
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Avatar,
   Box,
@@ -126,7 +126,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                         transition: 'transform 0.2s',
                       }}
                     >
-                      <VisibilityIcon />
+                      <InfoOutlined />
                     </IconButton>
 
                     <IconButton

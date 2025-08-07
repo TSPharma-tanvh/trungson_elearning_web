@@ -712,5 +712,16 @@
   "signOut": "Sign Out",
   "quizEnrollmentCriteria": "Quiz Enrollment Criteria",
   "pathEnrollmentCriteria": "Path Enrollment Criteria",
-  "activeStatus": "Active Status"
+  "activeStatus": "Active Status",
+  "canAnswersShuffle": "Can Answers Shuffle",
+  "assignedAt": "Assigned At",
+  "userPathProgressInformation": "User Path Progress Information",
+  "userPathProgressDetails": "User Path Progress Details",
+  "startedAt": "Started At",
+  "completedAt": "Completed At",
+  "sessionId": "Session Id",
+  "userAgent": "User Agent",
+  "location": "Location",
+  "os": "Operating System",
+  "quizTitle": "Quiz Title"
 }

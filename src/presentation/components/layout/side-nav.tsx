@@ -31,6 +31,26 @@ export function SideNav({ isOpen }: SideNavProps): React.JSX.Element {
     setExpanded((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
   };
 
+  React.useEffect(() => {
+    const activeParents: string[] = [];
+
+    navItems.forEach((item) => {
+      if (item.items) {
+        const hasActiveChild = item.items.some((child) =>
+          isNavItemActive({
+            pathname,
+            href: child.href,
+          })
+        );
+        if (hasActiveChild) {
+          activeParents.push(item.key);
+        }
+      }
+    });
+
+    setExpanded((prev) => Array.from(new Set([...prev, ...activeParents])));
+  }, [pathname]);
+
   return (
     <Box
       sx={{
@@ -112,6 +132,7 @@ function renderNavItems({
   const children = items.reduce((acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
     const { key, items: subItems, title, icon } = curr;
     const Icon = icon ? navIcons[icon] : null;
+
     const { t } = useTranslation();
 
     if (subItems) {

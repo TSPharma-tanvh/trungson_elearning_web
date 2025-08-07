@@ -12,6 +12,7 @@ import { Exam, Image as ImageIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
+import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
@@ -144,10 +145,16 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
         new CreateQuizFromExcelRequest({
           questionCategoryEnum: CategoryEnum.Question,
           answerCategoryEnum: CategoryEnum.Answer,
+          canShuffle: false,
         })
       );
     }
   }, [open]);
+
+  const booleanOptions = [
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
+  ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -246,6 +253,18 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
                   handleChange('quizID', value);
                 }}
                 disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <CustomSelectDropDown
+                label={t('canAnswersShuffle')}
+                value={String(form.canShuffle)}
+                onChange={(value) => {
+                  handleChange('canShuffle', value === 'true');
+                }}
+                disabled={isSubmitting}
+                options={booleanOptions}
               />
             </Grid>
 

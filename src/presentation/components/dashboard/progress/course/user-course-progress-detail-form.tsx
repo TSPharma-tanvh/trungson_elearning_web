@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
+import { ExpandMore, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -13,6 +15,7 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
+  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -24,6 +27,10 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
+
+import LessonDetailForm from '../../courses/lessons/lesson-detail-form';
+import { ViewUserDialog } from '../../management/users/view-user-detail-dialog';
+import QuizDetailForm from '../../quiz/quiz/quiz-detail-form';
 
 interface UserCourseProgressProps {
   open: boolean;
@@ -39,6 +46,11 @@ function UserCourseProgressDetails({
   fullScreen: boolean;
 }) {
   const { t } = useTranslation();
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const [openLessonDetailId, setOpenLessonDetailId] = useState<string | null>(null);
+  const [openQuizDetailId, setOpenQuizDetailId] = useState<string | null>(null);
+  const [openUserDetail, setOpenUserDetail] = useState(false);
+
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
       <Typography variant="subtitle2" fontWeight={500}>
@@ -95,9 +107,20 @@ function UserCourseProgressDetails({
     const user = userCourseProgress.user;
     if (!user) return null;
 
+    const handleViewUserDetail = () => {
+      setOpenUserDetail(true);
+    };
+
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('userInformation')} />
+        <CardHeader
+          title={t('userInformation')}
+          action={
+            <IconButton onClick={handleViewUserDetail}>
+              <InfoOutlined />
+            </IconButton>
+          }
+        />
         <CardContent>
           <Box key={user.id} sx={{ mb: 2 }}>
             {/* Avatar */}
@@ -134,7 +157,234 @@ function UserCourseProgressDetails({
             </Grid>
           </Box>
         </CardContent>
+
+        <ViewUserDialog
+          open={openUserDetail}
+          userId={user?.id ?? null}
+          onClose={() => {
+            setOpenUserDetail(false);
+          }}
+        />
       </Card>
+    );
+  };
+
+  const renderLessonsProgress = () => {
+    const lessons = userCourseProgress.userLessonProgressResponse;
+    if (!lessons || lessons.length === 0) return null;
+
+    const toggleExpanded = (courseId: string) => {
+      setExpandedItems((prev) => ({
+        ...prev,
+        [courseId]: !prev[courseId],
+      }));
+    };
+
+    const handleViewLessonDetail = (lessonId: string) => {
+      setOpenLessonDetailId(lessonId);
+    };
+
+    return (
+      <Box sx={{ mb: 2 }}>
+        <CardHeader title={t('userLessonProgress')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        {lessons.map((lessonEnroll, index) => {
+          const lessonId = lessonEnroll.id ?? `${t('lessons')}-${index}`;
+          const isExpanded = expandedItems[lessonId] || false;
+
+          return (
+            <Card
+              key={lessonId}
+              sx={{
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
+              }}
+            >
+              <CardHeader
+                title={lessonEnroll?.lessons?.name ?? `${t('lessons')} ${index + 1}`}
+                titleTypographyProps={{
+                  sx: {
+                    fontSize: 18,
+                    // color: courseEnroll.isCorrect ? theme.palette.primary.light : theme.palette.error.main,
+                  },
+                }}
+                action={
+                  <Box>
+                    <IconButton onClick={() => handleViewLessonDetail(lessonEnroll?.lessonID ?? '')}>
+                      <InfoOutlined />
+                    </IconButton>
+
+                    <IconButton
+                      onClick={() => {
+                        toggleExpanded(lessonId);
+                      }}
+                      sx={{
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <ExpandMore />
+                    </IconButton>
+                  </Box>
+                }
+                sx={{ py: 1 }}
+              />
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {renderField('id', lessonEnroll.id)}
+                    {renderField('detail', lessonEnroll.lessons?.detail)}
+                    {renderField('correct', lessonEnroll.lessons?.enablePlay ? t('yes') : t('no'))}
+                    {renderField(
+                      'disableStatus',
+                      lessonEnroll.lessons?.status
+                        ? t(
+                            lessonEnroll.lessons?.status.charAt(0).toLowerCase() +
+                              t(lessonEnroll.lessons?.status.slice(1))
+                          )
+                        : ''
+                    )}
+                    {renderField(
+                      'courseType',
+                      lessonEnroll.lessons?.lessonType
+                        ? t(
+                            lessonEnroll.lessons?.lessonType.charAt(0).toLowerCase() +
+                              t(lessonEnroll.lessons?.lessonType.slice(1))
+                          )
+                        : ''
+                    )}
+                    {renderField('startDate', DateTimeUtils.formatISODateFromDate(lessonEnroll.startDate))}
+                    {renderField('endDate', DateTimeUtils.formatISODateFromDate(lessonEnroll.endDate))}
+                    {renderField('lastAccess', DateTimeUtils.formatISODateFromDate(lessonEnroll.lastAccess))}
+                    {renderField(
+                      'status',
+                      lessonEnroll.status
+                        ? t(lessonEnroll.status.charAt(0).toLowerCase() + t(lessonEnroll.status.slice(1)))
+                        : ''
+                    )}
+                  </Grid>
+                </CardContent>
+              </Collapse>
+
+              <LessonDetailForm
+                open={openLessonDetailId === lessonEnroll?.lessonID}
+                lessonId={lessonEnroll?.lessons?.id ?? ''}
+                onClose={() => {
+                  setOpenLessonDetailId(null);
+                }}
+              />
+            </Card>
+          );
+        })}
+      </Box>
+    );
+  };
+
+  const renderQuizProgress = () => {
+    const quizzes = userCourseProgress.userQuizProgressResponse;
+    if (!quizzes || quizzes.length === 0) return null;
+
+    const toggleExpanded = (courseId: string) => {
+      setExpandedItems((prev) => ({
+        ...prev,
+        [courseId]: !prev[courseId],
+      }));
+    };
+
+    const handleViewQuizDetail = (quizId: string) => {
+      setOpenQuizDetailId(quizId);
+    };
+
+    return (
+      <Box sx={{ mb: 2 }}>
+        <CardHeader title={t('userQuizProgress')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        {quizzes.map((quizEnroll, index) => {
+          const lessonId = quizEnroll.id ?? `${t('quizzes')}-${index}`;
+          const isExpanded = expandedItems[lessonId] || false;
+
+          return (
+            <Card
+              key={lessonId}
+              sx={{
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
+              }}
+            >
+              <CardHeader
+                title={quizEnroll?.quiz?.title ?? `${t('lessons')} ${index + 1}`}
+                titleTypographyProps={{
+                  sx: {
+                    fontSize: 18,
+                    // color: courseEnroll.isCorrect ? theme.palette.primary.light : theme.palette.error.main,
+                  },
+                }}
+                action={
+                  <Box>
+                    <IconButton onClick={() => handleViewQuizDetail(quizEnroll.quizID ?? '')}>
+                      <InfoOutlined />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        toggleExpanded(lessonId);
+                      }}
+                      sx={{
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <ExpandMore />
+                    </IconButton>
+                  </Box>
+                }
+                sx={{ py: 1 }}
+              />
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {renderField('id', quizEnroll.id)}
+                    {renderField('detail', quizEnroll.quiz?.description)}
+                    {renderField('isRequired', quizEnroll.quiz?.isRequired ? t('yes') : t('no'))}
+                    {renderField(
+                      'disableStatus',
+                      quizEnroll.quiz?.status
+                        ? t(quizEnroll.quiz?.status.charAt(0).toLowerCase() + t(quizEnroll.quiz?.status.slice(1)))
+                        : ''
+                    )}
+                    {renderField(
+                      'courseType',
+                      quizEnroll.quiz?.type?.toString()
+                        ? t(
+                            quizEnroll.quiz?.type.toString().charAt(0).toLowerCase() +
+                              t(quizEnroll.quiz?.type.toString().slice(1))
+                          )
+                        : ''
+                    )}
+                    {renderField('startDate', DateTimeUtils.formatISODateFromDate(quizEnroll.startedAt))}
+                    {renderField('endDate', DateTimeUtils.formatISODateFromDate(quizEnroll.completedAt))}
+                    {renderField('lastAccess', DateTimeUtils.formatISODateFromDate(quizEnroll.lastAccess))}
+                    {renderField(
+                      'status',
+                      quizEnroll.progressStatus.toString()
+                        ? t(
+                            quizEnroll.progressStatus.toString().charAt(0).toLowerCase() +
+                              t(quizEnroll.progressStatus.toString().slice(1))
+                          )
+                        : ''
+                    )}
+                  </Grid>
+                </CardContent>
+              </Collapse>
+
+              <QuizDetailForm
+                open={openQuizDetailId === quizEnroll.quizID}
+                quizId={quizEnroll.quiz?.id ?? null}
+                onClose={() => {
+                  setOpenQuizDetailId(null);
+                }}
+              />
+            </Card>
+          );
+        })}
+      </Box>
     );
   };
 
@@ -169,6 +419,8 @@ function UserCourseProgressDetails({
       </Card>
       {renderCourse()}
       {renderUserInformation()}
+      {renderLessonsProgress()}
+      {renderQuizProgress()}
     </Box>
   );
 }

@@ -1,4 +1,5 @@
 import { LessonDetailResponse } from '../../lessons/response/lesson-detail-response';
+import { UserQuizProgressionResponse } from '../../user-quiz/response/user-quiz-progress-response';
 import { UserDetailResponse } from '../../user/response/user-detail-response';
 
 export class UserLessonProgressDetailResponse {
@@ -12,6 +13,7 @@ export class UserLessonProgressDetailResponse {
   status!: string;
   lessons?: LessonDetailResponse;
   user?: UserDetailResponse;
+  userQuizProgressResponse?: UserQuizProgressionResponse[];
 
   constructor(init?: Partial<UserLessonProgressDetailResponse>) {
     Object.assign(this, init);
@@ -29,6 +31,9 @@ export class UserLessonProgressDetailResponse {
       status: json.status,
       lessons: json.lessons ? LessonDetailResponse.fromJSON(json.lessons) : undefined,
       user: json.user ? UserDetailResponse.fromJSON(json.user) : undefined,
+      userQuizProgressResponse: Array.isArray(json.userQuizProgressResponse)
+        ? json.userQuizProgressResponse.map((x: any) => UserQuizProgressionResponse.fromJSON(x))
+        : [],
     });
   }
 
@@ -44,6 +49,7 @@ export class UserLessonProgressDetailResponse {
       status: this.status,
       lessons: this.lessons?.toJSON(),
       user: this.user?.toJSON(),
+      userQuizProgressResponse: this.userQuizProgressResponse?.map((x) => x.toJSON()),
     };
   }
 }
