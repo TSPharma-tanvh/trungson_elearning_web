@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { type CategoryEnum, type QuizTypeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateQuizRequest {
@@ -56,8 +57,8 @@ export class UpdateQuizRequest {
       isRequired: this.isRequired,
       type: this.type,
       time: this.time,
-      startTime: this.startTime?.toISOString(),
-      endTime: this.endTime?.toISOString(),
+      startTime: this.startTime ? DateTimeUtils.formatISODateToString(this.startTime) : undefined,
+      endTime: this.endTime ? DateTimeUtils.formatISODateToString(this.endTime) : undefined,
       maxAttempts: this.maxAttempts,
       title: this.title,
       description: this.description,
@@ -87,7 +88,7 @@ export class UpdateQuizRequest {
 
     const appendIfExists = (key: string, value: unknown) => {
       if (value !== undefined && value !== null) {
-        formData.append(key, value instanceof Date ? value.toISOString() : value.toString());
+        formData.append(key, value instanceof Date ? DateTimeUtils.formatISODateToString(value) : value.toString());
       }
     };
 
@@ -99,8 +100,8 @@ export class UpdateQuizRequest {
     appendIfExists('isRequired', this.isRequired);
     appendIfExists('type', this.type);
     appendIfExists('time', this.time);
-    appendIfExists('startTime', this.startTime?.toISOString());
-    appendIfExists('endTime', this.endTime?.toISOString());
+    appendIfExists('startTime', this.startTime ? DateTimeUtils.formatISODateToString(this.startTime) : undefined);
+    appendIfExists('endTime', this.endTime ? DateTimeUtils.formatISODateToString(this.endTime) : undefined);
     appendIfExists('maxAttempts', this.maxAttempts);
     appendIfExists('title', this.title);
     appendIfExists('description', this.description);

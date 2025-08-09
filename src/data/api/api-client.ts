@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/domain/models/core/api-response';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 import axios, {
@@ -152,17 +153,19 @@ class ApiClient {
     try {
       const refreshClient = axios.create({
         baseURL: getBaseUrl(),
-        // headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         withCredentials: true,
       });
       const response = await refreshClient.post(apiEndpoints.token.refreshToken, {
-        RefreshToken: refreshToken,
-        AccessToken: accessToken,
+        refreshToken: refreshToken,
+        accessToken: accessToken,
       });
-      const data = response.data;
-      if (data.IsSuccess && data.Result && data.StatusCode >= 200 && data.StatusCode < 300) {
-        StoreLocalManager.saveLocalData(AppStrings.ACCESS_TOKEN, data.Result.Token);
-        StoreLocalManager.saveLocalData(AppStrings.REFRESH_TOKEN, data.Result.RefreshToken);
+
+      const apiResponse = ApiResponse.fromJSON<{ token: string; refreshToken: string }>(response.data);
+
+      if (apiResponse.isSuccessStatusCode && apiResponse.result) {
+        StoreLocalManager.saveLocalData(AppStrings.ACCESS_TOKEN, apiResponse.result.token);
+        StoreLocalManager.saveLocalData(AppStrings.REFRESH_TOKEN, apiResponse.result.refreshToken);
         return true;
       }
       return false;
