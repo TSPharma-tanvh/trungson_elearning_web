@@ -20,6 +20,7 @@ export class UpdateLessonRequest {
   videoID?: string;
   videoDocumentNo?: string;
   videoPrefixName?: string;
+  isRequired?: boolean;
 
   constructor(init?: Partial<UpdateLessonRequest>) {
     Object.assign(this, init);
@@ -44,6 +45,7 @@ export class UpdateLessonRequest {
       videoID: json.thumbnailID,
       videoDocumentNo: json.videoDocumentNo,
       videoPrefixName: json.videoPrefixName,
+      isRequired: json.isRequired,
     });
   }
 
@@ -66,6 +68,7 @@ export class UpdateLessonRequest {
       videoID: this.videoID,
       videoDocumentNo: this.videoDocumentNo,
       videoPrefixName: this.videoPrefixName,
+      isRequired: this.isRequired,
     };
   }
 
@@ -92,6 +95,7 @@ export class UpdateLessonRequest {
     if (this.videoID) form.append('VideoID', this.videoID);
     if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
     if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
+    if (this.isRequired !== undefined) form.append('IsRequired', this.isRequired.toString());
 
     return form;
   }

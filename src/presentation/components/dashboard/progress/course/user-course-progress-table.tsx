@@ -20,7 +20,7 @@ interface UserCourseProgressTableProps {
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteUserCourseProgresss: (ids: string[]) => Promise<void>;
+  onDeleteUserCourseProgress: (ids: string[]) => Promise<void>;
   onEditUserCourseProgress: (data: UpdateUserCourseProgressRequest) => Promise<void>;
 }
 
@@ -31,7 +31,7 @@ export default function UserCourseProgressTable({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteUserCourseProgresss,
+  onDeleteUserCourseProgress: onDeleteUserCourseProgresss,
   onEditUserCourseProgress,
 }: UserCourseProgressTableProps) {
   const { t } = useTranslation();
@@ -140,6 +140,9 @@ export default function UserCourseProgressTable({
             <TableCell>{t('progress')}</TableCell>
             <TableCell>{t('startDate')}</TableCell>
             <TableCell>{t('endDate')}</TableCell>
+            <TableCell>{t('actualStartDate')}</TableCell>
+            <TableCell>{t('actualEndDate')}</TableCell>
+            <TableCell>{t('lastAccess')}</TableCell>
             <TableCell>{t('progressStatus')}</TableCell>
             <TableCell
               sx={{
@@ -243,6 +246,9 @@ export default function UserCourseProgressTable({
               <TableCell>{row.progress}</TableCell>
               <TableCell>{DateTimeUtils.formatISODateFromString(row.startDate ?? '')}</TableCell>
               <TableCell>{DateTimeUtils.formatISODateFromString(row.endDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateFromString(row.actualStartDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateFromString(row.actualEndDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateFromString(row.lastAccess ?? '')}</TableCell>
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>

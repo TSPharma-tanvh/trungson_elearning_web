@@ -6,11 +6,9 @@ import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/reques
 import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { type UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { CreateUserLessonProgressDialog } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-create';
 import { UserLessonProgressFilters } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-filter';
 import UserLessonProgressTable from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-table';
 
@@ -108,7 +106,7 @@ export default function Page(): React.JSX.Element {
             {t('userLessonProgress')}
           </Typography>
         </Stack>
-        <Button
+        {/* <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
           onClick={() => {
@@ -116,7 +114,7 @@ export default function Page(): React.JSX.Element {
           }}
         >
           {t('enrollUsers')}
-        </Button>
+        </Button> */}
       </Stack>
       <UserLessonProgressFilters onFilter={handleFilter} />
       <UserLessonProgressTable
@@ -130,7 +128,7 @@ export default function Page(): React.JSX.Element {
         onEditUserLessonProgress={handleEditUserLessonProgress}
       />
 
-      <CreateUserLessonProgressDialog
+      {/* <CreateUserLessonProgressDialog
         onSubmit={handleCreateUserLessonProgress}
         disabled={false}
         loading={false}
@@ -138,7 +136,7 @@ export default function Page(): React.JSX.Element {
         onClose={() => {
           setShowCreateDialog(false);
         }}
-      />
+      /> */}
     </Stack>
   );
 }

@@ -22,6 +22,7 @@ export class LessonDetailResponse {
   category?: CategoryDetailResponse;
   thumbnail?: FileResourcesResponse;
   video?: FileResourcesResponse;
+  isRequired?: boolean;
 
   constructor(init?: Partial<LessonDetailResponse>) {
     Object.assign(this, init);
@@ -48,6 +49,7 @@ export class LessonDetailResponse {
       category: json.category ? CategoryDetailResponse.fromJson(json.category) : undefined,
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
       video: json.video ? FileResourcesResponse.fromJson(json.video) : undefined,
+      isRequired: json.isRequired,
     });
   }
 
@@ -70,6 +72,7 @@ export class LessonDetailResponse {
       category: this.category?.toJson(),
       thumbnail: this.thumbnail?.toJson(),
       video: this.video?.toJson(),
+      isRequired: this.isRequired,
     };
   }
 }

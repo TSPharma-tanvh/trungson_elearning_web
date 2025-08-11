@@ -10,8 +10,8 @@ export class UserQuizProgressDetailResponse {
   progressStatus?: string;
   activeStatus?: string;
   assignedAt?: Date;
-  customStartTime?: Date;
-  customEndTime?: Date;
+  startTime?: Date;
+  endTime?: Date;
   duration?: string;
   score?: number;
   attempts?: number;
@@ -44,8 +44,8 @@ export class UserQuizProgressDetailResponse {
     dto.progressStatus = json.progressStatus;
     dto.activeStatus = json.activeStatus;
     dto.assignedAt = new Date(json.assignedAt);
-    dto.customStartTime = json.customStartTime ? new Date(json.customStartTime) : undefined;
-    dto.customEndTime = json.customEndTime ? new Date(json.customEndTime) : undefined;
+    dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
+    dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
     dto.duration = json.duration;
     dto.score = json.score;
     dto.attempts = json.attempts;
@@ -76,8 +76,8 @@ export class UserQuizProgressDetailResponse {
       progressStatus: this.progressStatus,
       activeStatus: this.activeStatus,
       assignedAt: this.assignedAt?.toISOString(),
-      customStartTime: this.customStartTime?.toISOString(),
-      customEndTime: this.customEndTime?.toISOString(),
+      startTime: this.startTime?.toISOString(),
+      endTime: this.endTime?.toISOString(),
       duration: this.duration,
       score: this.score,
       attempts: this.attempts,

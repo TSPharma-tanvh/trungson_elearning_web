@@ -723,5 +723,7 @@
   "userAgent": "Tác nhân người dùng",
   "location": "Vị trí",
   "os": "Hệ điều hành",
-  "quizTitle": "Tiêu đề bài kiểm tra"
+  "quizTitle": "Tiêu đề bài kiểm tra",
+  "actualStartDate": "Ngày bắt đầu thực tế",
+  "actualEndDate": "Ngày kết thúc thực tế"
 }

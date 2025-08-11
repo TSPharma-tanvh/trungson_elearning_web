@@ -130,6 +130,9 @@ export default function UserPathProgressTable({
             <TableCell>{t('progress')}</TableCell>
             <TableCell>{t('startDate')}</TableCell>
             <TableCell>{t('endDate')}</TableCell>
+            <TableCell>{t('actualStartDate')}</TableCell>
+            <TableCell>{t('actualEndDate')}</TableCell>
+            <TableCell>{t('lastAccess')}</TableCell>
             <TableCell>{t('status')}</TableCell>
             <TableCell
               sx={{
@@ -224,6 +227,10 @@ export default function UserPathProgressTable({
               <TableCell>{row.progress}</TableCell>
               <TableCell>{DateTimeUtils.formatISODateFromString(row.startDate ?? '')}</TableCell>
               <TableCell>{DateTimeUtils.formatISODateFromString(row.endDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateFromString(row.actualStartDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateFromString(row.actualEndDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateFromString(row.lastAccess ?? '')}</TableCell>
+
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>

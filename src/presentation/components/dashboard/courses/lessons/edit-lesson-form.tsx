@@ -72,19 +72,20 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
         const newFormData = new UpdateLessonRequest({
           id: lesson.id || '',
           name: lesson.name || '',
-          detail: lesson.detail || undefined,
-          enablePlay: lesson.enablePlay || undefined,
+          detail: lesson.detail,
+          enablePlay: lesson.enablePlay,
+          isRequired: lesson.isRequired,
           status: lesson.status !== undefined ? StatusEnum[lesson.status as keyof typeof StatusEnum] : undefined,
           lessonType:
             lesson.lessonType !== undefined
               ? LearningModeEnum[lesson.lessonType as keyof typeof LearningModeEnum]
               : undefined,
           quizIDs: lesson?.quizzes !== undefined ? lesson?.quizzes?.map((quiz) => quiz.id).join(',') : undefined,
-          categoryID: lesson.categoryID || undefined,
-          thumbnailID: lesson.thumbnailID || undefined,
+          categoryID: lesson.categoryID,
+          thumbnailID: lesson.thumbnailID,
           categoryEnum: CategoryEnum.Lesson,
           isDeleteOldThumbnail: false,
-          videoID: lesson.videoID || undefined,
+          videoID: lesson.videoID,
           video: videoFile,
         });
         setFormData(newFormData);
@@ -265,6 +266,11 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
     { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
+  const booleanOptions = [
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
+  ];
+
   if (!lesson) return null;
 
   return (
@@ -361,6 +367,18 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   handleChange('quizIDs', val.join(','));
                 }}
                 disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label={t('required')}
+                value={String(formData.isRequired ?? '')}
+                onChange={(value) => {
+                  handleChange('isRequired', value === 'true');
+                }}
+                disabled={isSubmitting}
+                options={booleanOptions}
               />
             </Grid>
 

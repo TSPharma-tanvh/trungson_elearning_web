@@ -40,7 +40,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
     new CreateQuizRequest({
       title: '',
       description: '',
-      isRequired: false,
+      isRequired: true,
       startTime: new Date(Date.now()),
       endTime: new Date(Date.now()),
       status: StatusEnum.Enable,
@@ -119,6 +119,11 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
       );
     }
   }, [open]);
+
+  const booleanOptions = [
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
+  ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -309,6 +314,18 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label={t('required')}
+                value={String(form.isRequired ?? '')}
+                onChange={(value) => {
+                  handleChange('isRequired', value === 'true');
+                }}
+                disabled={isSubmitting}
+                options={booleanOptions}
               />
             </Grid>
 

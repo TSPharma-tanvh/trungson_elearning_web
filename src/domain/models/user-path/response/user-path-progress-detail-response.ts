@@ -12,6 +12,8 @@ export class UserPathProgressDetailResponse {
   startDate?: string;
   endDate?: string;
   lastAccess?: string;
+  actualStartDate?: string;
+  actualEndDate?: string;
   status = '';
   enrollmentID?: string;
 

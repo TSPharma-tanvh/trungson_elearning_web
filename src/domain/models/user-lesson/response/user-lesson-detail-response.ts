@@ -9,7 +9,9 @@ export class UserLessonProgressDetailResponse {
   progress?: number;
   startDate?: Date;
   endDate?: Date;
-  lastAccess?: Date;
+  lastAccess?: string;
+  actualStartDate?: string;
+  actualEndDate?: string;
   status!: string;
   lessons?: LessonDetailResponse;
   user?: UserDetailResponse;
@@ -27,7 +29,9 @@ export class UserLessonProgressDetailResponse {
       progress: json.progress,
       startDate: json.startDate ? new Date(json.startDate) : undefined,
       endDate: json.endDate ? new Date(json.endDate) : undefined,
-      lastAccess: json.lastAccess ? new Date(json.lastAccess) : undefined,
+      lastAccess: json.lastAccess,
+      actualStartDate: json.actualStartDate,
+      actualEndDate: json.actualEndDate,
       status: json.status,
       lessons: json.lessons ? LessonDetailResponse.fromJSON(json.lessons) : undefined,
       user: json.user ? UserDetailResponse.fromJSON(json.user) : undefined,
@@ -45,7 +49,9 @@ export class UserLessonProgressDetailResponse {
       progress: this.progress,
       startDate: this.startDate?.toISOString(),
       endDate: this.endDate?.toISOString(),
-      lastAccess: this.lastAccess?.toISOString(),
+      lastAccess: this.lastAccess,
+      actualStartDate: this.actualStartDate,
+      actualEndDate: this.actualEndDate,
       status: this.status,
       lessons: this.lessons?.toJSON(),
       user: this.user?.toJSON(),

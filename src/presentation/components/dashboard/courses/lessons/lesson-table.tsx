@@ -112,6 +112,7 @@ export default function LessonTable({
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('enablePlay')}</TableCell>
+            <TableCell>{t('required')}</TableCell>
             <TableCell>{t('status')}</TableCell>
             <TableCell>{t('lessonType')}</TableCell>
             <TableCell>{t('category')}</TableCell>
@@ -147,6 +148,13 @@ export default function LessonTable({
 
             <TableCell>
               {row.enablePlay ? (
+                <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
+              ) : (
+                <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
+              )}
+            </TableCell>
+            <TableCell>
+              {row.isRequired ? (
                 <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
               ) : (
                 <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />

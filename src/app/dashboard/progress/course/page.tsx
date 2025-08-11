@@ -82,7 +82,7 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleDeleteUserCourseProgresss = async (ids: string[]) => {
+  const handleDeleteUserCourseProgress = async (ids: string[]) => {
     try {
       setDeleteLoading(true);
       for (const id of ids) {
@@ -125,7 +125,7 @@ export default function Page(): React.JSX.Element {
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
-        onDeleteUserCourseProgresss={handleDeleteUserCourseProgresss}
+        onDeleteUserCourseProgress={handleDeleteUserCourseProgress}
         onEditUserCourseProgress={handleEditUserCourseProgress}
       />
 

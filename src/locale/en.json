@@ -723,5 +723,7 @@
   "userAgent": "User Agent",
   "location": "Location",
   "os": "Operating System",
-  "quizTitle": "Quiz Title"
+  "quizTitle": "Quiz Title",
+  "actualStartDate": "Actual Start Date",
+  "actualEndDate": "Actual End Date"
 }

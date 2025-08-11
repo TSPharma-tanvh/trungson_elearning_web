@@ -21,6 +21,7 @@ export class UserCourseProgressUsecase {
     // const data = result.result.map(UserCourseProgressResponse.fromJSON);
     const data = result.result.map((x) => UserCourseProgressResponse.fromJSON(x));
 
+    console.log(data);
     return {
       courses: data,
       totalRecords: result.totalRecords ?? result.result.length,

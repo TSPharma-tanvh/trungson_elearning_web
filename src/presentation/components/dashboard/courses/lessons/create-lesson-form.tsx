@@ -8,6 +8,7 @@ import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typo
 import { Image as ImageIcon, VideoCamera } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
+import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 
 import { CustomButton } from '../../../core/button/custom-button';
@@ -40,6 +41,7 @@ export function CreateLessonDialog({
       name: '',
       detail: '',
       enablePlay: true,
+      isRequired: true,
       status: StatusEnum.Enable,
       lessonType: undefined,
       categoryEnum: CategoryEnum.Lesson,
@@ -92,6 +94,11 @@ export function CreateLessonDialog({
     onSubmit(form);
   };
 
+  const booleanOptions = [
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
+  ];
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
@@ -134,6 +141,18 @@ export function CreateLessonDialog({
               multiline
               rows={detailRows}
               sx={{ '& .MuiInputBase-root': { height: fullScreen ? '100%' : 'auto' } }}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDown
+              label={t('required')}
+              value={String(form.isRequired ?? '')}
+              onChange={(value) => {
+                handleChange('isRequired', value === 'true');
+              }}
+              disabled={false}
+              options={booleanOptions}
             />
           </Grid>
 

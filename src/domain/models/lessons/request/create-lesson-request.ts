@@ -1,4 +1,4 @@
-import { type CategoryEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { LearningModeEnum, StatusEnum, type CategoryEnum } from '@/utils/enum/core-enum';
 
 export class CreateLessonRequest {
   courseID?: string;
@@ -15,6 +15,7 @@ export class CreateLessonRequest {
   thumbPrefixName?: string;
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
+  isRequired?: boolean;
 
   video!: File;
   videoDocumentNo?: string;
@@ -41,6 +42,7 @@ export class CreateLessonRequest {
       categoryEnum: json.categoryEnum,
       videoDocumentNo: json.videoDocumentNo,
       videoPrefixName: json.videoPrefixName,
+      isRequired: json.isRequired,
     });
   }
 
@@ -61,6 +63,7 @@ export class CreateLessonRequest {
       categoryEnum: this.categoryEnum,
       videoDocumentNo: this.videoDocumentNo,
       videoPrefixName: this.videoPrefixName,
+      isRequired: this.isRequired,
     };
   }
 
@@ -93,6 +96,7 @@ export class CreateLessonRequest {
 
     if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
     if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
+    if (this.isRequired !== undefined) form.append('IsRequired', this.isRequired.toString());
 
     return form;
   }

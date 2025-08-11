@@ -182,6 +182,9 @@ export default function UserQuizProgressTable({
             <TableCell>{t('score')}</TableCell>
             <TableCell>{t('startDate')}</TableCell>
             <TableCell>{t('endDate')}</TableCell>
+            <TableCell>{t('startedAt')}</TableCell>
+            <TableCell>{t('completedAt')}</TableCell>
+            <TableCell>{t('lastAccess')}</TableCell>
             <TableCell>{t('progressStatus')}</TableCell>
             <TableCell>{t('activeStatus')}</TableCell>
             <TableCell
@@ -283,8 +286,11 @@ export default function UserQuizProgressTable({
               <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
 
               <TableCell>{row.score}</TableCell>
+              <TableCell>{row.startTime ? DateTimeUtils.formatISODateFromDate(row.startTime) : ''}</TableCell>
+              <TableCell>{row.endTime ? DateTimeUtils.formatISODateFromDate(row.endTime) : ''}</TableCell>
               <TableCell>{row.startedAt ? DateTimeUtils.formatISODateFromDate(row.startedAt) : ''}</TableCell>
               <TableCell>{row.completedAt ? DateTimeUtils.formatISODateFromDate(row.completedAt) : ''}</TableCell>
+              <TableCell>{row.lastAccess ? DateTimeUtils.formatISODateFromDate(row.lastAccess) : ''}</TableCell>
 
               <TableCell align="center">
                 {row.progressStatus !== undefined ? renderProgressStatus(row.progressStatus) : ''}
