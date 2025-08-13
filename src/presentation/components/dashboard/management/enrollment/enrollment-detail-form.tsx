@@ -32,7 +32,7 @@ interface EnrollmentDetailProps {
   onClose: () => void;
 }
 
-function EnrollmentDetails({
+function EnrollmentCriteriaDetails({
   enrollment,
   fullScreen,
 }: {
@@ -377,7 +377,7 @@ export default function EnrollmentDetailForm({ open, enrollmentId, onClose }: En
             <CircularProgress />
           </Box>
         ) : (
-          <EnrollmentDetails enrollment={enrollment} fullScreen={fullScreen} />
+          <EnrollmentCriteriaDetails enrollment={enrollment} fullScreen={fullScreen} />
         )}
       </DialogContent>
     </Dialog>

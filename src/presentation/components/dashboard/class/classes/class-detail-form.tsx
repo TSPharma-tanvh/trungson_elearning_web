@@ -4,16 +4,21 @@ import React, { useEffect, useState } from 'react';
 import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { ExpandMore, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Avatar,
   Box,
   Card,
   CardContent,
   CardHeader,
   CircularProgress,
+  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -27,6 +32,8 @@ import CustomFieldTypography from '@/presentation/components/core/text-field/cus
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
+import EnrollmentDetailForm from '../../management/enrollment/enrollment-detail-form';
+
 interface ClassDetailProps {
   open: boolean;
   classId: string | null;
@@ -37,6 +44,8 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fullScreenQR, setFullScreenQR] = useState(false);
+  const [criteriaExpanded, setCriteriaExpanded] = useState<{ [key: string]: boolean }>({});
+  const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
@@ -50,34 +59,81 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   const renderEnrollmentCriteria = () => {
     if (!classes.enrollmentCriteria || classes.enrollmentCriteria.length === 0) return null;
 
+    const toggleExpanded = (criteriaId: string) => {
+      setCriteriaExpanded((prev) => ({
+        ...prev,
+        [criteriaId]: !prev[criteriaId],
+      }));
+    };
+
+    const showDetail = (criteriaId: string | null) => {
+      setSelectedEnrollmentId(criteriaId);
+    };
+
     return (
-      <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('enrollment')} />
-        <CardContent>
-          {classes.enrollmentCriteria.map((criteria, index) => (
-            <Box key={criteria.id ?? index} sx={{ mb: 2 }}>
-              <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-                {t('criteria')} #{index + 1}
-              </Typography>
-              <Grid container spacing={2}>
-                {renderField('id', criteria.id)}
-                {renderField('name', criteria.name)}
-                {renderField('description', criteria.desc)}
-                {renderField(
-                  'targetType',
-                  criteria.targetType !== undefined
-                    ? t(criteria.targetType?.charAt(0).toLowerCase() + t(criteria.targetType).slice(1))
-                    : ''
-                )}
-                {renderField('targetId', criteria.targetID)}
-                {renderField('targetLevelId', criteria.targetLevelID)}
-                {renderField('maxCapacity', criteria.maxCapacity)}
-                {renderField('targetPharmacyId', criteria.targetPharmacyID)}
-              </Grid>
-            </Box>
-          ))}
-        </CardContent>
-      </Card>
+      <Box sx={{ mb: 2 }}>
+        <CardHeader title={t('enrollment')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        {classes.enrollmentCriteria.map((criteria, index) => {
+          const criteriaId = criteria.id ?? `${index}`;
+          const isExpanded = criteriaExpanded[criteriaId] || false;
+
+          return (
+            <Card
+              key={criteriaId}
+              sx={{
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
+              }}
+            >
+              <CardHeader
+                title={`${criteria.name ?? ''}`}
+                action={
+                  <Box>
+                    <IconButton onClick={() => showDetail(criteriaId)}>
+                      <InfoOutlined />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => toggleExpanded(criteriaId)}
+                      sx={{
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <ExpandMore />
+                    </IconButton>
+                  </Box>
+                }
+                sx={{ py: 1 }}
+              />
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {renderField('id', criteria.id)}
+                    {renderField('name', criteria.name)}
+                    {renderField('description', criteria.desc)}
+                    {renderField(
+                      'targetType',
+                      criteria.targetType !== undefined
+                        ? t(criteria.targetType?.charAt(0).toLowerCase() + t(criteria.targetType).slice(1))
+                        : ''
+                    )}
+                    {renderField('targetId', criteria.targetID)}
+                    {renderField('targetLevelId', criteria.targetLevelID)}
+                    {renderField('maxCapacity', criteria.maxCapacity)}
+                    {renderField('targetPharmacyId', criteria.targetPharmacyID)}
+                  </Grid>
+                </CardContent>
+              </Collapse>
+
+              <EnrollmentDetailForm
+                open={selectedEnrollmentId !== undefined}
+                enrollmentId={selectedEnrollmentId}
+                onClose={() => showDetail(null)}
+              />
+            </Card>
+          );
+        })}
+      </Box>
     );
   };
 
@@ -206,11 +262,14 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                       mb: 1,
                     }}
                   >
-                    {isImage ? <Box
+                    {isImage ? (
+                      <Box
                         component="img"
                         src={res.resourceUrl}
                         alt={res.name}
-                        onClick={() => { setPreviewUrl(res.resourceUrl ?? ''); }}
+                        onClick={() => {
+                          setPreviewUrl(res.resourceUrl ?? '');
+                        }}
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -220,9 +279,11 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                           objectFit: 'contain',
                           cursor: 'pointer',
                         }}
-                      /> : null}
+                      />
+                    ) : null}
 
-                    {isVideo ? <Box
+                    {isVideo ? (
+                      <Box
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -232,9 +293,11 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                         }}
                       >
                         <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
-                      </Box> : null}
+                      </Box>
+                    ) : null}
 
-                    {isOther ? <Box
+                    {isOther ? (
+                      <Box
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -248,7 +311,8 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                         }}
                       >
                         <Typography variant="body2">{t('noPreview')}</Typography>
-                      </Box> : null}
+                      </Box>
+                    ) : null}
                   </Box>
 
                   <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>

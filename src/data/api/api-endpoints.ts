@@ -152,6 +152,7 @@ interface AttendanceRecordsEndpoints {
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
+  delete: DynamicEndpoint;
   enroll: StaticEndpoint;
 }
 
@@ -324,6 +325,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `AttendanceRecords/GetAttendanceRecordsById/${id}`,
     create: 'AttendanceRecords/CreateAttendanceRecords',
     update: 'AttendanceRecords/UpdateAttendanceRecords',
+    delete: (id: string) => `AttendanceRecords/DeleteAttendanceRecords/${id}`,
     enroll: 'Class/EnrollUserListToClass',
   },
   userDevices: {

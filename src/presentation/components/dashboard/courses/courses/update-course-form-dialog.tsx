@@ -142,6 +142,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     setIsSubmitting(true);
     try {
       onSubmit(formData);
+      setPreviewUrl('');
       onClose();
     } catch (error) {
       return undefined;

@@ -226,7 +226,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
 
       // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- Fix ESLint
       await Promise.race([onSubmit(formData), timeoutPromise]);
-
+      setVideoPreviewUrl('');
+      setPreviewUrl('');
       onClose();
     } catch (error) {
       return undefined;

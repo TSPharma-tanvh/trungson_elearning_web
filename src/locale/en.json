@@ -725,5 +725,6 @@
   "os": "Operating System",
   "quizTitle": "Quiz Title",
   "actualStartDate": "Actual Start Date",
-  "actualEndDate": "Actual End Date"
+  "actualEndDate": "Actual End Date",
+  "updateClass": "Update Class"
 }

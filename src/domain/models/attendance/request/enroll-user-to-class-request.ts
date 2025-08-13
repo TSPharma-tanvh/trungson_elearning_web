@@ -5,11 +5,12 @@ export class EnrollUserListToClassRequest {
   userIDs: string[] = [];
   classID!: string;
   levelID?: string;
-  checkinTime?: Date;
+  checkInTime?: Date;
   startAt!: Date;
   endAt!: Date;
   minuteLate!: number;
-  status?: string;
+  minuteSoon!: number;
+  statusCheckIn?: string;
   enrollmentCriteriaID?: string;
   userID?: string;
   enrollStatus?: ApproveStatusEnum;
@@ -26,11 +27,12 @@ export class EnrollUserListToClassRequest {
       userIDs: json.userIDs || [],
       classID: json.classID,
       levelID: json.levelID,
-      checkinTime: json.checkinTime ? new Date(json.checkinTime) : undefined,
+      checkInTime: json.checkInTime ? new Date(json.checkInTime) : undefined,
       startAt: json.startAt ? new Date(json.startAt) : undefined,
       endAt: json.endAt ? new Date(json.endAt) : undefined,
       minuteLate: json.minuteLate,
-      status: json.status,
+      minuteSoon: json.minuteSoon,
+      statusCheckIn: json.statusCheckIn,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
       userID: json.userID,
       enrollStatus: json.enrollStatus,
@@ -45,11 +47,12 @@ export class EnrollUserListToClassRequest {
       userIDs: this.userIDs,
       classID: this.classID,
       levelID: this.levelID,
-      checkinTime: this.checkinTime ? DateTimeUtils.formatISODateToString(this.checkinTime) : undefined,
+      checkInTime: this.checkInTime ? DateTimeUtils.formatISODateToString(this.checkInTime) : undefined,
       startAt: this.startAt ? DateTimeUtils.formatISODateToString(this.startAt) : undefined,
       endAt: this.endAt ? DateTimeUtils.formatISODateToString(this.endAt) : undefined,
       minuteLate: this.minuteLate,
-      status: this.status,
+      minuteSoon: this.minuteSoon,
+      statusCheckIn: this.statusCheckIn,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
       userID: this.userID,
       enrollStatus: this.enrollStatus,

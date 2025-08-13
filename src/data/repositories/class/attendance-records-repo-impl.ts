@@ -77,6 +77,22 @@ export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
     }
   }
 
+  async deleteAttendanceRecords(id: string): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.delete<ApiResponse>(apiEndpoints.attendanceRecords.delete(id));
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch AttendanceRecords info');
+    }
+  }
+
   async enrollUserListToClass(request: EnrollUserListToClassRequest): Promise<ApiResponse> {
     try {
       const response = await apiClient.post<ApiResponse>(apiEndpoints.attendanceRecords.enroll, request.toJson());

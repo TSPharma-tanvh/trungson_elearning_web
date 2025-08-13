@@ -14,5 +14,7 @@ export interface AttendanceRecordsRepository {
 
   updateAttendanceRecords: (request: UpdateAttendanceRecordsRequest) => Promise<ApiResponse>;
 
+  deleteAttendanceRecords: (id: string) => Promise<ApiResponse>;
+
   enrollUserListToClass: (request: EnrollUserListToClassRequest) => Promise<ApiResponse>;
 }

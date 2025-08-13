@@ -69,6 +69,8 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
 
   useEffect(() => {
     if (question && open) {
+      // setUploadedFiles([]);
+      // setPreviewUrl(null);
       const newFormData = new UpdateQuestionRequest({
         id: question.id || '',
         questionText: question.questionText || '',
@@ -99,6 +101,19 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
   const handleChange = <K extends keyof UpdateQuestionRequest>(field: K, value: UpdateQuestionRequest[K]) => {
     setFormData((prev) => new UpdateQuestionRequest({ ...prev, [field]: value }));
   };
+
+  useEffect(() => {
+    if (
+      filePreviewData?.url &&
+      filePreviewOpen &&
+      !filePreviewData.type?.includes('image') &&
+      !filePreviewData.type?.includes('video')
+    ) {
+      window.open(filePreviewData.url, '_blank', 'noopener,noreferrer');
+      setFilePreviewOpen(false);
+      setFilePreviewData(null);
+    }
+  }, [filePreviewData, filePreviewOpen]);
 
   const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
     if (newSource) {
@@ -146,6 +161,8 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
     setIsSubmitting(true);
     try {
       onSubmit(formData);
+      setUploadedFiles([]);
+      setPreviewUrl(null);
       onClose();
     } catch (error) {
       CustomSnackBar.showSnackbar('Failed to update question', 'error');

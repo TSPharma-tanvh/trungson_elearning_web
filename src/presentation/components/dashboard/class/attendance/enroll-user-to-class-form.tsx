@@ -10,6 +10,8 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+
+
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -17,6 +19,10 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { ClassSelectDialog } from '@/presentation/components/shared/classes/class/class-select';
 import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
+
+
+
+
 
 interface CreateAttendanceRecordsProps {
   disabled?: boolean;
@@ -41,7 +47,7 @@ export function CreateAttendanceRecordsDialog({
       startAt: new Date(),
       endAt: new Date(new Date().setDate(new Date().getDate() + 1)),
       minuteLate: 5,
-      status: CheckinTimeEnum[CheckinTimeEnum.Absent],
+      statusCheckIn: CheckinTimeEnum[CheckinTimeEnum.Absent],
       enrollStatus: ApproveStatusEnum.Approve,
     })
   );
@@ -141,11 +147,23 @@ export function CreateAttendanceRecordsDialog({
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <CustomSelectDropDown<string>
-              label={t('status')}
-              value={form.status ?? ''}
+            <CustomTextField
+              label={t('minuteSoon')}
+              type="number"
+              value={form.minuteSoon}
               onChange={(val) => {
-                handleChange('status', val ?? '');
+                handleChange('minuteSoon', Number(val));
+              }}
+              disabled={disabled}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDown<string>
+              label={t('statusCheckIn')}
+              value={form.statusCheckIn ?? ''}
+              onChange={(val) => {
+                handleChange('statusCheckIn', val ?? '');
               }}
               disabled={disabled}
               options={[

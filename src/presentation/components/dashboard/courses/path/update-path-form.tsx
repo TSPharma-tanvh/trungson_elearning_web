@@ -166,6 +166,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
     setIsSubmitting(true);
     try {
       onSubmit(courseFormData);
+      setPreviewUrl('');
       onClose();
     } catch (error) {
       return undefined;
