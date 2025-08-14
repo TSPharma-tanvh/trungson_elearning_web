@@ -104,6 +104,7 @@ export default function CourseTable({
             <TableCell>{t('courseType')}</TableCell>
             <TableCell>{t('scheduleStatus')}</TableCell>
             <TableCell>{t('displayType')}</TableCell>
+            <TableCell>{t('lessons')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -143,6 +144,7 @@ export default function CourseTable({
             <TableCell>
               {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + t(row.displayType).slice(1)) : ''}
             </TableCell>
+            <TableCell>{row.lessons?.length}</TableCell>
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

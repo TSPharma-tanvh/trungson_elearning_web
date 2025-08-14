@@ -1,5 +1,6 @@
 import { CategoryResponse } from '../../category/response/category-response';
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
+import { EnrollmentCriteriaCourseRelationResponse } from '../../enrollment/response/enrollment-criteria-course-relation-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
 import { LessonResponse } from '../../lessons/response/lesson-response';
 import { CoursePathResponse } from '../../path/response/course-path-response';
@@ -21,7 +22,7 @@ export class CourseDetailResponse {
   endTime?: Date;
   meetingLink?: string;
   scheduleStatus!: string;
-  enrollmentCriteria?: EnrollmentCriteriaResponse[];
+  courseEnrollments?: EnrollmentCriteriaCourseRelationResponse[];
   categoryId?: string;
   thumbnailId?: string;
   thumbnail?: FileResourcesResponse;
@@ -50,7 +51,7 @@ export class CourseDetailResponse {
       endTime: json.endTime ? new Date(json.endTime) : undefined,
       meetingLink: json.meetingLink,
       scheduleStatus: json.scheduleStatus,
-      enrollmentCriteria: json.enrollmentCriteria?.map((e: any) => EnrollmentCriteriaResponse.fromJSON(e)),
+      courseEnrollments: json.courseEnrollments?.map((e: any) => EnrollmentCriteriaCourseRelationResponse.fromJson(e)),
       categoryId: json.categoryId,
       thumbnailId: json.thumbnailId,
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
@@ -77,7 +78,7 @@ export class CourseDetailResponse {
       endTime: this.endTime?.toISOString(),
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
-      enrollmentCriteria: this.enrollmentCriteria?.map((e) => e.toJSON()),
+      courseEnrollments: this.courseEnrollments?.map((e) => e.toJson()),
       categoryId: this.categoryId,
       thumbnailId: this.thumbnailId,
       thumbnail: this.thumbnail?.toJson(),

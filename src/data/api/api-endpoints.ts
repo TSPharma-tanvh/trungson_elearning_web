@@ -124,6 +124,7 @@ interface UserPathProgressEndpoints {
   create: StaticEndpoint;
   update: StaticEndpoint;
   enroll: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 
 interface UserCourseProgressEndpoints {
@@ -300,6 +301,7 @@ const endpoints: EndpointDefinitions = {
     create: 'UserPathProgress/CreateUserPath',
     update: 'UserPathProgress/UpdateUserPath',
     enroll: 'UserPathProgress/EnrollUserListToPath',
+    delete: (id: string) => `UserPathProgress/DeleteUserPath/${id}`,
   },
   userCourseProgress: {
     getAll: 'UserCourseProgress/GetUserCourseProgress',

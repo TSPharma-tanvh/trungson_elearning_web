@@ -177,8 +177,9 @@ export default function CoursePathTable({
                 <TableCell>{t('startTime')}</TableCell>
                 <TableCell>{t('endTime')}</TableCell>
                 <TableCell>{t('status')}</TableCell>
-                <TableCell>{t('display')}</TableCell>
+                <TableCell>{t('displayType')}</TableCell>
                 <TableCell>{t('category')}</TableCell>
+                <TableCell>{t('courses')}</TableCell>
                 <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
@@ -221,9 +222,14 @@ export default function CoursePathTable({
                     </TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromString(row.startTime ?? '')}</TableCell>
                     <TableCell>{DateTimeUtils.formatISODateFromString(row.endTime ?? '')}</TableCell>
-                    <TableCell>{row.status}</TableCell>
-                    <TableCell>{row.displayType}</TableCell>
+                    <TableCell>
+                      {row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}
+                    </TableCell>
+                    <TableCell>
+                      {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + t(row.displayType).slice(1)) : ''}
+                    </TableCell>
                     <TableCell>{row.category?.categoryName}</TableCell>
+                    <TableCell>{row.courses.length}</TableCell>
                     <TableCell align="right">
                       <IconButton
                         onClick={(event) => {

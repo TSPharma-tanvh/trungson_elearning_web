@@ -75,7 +75,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
             : undefined,
         teacherID: course.teacherId || undefined,
         enrollmentCriteriaType: CategoryEnum.Course,
-        enrollmentCriteriaIDs: course.enrollmentCriteria?.map((enrollment) => enrollment.id).join(',') || undefined,
+        enrollmentCriteriaIDs:
+          course.courseEnrollments?.map((enrollment) => enrollment.enrollmentCriteriaID).join(',') || undefined,
         categoryID: course.categoryId || undefined,
         thumbnailID: course.thumbnailId || undefined,
         lessonIds: course.lessons !== undefined ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
@@ -275,20 +276,24 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 pathID={formData.id}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <EnrollmentMultiSelect
-                enrollmentUsecase={enrollUsecase}
-                categoryEnum={CategoryEnum.Course}
-                value={
-                  formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
-                }
-                onChange={(value: string[]) => {
-                  handleChange('enrollmentCriteriaIDs', value.join(','));
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+
+            {course.pathId === undefined ? (
+              <Grid item xs={12}>
+                <EnrollmentMultiSelect
+                  enrollmentUsecase={enrollUsecase}
+                  categoryEnum={CategoryEnum.Course}
+                  value={
+                    formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
+                  }
+                  onChange={(value: string[]) => {
+                    handleChange('enrollmentCriteriaIDs', value.join(','));
+                  }}
+                  disabled={isSubmitting}
+                />
+              </Grid>
+            ) : null}
+
+            <Grid item xs={12}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}

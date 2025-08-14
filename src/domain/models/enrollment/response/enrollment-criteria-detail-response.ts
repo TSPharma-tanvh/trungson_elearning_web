@@ -3,7 +3,7 @@ import { EnrollmentResponse } from '../../class/response/enrollment-response';
 import { CourseResponse } from '../../courses/response/course-response';
 import { CoursePathResponse } from '../../path/response/course-path-response';
 import { QuizResponse } from '../../quiz/response/quiz-response';
-import { EnrollmentCriteriaCourseRelation } from './enrollment-criteria-course-relation-response';
+import { EnrollmentCriteriaCourseRelationResponse } from './enrollment-criteria-course-relation-response';
 
 export class EnrollmentCriteriaDetailResponse {
   id = '';
@@ -23,7 +23,7 @@ export class EnrollmentCriteriaDetailResponse {
   quiz?: QuizResponse;
   targetPharmacyID?: string;
   enrollments?: EnrollmentResponse[];
-  courseEnrollments?: EnrollmentCriteriaCourseRelation[];
+  courseEnrollments?: EnrollmentCriteriaCourseRelationResponse[];
 
   constructor(init?: Partial<EnrollmentCriteriaDetailResponse>) {
     Object.assign(this, init);
@@ -48,7 +48,9 @@ export class EnrollmentCriteriaDetailResponse {
       quiz: json.quiz ? QuizResponse.fromJSON(json.quiz) : undefined,
       targetPharmacyID: json.targetPharmacyID,
       enrollments: json.enrollments?.map((e: any) => EnrollmentResponse.fromJson(e)),
-      courseEnrollments: json.courseEnrollments?.map((ce: any) => EnrollmentCriteriaCourseRelation.fromJson(ce)),
+      courseEnrollments: json.courseEnrollments?.map((ce: any) =>
+        EnrollmentCriteriaCourseRelationResponse.fromJson(ce)
+      ),
     });
   }
 

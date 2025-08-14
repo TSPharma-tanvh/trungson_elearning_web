@@ -132,7 +132,7 @@ export default function ClassTable({
               </Typography>
             </TableCell>
             <TableCell>{row.enrollmentCriteria !== undefined ? row.enrollmentCriteria.length : ''}</TableCell>
-            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 30, maxWidth: 80 }}>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 30, maxWidth: 350 }}>
               <Typography variant="body2">{row.teacherID}</Typography>
             </TableCell>
             <TableCell>

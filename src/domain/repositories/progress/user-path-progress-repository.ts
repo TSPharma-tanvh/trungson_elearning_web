@@ -14,5 +14,7 @@ export interface UserPathProgressRepository {
 
   updateUserPathProgress: (request: UpdateUserPathProgressRequest) => Promise<ApiResponse>;
 
+  deleteUserPathProgress: (id: string) => Promise<ApiResponse>;
+
   enrollUserListToPath: (request: EnrollUserListToPathRequest) => Promise<ApiResponse>;
 }

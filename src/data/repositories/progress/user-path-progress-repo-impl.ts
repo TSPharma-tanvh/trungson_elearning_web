@@ -77,6 +77,22 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
     }
   }
 
+  async deleteUserPathProgress(id: string): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.delete<ApiResponse>(apiEndpoints.userPathProgress.delete(id));
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch userPathProgress info');
+    }
+  }
+
   async enrollUserListToPath(request: EnrollUserListToPathRequest): Promise<ApiResponse> {
     try {
       const response = await apiClient.post<ApiResponse>(apiEndpoints.userPathProgress.enroll, request.toJSON());

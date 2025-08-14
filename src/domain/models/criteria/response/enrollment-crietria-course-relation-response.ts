@@ -1,17 +1,19 @@
-import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
+import { EnrollmentCriteriaResponse } from './enrollment-criteria-response';
 
-export class EnrollmentCriteriaCourseRelationResponse {
-  id = '';
-  enrollmentCriteriaID = '';
-  courseID = '';
+export class EnrollmentCriteriaCourseRelation {
+  id!: string;
+  enrollmentCriteriaID!: string;
+  courseID!: string;
   enrollmentCriteria?: EnrollmentCriteriaResponse;
 
-  constructor(init?: Partial<EnrollmentCriteriaCourseRelationResponse>) {
+  constructor(init?: Partial<EnrollmentCriteriaCourseRelation>) {
     Object.assign(this, init);
   }
 
-  static fromJson(json: any): EnrollmentCriteriaCourseRelationResponse {
-    return new EnrollmentCriteriaCourseRelationResponse({
+  static fromJson(json: any): EnrollmentCriteriaCourseRelation {
+    if (!json) return new EnrollmentCriteriaCourseRelation();
+
+    return new EnrollmentCriteriaCourseRelation({
       id: json.id,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
       courseID: json.courseID,

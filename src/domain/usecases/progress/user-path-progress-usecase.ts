@@ -60,12 +60,7 @@ export class UserPathProgressUsecase {
   }
 
   async deleteUserPathProgress(id: string): Promise<ApiResponse> {
-    const newFormData = new UpdateUserPathProgressRequest({
-      id: id ?? '',
-      status: UserProgressEnum[UserProgressEnum.Done],
-    });
-
-    const result = await this.userPathProgressRepo.updateUserPathProgress(newFormData);
+    const result = await this.userPathProgressRepo.deleteUserPathProgress(id);
 
     return result;
   }

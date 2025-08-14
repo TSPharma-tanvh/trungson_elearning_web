@@ -173,9 +173,9 @@ export default function QuizTable({
                 <TableCell>{t('title')}</TableCell>
                 <TableCell>{t('detail')}</TableCell>
                 <TableCell>{t('status')}</TableCell>
-                <TableCell>{t('startTime')}</TableCell>
-                <TableCell>{t('endTime')}</TableCell>
+                <TableCell>{t('totalQuestion')}</TableCell>
                 <TableCell>{t('totalScore')}</TableCell>
+                <TableCell>{t('scoreToPass')}</TableCell>
                 <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
@@ -216,12 +216,9 @@ export default function QuizTable({
                       {' '}
                       {row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}
                     </TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateFromDate(row.startTime)}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateFromDate(row.endTime)}</TableCell>
+                    <TableCell>{row.totalQuestion}</TableCell>
                     <TableCell>{row.totalScore}</TableCell>
-                    {/* <TableCell>{row.courseType}</TableCell>
-                    <TableCell>{row.scheduleStatus}</TableCell>
-                    <TableCell>{row.displayType}</TableCell> */}
+                    <TableCell>{row.scoreToPass}</TableCell>
                     <TableCell align="right">
                       <IconButton
                         onClick={(event) => {
