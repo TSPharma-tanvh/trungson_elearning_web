@@ -37,7 +37,10 @@ import { CategorySelect } from '@/presentation/components/shared/category/catego
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
 import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
 import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
+import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
+import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 
 interface EditCourseDialogProps {
   open: boolean;
@@ -57,6 +60,14 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
+  const [fileSelectSource, setFileSelectSource] = useState<'multi-select' | 'upload'>('multi-select');
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [filePreviewOpen, setFilePreviewOpen] = useState(false);
+  const [filePreviewData, setFilePreviewData] = useState<{
+    url: string;
+    title?: string;
+    type?: string;
+  } | null>(null);
 
   useEffect(() => {
     if (course && open) {
@@ -82,6 +93,11 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         lessonIds: course.lessons !== undefined ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
         categoryEnum: CategoryEnum.Course,
         isDeleteOldThumbnail: false,
+        resourceIDs:
+          course.fileCourseRelation
+            ?.map((item) => item.fileResources?.id)
+            .filter((id): id is string => Boolean(id))
+            .join(',') || undefined,
       });
       setFormData(newFormData);
     }
@@ -137,6 +153,16 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     } else {
       setPreviewUrl(null);
     }
+  };
+
+  const handleMultipleFileUpload = (files: File[]) => {
+    setUploadedFiles(files);
+    handleChange('resources', files);
+  };
+
+  const handleFilePreview = (url: string, title?: string, type?: string) => {
+    setFilePreviewData({ url, title, type });
+    setFilePreviewOpen(true);
   };
 
   const handleSave = async () => {
@@ -443,6 +469,124 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 </Grid>
               )}
             </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="body2" mb={1}>
+                {t('uploadFiles')}
+              </Typography>
+              <ToggleButtonGroup
+                value={fileSelectSource}
+                exclusive
+                onChange={(e, newValue: 'upload' | 'multi-select') => {
+                  if (newValue) setFileSelectSource(newValue);
+                }}
+                aria-label={t('uploadFiles')}
+                fullWidth
+                sx={{ mb: 2 }}
+              >
+                <ToggleButton value="multi-select">{t('selectFileResources')}</ToggleButton>
+                <ToggleButton value="upload">{t('uploadFiles')}</ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+            {fileSelectSource === 'multi-select' ? (
+              <Grid item xs={12}>
+                <FileResourceMultiSelect
+                  fileUsecase={fileUsecase}
+                  type={FileResourceEnum.Image}
+                  value={formData.resourceIDs?.split(',').filter(Boolean) ?? []}
+                  onChange={(ids) => {
+                    handleChange('resourceIDs', ids.join(','));
+                  }}
+                  disabled={false}
+                  showTypeSwitcher
+                  allowAllTypes
+                />
+              </Grid>
+            ) : (
+              <Grid item xs={12}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  fullWidth
+                  disabled={isSubmitting}
+                  startIcon={<ImageIcon {...iconStyle} />}
+                >
+                  {t('uploadFiles')}
+                  <input
+                    type="file"
+                    multiple
+                    hidden
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files ?? []);
+                      handleMultipleFileUpload(files);
+                    }}
+                  />
+                </Button>
+              </Grid>
+            )}
+
+            {formData.resourceIDs && formData.resourceIDs.length > 0 ? (
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" mb={1}>
+                  {t('selectedFiles')}
+                </Typography>
+                <Grid container spacing={1} direction="column">
+                  {formData.resourceIDs.split(',').map((id) => {
+                    const file = course?.fileCourseRelation?.find((f) => f.fileResources?.id === id)?.fileResources;
+                    if (!file) return null;
+                    return (
+                      <Grid item key={file.id}>
+                        <Button
+                          variant="text"
+                          fullWidth
+                          onClick={() => {
+                            handleFilePreview(file.resourceUrl ?? '', file.name, file.type);
+                          }}
+                          sx={{
+                            justifyContent: 'flex-start',
+                            textAlign: 'left',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {file.name}
+                        </Button>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            ) : null}
+            {uploadedFiles.length > 0 && (
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" mb={1}>
+                  {t('uploadedFiles')}
+                </Typography>
+                <Grid container spacing={1} direction="column">
+                  {uploadedFiles.map((file, index) => (
+                    <Grid item key={index}>
+                      <Button
+                        variant="text"
+                        fullWidth
+                        onClick={() => {
+                          handleFilePreview(URL.createObjectURL(file), file.name, file.type);
+                        }}
+                        sx={{
+                          justifyContent: 'flex-start',
+                          textAlign: 'left',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {file.name}
+                      </Button>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            )}
           </Grid>
         </Box>
       </DialogContent>
@@ -477,6 +621,38 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           </Button>
         </Box>
       </DialogActions>
+
+      {filePreviewData?.url ? (
+        <>
+          {filePreviewData.type?.includes('image') ? (
+            <ImagePreviewDialog
+              open={filePreviewOpen}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
+              imageUrl={filePreviewData.url}
+              title={filePreviewData.title}
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
+            />
+          ) : filePreviewData.type?.includes('video') ? (
+            <VideoPreviewDialog
+              open={filePreviewOpen}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
+              videoUrl={filePreviewData.url}
+              title={filePreviewData.title}
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
+            />
+          ) : null}
+        </>
+      ) : null}
     </Dialog>
   );
 }

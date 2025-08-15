@@ -4,11 +4,11 @@ import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
 export const DateTimeUtils = {
-  formatISODateFromString(isoString: string): string {
+  formatISODateStringToString(isoString: string): string {
     return isoString ? dayjs(isoString).format('DD/MM/YYYY hh:mm A') : '';
   },
 
-  formatISODateFromDate(input?: Date): string {
+  formatDateTimeToDateString(input?: Date): string {
     if (!input) return '';
     const date = typeof input === 'string' ? dayjs(input) : dayjs(input.toISOString());
     return date.format('DD/MM/YYYY hh:mm A');
@@ -29,7 +29,7 @@ export const DateTimeUtils = {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   },
 
-  parseLocalDateTimeString(input: string): Date | undefined {
+  formatStringToDateTime(input: string): Date | undefined {
     if (!input) return undefined;
     const date = input.endsWith('Z') ? dayjs.utc(input).local() : dayjs(input);
     if (!date.isValid()) return undefined;

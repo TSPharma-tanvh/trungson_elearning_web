@@ -118,10 +118,10 @@ export default function EmployeeTable({
 
             <TableCell>{row.gender}</TableCell>
             <TableCell>
-              {row.birthDate !== undefined ? DateTimeUtils.formatISODateFromString(row.birthDate) : ''}
+              {row.birthDate !== undefined ? DateTimeUtils.formatISODateStringToString(row.birthDate) : ''}
             </TableCell>
             <TableCell>
-              {row.hireDate !== undefined ? DateTimeUtils.formatISODateFromString(row.hireDate) : ''}
+              {row.hireDate !== undefined ? DateTimeUtils.formatISODateStringToString(row.hireDate) : ''}
             </TableCell>
             <TableCell>{row.currentDepartmentName}</TableCell>
             <TableCell>{row.currentDepartmentTypeName}</TableCell>

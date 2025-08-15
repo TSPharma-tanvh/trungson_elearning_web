@@ -61,11 +61,11 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {renderField('isRequired', coursePath.isRequired ? 'Yes' : 'No')}
             {renderField(
               'startTime',
-              coursePath.startTime ? DateTimeUtils.formatISODateFromString(coursePath.startTime) : undefined
+              coursePath.startTime ? DateTimeUtils.formatISODateStringToString(coursePath.startTime) : undefined
             )}
             {renderField(
               'endTime',
-              coursePath.endTime ? DateTimeUtils.formatISODateFromString(coursePath.endTime) : undefined
+              coursePath.endTime ? DateTimeUtils.formatISODateStringToString(coursePath.endTime) : undefined
             )}
             {renderField('status', coursePath.status)}
             {renderField('displayType', coursePath.displayType)}
@@ -199,9 +199,12 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {renderField('meetingLink', course.meetingLink)}
             {renderField(
               'startTime',
-              course.startTime ? DateTimeUtils.formatISODateFromDate(course.startTime) : undefined
+              course.startTime ? DateTimeUtils.formatDateTimeToDateString(course.startTime) : undefined
             )}
-            {renderField('endTime', course.endTime ? DateTimeUtils.formatISODateFromDate(course.endTime) : undefined)}
+            {renderField(
+              'endTime',
+              course.endTime ? DateTimeUtils.formatDateTimeToDateString(course.endTime) : undefined
+            )}
             {/* {renderField('enrollmentCriteriaId', course.enrollmentCriteria.id)} */}
             {renderField('categoryId', course.categoryId)}
             {renderField('thumbnailId', course.thumbnailId)}

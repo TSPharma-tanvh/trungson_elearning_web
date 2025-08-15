@@ -117,12 +117,14 @@ function EnrollmentCriteriaDetails({
             {renderField(
               'startAt',
               enrollment.class?.startAt !== undefined
-                ? DateTimeUtils.formatISODateFromDate(enrollment.class.startAt)
+                ? DateTimeUtils.formatDateTimeToDateString(enrollment.class.startAt)
                 : ''
             )}
             {renderField(
               'endAt',
-              enrollment.class?.endAt !== undefined ? DateTimeUtils.formatISODateFromDate(enrollment.class.endAt) : ''
+              enrollment.class?.endAt !== undefined
+                ? DateTimeUtils.formatDateTimeToDateString(enrollment.class.endAt)
+                : ''
             )}
             {renderField('minuteLate', enrollment.class?.minuteLate)}
             {renderField('scheduleStatus', enrollment.class?.scheduleStatus)}
@@ -146,11 +148,11 @@ function EnrollmentCriteriaDetails({
             {renderField('status', enrollment.quiz?.status)}
             {renderField(
               'startTime',
-              enrollment.quiz?.startTime ? DateTimeUtils.formatISODateFromDate(enrollment.quiz.startTime) : ''
+              enrollment.quiz?.startTime ? DateTimeUtils.formatDateTimeToDateString(enrollment.quiz.startTime) : ''
             )}
             {renderField(
               'endTime',
-              enrollment.quiz?.endTime ? DateTimeUtils.formatISODateFromDate(enrollment.quiz.endTime) : ''
+              enrollment.quiz?.endTime ? DateTimeUtils.formatDateTimeToDateString(enrollment.quiz.endTime) : ''
             )}
             {renderField('totalScore', enrollment.quiz?.totalScore)}
             {renderField('canStartOver', enrollment.quiz?.canStartOver)}
@@ -211,7 +213,7 @@ function EnrollmentCriteriaDetails({
                     {renderField('targetID', enroll.targetID)}
                     {renderField(
                       'enrollmentDate',
-                      enroll.enrollmentDate ? DateTimeUtils.formatISODateFromDate(enroll.enrollmentDate) : ''
+                      enroll.enrollmentDate ? DateTimeUtils.formatDateTimeToDateString(enroll.enrollmentDate) : ''
                     )}
                     {renderField('status', enroll.status)}
                     {renderField('rejectedReason', enroll.rejectedReason)}

@@ -149,8 +149,8 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
                     {renderField(t('status'), course.disableStatus)}
                     {renderField(t('courseType'), course.courseType)}
                     {renderField(t('displayType'), course.displayType)}
-                    {renderField(t('startTime'), DateTimeUtils.formatISODateFromDate(course.startTime))}
-                    {renderField(t('endTime'), DateTimeUtils.formatISODateFromDate(course.endTime))}
+                    {renderField(t('startTime'), DateTimeUtils.formatDateTimeToDateString(course.startTime))}
+                    {renderField(t('endTime'), DateTimeUtils.formatDateTimeToDateString(course.endTime))}
                     {renderField(t('meetingLink'), course.meetingLink)}
                   </Grid>
                 </CardContent>
@@ -212,8 +212,8 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
                     {renderField('className', classData.className)}
                     {renderField('classDetail', classData.classDetail)}
                     {renderField('duration', classData.duration)}
-                    {renderField('startAt', DateTimeUtils.formatISODateFromDate(classData.startAt))}
-                    {renderField('endAt', DateTimeUtils.formatISODateFromDate(classData.endAt))}
+                    {renderField('startAt', DateTimeUtils.formatDateTimeToDateString(classData.startAt))}
+                    {renderField('endAt', DateTimeUtils.formatDateTimeToDateString(classData.endAt))}
                     {renderField('qrCodeUrl', classData.qrCode?.resourceUrl)}
                     {renderField('minuteLate', classData.minuteLate)}
                     {renderField(

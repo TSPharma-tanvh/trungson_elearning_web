@@ -244,9 +244,9 @@ function UserLessonProgressDetails({
                           )
                         : ''
                     )}
-                    {renderField('startDate', DateTimeUtils.formatISODateFromDate(quizEnroll.startedAt))}
-                    {renderField('endDate', DateTimeUtils.formatISODateFromDate(quizEnroll.completedAt))}
-                    {renderField('lastAccess', DateTimeUtils.formatISODateFromDate(quizEnroll.lastAccess))}
+                    {renderField('startDate', DateTimeUtils.formatDateTimeToDateString(quizEnroll.startedAt))}
+                    {renderField('endDate', DateTimeUtils.formatDateTimeToDateString(quizEnroll.completedAt))}
+                    {renderField('lastAccess', DateTimeUtils.formatDateTimeToDateString(quizEnroll.lastAccess))}
                     {renderField(
                       'status',
                       quizEnroll.progressStatus.toString()

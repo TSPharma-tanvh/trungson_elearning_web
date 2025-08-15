@@ -298,8 +298,11 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
             {renderField('title', quiz.title)}
             {renderField('description', quiz.description)}
             {renderField('status', quiz.status)}
-            {renderField('startTime', quiz.startTime ? DateTimeUtils.formatISODateFromDate(quiz.startTime) : undefined)}
-            {renderField('endTime', quiz.endTime ? DateTimeUtils.formatISODateFromDate(quiz.endTime) : undefined)}
+            {renderField(
+              'startTime',
+              quiz.startTime ? DateTimeUtils.formatDateTimeToDateString(quiz.startTime) : undefined
+            )}
+            {renderField('endTime', quiz.endTime ? DateTimeUtils.formatDateTimeToDateString(quiz.endTime) : undefined)}
             {renderField('totalScore', quiz.totalScore)}
             {renderField('time', quiz.time)}
             {renderField(

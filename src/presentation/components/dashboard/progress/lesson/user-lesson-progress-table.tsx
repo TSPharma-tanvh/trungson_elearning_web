@@ -224,11 +224,11 @@ export default function UserLessonProgressTable({
               <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
 
               <TableCell>{row.progress}</TableCell>
-              <TableCell>{row.startDate ? DateTimeUtils.formatISODateFromDate(row.startDate) : ''}</TableCell>
-              <TableCell>{row.endDate ? DateTimeUtils.formatISODateFromDate(row.endDate) : ''}</TableCell>
-              <TableCell>{DateTimeUtils.formatISODateFromString(row.actualStartDate ?? '')}</TableCell>
-              <TableCell>{DateTimeUtils.formatISODateFromString(row.actualEndDate ?? '')}</TableCell>
-              <TableCell>{DateTimeUtils.formatISODateFromString(row.lastAccess ?? '')}</TableCell>
+              <TableCell>{row.startDate ? DateTimeUtils.formatDateTimeToDateString(row.startDate) : ''}</TableCell>
+              <TableCell>{row.endDate ? DateTimeUtils.formatDateTimeToDateString(row.endDate) : ''}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateStringToString(row.actualStartDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateStringToString(row.actualEndDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateStringToString(row.lastAccess ?? '')}</TableCell>
 
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>

@@ -105,7 +105,7 @@ function ScheduleCard({ coursePath }: ScheduleCardProps) {
               {t('startTime')}
             </Typography>
             <CustomFieldTypography
-              value={coursePath.startTime ? DateTimeUtils.formatISODateFromString(coursePath.startTime) : undefined}
+              value={coursePath.startTime ? DateTimeUtils.formatISODateStringToString(coursePath.startTime) : undefined}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -113,7 +113,7 @@ function ScheduleCard({ coursePath }: ScheduleCardProps) {
               {t('endTime')}
             </Typography>
             <CustomFieldTypography
-              value={coursePath.endTime ? DateTimeUtils.formatISODateFromString(coursePath.endTime) : undefined}
+              value={coursePath.endTime ? DateTimeUtils.formatISODateStringToString(coursePath.endTime) : undefined}
             />
           </Grid>
         </Grid>
@@ -298,9 +298,12 @@ function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
             {renderField('enrollmentCriteriaId', course.enrollmentCriteriaId)}
             {renderField(
               'startTime',
-              course.startTime ? DateTimeUtils.formatISODateFromString(course.startTime) : undefined
+              course.startTime ? DateTimeUtils.formatISODateStringToString(course.startTime) : undefined
             )}
-            {renderField('endTime', course.endTime ? DateTimeUtils.formatISODateFromString(course.endTime) : undefined)}
+            {renderField(
+              'endTime',
+              course.endTime ? DateTimeUtils.formatISODateStringToString(course.endTime) : undefined
+            )}
             {renderField('disableStatus', course.disableStatus)}
             {renderField('scheduleStatus', course.scheduleStatus)}
             {renderField('displayType', course.displayType)}

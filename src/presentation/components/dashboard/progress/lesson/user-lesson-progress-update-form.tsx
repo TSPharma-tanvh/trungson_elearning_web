@@ -57,7 +57,10 @@ export function UpdateUserLessonProgressFormDialog({
         progress: userLessonProgress.progress || undefined,
         startDate: userLessonProgress.startDate || undefined,
         endDate: userLessonProgress.endDate || undefined,
-        lastAccess: userLessonProgress.lastAccess || undefined,
+        lastAccess:
+          userLessonProgress.lastAccess !== undefined
+            ? DateTimeUtils.formatStringToDateTime(userLessonProgress.lastAccess)
+            : undefined,
         status: userLessonProgress.status || undefined,
       });
       setFormData(newFormData);
@@ -142,7 +145,7 @@ export function UpdateUserLessonProgressFormDialog({
                 label={t('startTime')}
                 value={formData.startDate ? DateTimeUtils.formatISODateToString(formData.startDate) : undefined}
                 onChange={(value) => {
-                  handleChange('startDate', DateTimeUtils.parseLocalDateTimeString(value));
+                  handleChange('startDate', DateTimeUtils.formatStringToDateTime(value));
                 }}
                 disabled={false}
               />
@@ -153,7 +156,7 @@ export function UpdateUserLessonProgressFormDialog({
                 label={t('endTime')}
                 value={formData.endDate ? DateTimeUtils.formatISODateToString(formData.endDate) : undefined}
                 onChange={(value) => {
-                  handleChange('endDate', DateTimeUtils.parseLocalDateTimeString(value));
+                  handleChange('endDate', DateTimeUtils.formatStringToDateTime(value));
                 }}
                 disabled={false}
               />

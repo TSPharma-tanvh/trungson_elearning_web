@@ -138,14 +138,14 @@ export default function AttendanceRecordsTable({
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
               <Typography variant="body2">{row.class?.className}</Typography>
             </TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.startAt)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.startAt)}</TableCell>
 
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.endAt)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.endAt)}</TableCell>
 
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.checkinTime)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.checkinTime)}</TableCell>
             <TableCell>{row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.enrollment?.enrollmentDate)}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.enrollment?.approvedAt)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.enrollment?.enrollmentDate)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.enrollment?.approvedAt)}</TableCell>
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

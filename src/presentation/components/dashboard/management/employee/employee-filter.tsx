@@ -48,7 +48,7 @@ export function EmployeeFilters({ onFilter }: { onFilter: (filters: GetEmployeeR
           label={t('startTime')}
           value={dateTime ? dateTime.toISOString() : ''}
           onChange={(value) => {
-            const parsedDate = DateTimeUtils.parseLocalDateTimeString(value);
+            const parsedDate = DateTimeUtils.formatStringToDateTime(value);
             if (parsedDate) {
               setDateTime(parsedDate);
             }

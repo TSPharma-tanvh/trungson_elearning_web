@@ -286,11 +286,11 @@ export default function UserQuizProgressTable({
               <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
 
               <TableCell>{row.score}</TableCell>
-              <TableCell>{row.startTime ? DateTimeUtils.formatISODateFromDate(row.startTime) : ''}</TableCell>
-              <TableCell>{row.endTime ? DateTimeUtils.formatISODateFromDate(row.endTime) : ''}</TableCell>
-              <TableCell>{row.startedAt ? DateTimeUtils.formatISODateFromDate(row.startedAt) : ''}</TableCell>
-              <TableCell>{row.completedAt ? DateTimeUtils.formatISODateFromDate(row.completedAt) : ''}</TableCell>
-              <TableCell>{row.lastAccess ? DateTimeUtils.formatISODateFromDate(row.lastAccess) : ''}</TableCell>
+              <TableCell>{row.startTime ? DateTimeUtils.formatDateTimeToDateString(row.startTime) : ''}</TableCell>
+              <TableCell>{row.endTime ? DateTimeUtils.formatDateTimeToDateString(row.endTime) : ''}</TableCell>
+              <TableCell>{row.startedAt ? DateTimeUtils.formatDateTimeToDateString(row.startedAt) : ''}</TableCell>
+              <TableCell>{row.completedAt ? DateTimeUtils.formatDateTimeToDateString(row.completedAt) : ''}</TableCell>
+              <TableCell>{row.lastAccess ? DateTimeUtils.formatDateTimeToDateString(row.lastAccess) : ''}</TableCell>
 
               <TableCell align="center">
                 {row.progressStatus !== undefined ? renderProgressStatus(row.progressStatus) : ''}

@@ -126,8 +126,8 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
                     {renderField('quizName', quiz.title)}
                     {renderField('quizDetail', quiz.description)}
                     {renderField('quizStatus', quiz.status)}
-                    {renderField('quizStartTime', DateTimeUtils.formatISODateFromString(quiz.startTime ?? ''))}
-                    {renderField('quizEndTime', DateTimeUtils.formatISODateFromString(quiz.endTime ?? ''))}
+                    {renderField('quizStartTime', DateTimeUtils.formatISODateStringToString(quiz.startTime ?? ''))}
+                    {renderField('quizEndTime', DateTimeUtils.formatISODateStringToString(quiz.endTime ?? ''))}
                     {renderField('quizTotalScore', quiz.totalScore)}
                   </Grid>
                 </CardContent>
@@ -187,8 +187,11 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
                     {renderField('progressId', progress.id)}
                     {renderField('progressUserID', progress.userID)}
                     {renderField('progressLessonID', progress.lessonID)}
-                    {renderField('progressStartTime', DateTimeUtils.formatISODateFromString(progress.startDate ?? ''))}
-                    {renderField('progressEndTime', DateTimeUtils.formatISODateFromString(progress.endDate ?? ''))}
+                    {renderField(
+                      'progressStartTime',
+                      DateTimeUtils.formatISODateStringToString(progress.startDate ?? '')
+                    )}
+                    {renderField('progressEndTime', DateTimeUtils.formatISODateStringToString(progress.endDate ?? ''))}
                     {renderField('progressLastAccess', progress.lastAccess)}
                     {renderField('progressStatus', progress.status)}
                   </Grid>

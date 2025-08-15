@@ -726,5 +726,6 @@
   "quizTitle": "Tiêu đề bài kiểm tra",
   "actualStartDate": "Ngày bắt đầu thực tế",
   "actualEndDate": "Ngày kết thúc thực tế",
-  "updateClass": "Cập nhật lớp"
+  "updateClass": "Cập nhật lớp",
+  "deleteForever": "Xóa vĩnh viễn"
 }

@@ -162,7 +162,7 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('startTime')}
                 value={formData.startedAt ? DateTimeUtils.formatISODateToString(formData.startedAt) : undefined}
                 onChange={(value) => {
-                  handleChange('startedAt', DateTimeUtils.parseLocalDateTimeString(value));
+                  handleChange('startedAt', DateTimeUtils.formatStringToDateTime(value));
                 }}
                 disabled={false}
               />
@@ -173,7 +173,7 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('endTime')}
                 value={formData.completedAt ? DateTimeUtils.formatISODateToString(formData.completedAt) : undefined}
                 onChange={(value) => {
-                  handleChange('completedAt', DateTimeUtils.parseLocalDateTimeString(value));
+                  handleChange('completedAt', DateTimeUtils.formatStringToDateTime(value));
                 }}
                 disabled={false}
               />

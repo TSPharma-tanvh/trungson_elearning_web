@@ -244,11 +244,11 @@ export default function UserCourseProgressTable({
               <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
 
               <TableCell>{row.progress}</TableCell>
-              <TableCell>{DateTimeUtils.formatISODateFromString(row.startDate ?? '')}</TableCell>
-              <TableCell>{DateTimeUtils.formatISODateFromString(row.endDate ?? '')}</TableCell>
-              <TableCell>{DateTimeUtils.formatISODateFromString(row.actualStartDate ?? '')}</TableCell>
-              <TableCell>{DateTimeUtils.formatISODateFromString(row.actualEndDate ?? '')}</TableCell>
-              <TableCell>{DateTimeUtils.formatISODateFromString(row.lastAccess ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateStringToString(row.startDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateStringToString(row.endDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateStringToString(row.actualStartDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateStringToString(row.actualEndDate ?? '')}</TableCell>
+              <TableCell>{DateTimeUtils.formatISODateStringToString(row.lastAccess ?? '')}</TableCell>
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>

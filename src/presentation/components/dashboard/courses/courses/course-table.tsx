@@ -130,8 +130,8 @@ export default function CourseTable({
                 <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
               )}
             </TableCell>{' '}
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.startTime)}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.endTime)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.startTime)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.endTime)}</TableCell>
             <TableCell>
               {row.disableStatus ? t(row.disableStatus.charAt(0).toLowerCase() + t(row.disableStatus).slice(1)) : ''}
             </TableCell>

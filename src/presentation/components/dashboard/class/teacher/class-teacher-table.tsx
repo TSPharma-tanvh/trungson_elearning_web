@@ -225,8 +225,8 @@ export default function TeacherTable({
                     </TableCell>
                     <TableCell>{row.courses?.length}</TableCell>
                     <TableCell>{row.classes?.length}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateFromString(row.createdDateTime)}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateFromString(row.updatedDateTime ?? '')}</TableCell>
+                    <TableCell>{DateTimeUtils.formatISODateStringToString(row.createdDateTime)}</TableCell>
+                    <TableCell>{DateTimeUtils.formatISODateStringToString(row.updatedDateTime ?? '')}</TableCell>
                     <TableCell align="right">
                       <IconButton
                         onClick={(event) => {

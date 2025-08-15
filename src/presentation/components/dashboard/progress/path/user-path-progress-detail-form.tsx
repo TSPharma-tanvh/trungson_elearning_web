@@ -93,11 +93,11 @@ function UserPathProgressDetails({
               {renderField('isRequired', coursePath.isRequired ? t('yes') : t('no'))}
               {renderField(
                 'startTime',
-                coursePath.startTime ? DateTimeUtils.formatISODateFromString(coursePath.startTime) : ''
+                coursePath.startTime ? DateTimeUtils.formatISODateStringToString(coursePath.startTime) : ''
               )}
               {renderField(
                 'endTime',
-                coursePath.endTime ? DateTimeUtils.formatISODateFromString(coursePath.endTime) : ''
+                coursePath.endTime ? DateTimeUtils.formatISODateStringToString(coursePath.endTime) : ''
               )}
               {renderField(
                 'status',
@@ -319,9 +319,9 @@ function UserPathProgressDetails({
                           )
                         : ''
                     )}
-                    {renderField('startDate', DateTimeUtils.formatISODateFromDate(lessonEnroll.startDate))}
-                    {renderField('endDate', DateTimeUtils.formatISODateFromDate(lessonEnroll.endDate))}
-                    {renderField('lastAccess', DateTimeUtils.formatISODateFromDate(lessonEnroll.lastAccess))}
+                    {renderField('startDate', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.startDate))}
+                    {renderField('endDate', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.endDate))}
+                    {renderField('lastAccess', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.lastAccess))}
                     {renderField(
                       'status',
                       lessonEnroll.status
@@ -425,9 +425,9 @@ function UserPathProgressDetails({
                           )
                         : ''
                     )}
-                    {renderField('startDate', DateTimeUtils.formatISODateFromDate(quizEnroll.startedAt))}
-                    {renderField('endDate', DateTimeUtils.formatISODateFromDate(quizEnroll.completedAt))}
-                    {renderField('lastAccess', DateTimeUtils.formatISODateFromDate(quizEnroll.lastAccess))}
+                    {renderField('startDate', DateTimeUtils.formatDateTimeToDateString(quizEnroll.startedAt))}
+                    {renderField('endDate', DateTimeUtils.formatDateTimeToDateString(quizEnroll.completedAt))}
+                    {renderField('lastAccess', DateTimeUtils.formatDateTimeToDateString(quizEnroll.lastAccess))}
                     {renderField(
                       'status',
                       quizEnroll.progressStatus.toString()

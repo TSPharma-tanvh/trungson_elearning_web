@@ -1,6 +1,7 @@
 import { CategoryResponse } from '../../category/response/category-response';
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
 import { EnrollmentCriteriaCourseRelationResponse } from '../../enrollment/response/enrollment-criteria-course-relation-response';
+import { FileCourseRelationResponse } from '../../file/response/file-course-relation-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
 import { LessonResponse } from '../../lessons/response/lesson-response';
 import { CoursePathResponse } from '../../path/response/course-path-response';
@@ -26,7 +27,7 @@ export class CourseDetailResponse {
   categoryId?: string;
   thumbnailId?: string;
   thumbnail?: FileResourcesResponse;
-  fileCourseRelation?: FileResourcesResponse[];
+  fileCourseRelation?: FileCourseRelationResponse[];
   lessons?: LessonResponse[];
   category?: CategoryResponse;
 
@@ -55,7 +56,7 @@ export class CourseDetailResponse {
       categoryId: json.categoryId,
       thumbnailId: json.thumbnailId,
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
-      fileCourseRelation: json.fileCourseRelation?.map((f: any) => FileResourcesResponse.fromJson(f)),
+      fileCourseRelation: json.fileCourseRelation?.map((f: any) => FileCourseRelationResponse.fromJson(f)),
       lessons: json.lessons?.map((l: any) => LessonResponse.fromJSON(l)),
       category: json.thumbnail ? CategoryResponse.fromJSON(json.thumbnail) : undefined,
     });

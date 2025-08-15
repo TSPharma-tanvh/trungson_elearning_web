@@ -116,7 +116,7 @@ export function UpdateAttendanceRecordsFormDialog({
                 label={t('checkinTime')}
                 value={formData.checkinTime ? DateTimeUtils.formatISODateToString(formData.checkinTime) : undefined}
                 onChange={(value) => {
-                  handleChange('checkinTime', DateTimeUtils.parseLocalDateTimeString(value));
+                  handleChange('checkinTime', DateTimeUtils.formatStringToDateTime(value));
                 }}
                 disabled={isSubmitting}
               />

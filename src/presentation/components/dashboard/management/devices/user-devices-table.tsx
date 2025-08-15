@@ -121,9 +121,9 @@ export default function UserDevicesTable({
             <TableCell>{row.deviceID}</TableCell>
             <TableCell>{row.deviceToken}</TableCell>
             <TableCell>{row.ipAddress}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.signInAt)}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.signOutAt)}</TableCell>
-            <TableCell>{DateTimeUtils.formatISODateFromDate(row.lastAccess)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.signInAt)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.signOutAt)}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.lastAccess)}</TableCell>
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

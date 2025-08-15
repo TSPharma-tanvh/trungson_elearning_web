@@ -726,5 +726,6 @@
   "quizTitle": "Quiz Title",
   "actualStartDate": "Actual Start Date",
   "actualEndDate": "Actual End Date",
-  "updateClass": "Update Class"
+  "updateClass": "Update Class",
+  "deletePermanently": "Delete Permanently"
 }

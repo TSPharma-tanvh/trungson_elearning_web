@@ -56,7 +56,7 @@ export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit 
       await onSubmit();
       onClose();
     } catch (error) {
-      CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to register user', 'error');
+      return null;
     } finally {
       setSubmitting(false);
     }
@@ -73,7 +73,7 @@ export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit 
               value={formData.userName}
               onChange={handleChange('userName')}
               fullWidth
-              sx={{ mt: 1 }} //avoid hiding label
+              sx={{ mt: 1 }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -138,56 +138,6 @@ export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit 
                     >
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="First Name"
-              InputLabelProps={{ shrink: true }}
-              value={formData.firstName}
-              onChange={handleChange('firstName')}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Badge />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Last Name"
-              InputLabelProps={{ shrink: true }}
-              value={formData.lastName}
-              onChange={handleChange('lastName')}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Badge />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Phone Number"
-              InputLabelProps={{ shrink: true }}
-              value={formData.phoneNumber}
-              onChange={handleChange('phoneNumber')}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Phone />
                   </InputAdornment>
                 ),
               }}

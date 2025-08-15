@@ -69,6 +69,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             videoFile = fetchedFile;
           }
         }
+
         const newFormData = new UpdateLessonRequest({
           id: lesson.id || '',
           name: lesson.name || '',
@@ -88,7 +89,11 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
           videoID: lesson.videoID,
           video: videoFile,
         });
+
         setFormData(newFormData);
+
+        setPreviewUrl(lesson.thumbnail?.resourceUrl ?? null);
+        setVideoPreviewUrl(lesson.video?.resourceUrl ?? null);
       }
     }
     void setupFormData();

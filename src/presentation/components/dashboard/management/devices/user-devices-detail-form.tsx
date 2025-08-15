@@ -86,15 +86,15 @@ function UserDevicesDetails({ userDevice, fullScreen }: { userDevice: UserDevice
             {renderField(t('ipAddress'), userDevice.ipAddress)}
             {renderField(
               t('signedInAt'),
-              userDevice.signInAt ? DateTimeUtils.formatISODateFromDate(userDevice.signInAt) : undefined
+              userDevice.signInAt ? DateTimeUtils.formatDateTimeToDateString(userDevice.signInAt) : undefined
             )}
             {renderField(
               t('signedOutAt'),
-              userDevice.signOutAt ? DateTimeUtils.formatISODateFromDate(userDevice.signOutAt) : undefined
+              userDevice.signOutAt ? DateTimeUtils.formatDateTimeToDateString(userDevice.signOutAt) : undefined
             )}
             {renderField(
               t('lastAccess'),
-              userDevice.lastAccess ? DateTimeUtils.formatISODateFromDate(userDevice.lastAccess) : undefined
+              userDevice.lastAccess ? DateTimeUtils.formatDateTimeToDateString(userDevice.lastAccess) : undefined
             )}
           </Grid>
         </CardContent>

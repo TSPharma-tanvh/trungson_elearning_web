@@ -59,8 +59,8 @@ function AttendanceRecordDetails({
           <Grid container spacing={2}>
             {renderField('enrollmentId', enrollment.id)}
             {renderField('enrollmentCriteriaId', enrollment.enrollmentCriteriaID)}
-            {renderField('enrollmentDate', DateTimeUtils.formatISODateFromDate(enrollment.enrollmentDate))}
-            {renderField('approvedAt', DateTimeUtils.formatISODateFromDate(enrollment.approvedAt))}
+            {renderField('enrollmentDate', DateTimeUtils.formatDateTimeToDateString(enrollment.enrollmentDate))}
+            {renderField('approvedAt', DateTimeUtils.formatDateTimeToDateString(enrollment.approvedAt))}
           </Grid>
         </CardContent>
       </Card>
@@ -141,20 +141,22 @@ function AttendanceRecordDetails({
             {renderField(
               'checkinTime',
               attendanceRecord.checkinTime !== undefined
-                ? DateTimeUtils.formatISODateFromDate(attendanceRecord.checkinTime)
+                ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.checkinTime)
                 : ''
             )}
 
             {renderField(
               'startAt',
               attendanceRecord.startAt !== undefined
-                ? DateTimeUtils.formatISODateFromDate(attendanceRecord.startAt)
+                ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.startAt)
                 : ''
             )}
 
             {renderField(
               'endAt',
-              attendanceRecord.endAt !== undefined ? DateTimeUtils.formatISODateFromDate(attendanceRecord.endAt) : ''
+              attendanceRecord.endAt !== undefined
+                ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.endAt)
+                : ''
             )}
 
             {renderField('minuteLate', attendanceRecord.minuteLate)}

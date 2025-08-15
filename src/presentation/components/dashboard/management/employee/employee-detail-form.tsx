@@ -62,7 +62,7 @@ function EmployeeDetails({
 
               const dateFields = ['birthDate', 'hireDate', 'birthDay'];
               if (dateFields.includes(key) && typeof value === 'string') {
-                displayValue = DateTimeUtils.formatISODateFromString(value);
+                displayValue = DateTimeUtils.formatISODateStringToString(value);
               }
 
               if (typeof value === 'boolean') {

@@ -372,8 +372,11 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
             {renderField('categoryId', classes.categoryID)}
             {renderField('thumbnailId', classes.thumbnailID)}
             {renderField('minuteLate', classes.minuteLate)}
-            {renderField('startAt', classes.startAt ? DateTimeUtils.formatISODateFromDate(classes.startAt) : undefined)}
-            {renderField('endAt', classes.endAt ? DateTimeUtils.formatISODateFromDate(classes.endAt) : undefined)}
+            {renderField(
+              'startAt',
+              classes.startAt ? DateTimeUtils.formatDateTimeToDateString(classes.startAt) : undefined
+            )}
+            {renderField('endAt', classes.endAt ? DateTimeUtils.formatDateTimeToDateString(classes.endAt) : undefined)}
           </Grid>
         </CardContent>
       </Card>
