@@ -41,6 +41,7 @@ interface CustomTableProps<T> {
   dialogContent?: string;
   dialogDeleteTitle?: string;
   dialogCancelTitle?: string;
+  showPagination?: boolean;
 }
 
 export function CustomTable<T>({
@@ -60,6 +61,7 @@ export function CustomTable<T>({
   dialogContent: content = 'confirmDeleteItem',
   dialogDeleteTitle: deleteTitle = 'delete',
   dialogCancelTitle: cancelTitle = 'cancel',
+  showPagination = true,
 }: CustomTableProps<T>) {
   const { t } = useTranslation();
   const rowIds = React.useMemo(() => rows.map(getRowId), [rows]);
@@ -218,36 +220,23 @@ export function CustomTable<T>({
           </Table>
         </TableContainer>
 
-        <Box display="flex" justifyContent="flex-end" pr={2} mt={1}>
-          <TablePagination
-            component="div"
-            count={count}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
-            labelRowsPerPage={t('rowsPerPage')}
-            labelDisplayedRows={() => {
-              const totalPages = Math.ceil(count / rowsPerPage);
-              return t('paginationInfo', { currentPage: page + 1, totalPages });
-            }}
-            sx={{
-              '& .MuiTablePagination-actions button': {
-                color: 'var(--mui-palette-primary-main)',
-                '&.Mui-disabled': {
-                  color: 'var(--mui-palette-action-disabled)',
-                },
-              },
-
-              // '& .MuiTablePagination-select': {
-              //   color: 'var(--mui-palette-primary-main)',
-              // },
-              // '& .MuiTablePagination-displayedRows': {
-              //   color: 'var(--mui-palette-primary-main)',
-              // },
-            }}
-          />
-        </Box>
+        {showPagination && (
+          <Box display="flex" justifyContent="flex-end" pr={2} mt={1}>
+            <TablePagination
+              component="div"
+              count={count}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={onPageChange}
+              onRowsPerPageChange={onRowsPerPageChange}
+              labelRowsPerPage={t('rowsPerPage')}
+              labelDisplayedRows={() => {
+                const totalPages = Math.ceil(count / rowsPerPage);
+                return t('paginationInfo', { currentPage: page + 1, totalPages });
+              }}
+            />
+          </Box>
+        )}
       </Card>
 
       <Popover

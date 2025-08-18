@@ -1,38 +1,49 @@
-import { FileResourcesResponse } from '../../file/response/file-resources-response';
+import { QuestionResponse } from '../../question/response/question-response';
+import { UserAnswerAnswerRelationResponse } from './user-answer-answer-relation-response';
 
 export class UserAnswerResponse {
   id?: string;
   userID?: string;
   quizID?: string;
   questionID?: string;
-  answerID?: string;
   userQuizProgressID?: string;
 
   answerText?: string;
   answeredAt?: Date;
+  isCorrect?: boolean;
+  score?: number;
+
   sessionID?: string;
   elapsedSeconds?: number;
 
-  thumbnail?: FileResourcesResponse;
+  question?: QuestionResponse;
+  selectedAnswers: UserAnswerAnswerRelationResponse[] = [];
 
   constructor(init?: Partial<UserAnswerResponse>) {
     Object.assign(this, init);
   }
 
   static fromJSON(json: any): UserAnswerResponse {
-    const dto = new UserAnswerResponse();
-    dto.id = json.id;
-    dto.userID = json.userID;
-    dto.quizID = json.quizID;
-    dto.questionID = json.questionID;
-    dto.answerID = json.answerID;
-    dto.userQuizProgressID = json.userQuizProgressID;
-    dto.answerText = json.answerText;
-    dto.answeredAt = json.answeredAt ? new Date(json.answeredAt) : undefined;
-    dto.sessionID = json.sessionID;
-    dto.elapsedSeconds = json.elapsedSeconds;
-    dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined;
-    return dto;
+    if (!json) {
+      throw new Error('Invalid JSON for UserAnswerResponse');
+    }
+    return new UserAnswerResponse({
+      id: json.id,
+      userID: json.userID,
+      quizID: json.quizID,
+      questionID: json.questionID,
+      userQuizProgressID: json.userQuizProgressID,
+      answerText: json.answerText,
+      answeredAt: json.answeredAt ? new Date(json.answeredAt) : undefined,
+      isCorrect: json.isCorrect,
+      score: json.score,
+      sessionID: json.sessionID,
+      elapsedSeconds: json.elapsedSeconds,
+      question: json.question ? QuestionResponse.fromJSON(json.question) : undefined,
+      selectedAnswers: json.selectedAnswers
+        ? json.selectedAnswers.map((sa: any) => UserAnswerAnswerRelationResponse.fromJson(sa))
+        : [],
+    });
   }
 
   toJSON(): any {
@@ -41,13 +52,15 @@ export class UserAnswerResponse {
       userID: this.userID,
       quizID: this.quizID,
       questionID: this.questionID,
-      answerID: this.answerID,
       userQuizProgressID: this.userQuizProgressID,
       answerText: this.answerText,
       answeredAt: this.answeredAt?.toISOString(),
+      isCorrect: this.isCorrect,
+      score: this.score,
       sessionID: this.sessionID,
       elapsedSeconds: this.elapsedSeconds,
-      thumbnail: this.thumbnail?.toJson?.(),
+      question: this.question ? this.question.toJSON() : undefined,
+      selectedAnswers: this.selectedAnswers ? this.selectedAnswers.map((sa) => sa.toJson()) : [],
     };
   }
 }

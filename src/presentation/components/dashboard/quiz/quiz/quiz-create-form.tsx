@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
-import { Clock } from '@phosphor-icons/react';
+import { Clock, NumberCircleFive, UsersThree } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
@@ -282,7 +282,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"
-                icon={<Clock {...iconStyle} />}
+                icon={<UsersThree {...iconStyle} />}
                 onValidationChange={(isValid) => {
                   setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
                 }}
@@ -299,7 +299,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"
-                icon={<Clock {...iconStyle} />}
+                icon={<NumberCircleFive {...iconStyle} />}
                 onValidationChange={(isValid) => {
                   setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
                 }}

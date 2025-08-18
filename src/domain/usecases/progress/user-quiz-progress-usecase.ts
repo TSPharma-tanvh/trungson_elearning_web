@@ -1,5 +1,6 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
+import { GetUserQuizLiveStatusRequest } from '@/domain/models/user-quiz/request/get-user-quiz-live-status-request';
 import { type GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
 import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
@@ -62,5 +63,23 @@ export class UserQuizProgressUsecase {
     const result = await this.userQuizProgressRepo.updateUserQuizProgress(newFormData);
 
     return result;
+  }
+
+  async getUserQuizLiveStatus(request: GetUserQuizLiveStatusRequest): Promise<UserQuizProgressDetailListResult> {
+    const result = await this.userQuizProgressRepo.getUserQuizLiveStatus(request);
+
+    if (!result || !Array.isArray(result.result)) {
+      throw new Error('Failed to load user list.');
+    }
+
+    // const data = result.result.map(UserQuizProgressDetailResponse.fromJson);
+    const data = result.result.map((x) => UserQuizProgressDetailResponse.fromJson(x));
+
+    return {
+      progress: data,
+      totalRecords: result.totalRecords ?? result.result.length,
+      pageSize: result.pageSize ?? request.pageSize,
+      pageNumber: result.pageNumber ?? request.pageNumber,
+    };
   }
 }

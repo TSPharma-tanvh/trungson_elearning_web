@@ -1,6 +1,7 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
+import { GetUserQuizLiveStatusRequest } from '@/domain/models/user-quiz/request/get-user-quiz-live-status-request';
 import { type GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
 import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressRepository } from '@/domain/repositories/progress/user-quiz-progress-repository';
@@ -63,6 +64,24 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
       const formData = request.toJson();
 
       const response = await apiClient.post<ApiResponse>(apiEndpoints.userQuizProgress.update, formData);
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch userQuizProgress info');
+    }
+  }
+
+  async getUserQuizLiveStatus(request: GetUserQuizLiveStatusRequest): Promise<ApiPaginationResponse> {
+    try {
+      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.userQuizProgress.live, {
+        params: request.toJson(),
+      });
 
       const apiResponse = response.data;
 

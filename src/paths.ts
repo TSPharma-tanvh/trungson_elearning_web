@@ -30,6 +30,7 @@ export const paths = {
     userCourseProgress: '/dashboard/progress/course',
     userLessonProgress: '/dashboard/progress/lesson',
     userQuizProgress: '/dashboard/progress/quiz',
+    liveQuizTracking: '/dashboard/progress/quiz-live',
     userClassProgress: '/dashboard/progress/class',
   },
   errors: { notFound: '/errors/not-found' },

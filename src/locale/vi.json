@@ -727,5 +727,12 @@
   "actualStartDate": "Ngày bắt đầu thực tế",
   "actualEndDate": "Ngày kết thúc thực tế",
   "updateClass": "Cập nhật lớp",
-  "deleteForever": "Xóa vĩnh viễn"
+  "deleteForever": "Xóa vĩnh viễn",
+  "liveQuizTracking": "Theo dõi bài kiểm tra",
+  "start": "Bắt đầu",
+  "end": "Kết thúc",
+  "refreshIntervalSeconds": "Thời gian làm mới",
+  "pleaseSelectQuizEnrollmentAndInterval": "Bạn phải chọn đủ Bài kiểm tra, Tiêu chí ghi danh và Thời gian làm mới",
+  "noDataFound": "Không tìm thấy dữ liệu",
+  "fetchError": "Lỗi khi tải dữ liệu"
 }

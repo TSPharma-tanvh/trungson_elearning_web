@@ -146,6 +146,7 @@ interface UserQuizProgressEndpoints {
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
+  live: StaticEndpoint;
 }
 
 interface AttendanceRecordsEndpoints {
@@ -321,6 +322,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `UserQuizProgress/GetUserQuizProgressById/${id}`,
     create: 'UserQuizProgress/AssignUsers',
     update: 'UserQuizProgress/UpdateProgress',
+    live: 'UserQuizProgress/GetUserQuizLiveStatus',
   },
   attendanceRecords: {
     getAll: 'AttendanceRecords/GetAttendanceRecords',

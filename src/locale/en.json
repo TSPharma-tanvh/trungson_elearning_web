@@ -727,5 +727,12 @@
   "actualStartDate": "Actual Start Date",
   "actualEndDate": "Actual End Date",
   "updateClass": "Update Class",
-  "deletePermanently": "Delete Permanently"
+  "deletePermanently": "Delete Permanently",
+  "liveQuizTracking": "Live Quiz Tracking",
+  "start": "Start",
+  "end": "End",
+  "refreshIntervalSeconds": "Refresh Interval Seconds",
+  "pleaseSelectQuizEnrollmentAndInterval": "Please Select Quiz, Enrollment Criteria And Refresh Interval Seconds",
+  "noDataFound": "No Data Found",
+  "fetchError": "Fetch Error"
 }

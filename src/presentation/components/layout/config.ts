@@ -1,6 +1,10 @@
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
 
+
+
+
+
 export const navItems = [
   { key: 'overview', title: 'overview', href: paths.dashboard.overview, icon: 'chart-pie' },
   {
@@ -67,6 +71,12 @@ export const navItems = [
         icon: 'userLesson',
       },
       { key: 'quizProgress', title: 'userQuizProgress', href: paths.dashboard.userQuizProgress, icon: 'userQuiz' },
+      {
+        key: 'liveQuizTracking',
+        title: 'liveQuizTracking',
+        href: paths.dashboard.liveQuizTracking,
+        icon: 'liveQuizTracking',
+      },
     ],
   },
   {
