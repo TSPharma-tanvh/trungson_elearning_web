@@ -86,7 +86,6 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
     try {
       const result = await userAnswerUsecase.updateUserAnswer(req);
 
-      CustomSnackBar.showSnackbar(t('updateSuccess'), 'success');
       onSaved();
       onClose();
     } catch (e) {
