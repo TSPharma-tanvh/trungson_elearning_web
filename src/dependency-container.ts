@@ -34,12 +34,14 @@ import { UserRepositoryImpl } from '@/data/repositories/user/user-repo-impl';
 
 import { AttendanceRecordsRepoImpl } from './data/repositories/class/attendance-records-repo-impl';
 import { EmployeeRepoImpl } from './data/repositories/employee/employee-repo-impl';
+import { UserAnswerRepoImpl } from './data/repositories/progress/user-answer-repo-impl';
 import { UserCourseProgressRepoImpl } from './data/repositories/progress/user-course-progress-repo-impl';
 import { UserLessonProgressRepoImpl } from './data/repositories/progress/user-lesson-progress-repo-impl';
 import { UserQuizProgressRepoImpl } from './data/repositories/progress/user-quiz-progress-repo-impl';
 import { UserDevicesRepoImpl } from './data/repositories/user/user-devices-repo-impl';
 import { AttendanceRecordsUsecase } from './domain/usecases/class/attendance-records-usecase';
 import { EmployeeUsecase } from './domain/usecases/employee/employee-usecase';
+import { UserAnswerUsecase } from './domain/usecases/progress/user-answer-usecase';
 import { UserCourseProgressUsecase } from './domain/usecases/progress/user-course-progress-usecase';
 import { UserLessonProgressUsecase } from './domain/usecases/progress/user-lesson-progress-usecase';
 import { UserQuizProgressUsecase } from './domain/usecases/progress/user-quiz-progress-usecase';
@@ -102,6 +104,7 @@ export class DependencyContainer {
   public userCourseProgressRepo = new UserCourseProgressRepoImpl();
   public userLessonProgressRepo = new UserLessonProgressRepoImpl();
   public userQuizProgressRepo = new UserQuizProgressRepoImpl();
+  public userAnswerRepo = new UserAnswerRepoImpl();
 
   /// Use cases
   public sendNotificationUseCase = new SendNotificationUseCase(this.notificationRepo);
@@ -158,6 +161,7 @@ export class DependencyContainer {
   public userCourseProgressUsecase = new UserCourseProgressUsecase(this.userCourseProgressRepo);
   public userLessonProgressUsecase = new UserLessonProgressUsecase(this.userLessonProgressRepo);
   public userQuizProgressUsecase = new UserQuizProgressUsecase(this.userQuizProgressRepo);
+  public userAnswerUsecase = new UserAnswerUsecase(this.userAnswerRepo);
 }
 
 // Export a singleton container

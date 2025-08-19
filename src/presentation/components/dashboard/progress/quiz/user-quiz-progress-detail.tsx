@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { InfoOutlined } from '@mui/icons-material';
+import { ExpandMore, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -15,6 +15,7 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
+  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -46,6 +47,7 @@ function UserQuizProgressDetails({
   const { t } = useTranslation();
   const [openQuizDetailId, setOpenQuizDetailId] = useState<string | null>(null);
   const [openUserDetail, setOpenUserDetail] = useState(false);
+  const [expandedAnswers, setExpandedAnswers] = useState<Record<string, boolean>>({});
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
@@ -55,6 +57,13 @@ function UserQuizProgressDetails({
       <CustomFieldTypography value={value} />
     </Grid>
   );
+
+  const toggleExpanded = (answerId: string) => {
+    setExpandedAnswers((prev) => ({
+      ...prev,
+      [answerId]: !prev[answerId],
+    }));
+  };
 
   const renderQuiz = () => {
     const quiz = userQuizProgress.quiz;
@@ -69,7 +78,11 @@ function UserQuizProgressDetails({
         <CardHeader
           title={t('quizDetails')}
           action={
-            <IconButton onClick={() => handleViewQuizDetail(quiz.id ?? '')}>
+            <IconButton
+              onClick={() => {
+                handleViewQuizDetail(quiz.id ?? '');
+              }}
+            >
               <InfoOutlined />
             </IconButton>
           }
@@ -155,14 +168,14 @@ function UserQuizProgressDetails({
             <Grid container spacing={2}>
               {renderField('id', user.id)}
               {renderField('username', user.userName)}
-              {renderField('email', user.email)}
+              {/* {renderField('email', user.email)}
               {renderField('firstName', user.firstName)}
               {renderField('lastName', user.lastName)}
               {renderField('phoneNumber', user.phoneNumber)}
-              {renderField('isActive', user.isActive ? 'Yes' : 'No')}
+              {renderField('isActive', user.isActive ? 'Yes' : 'No')} */}
               {renderField('employeeId', user.employeeId)}
               {renderField('thumbnailId', user.thumbnailId)}
-              {renderField('thumbnailName', user.thumbnail?.name)}
+              {/* {renderField('thumbnailName', user.thumbnail?.name)} */}
               {renderField('roles', user.roles?.join(', '))}
             </Grid>
           </Box>
@@ -176,6 +189,78 @@ function UserQuizProgressDetails({
           }}
         />
       </Card>
+    );
+  };
+
+  const renderUserAnswers = () => {
+    if (!userQuizProgress.userAnswers || userQuizProgress.userAnswers.length === 0) return null;
+
+    return (
+      <Box sx={{ mb: 2 }}>
+        <CardHeader title={t('userAnswers')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        {userQuizProgress.userAnswers.map((answer, index) => {
+          const answerId = answer.id ?? `${index}`;
+          const isExpanded = expandedAnswers[answerId] || false;
+
+          return (
+            <Card
+              key={answerId}
+              sx={{
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
+              }}
+            >
+              <CardHeader
+                title={answer.question?.questionText ?? `${t('answer')} ${index + 1}`}
+                titleTypographyProps={{
+                  color: answer.isCorrect ? 'var(--mui-palette-primary-main)' : 'var(--mui-palette-error-main)',
+                }}
+                action={
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Typography variant="body2">
+                      {t('score')}: {answer.score ?? 0}
+                    </Typography>
+                    <IconButton
+                      onClick={() => {
+                        toggleExpanded(answerId);
+                      }}
+                      sx={{
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <ExpandMore />
+                    </IconButton>
+                  </Box>
+                }
+                sx={{ py: 1 }}
+              />
+
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {renderField('answerId', answer.id)}
+                    {renderField('questionId', answer.questionID)}
+                    {renderField('answerText', answer.answerText)}
+                    {renderField('answeredAt', DateTimeUtils.formatISODateToString(answer.answeredAt))}
+                    {renderField('elapsedSeconds', answer.elapsedSeconds)}
+                    {renderField('sessionID', answer.sessionID)}
+
+                    {answer.selectedAnswers?.map((sa, saIndex) => (
+                      <Grid item xs={12} key={sa.id ?? saIndex}>
+                        <Typography variant="body2" fontWeight={500}>
+                          {t('selectedAnswer')} {saIndex + 1}:
+                        </Typography>
+                        <CustomFieldTypography value={sa.answer?.answerText} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Collapse>
+            </Card>
+          );
+        })}
+      </Box>
     );
   };
 
@@ -220,6 +305,7 @@ function UserQuizProgressDetails({
       </Card>{' '}
       {renderUserInformation()}
       {renderQuiz()}
+      {renderUserAnswers()}
     </Box>
   );
 }

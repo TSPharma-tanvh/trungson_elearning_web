@@ -209,7 +209,7 @@ function UserCourseProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => handleViewLessonDetail(lessonEnroll?.lessonID ?? '')}>
+                    <IconButton onClick={() => { handleViewLessonDetail(lessonEnroll?.lessonID ?? ''); }}>
                       <InfoOutlined />
                     </IconButton>
 
@@ -319,7 +319,7 @@ function UserCourseProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => handleViewQuizDetail(quizEnroll.quizID ?? '')}>
+                    <IconButton onClick={() => { handleViewQuizDetail(quizEnroll.quizID ?? ''); }}>
                       <InfoOutlined />
                     </IconButton>
                     <IconButton

@@ -149,6 +149,9 @@ interface UserQuizProgressEndpoints {
   live: StaticEndpoint;
 }
 
+interface UserAnswerProgressEndpoints {
+  update: StaticEndpoint;
+}
 interface AttendanceRecordsEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
@@ -188,6 +191,7 @@ interface EndpointDefinitions {
   userCourseProgress: UserCourseProgressEndpoints;
   userLessonProgress: UserLessonProgressEndpoints;
   userQuizProgress: UserQuizProgressEndpoints;
+  userAnswerProgress: UserAnswerProgressEndpoints;
   attendanceRecords: AttendanceRecordsEndpoints;
   userDevices: UserDevicesEndpoints;
 }
@@ -323,6 +327,9 @@ const endpoints: EndpointDefinitions = {
     create: 'UserQuizProgress/AssignUsers',
     update: 'UserQuizProgress/UpdateProgress',
     live: 'UserQuizProgress/GetUserQuizLiveStatus',
+  },
+  userAnswerProgress: {
+    update: 'UserAnswer/UpdateAnswers',
   },
   attendanceRecords: {
     getAll: 'AttendanceRecords/GetAttendanceRecords',

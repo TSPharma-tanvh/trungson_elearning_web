@@ -9,8 +9,8 @@ import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-import { UserQuizLiveFilters } from '@/presentation/components/dashboard/progress/quiz-filter/user-quiz-live-filter';
-import UserQuizLiveTable from '@/presentation/components/dashboard/progress/quiz-filter/user-quiz-progress-table';
+import { UserQuizLiveFilters } from '@/presentation/components/dashboard/progress/quiz-live/user-quiz-live-filter';
+import UserQuizLiveTable from '@/presentation/components/dashboard/progress/quiz-live/user-quiz-live-table';
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
@@ -27,7 +27,6 @@ export default function Page(): React.JSX.Element {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [intervalId, setIntervalId] = React.useState<NodeJS.Timeout | null>(null);
-  const filtersRef = React.useRef<() => void>();
 
   const fetchUserQuizProgress = React.useCallback(async () => {
     try {
@@ -120,7 +119,9 @@ export default function Page(): React.JSX.Element {
     try {
       await userQuizProgressUsecase.updateUserQuizProgress(request);
       await fetchUserQuizProgress();
-    } catch {}
+    } catch {
+      
+    }
   };
 
   const handleDeleteUserQuizProgress = async (id: string, quizId: string) => {

@@ -167,7 +167,7 @@ function UserPathProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => handleViewCourseDetail(courseEnroll?.courseID ?? '')}>
+                    <IconButton onClick={() => { handleViewCourseDetail(courseEnroll?.courseID ?? ''); }}>
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
@@ -277,7 +277,7 @@ function UserPathProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => handleViewLessonDetail(lessonEnroll?.lessonID ?? '')}>
+                    <IconButton onClick={() => { handleViewLessonDetail(lessonEnroll?.lessonID ?? ''); }}>
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
@@ -386,7 +386,7 @@ function UserPathProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => handleViewQuizDetail(quizEnroll.quizID ?? '')}>
+                    <IconButton onClick={() => { handleViewQuizDetail(quizEnroll.quizID ?? ''); }}>
                       <InfoOutlined />
                     </IconButton>
                     <IconButton

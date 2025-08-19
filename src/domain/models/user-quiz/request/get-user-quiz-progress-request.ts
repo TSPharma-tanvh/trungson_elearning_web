@@ -1,10 +1,12 @@
 import { type StatusEnum, type UserQuizProgressEnum } from '@/utils/enum/core-enum';
 
 export class GetUserQuizProgressRequest {
+  quizId?: string;
+  enrollmentCriteriaId?: string;
   assignedAt?: Date;
-  customStartTime?: Date;
-  customEndTime?: Date;
-  duration?: string;
+  startTime?: Date;
+  endTime?: Date;
+  duration?: string; // TimeSpan sẽ convert sang string
   startedAt?: Date;
   completedAt?: Date;
   lastAccess?: Date;
@@ -20,9 +22,11 @@ export class GetUserQuizProgressRequest {
 
   static fromJson(json: any): GetUserQuizProgressRequest {
     const dto = new GetUserQuizProgressRequest();
+    dto.quizId = json.quizId;
+    dto.enrollmentCriteriaId = json.enrollmentCriteriaId;
     dto.assignedAt = json.assignedAt ? new Date(json.assignedAt) : undefined;
-    dto.customStartTime = json.customStartTime ? new Date(json.customStartTime) : undefined;
-    dto.customEndTime = json.customEndTime ? new Date(json.customEndTime) : undefined;
+    dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
+    dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
     dto.duration = json.duration;
     dto.startedAt = json.startedAt ? new Date(json.startedAt) : undefined;
     dto.completedAt = json.completedAt ? new Date(json.completedAt) : undefined;
@@ -37,9 +41,11 @@ export class GetUserQuizProgressRequest {
 
   toJson(): any {
     return {
+      quizId: this.quizId,
+      enrollmentCriteriaId: this.enrollmentCriteriaId,
       assignedAt: this.assignedAt?.toISOString(),
-      customStartTime: this.customStartTime?.toISOString(),
-      customEndTime: this.customEndTime?.toISOString(),
+      startTime: this.startTime?.toISOString(),
+      endTime: this.endTime?.toISOString(),
       duration: this.duration,
       startedAt: this.startedAt?.toISOString(),
       completedAt: this.completedAt?.toISOString(),
@@ -54,9 +60,11 @@ export class GetUserQuizProgressRequest {
 
   toFormData(): FormData {
     const form = new FormData();
+    if (this.quizId) form.append('quizId', this.quizId);
+    if (this.enrollmentCriteriaId) form.append('enrollmentCriteriaId', this.enrollmentCriteriaId);
     if (this.assignedAt) form.append('assignedAt', this.assignedAt.toISOString());
-    if (this.customStartTime) form.append('customStartTime', this.customStartTime.toISOString());
-    if (this.customEndTime) form.append('customEndTime', this.customEndTime.toISOString());
+    if (this.startTime) form.append('startTime', this.startTime.toISOString());
+    if (this.endTime) form.append('endTime', this.endTime.toISOString());
     if (this.duration) form.append('duration', this.duration);
     if (this.startedAt) form.append('startedAt', this.startedAt.toISOString());
     if (this.completedAt) form.append('completedAt', this.completedAt.toISOString());

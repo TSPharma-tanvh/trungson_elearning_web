@@ -734,5 +734,22 @@
   "refreshIntervalSeconds": "Thời gian làm mới",
   "pleaseSelectQuizEnrollmentAndInterval": "Bạn phải chọn đủ Bài kiểm tra, Tiêu chí ghi danh và Thời gian làm mới",
   "noDataFound": "Không tìm thấy dữ liệu",
-  "fetchError": "Lỗi khi tải dữ liệu"
+  "fetchError": "Lỗi khi tải dữ liệu",
+  "userAnswers": "Câu trả lời của người dùng",
+  "answerId": "Id trả lời",
+  "questionId": "Id câu hỏi",
+  "answerText": "Trả lời văn bản",
+  "answeredAt": "Đã trả lời lúc",
+  "elapsedSeconds": "Đã trôi qua giây",
+  "sessionID": "ID phiên",
+  "selectedAnswer": "Câu trả lời được chọn",
+  "questionDetails": "Chi tiết câu hỏi",
+  "answerOptions": "Tùy chọn trả lời",
+  "editScore": "Chỉnh sửa điểm",
+  "updateUserQuizScore": "Cập nhật điểm số của người dùng",
+  "selectedAnswers": "Câu trả lời được chọn",
+  "answerScore": "Điểm trả lời",
+  "correctAnswer": "Câu trả lời đúng",
+  "noCorrectAnswer": "Không có câu trả lời đúng",
+  "questionDataNotAvailable": "Dữ liệu câu hỏi không khả dụng"
 }

@@ -150,7 +150,7 @@ export function EnrollmentSingleFilter({
           '& .MuiInputLabel-shrink.Mui-focused': {
             color: 'var(--mui-palette-secondary-main)',
           },
-          maxWidth: maxWidth,
+          maxWidth,
           width: '100%',
         }}
       >

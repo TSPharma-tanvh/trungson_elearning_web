@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Badge, Lock, Person, Phone, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Lock, Person, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Button,
   Dialog,
@@ -15,8 +15,6 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material';
-
-import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
 
 interface AddUserProps {
   open: boolean;

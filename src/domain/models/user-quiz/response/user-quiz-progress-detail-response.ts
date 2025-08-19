@@ -27,8 +27,9 @@ export class UserQuizProgressDetailResponse {
   os?: string;
   location?: string;
   enrollmentId?: string;
-  quiz?: QuizResponse;
+
   user?: UserDetailResponse;
+  quiz?: QuizResponse;
   userAnswers: UserAnswerResponse[] = [];
   enrollment?: EnrollmentResponse;
 
@@ -43,7 +44,7 @@ export class UserQuizProgressDetailResponse {
     dto.quizId = json.quizId;
     dto.progressStatus = json.progressStatus;
     dto.activeStatus = json.activeStatus;
-    dto.assignedAt = new Date(json.assignedAt);
+    dto.assignedAt = json.assignedAt ? new Date(json.assignedAt) : undefined;
     dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
     dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
     dto.duration = json.duration;
@@ -61,10 +62,12 @@ export class UserQuizProgressDetailResponse {
     dto.os = json.os;
     dto.location = json.location;
     dto.enrollmentId = json.enrollmentId;
-    dto.quiz = json.quiz ? QuizResponse.fromJSON(json.quiz) : undefined;
+
     dto.user = json.user ? UserDetailResponse.fromJSON(json.user) : undefined;
+    dto.quiz = json.quiz ? QuizResponse.fromJSON(json.quiz) : undefined;
     dto.userAnswers = json.userAnswers?.map((a: any) => UserAnswerResponse.fromJSON(a)) || [];
     dto.enrollment = json.enrollment ? EnrollmentResponse.fromJson(json.enrollment) : undefined;
+
     return dto;
   }
 
@@ -93,8 +96,8 @@ export class UserQuizProgressDetailResponse {
       os: this.os,
       location: this.location,
       enrollmentId: this.enrollmentId,
-      quiz: this.quiz?.toJSON(),
       user: this.user?.toJSON(),
+      quiz: this.quiz?.toJSON(),
       userAnswers: this.userAnswers?.map((x) => x.toJSON()),
       enrollment: this.enrollment?.toJson(),
     };

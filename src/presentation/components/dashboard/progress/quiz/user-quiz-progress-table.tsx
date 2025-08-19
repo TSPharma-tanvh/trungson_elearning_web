@@ -21,6 +21,7 @@ import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confi
 
 import UserQuizProgressDetailForm from './user-quiz-progress-detail';
 import { UpdateUserQuizProgressFormDialog } from './user-quiz-update-form';
+import { UpdateUserQuizScoreFormDialog } from './user-quiz-update-score-form';
 
 interface UserQuizProgressTableProps {
   rows: UserQuizProgressDetailResponse[];
@@ -45,6 +46,8 @@ export default function UserQuizProgressTable({
 }: UserQuizProgressTableProps) {
   const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
+  const [scoreOpen, setScoreOpen] = React.useState(false);
+
   const [editUserQuizProgressData, setEditUserQuizProgressData] = React.useState<UserQuizProgressDetailResponse | null>(
     null
   );
@@ -163,6 +166,13 @@ export default function UserQuizProgressTable({
             onClick: (row) => {
               setEditUserQuizProgressData(row);
               setEditOpen(true);
+            },
+          },
+          {
+            label: t('editScore'),
+            onClick: (row) => {
+              setEditUserQuizProgressData(row);
+              setScoreOpen(true);
             },
           },
           {
@@ -339,6 +349,20 @@ export default function UserQuizProgressTable({
           userQuizProgressId={editUserQuizProgressData.id ?? null}
           onClose={() => {
             setViewOpen(false);
+          }}
+        />
+      ) : null}
+
+      {editUserQuizProgressData ? (
+        <UpdateUserQuizScoreFormDialog
+          open={scoreOpen}
+          data={editUserQuizProgressData}
+          onClose={() => {
+            setScoreOpen(false);
+          }}
+          onSubmit={async (updatedData) => {
+            await onEditUserQuizProgress(updatedData);
+            setScoreOpen(false);
           }}
         />
       ) : null}

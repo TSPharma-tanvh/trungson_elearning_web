@@ -9,9 +9,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Avatar,
   Box,
   Card,
@@ -44,7 +41,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fullScreenQR, setFullScreenQR] = useState(false);
-  const [criteriaExpanded, setCriteriaExpanded] = useState<{ [key: string]: boolean }>({});
+  const [criteriaExpanded, setCriteriaExpanded] = useState<Record<string, boolean>>({});
   const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
@@ -86,14 +83,20 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
               }}
             >
               <CardHeader
-                title={`${criteria.name ?? ''}`}
+                title={criteria.name ?? ''}
                 action={
                   <Box>
-                    <IconButton onClick={() => showDetail(criteriaId)}>
+                    <IconButton
+                      onClick={() => {
+                        showDetail(criteriaId);
+                      }}
+                    >
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
-                      onClick={() => toggleExpanded(criteriaId)}
+                      onClick={() => {
+                        toggleExpanded(criteriaId);
+                      }}
                       sx={{
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s',
@@ -128,7 +131,9 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
               <EnrollmentDetailForm
                 open={selectedEnrollmentId !== undefined}
                 enrollmentId={selectedEnrollmentId}
-                onClose={() => showDetail(null)}
+                onClose={() => {
+                  showDetail(null);
+                }}
               />
             </Card>
           );

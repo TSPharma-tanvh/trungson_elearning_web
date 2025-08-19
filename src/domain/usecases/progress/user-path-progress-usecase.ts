@@ -2,11 +2,10 @@ import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateUserPathProgressRequest } from '@/domain/models/user-path/request/create-user-path-progress-request';
 import { type EnrollUserListToPathRequest } from '@/domain/models/user-path/request/enroll-user-list-to-path-request';
 import { type GetUserPathProgressRequest } from '@/domain/models/user-path/request/get-user-path-progress-request';
-import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
+import { type UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
 import { UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { type UserPathProgressDetailListResult } from '@/domain/models/user-path/response/user-path-progress-detail-result';
 import { type UserPathProgressRepository } from '@/domain/repositories/progress/user-path-progress-repository';
-import { UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserPathProgressUsecase {
   constructor(private readonly userPathProgressRepo: UserPathProgressRepository) {}

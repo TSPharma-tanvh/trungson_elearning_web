@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { type CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
 import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
 import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { type UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
@@ -16,7 +15,6 @@ export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
   const { userLessonProgressUsecase } = useDI();
 
-  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserLessonProgressRequest>(
     new GetUserLessonProgressRequest({ pageNumber: 1, pageSize: 10 })
   );
@@ -60,16 +58,6 @@ export default function Page(): React.JSX.Element {
     const newSize = parseInt(event.target.value, 10);
     setRowsPerPage(newSize);
     setPage(0);
-  };
-
-  const handleCreateUserLessonProgress = async (request: CreateUserLessonRequest) => {
-    try {
-      await userLessonProgressUsecase.createUserLessonProgress(request);
-      setShowCreateDialog(false);
-      await fetchUserLessonProgress();
-    } catch (error) {
-      return undefined;
-    }
   };
 
   const handleEditUserLessonProgress = async (request: UpdateUserLessonRequest) => {

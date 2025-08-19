@@ -220,8 +220,7 @@ export function CustomTable<T>({
           </Table>
         </TableContainer>
 
-        {showPagination && (
-          <Box display="flex" justifyContent="flex-end" pr={2} mt={1}>
+        {showPagination ? <Box display="flex" justifyContent="flex-end" pr={2} mt={1}>
             <TablePagination
               component="div"
               count={count}
@@ -235,8 +234,7 @@ export function CustomTable<T>({
                 return t('paginationInfo', { currentPage: page + 1, totalPages });
               }}
             />
-          </Box>
-        )}
+          </Box> : null}
       </Card>
 
       <Popover

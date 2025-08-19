@@ -2,36 +2,56 @@
 
 import * as React from 'react';
 import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
-import { CoreEnumUtils, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
+import { CategoryEnum, CoreEnumUtils, UserQuizProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
+import { EnrollmentSingleFilter } from '@/presentation/components/shared/enrollment/enrollment-single-filter';
+import { QuizSingleFilter } from '@/presentation/components/shared/quiz/quiz/quiz-single-filter';
 
 export function UserQuizProgressFilters({
   onFilter,
+  enrollUsecase,
+  quizUsecase,
 }: {
   onFilter: (filters: GetUserQuizProgressRequest) => void;
+  enrollUsecase: EnrollmentUsecase;
+  quizUsecase: QuizUsecase;
 }): React.JSX.Element {
   const { t } = useTranslation();
-  const [searchText, setSearchText] = React.useState('');
-  const [status, setStatus] = React.useState<UserQuizProgressEnum | undefined>(undefined);
+
+  // Gom lại thành một object state
+  const [form, setForm] = React.useState<Partial<GetUserQuizProgressRequest>>({
+    searchText: '',
+    progressStatus: undefined,
+    quizId: undefined,
+    enrollmentCriteriaId: undefined,
+  });
+
+  const handleChange = <K extends keyof GetUserQuizProgressRequest>(key: K, value: GetUserQuizProgressRequest[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleFilter = () => {
     const request = new GetUserQuizProgressRequest({
-      searchText: searchText || undefined,
-      progressStatus: status !== undefined ? status : undefined,
+      ...form,
       pageNumber: 1,
       pageSize: 10,
     });
-
     onFilter(request);
   };
 
   const handleClear = () => {
-    setSearchText('');
-    setStatus(undefined);
+    setForm({
+      searchText: '',
+      progressStatus: undefined,
+      quizId: undefined,
+      enrollmentCriteriaId: undefined,
+    });
     onFilter(new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10 }));
   };
 
@@ -44,18 +64,37 @@ export function UserQuizProgressFilters({
         border: '1px solid var(--mui-palette-primary-main)',
       }}
     >
-      {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchProgress')} />
+        {/* Search */}
+        <CustomSearchFilter
+          value={form.searchText ?? ''}
+          onChange={(val) => { handleChange('searchText', val); }}
+          placeholder={t('searchProgress')}
+        />
 
         {/* Status */}
         <CustomSelectFilter<UserQuizProgressEnum>
           label={t('status')}
-          value={status}
-          onChange={(val) => {
-            setStatus(val);
-          }}
+          value={form.progressStatus}
+          onChange={(val) => { handleChange('progressStatus', val); }}
           options={CoreEnumUtils.getEnumOptions(UserQuizProgressEnum)}
+        />
+
+        {/* Quiz */}
+        <QuizSingleFilter
+          quizUsecase={quizUsecase}
+          value={form.quizId ?? ''}
+          onChange={(value) => { handleChange('quizId', value); }}
+          disabled={false}
+        />
+
+        {/* Enrollment Criteria */}
+        <EnrollmentSingleFilter
+          enrollmentUsecase={enrollUsecase}
+          value={form.enrollmentCriteriaId ?? ''}
+          onChange={(value: string) => { handleChange('enrollmentCriteriaId', value); }}
+          disabled={false}
+          categoryEnum={CategoryEnum.Quiz}
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

@@ -734,5 +734,22 @@
   "refreshIntervalSeconds": "Refresh Interval Seconds",
   "pleaseSelectQuizEnrollmentAndInterval": "Please Select Quiz, Enrollment Criteria And Refresh Interval Seconds",
   "noDataFound": "No Data Found",
-  "fetchError": "Fetch Error"
+  "fetchError": "Fetch Error",
+  "userAnswers": "User Answers",
+  "answerId": "Answer Id",
+  "questionId": "Question Id",
+  "answerText": "Answer Text",
+  "answeredAt": "Answered At",
+  "elapsedSeconds": "Elapsed Seconds",
+  "sessionID": "Session Id",
+  "selectedAnswer": "Selected Answer",
+  "questionDetails": "Question Details",
+  "answerOptions": "Answer Options",
+  "editScore": "Edit Score",
+  "updateUserQuizScore": "Update User Quiz Score",
+  "selectedAnswers": "Selected Answers",
+  "answerScore": "Answer Score",
+  "correctAnswer": "Correct Answer",
+  "noCorrectAnswer": "No Correct Answer",
+  "questionDataNotAvailable": "Question Data Not Available"
 }

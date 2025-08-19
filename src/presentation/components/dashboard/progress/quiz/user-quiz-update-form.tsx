@@ -21,7 +21,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { ArrowClockwise } from '@phosphor-icons/react';
+import { ArrowClockwise, ListNumbers, NumberCircleNine } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -68,6 +68,7 @@ export function UpdateUserQuizProgressFormDialog({
           userQuizProgress.activeStatus !== undefined
             ? StatusEnum[userQuizProgress.activeStatus as keyof typeof StatusEnum]
             : undefined,
+        attempts: userQuizProgress.attempts || undefined,
       });
       setFormData(newFormData);
     }
@@ -223,6 +224,23 @@ export function UpdateUserQuizProgressFormDialog({
                 }}
                 disabled={isSubmitting}
                 icon={<ArrowClockwise {...iconStyle} />}
+                inputMode="numeric"
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                label={t('score')}
+                value={formData.score?.toString() ?? ''}
+                onChange={(value) => {
+                  const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
+                  handleChange('score', numericValue);
+                }}
+                disabled={isSubmitting}
+                icon={<ListNumbers {...iconStyle} />}
                 inputMode="numeric"
                 onValidationChange={(isValid) => {
                   setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));

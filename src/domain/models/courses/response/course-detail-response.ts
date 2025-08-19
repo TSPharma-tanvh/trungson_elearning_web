@@ -1,5 +1,4 @@
 import { CategoryResponse } from '../../category/response/category-response';
-import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
 import { EnrollmentCriteriaCourseRelationResponse } from '../../enrollment/response/enrollment-criteria-course-relation-response';
 import { FileCourseRelationResponse } from '../../file/response/file-course-relation-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';

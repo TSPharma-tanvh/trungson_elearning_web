@@ -19,8 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
-import UserQuizProgressDetailForm from './user-quiz-progress-detail';
-import { UpdateUserQuizProgressFormDialog } from './user-quiz-update-form';
+import UserQuizProgressDetailForm from './user-quiz-live-detail';
 
 interface UserQuizLiveTableProps {
   rows: UserQuizProgressDetailResponse[];
@@ -276,20 +275,6 @@ export default function UserQuizLiveTable({
           );
         }}
       />
-
-      {editUserQuizProgressData ? (
-        <UpdateUserQuizProgressFormDialog
-          open={editOpen}
-          data={editUserQuizProgressData}
-          onClose={() => {
-            setEditOpen(false);
-          }}
-          onSubmit={async (updatedData) => {
-            await onEditUserQuizProgress(updatedData);
-            setEditOpen(false);
-          }}
-        />
-      ) : null}
 
       {editUserQuizProgressData ? (
         <UserQuizProgressDetailForm

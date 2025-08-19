@@ -1,12 +1,11 @@
 import { type CreateAttendanceRecordsRequest } from '@/domain/models/attendance/request/create-attendance-records-request';
 import { type EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { type GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/get-attendance-records-request';
-import { UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';
+import { type UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';
 import { AttendanceRecordDetailResponse } from '@/domain/models/attendance/response/attendance-record-detail-response';
 import { type AttendanceRecordsListResult } from '@/domain/models/attendance/response/attendance-record-result';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type AttendanceRecordsRepository } from '@/domain/repositories/class/attendance-repository';
-import { CheckinTimeEnum } from '@/utils/enum/core-enum';
 
 export class AttendanceRecordsUsecase {
   constructor(private readonly AttendanceRecordsRepo: AttendanceRecordsRepository) {}

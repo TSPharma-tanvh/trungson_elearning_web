@@ -16,7 +16,7 @@ import UserQuizProgressTable from '@/presentation/components/dashboard/progress/
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { userQuizProgressUsecase } = useDI();
+  const { userQuizProgressUsecase, enrollUsecase, quizUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserQuizProgressRequest>(
@@ -118,7 +118,7 @@ export default function Page(): React.JSX.Element {
           {t('enrollUsers')}
         </Button>
       </Stack>
-      <UserQuizProgressFilters onFilter={handleFilter} />
+      <UserQuizProgressFilters onFilter={handleFilter} enrollUsecase={enrollUsecase} quizUsecase={quizUsecase} />
       <UserQuizProgressTable
         rows={userQuizProgress}
         count={totalCount}

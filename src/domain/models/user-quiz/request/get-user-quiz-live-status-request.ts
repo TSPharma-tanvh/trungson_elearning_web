@@ -1,12 +1,12 @@
-import { StatusEnum } from '@/utils/enum/core-enum';
+import { type StatusEnum } from '@/utils/enum/core-enum';
 
 export class GetUserQuizLiveStatusRequest {
   quizId?: string;
   enrollmentCriteriaId?: string;
   activeStatus?: StatusEnum;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetUserQuizLiveStatusRequest>) {
     Object.assign(this, init);

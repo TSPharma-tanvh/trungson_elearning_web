@@ -1,14 +1,15 @@
+import { QuestionResponse } from './question-response';
 import { UserQuestionResponse } from './user-question-response';
 
 export class UserQuizQuestionResponse {
   quizID?: string;
   questionID?: string;
-  question?: UserQuestionResponse;
+  question?: QuestionResponse;
 
   constructor(init?: Partial<UserQuizQuestionResponse>) {
     Object.assign(this, init);
     if (init?.question) {
-      this.question = new UserQuestionResponse(init.question);
+      this.question = new QuestionResponse(init.question);
     }
   }
 
@@ -16,7 +17,7 @@ export class UserQuizQuestionResponse {
     return new UserQuizQuestionResponse({
       quizID: json.quizID,
       questionID: json.questionID,
-      question: json.question ? UserQuestionResponse.fromJSON(json.question) : undefined,
+      question: json.question ? QuestionResponse.fromJSON(json.question) : undefined,
     });
   }
 

@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import { GetUserQuizLiveStatusRequest } from '@/domain/models/user-quiz/request/get-user-quiz-live-status-request';
-import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
-import { QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
+import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { CategoryEnum, CoreEnumUtils, StatusEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -73,7 +73,7 @@ export function UserQuizLiveFilters({
         <CustomSelectFilter<StatusEnum>
           label={t('status')}
           value={status}
-          onChange={(val) => setStatus(val)}
+          onChange={(val) => { setStatus(val); }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
@@ -102,7 +102,7 @@ export function UserQuizLiveFilters({
         <CustomSelectFilter<number>
           label={t('refreshIntervalSeconds')}
           value={intervalSeconds}
-          onChange={(val) => setIntervalSeconds(val)}
+          onChange={(val) => { setIntervalSeconds(val); }}
           options={[
             { value: 5, label: '5' },
             { value: 10, label: '10' },

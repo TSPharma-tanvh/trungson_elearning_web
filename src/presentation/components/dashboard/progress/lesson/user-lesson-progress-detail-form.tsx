@@ -205,7 +205,7 @@ function UserLessonProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => handleViewQuizDetail(quizEnroll.quizID ?? '')}>
+                    <IconButton onClick={() => { handleViewQuizDetail(quizEnroll.quizID ?? ''); }}>
                       <InfoOutlined />
                     </IconButton>
                     <IconButton

@@ -157,8 +157,8 @@ class ApiClient {
         withCredentials: true,
       });
       const response = await refreshClient.post(apiEndpoints.token.refreshToken, {
-        refreshToken: refreshToken,
-        accessToken: accessToken,
+        refreshToken,
+        accessToken,
       });
 
       const apiResponse = ApiResponse.fromJSON<{ token: string; refreshToken: string }>(response.data);
