@@ -1,5 +1,4 @@
 import React from 'react';
-import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { StatusEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
@@ -29,7 +28,6 @@ interface UserQuizLiveTableProps {
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteUserQuizProgress: (id: string, quizId: string) => Promise<void>;
-  onEditUserQuizProgress: (data: UpdateUserQuizRequest) => Promise<void>;
 }
 
 export default function UserQuizLiveTable({
@@ -40,13 +38,11 @@ export default function UserQuizLiveTable({
   onPageChange,
   onRowsPerPageChange,
   onDeleteUserQuizProgress,
-  onEditUserQuizProgress,
 }: UserQuizLiveTableProps) {
   const { t } = useTranslation();
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [editUserQuizProgressData, setEditUserQuizProgressData] = React.useState<UserQuizProgressDetailResponse | null>(
-    null
-  );
+  const [_editOpen, setEditOpen] = React.useState(false);
+  const [_editUserQuizProgressData, setEditUserQuizProgressData] =
+    React.useState<UserQuizProgressDetailResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
 
@@ -237,11 +233,11 @@ export default function UserQuizLiveTable({
                     <Typography variant="subtitle2" noWrap>
                       {row.user?.employee?.name || row.user?.userName}
                     </Typography>
-                    {row.user?.userName && (
+                    {row.user?.userName ? (
                       <Typography variant="body2" color="text.secondary" noWrap>
                         {row.user?.userName}
                       </Typography>
-                    )}
+                    ) : null}
                   </Box>
                 </Stack>
               </TableCell>
@@ -284,10 +280,10 @@ export default function UserQuizLiveTable({
         }}
       />
 
-      {editUserQuizProgressData ? (
+      {_editUserQuizProgressData ? (
         <UserQuizProgressDetailForm
           open={viewOpen}
-          userQuizProgressId={editUserQuizProgressData.id ?? null}
+          userQuizProgressId={_editUserQuizProgressData.id ?? null}
           onClose={() => {
             setViewOpen(false);
           }}

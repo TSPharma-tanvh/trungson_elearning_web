@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '../../../core/button/custom-button';
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '../../../core/picker/custom-date-picker';
 import { CustomTextField } from '../../../core/text-field/custom-textfield';
 
 interface CreatePathProps {

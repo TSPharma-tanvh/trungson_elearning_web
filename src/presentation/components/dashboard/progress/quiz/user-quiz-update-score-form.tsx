@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -18,8 +18,6 @@ import {
   DialogTitle,
   IconButton,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -35,13 +33,11 @@ interface EditUserQuizScoreDialogProps {
 }
 
 export function UpdateUserQuizScoreFormDialog({ open, data: userQuizProgress, onClose }: EditUserQuizScoreDialogProps) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const { quizUsecase, userQuizProgressUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [formData, setFormData] = useState<UpdateUserQuizRequest>(new UpdateUserQuizRequest({}));
+  const [_formData, setFormData] = useState<UpdateUserQuizRequest>(new UpdateUserQuizRequest({}));
   const [quizData, setQuizData] = useState<QuizResponse | null>(null);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<any | null>(null);
@@ -78,12 +74,15 @@ export function UpdateUserQuizScoreFormDialog({ open, data: userQuizProgress, on
         setIsLoadingQuiz(true);
         quizUsecase
           .getQuizById(progressDetail.quizId)
-          .then((quizResponse) => setQuizData(quizResponse))
-          .catch((error) => {
-            CustomSnackBar.showSnackbar('Lỗi khi lấy chi tiết bài kiểm tra', 'error');
-            console.error('Failed to fetch quiz:', error);
+          .then((quizResponse) => {
+            setQuizData(quizResponse);
           })
-          .finally(() => setIsLoadingQuiz(false));
+          .catch(() => {
+            
+          })
+          .finally(() => {
+            setIsLoadingQuiz(false);
+          });
       }
     } else {
       setQuizData(null);
@@ -191,7 +190,11 @@ export function UpdateUserQuizScoreFormDialog({ open, data: userQuizProgress, on
             {t('updateUserQuizScore')}
           </Typography>
           <Box>
-            <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+            <IconButton
+              onClick={() => {
+                setFullScreen((prev) => !prev);
+              }}
+            >
               {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </IconButton>
             <IconButton onClick={onClose}>
@@ -208,7 +211,7 @@ export function UpdateUserQuizScoreFormDialog({ open, data: userQuizProgress, on
         </DialogContent>
       </Dialog>
 
-      {selectedAnswer && (
+      {selectedAnswer ? (
         <AnswerDetailDialog
           open={answerDialogOpen}
           answer={selectedAnswer}
@@ -216,7 +219,7 @@ export function UpdateUserQuizScoreFormDialog({ open, data: userQuizProgress, on
           onClose={() => handleAnswerDialogClose(true)}
           onSaved={() => handleAnswerDialogClose(true)}
         />
-      )}
+      ) : null}
     </>
   );
 }

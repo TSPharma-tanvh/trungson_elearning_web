@@ -1,6 +1,6 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { UpdateUserAnswerRequest } from '@/domain/models/user-answer/request/update-user-answer-request';
-import { UserAnswerRepository } from '@/domain/repositories/progress/user-answer-progress-repository';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type UpdateUserAnswerRequest } from '@/domain/models/user-answer/request/update-user-answer-request';
+import { type UserAnswerRepository } from '@/domain/repositories/progress/user-answer-progress-repository';
 
 import { apiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';

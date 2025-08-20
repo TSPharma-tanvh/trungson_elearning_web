@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { QuestionResponse } from '@/domain/models/question/response/question-response';
+import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { UpdateUserAnswerRequest } from '@/domain/models/user-answer/request/update-user-answer-request';
-import { UserAnswerResponse } from '@/domain/models/user-answer/response/user-answer-response';
+import { type UserAnswerResponse } from '@/domain/models/user-answer/response/user-answer-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { QuestionEnum } from '@/utils/enum/core-enum';
@@ -77,9 +77,11 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
         .getQuestionById(questionId)
         .then(setQuestion)
         .catch(() => {
-          return;
+          
         })
-        .finally(() => setIsLoadingQuestion(false));
+        .finally(() => {
+          setIsLoadingQuestion(false);
+        });
     }
   }, [open, questionId, questionUsecase]);
 
@@ -108,7 +110,7 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
       onSaved();
       onClose();
     } catch (e) {
-      console.error(e);
+      return;
     } finally {
       setIsSubmitting(false);
     }
@@ -128,7 +130,11 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">{t('answerDetails')}</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -241,7 +247,9 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
                 control={
                   <Checkbox
                     checked={isCorrect}
-                    onChange={(e) => setIsCorrect(e.target.checked)}
+                    onChange={(e) => {
+                      setIsCorrect(e.target.checked);
+                    }}
                     disabled={isSubmitting}
                   />
                 }

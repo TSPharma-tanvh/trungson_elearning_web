@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { GetUserQuizLiveStatusRequest } from '@/domain/models/user-quiz/request/get-user-quiz-live-status-request';
-import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Stack, Typography } from '@mui/material';
@@ -115,15 +114,6 @@ export default function Page(): React.JSX.Element {
     handleFilter(filters);
   };
 
-  const handleEditUserQuizProgress = async (request: UpdateUserQuizRequest) => {
-    try {
-      await userQuizProgressUsecase.updateUserQuizProgress(request);
-      await fetchUserQuizProgress();
-    } catch {
-      
-    }
-  };
-
   const handleDeleteUserQuizProgress = async (id: string, quizId: string) => {
     try {
       const response = await userQuizProgressUsecase.deleteUserQuizProgress(id, quizId);
@@ -131,7 +121,9 @@ export default function Page(): React.JSX.Element {
         throw new Error(`Failed to delete lesson with ID: ${id}`);
       }
       await fetchUserQuizProgress();
-    } catch {}
+    } catch {
+      
+    }
   };
 
   return (
@@ -160,7 +152,6 @@ export default function Page(): React.JSX.Element {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteUserQuizProgress={handleDeleteUserQuizProgress}
-        onEditUserQuizProgress={handleEditUserQuizProgress}
       />
     </Stack>
   );

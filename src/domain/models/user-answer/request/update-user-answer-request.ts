@@ -1,5 +1,5 @@
 export class UpdateUserAnswerRequest {
-  id: string = '';
+  id = '';
   isCorrect?: boolean | null;
   score?: number | null;
   answerText?: string | null;

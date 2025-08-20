@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
-import { CourseUsecase } from '@/domain/usecases/courses/course-usecase';
-import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
+import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
 import { CategoryEnum, CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -71,7 +71,7 @@ export function UserCourseProgressFilters({
         {/* Search */}
         <CustomSearchFilter
           value={form.searchText ?? ''}
-          onChange={(val) => handleChange('searchText', val)}
+          onChange={(val) => { handleChange('searchText', val); }}
           placeholder={t('searchProgress')}
         />
 
@@ -79,7 +79,7 @@ export function UserCourseProgressFilters({
         <CustomSelectFilter<string>
           label={t('status')}
           value={form.status as unknown as string}
-          onChange={(val) => handleChange('status', String(val))}
+          onChange={(val) => { handleChange('status', String(val)); }}
           options={CoreEnumUtils.getEnumOptions(UserProgressEnum).map((opt) => ({
             value: String(opt.value),
             label: opt.label,
@@ -100,7 +100,7 @@ export function UserCourseProgressFilters({
         <EnrollmentSingleFilter
           enrollmentUsecase={enrollUsecase}
           value={form.enrollmentCriteriaId ?? ''}
-          onChange={(value: string) => handleChange('enrollmentCriteriaId', value)}
+          onChange={(value: string) => { handleChange('enrollmentCriteriaId', value); }}
           disabled={false}
           categoryEnum={category}
         />
@@ -108,7 +108,7 @@ export function UserCourseProgressFilters({
         <CustomSelectFilter<string>
           label={t('category')}
           value={String(category)}
-          onChange={(val) => setCategory(Number(val) as CategoryEnum)}
+          onChange={(val) => { setCategory(Number(val) as CategoryEnum); }}
           options={[
             { value: String(CategoryEnum.Path), label: 'path' },
             { value: String(CategoryEnum.Course), label: 'course' },

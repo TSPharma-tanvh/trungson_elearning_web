@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
-import { CategoryEnum, CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
+import { CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -68,7 +68,9 @@ export function UserLessonProgressFilters({
         {/* Search */}
         <CustomSearchFilter
           value={form.searchText ?? ''}
-          onChange={(val) => handleChange('searchText', val)}
+          onChange={(val) => {
+            handleChange('searchText', val);
+          }}
           placeholder={t('searchProgress')}
         />
 
@@ -76,7 +78,9 @@ export function UserLessonProgressFilters({
         <CustomSelectFilter<string>
           label={t('status')}
           value={form.status}
-          onChange={(val) => handleChange('status', val ?? '')}
+          onChange={(val) => {
+            handleChange('status', val ?? '');
+          }}
           options={CoreEnumUtils.getEnumOptions(UserProgressEnum).map((opt) => ({
             value: String(opt.value),
             label: opt.label,
@@ -87,7 +91,9 @@ export function UserLessonProgressFilters({
         <CourseSingleFilter
           courseUsecase={courseUsecase}
           value={form.courseID ?? ''}
-          onChange={(value: string) => handleChange('courseID', value)}
+          onChange={(value: string) => {
+            handleChange('courseID', value);
+          }}
           disabled={false}
         />
 
@@ -95,7 +101,9 @@ export function UserLessonProgressFilters({
         <LessonSingleFilter
           lessonUsecase={lessonUsecase}
           value={form.lessonID ?? ''}
-          onChange={(value: string) => handleChange('lessonID', value)}
+          onChange={(value: string) => {
+            handleChange('lessonID', value);
+          }}
           disabled={false}
         />
 

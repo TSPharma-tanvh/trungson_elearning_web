@@ -21,7 +21,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { ArrowClockwise, ListNumbers, NumberCircleNine } from '@phosphor-icons/react';
+import { ArrowClockwise, ListNumbers } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -52,7 +52,7 @@ export function UpdateUserQuizProgressFormDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
   const [score, setScore] = useState('');
-  const [isScoreValid, setIsScoreValid] = useState(true);
+  const [_isScoreValid, setIsScoreValid] = useState(true);
 
   useEffect(() => {
     if (userQuizProgress && open) {

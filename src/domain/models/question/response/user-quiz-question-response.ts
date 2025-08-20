@@ -1,5 +1,4 @@
 import { QuestionResponse } from './question-response';
-import { UserQuestionResponse } from './user-question-response';
 
 export class UserQuizQuestionResponse {
   quizID?: string;

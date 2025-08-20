@@ -86,5 +86,12 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
     '@typescript-eslint/no-base-to-string': 'off',
+
+    // Disable empty arrow function warning
+    '@typescript-eslint/no-empty-function': 'off',
+
+    // Disable named capture group regex warning
+    'prefer-named-capture-group': 'off',
+    'no-empty': 'off',
   },
 };

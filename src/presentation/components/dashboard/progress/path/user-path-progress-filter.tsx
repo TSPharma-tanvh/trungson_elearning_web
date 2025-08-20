@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import { GetUserPathProgressRequest } from '@/domain/models/user-path/request/get-user-path-progress-request';
-import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
-import { PathUsecase } from '@/domain/usecases/path/path-usecase';
+import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import { type PathUsecase } from '@/domain/usecases/path/path-usecase';
 import { CategoryEnum, CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -76,7 +76,7 @@ export function UserPathProgressFilters({
         <CustomSelectFilter<string>
           label={t('status')}
           value={form.status}
-          onChange={(val) => handleChange('status', val)}
+          onChange={(val) => { handleChange('status', val); }}
           options={CoreEnumUtils.getEnumOptions(UserProgressEnum).map((opt) => ({
             value: String(opt.value),
             label: opt.label,

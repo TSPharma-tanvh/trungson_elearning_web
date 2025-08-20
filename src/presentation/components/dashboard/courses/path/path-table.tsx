@@ -3,7 +3,6 @@
 import React from 'react';
 import { type UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import {
   Avatar,

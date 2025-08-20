@@ -270,11 +270,9 @@ export default function UserQuizProgressTable({
                     <Typography variant="subtitle2" noWrap>
                       {row.user?.employee?.name || row.user?.userName}
                     </Typography>
-                    {row.user?.userName && (
-                      <Typography variant="body2" color="text.secondary" noWrap>
+                    {row.user?.userName ? <Typography variant="body2" color="text.secondary" noWrap>
                         {row.user?.userName}
-                      </Typography>
-                    )}
+                      </Typography> : null}
                   </Box>
                 </Stack>
               </TableCell>
