@@ -16,9 +16,6 @@ export class UpdateCourseRequest {
   teacherID?: string;
   courseType?: LearningModeEnum;
   displayType?: DisplayTypeEnum;
-  imageID?: string;
-  startTime?: string;
-  endTime?: string;
   meetingLink?: string;
   scheduleStatus?: ScheduleStatusEnum;
   lessonIds?: string;
@@ -55,9 +52,6 @@ export class UpdateCourseRequest {
       teacherID: json.teacherID,
       courseType: json.courseType,
       displayType: json.displayType,
-      imageID: json.imageID,
-      startTime: json.startTime,
-      endTime: json.endTime,
       meetingLink: json.meetingLink,
       scheduleStatus: json.scheduleStatus,
       enrollmentCriteriaIDs: json.enrollmentCriteriaIDs,
@@ -90,9 +84,6 @@ export class UpdateCourseRequest {
       teacherID: this.teacherID,
       courseType: this.courseType,
       displayType: this.displayType,
-      imageID: this.imageID,
-      startTime: this.startTime,
-      endTime: this.endTime,
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
       enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
@@ -125,9 +116,6 @@ export class UpdateCourseRequest {
     if (this.teacherID) formData.append('TeacherID', this.teacherID);
     if (this.courseType !== undefined) formData.append('CourseType', this.courseType.toString());
     if (this.displayType !== undefined) formData.append('DisplayType', this.displayType.toString());
-    if (this.imageID) formData.append('ImageID', this.imageID);
-    if (this.startTime) formData.append('StartTime', this.startTime);
-    if (this.endTime) formData.append('EndTime', this.endTime);
     if (this.meetingLink) formData.append('MeetingLink', this.meetingLink);
     if (this.scheduleStatus !== undefined) formData.append('ScheduleStatus', this.scheduleStatus.toString());
     if (this.enrollmentCriteriaIDs) formData.append('EnrollmentCriteriaIDs', this.enrollmentCriteriaIDs);

@@ -11,8 +11,6 @@ export class CourseResponse {
   teacherId?: string;
   courseType?: LearningModeEnum;
   displayType?: DisplayTypeEnum;
-  startTime?: string;
-  endTime?: string;
   meetingLink?: string;
   scheduleStatus?: ScheduleStatusEnum;
   enrollmentCriteriaId?: string;
@@ -30,8 +28,6 @@ export class CourseResponse {
     dto.teacherId = json.teacherId;
     dto.courseType = json.courseType;
     dto.displayType = json.displayType;
-    dto.startTime = json.startTime;
-    dto.endTime = json.endTime;
     dto.meetingLink = json.meetingLink;
     dto.scheduleStatus = json.scheduleStatus;
     dto.enrollmentCriteriaId = json.enrollmentCriteriaId;
@@ -51,8 +47,6 @@ export class CourseResponse {
       teacherId: this.teacherId,
       courseType: this.courseType,
       displayType: this.displayType,
-      startTime: this.startTime,
-      endTime: this.endTime,
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
       enrollmentCriteriaId: this.enrollmentCriteriaId,

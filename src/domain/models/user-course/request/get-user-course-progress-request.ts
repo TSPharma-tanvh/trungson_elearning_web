@@ -1,6 +1,7 @@
 export class GetUserCourseProgressRequest {
   userID?: string;
-  coursesID?: string;
+  courseID?: string;
+  enrollmentCriteriaId?: string;
   progress?: number;
   startDate?: Date;
   endDate?: Date;

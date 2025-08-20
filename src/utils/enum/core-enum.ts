@@ -47,6 +47,12 @@ export enum CheckinTimeEnum {
   Late = 1,
   Absent = 2,
 }
+
+export enum CheckOutTimeEnum {
+  Soon = 0,
+  OnTime = 1,
+  Late = 2,
+}
 export enum QuizTypeEnum {
   LessonQuiz = 0,
   ExamQuiz = 1,

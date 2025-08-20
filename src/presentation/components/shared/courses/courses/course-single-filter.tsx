@@ -1,20 +1,19 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
-import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
-import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
-import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
+import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
+import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
+import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
 import {
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
   ScheduleStatusEnum,
-  StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -44,57 +43,64 @@ import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
+import CourseDetailForm from '@/presentation/components/dashboard/courses/courses/course-detail-form';
 
-interface LessonSingleSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
-  lessonUsecase: LessonUsecase;
+interface CourseSingleFilterProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+  courseUsecase: CourseUsecase | null;
   value: string;
   onChange: (value: string) => void;
   label?: string;
   disabled?: boolean;
   pathID?: string;
+  maxWidth?: number;
 }
 
 const filterOptions = {
-  LessonType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
+  courseType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
 };
 
-export function LessonSingleSelectDialog({
-  lessonUsecase,
+export function CourseSingleFilter({
+  courseUsecase,
   value,
   onChange,
-  label = 'lessons',
+  label = 'courses',
   disabled = false,
+  pathID,
+  maxWidth = 200,
   ...selectProps
-}: LessonSingleSelectDialogProps) {
+}: CourseSingleFilterProps) {
   const theme = useTheme();
   const { t } = useTranslation();
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useLessonSelectDebounce(localSearchText, 300);
-  const [selectedLessonMap, setSelectedLessonMap] = useState<Record<string, LessonDetailResponse>>({});
-
+  const debouncedSearchText = useCourseSelectDebounce(localSearchText, 300);
+  const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [selectedCourse, setSelectedCourse] = React.useState<CourseDetailResponse | null>(null);
   const {
-    lessons,
-    loadingLessons,
+    courses,
+    loadingCourses,
     pageNumber,
     totalPages,
-    listRef,
     setSearchText,
-    setLessonType,
-
+    courseType,
+    setCourseType,
+    setDisplayType,
+    setScheduleStatus,
     setDisableStatus,
-    lessonType,
-    disableStatus,
-    loadLessons,
-  } = useLessonSelectLoader({
-    lessonUsecase,
+    listRef,
+    loadCourses,
+  } = useCourseSelectLoader({
+    courseUsecase,
     isOpen: dialogOpen,
+    pathID: '',
     searchText: debouncedSearchText,
   });
 
@@ -117,14 +123,15 @@ export function LessonSingleSelectDialog({
 
   const handleClearFilters = () => {
     setLocalSearchText('');
-    setLessonType(undefined);
-
+    setCourseType(undefined);
+    setDisplayType(undefined);
+    setScheduleStatus(undefined);
     setDisableStatus(undefined);
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (LessonUsecase && !loadingLessons) {
-      void loadLessons(newPage, true);
+    if (courseUsecase && !loadingCourses) {
+      void loadCourses(newPage, true);
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
@@ -141,62 +148,94 @@ export function LessonSingleSelectDialog({
   }, [value]);
 
   useEffect(() => {
-    if (lessonUsecase && value.length > 0) {
-      const fetchSelectedLessons = async () => {
+    if (courseUsecase && value) {
+      const fetchSelectedCourses = async () => {
         try {
-          const request = new GetLessonRequest({});
-          const result = await lessonUsecase.getLessonListInfo(request);
-          const newMap = { ...selectedLessonMap };
+          const request = new GetCourseRequest({ pathID });
+          const result = await courseUsecase.getCourseListInfo(request);
+          const newMap = { ...selectedCourseMap };
           let updated = false;
-          for (const lesson of result.Lessons) {
-            if (lesson.id && !newMap[lesson.id]) {
-              newMap[lesson.id] = lesson;
+          for (const course of result.courses) {
+            if (!newMap[course.id]) {
+              newMap[course.id] = course;
               updated = true;
             }
           }
-
           if (updated) {
-            setSelectedLessonMap(newMap);
+            setSelectedCourseMap(newMap);
           }
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : 'An error has occurred.';
           CustomSnackBar.showSnackbar(message, 'error');
         }
       };
-      void fetchSelectedLessons();
+      void fetchSelectedCourses();
     }
-  }, [lessonUsecase, value, selectedLessonMap]);
+  }, [courseUsecase, value, pathID, selectedCourseMap]);
 
   useEffect(() => {
     if (dialogOpen) {
-      const newMap = { ...selectedLessonMap };
+      const newMap = { ...selectedCourseMap };
       let updated = false;
-      for (const lesson of lessons) {
-        if (lesson.id && !newMap[lesson.id]) {
-          newMap[lesson.id] = lesson;
+      for (const course of courses) {
+        if (course.id && !newMap[course.id]) {
+          newMap[course.id] = course;
           updated = true;
         }
       }
       if (updated) {
-        setSelectedLessonMap(newMap);
+        setSelectedCourseMap(newMap);
       }
     }
-  }, [lessons, dialogOpen, selectedLessonMap]);
+  }, [courses, dialogOpen, selectedCourseMap]);
 
   return (
     <>
-      <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="Lesson-select-label">{t(label)}</InputLabel>
+      <FormControl
+        disabled={disabled}
+        size="small"
+        sx={{
+          '& .MuiInputLabel-root': {
+            color: 'var(--mui-palette-secondary-main)',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: 'var(--mui-palette-primary-main)',
+          },
+          '& .MuiInputLabel-shrink': {
+            color: 'var(--mui-palette-primary-main)',
+          },
+          '& .MuiInputLabel-shrink.Mui-focused': {
+            color: 'var(--mui-palette-secondary-main)',
+          },
+          maxWidth,
+          width: '100%',
+        }}
+      >
+        <InputLabel id="course-select-label">{t(label)}</InputLabel>
         <Select
-          labelId="Lesson-select-label"
-          multiple
+          labelId="course-select-label"
           value={value}
           input={
-            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput
+              label={t(label)}
+              startAdornment={<Book sx={{ mr: 1, color: 'var(--mui-palette-secondary-main)', opacity: 0.7 }} />}
+            />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedLessonMap[selected]?.name || 'No Course Selected'}
+          renderValue={(selected) => selectedCourseMap[selected]?.name || 'No Course Selected'}
           open={false}
+          sx={{
+            '& .MuiSelect-select': {
+              backgroundColor: 'var(--mui-palette-common-white)',
+              color: 'var(--mui-palette-secondary-main)',
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'var(--mui-palette-primary-main)',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'var(--mui-palette-secondary-main)',
+            },
+          }}
           {...selectProps}
         />
       </FormControl>
@@ -204,7 +243,7 @@ export function LessonSingleSelectDialog({
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">{t('selectLessons')}</Typography>
+            <Typography variant="h6">{t('selectCourses')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -219,68 +258,20 @@ export function LessonSingleSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search Lessons..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>{t('lessonType')}</InputLabel>
+              <InputLabel>{t('courseType')}</InputLabel>
               <Select
-                value={lessonType !== undefined ? String(lessonType) : ''}
+                value={courseType !== undefined ? String(courseType) : ''}
                 onChange={(e: SelectChangeEvent) => {
-                  setLessonType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                  setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
                 }}
-                label={t('lessonType')}
+                label="Course Type"
               >
-                {filterOptions.LessonType.map((opt) => (
+                {filterOptions.courseType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : t('all')}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Display Type</InputLabel>
-              <Select
-                value={displayType !== undefined ? String(displayType) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined)
-                }
-                label="Display Type"
-              >
-                {filterOptions.displayType.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? DisplayTypeDisplayNames[opt] : 'All'}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
-            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Schedule Status</InputLabel>
-              <Select
-                value={scheduleStatus ?? ''}
-                onChange={(e) =>
-                  setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined)
-                }
-                label="Schedule Status"
-              >
-                {filterOptions.scheduleStatus.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'All'}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>{t('disableStatus')}</InputLabel>
-              <Select
-                value={disableStatus ?? ''}
-                onChange={(e) => {
-                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
-                }}
-                label={t('disableStatus')}
-              >
-                {filterOptions.disableStatus.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? StatusDisplayNames[opt] : t('all')}
+                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
               </Select>
@@ -293,24 +284,36 @@ export function LessonSingleSelectDialog({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {lessons.map((lesson) => (
+            {courses.map((course) => (
               <MenuItem
-                key={lesson.id}
-                value={lesson.id}
+                key={course.id}
+                value={course.id}
+                selected={localValue === course.id}
                 onClick={() => {
-                  setLocalValue(lesson.id ?? '');
+                  setLocalValue(course.id);
                 }}
               >
-                <Checkbox checked={localValue.includes(lesson.id)} />
-                <ListItemText primary={lesson.name} />
+                <Checkbox checked={localValue === course.id} />
+                <ListItemText primary={course.name} />
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedCourse(course);
+                    setViewOpen(true);
+                  }}
+                  aria-label={t('showDetails')}
+                >
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
-            {loadingLessons ? (
+            {loadingCourses ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('loading')}
               </Typography>
             ) : null}
-            {!loadingLessons && lessons.length === 0 && (
+            {!loadingCourses && courses.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('empty')}
               </Typography>
@@ -332,12 +335,22 @@ export function LessonSingleSelectDialog({
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button onClick={handleClose}>{t('cancel')}</Button>
-            <Button onClick={handleSave} variant="contained">
+            <Button onClick={handleSave} variant="contained" disabled={!localValue}>
               {t('save')}
             </Button>
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedCourse ? (
+        <CourseDetailForm
+          open={viewOpen}
+          courseId={selectedCourse.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

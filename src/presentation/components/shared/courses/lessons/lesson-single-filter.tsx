@@ -45,13 +45,13 @@ import { useTranslation } from 'react-i18next';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
-interface LessonSingleSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+interface LessonSingleFilterDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   lessonUsecase: LessonUsecase;
   value: string;
   onChange: (value: string) => void;
   label?: string;
   disabled?: boolean;
-  pathID?: string;
+  maxWidth?: number;
 }
 
 const filterOptions = {
@@ -61,14 +61,15 @@ const filterOptions = {
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
 };
 
-export function LessonSingleSelectDialog({
+export function LessonSingleFilter({
   lessonUsecase,
   value,
   onChange,
   label = 'lessons',
   disabled = false,
+  maxWidth = 200,
   ...selectProps
-}: LessonSingleSelectDialogProps) {
+}: LessonSingleFilterDialogProps) {
   const theme = useTheme();
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -185,18 +186,52 @@ export function LessonSingleSelectDialog({
 
   return (
     <>
-      <FormControl fullWidth disabled={disabled}>
+      <FormControl
+        disabled={disabled}
+        size="small"
+        sx={{
+          '& .MuiInputLabel-root': {
+            color: 'var(--mui-palette-secondary-main)',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: 'var(--mui-palette-primary-main)',
+          },
+          '& .MuiInputLabel-shrink': {
+            color: 'var(--mui-palette-primary-main)',
+          },
+          '& .MuiInputLabel-shrink.Mui-focused': {
+            color: 'var(--mui-palette-secondary-main)',
+          },
+          maxWidth,
+          width: '100%',
+        }}
+      >
         <InputLabel id="Lesson-select-label">{t(label)}</InputLabel>
         <Select
           labelId="Lesson-select-label"
           multiple
           value={value}
           input={
-            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput
+              label={t(label)}
+              startAdornment={<Book sx={{ mr: 1, color: 'var(--mui-palette-secondary-main)', opacity: 0.7 }} />}
+            />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedLessonMap[selected]?.name || 'No Course Selected'}
+          renderValue={(selected) => selectedLessonMap[selected]?.name || ''}
           open={false}
+          sx={{
+            '& .MuiSelect-select': {
+              backgroundColor: 'var(--mui-palette-common-white)',
+              color: 'var(--mui-palette-secondary-main)',
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'var(--mui-palette-primary-main)',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'var(--mui-palette-secondary-main)',
+            },
+          }}
           {...selectProps}
         />
       </FormControl>
@@ -219,7 +254,7 @@ export function LessonSingleSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search Lessons..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchLessons')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('lessonType')}</InputLabel>

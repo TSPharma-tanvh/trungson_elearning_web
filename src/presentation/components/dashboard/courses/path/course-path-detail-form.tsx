@@ -296,14 +296,6 @@ function CourseDetailsCard({ course, fullScreen }: CourseDetailsCardProps) {
             {renderField('categoryId', course.categoryId)}
             {renderField('thumbnailId', course.thumbnailId)}
             {renderField('enrollmentCriteriaId', course.enrollmentCriteriaId)}
-            {renderField(
-              'startTime',
-              course.startTime ? DateTimeUtils.formatISODateStringToString(course.startTime) : undefined
-            )}
-            {renderField(
-              'endTime',
-              course.endTime ? DateTimeUtils.formatISODateStringToString(course.endTime) : undefined
-            )}
             {renderField('disableStatus', course.disableStatus)}
             {renderField('scheduleStatus', course.scheduleStatus)}
             {renderField('displayType', course.displayType)}

@@ -10,8 +10,6 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-
-
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
@@ -19,10 +17,6 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { ClassSelectDialog } from '@/presentation/components/shared/classes/class/class-select';
 import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
-
-
-
-
 
 interface CreateAttendanceRecordsProps {
   disabled?: boolean;
@@ -47,6 +41,7 @@ export function CreateAttendanceRecordsDialog({
       startAt: new Date(),
       endAt: new Date(new Date().setDate(new Date().getDate() + 1)),
       minuteLate: 5,
+      minuteSoon: 5,
       statusCheckIn: CheckinTimeEnum[CheckinTimeEnum.Absent],
       enrollStatus: ApproveStatusEnum.Approve,
     })

@@ -18,9 +18,6 @@ export class CreateCourseRequest {
   courseType: LearningModeEnum = LearningModeEnum.Online;
   displayType: DisplayTypeEnum = DisplayTypeEnum.Public;
 
-  imageID?: string;
-  startTime?: string;
-  endTime?: string;
   meetingLink?: string;
 
   scheduleStatus: ScheduleStatusEnum = ScheduleStatusEnum.Schedule;
@@ -57,9 +54,7 @@ export class CreateCourseRequest {
       teacherID: json.teacherID,
       courseType: json.courseType,
       displayType: json.displayType,
-      imageID: json.imageID,
-      startTime: json.startTime,
-      endTime: json.endTime,
+
       meetingLink: json.meetingLink,
       scheduleStatus: json.scheduleStatus,
       lessonIds: json.lessonIds,
@@ -87,9 +82,6 @@ export class CreateCourseRequest {
       teacherID: this.teacherID,
       courseType: this.courseType,
       displayType: this.displayType,
-      imageID: this.imageID,
-      startTime: this.startTime,
-      endTime: this.endTime,
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
       lessonIds: this.lessonIds,
@@ -118,9 +110,6 @@ export class CreateCourseRequest {
     if (this.teacherID) formData.append('TeacherID', this.teacherID);
     formData.append('CourseType', this.courseType.toString());
     formData.append('DisplayType', this.displayType.toString());
-    if (this.imageID) formData.append('ImageID', this.imageID);
-    if (this.startTime) formData.append('StartTime', this.startTime);
-    if (this.endTime) formData.append('EndTime', this.endTime);
     if (this.meetingLink) formData.append('MeetingLink', this.meetingLink);
     formData.append('ScheduleStatus', this.scheduleStatus.toString());
     if (this.lessonIds) formData.append('LessonIds', this.lessonIds);

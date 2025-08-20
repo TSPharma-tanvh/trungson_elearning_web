@@ -36,24 +36,26 @@ import { useTranslation } from 'react-i18next';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 
-interface PathSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+interface PathFilterDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   pathUsecase: PathUsecase | null;
   value: string;
   onChange: (value: string) => void;
   label?: string;
   disabled?: boolean;
   pathID?: string;
+  maxWidth?: number;
 }
 
-export function PathSelectDialog({
+export function PathSingleFilter({
   pathUsecase,
   value,
   onChange,
   label = 'path',
   disabled = false,
   pathID,
+  maxWidth = 200,
   ...selectProps
-}: PathSelectDialogProps) {
+}: PathFilterDialogProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
@@ -77,7 +79,6 @@ export function PathSelectDialog({
   } = usePathSelectLoader({
     pathUsecase,
     isOpen: dialogOpen,
-
     searchText: debouncedSearchText,
   });
 
@@ -101,8 +102,6 @@ export function PathSelectDialog({
     setLocalSearchText('');
     setPathType(undefined);
     setDisplayType(undefined);
-    // setScheduleStatus(undefined);
-    // setDisableStatus(undefined);
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
@@ -167,19 +166,57 @@ export function PathSelectDialog({
 
   return (
     <>
-      <FormControl fullWidth disabled={disabled}>
+      <FormControl
+        disabled={disabled}
+        size="small"
+        sx={{
+          '& .MuiInputLabel-root': {
+            color: 'var(--mui-palette-secondary-main)',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: 'var(--mui-palette-primary-main)',
+          },
+          '& .MuiInputLabel-shrink': {
+            color: 'var(--mui-palette-primary-main)',
+          },
+          '& .MuiInputLabel-shrink.Mui-focused': {
+            color: 'var(--mui-palette-secondary-main)',
+          },
+          maxWidth,
+          width: '100%',
+        }}
+      >
         <InputLabel id="path-select-label">{t(label)}</InputLabel>
         <Select
           labelId="path-select-label"
-          value={value}
+          value={value || ''}
           input={
-            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput
+              label={t(label)}
+              startAdornment={<Book sx={{ mr: 1, color: 'var(--mui-palette-secondary-main)', opacity: 0.7 }} />}
+            />
           }
           onClick={handleOpen}
           renderValue={(selected) => selectedPathMap[selected]?.name || t('noPathSelected')}
           open={false}
+          sx={{
+            '& .MuiSelect-select': {
+              backgroundColor: 'var(--mui-palette-common-white)',
+              color: 'var(--mui-palette-secondary-main)',
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'var(--mui-palette-primary-main)',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'var(--mui-palette-secondary-main)',
+            },
+          }}
           {...selectProps}
-        />
+        >
+          <MenuItem value="" disabled>
+            {t('selectPath')}
+          </MenuItem>
+        </Select>
       </FormControl>
 
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
@@ -200,23 +237,11 @@ export function PathSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search paths..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchPaths')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('pathType')}</InputLabel>
-              {/* <Select
-                value={pathType !== undefined ? String(pathType) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setPathType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
-                }
-                label="Path Type"
-              >
-                {filterOptions.pathType.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
-                  </MenuItem>
-                ))}
-              </Select> */}
+              {/* Thêm select filter pathType ở đây nếu cần */}
             </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}

@@ -16,7 +16,7 @@ import UserPathProgressTable from '@/presentation/components/dashboard/progress/
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { userPathProgressUsecase } = useDI();
+  const { userPathProgressUsecase, pathUseCase, enrollUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserPathProgressRequest>(
@@ -117,7 +117,7 @@ export default function Page(): React.JSX.Element {
           {t('enrollUsers')}
         </Button>
       </Stack>
-      <UserPathProgressFilters onFilter={handleFilter} />
+      <UserPathProgressFilters onFilter={handleFilter} pathUsecase={pathUseCase} enrollUsecase={enrollUsecase} />
       <UserPathProgressTable
         rows={userPathProgress}
         count={totalCount}

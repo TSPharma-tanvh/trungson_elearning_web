@@ -51,6 +51,8 @@ export function UpdateUserQuizProgressFormDialog({
   const [formData, setFormData] = useState<UpdateUserQuizRequest>(new UpdateUserQuizRequest({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
+  const [score, setScore] = useState('');
+  const [isScoreValid, setIsScoreValid] = useState(true);
 
   useEffect(() => {
     if (userQuizProgress && open) {
@@ -86,7 +88,16 @@ export function UpdateUserQuizProgressFormDialog({
         CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
         return;
       }
-      onSubmit(formData);
+
+      const numericValue = score !== '' && !isNaN(Number(score)) ? Number(score) : undefined;
+
+      const payload = new UpdateUserQuizRequest({
+        ...formData,
+        score: numericValue,
+        attempts: formData.attempts,
+      });
+
+      onSubmit(payload);
       onClose();
     } catch (error) {
       return undefined;
@@ -180,7 +191,7 @@ export function UpdateUserQuizProgressFormDialog({
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               {' '}
               <CustomSelectDropDown<UserQuizProgressEnum>
                 label="status"
@@ -233,18 +244,17 @@ export function UpdateUserQuizProgressFormDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label={t('score')}
-                value={formData.score?.toString() ?? ''}
+                label={t('answerScore')}
+                value={formData.score}
                 onChange={(value) => {
-                  const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
-                  handleChange('score', numericValue);
+                  setScore(value);
+                  const isValid = /^(\d+(\.\d*)?|\.\d+)?$/.test(value) || value === '';
+                  setIsScoreValid(isValid);
                 }}
                 disabled={isSubmitting}
-                icon={<ListNumbers {...iconStyle} />}
-                inputMode="numeric"
-                onValidationChange={(isValid) => {
-                  setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
-                }}
+                icon={<ListNumbers size={20} weight="fill" color="#616161" />}
+                inputMode="decimal"
+                onValidationChange={setIsScoreValid}
               />
             </Grid>
           </Grid>

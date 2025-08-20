@@ -31,6 +31,7 @@ export function UserQuizLiveFilters({
   const [searchText, setSearchText] = React.useState('');
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
   const [intervalSeconds, setIntervalSeconds] = React.useState<number | undefined>(15);
+  const [pageSize, setPageSize] = React.useState(50);
 
   const handleFilter = () => {
     if (!form.quizId || !form.enrollmentCriteriaId || !intervalSeconds) {
@@ -43,7 +44,7 @@ export function UserQuizLiveFilters({
       searchText: searchText || undefined,
       activeStatus: status !== undefined ? status : undefined,
       pageNumber: 1,
-      pageSize: 10,
+      pageSize,
     });
 
     onFilter(request, intervalSeconds);
@@ -52,7 +53,8 @@ export function UserQuizLiveFilters({
   const handleClear = () => {
     setSearchText('');
     setStatus(undefined);
-    setIntervalSeconds(undefined);
+    setIntervalSeconds(15);
+    setPageSize(50);
     onFilter(new GetUserQuizLiveStatusRequest({ pageNumber: 1, pageSize: 10 }), undefined);
   };
 
@@ -73,7 +75,9 @@ export function UserQuizLiveFilters({
         <CustomSelectFilter<StatusEnum>
           label={t('status')}
           value={status}
-          onChange={(val) => { setStatus(val); }}
+          onChange={(val) => {
+            setStatus(val);
+          }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
@@ -85,6 +89,7 @@ export function UserQuizLiveFilters({
             handleChange('quizId', value);
           }}
           disabled={false}
+          maxWidth={160}
         />
 
         {/* Enrollment Criteria */}
@@ -96,13 +101,16 @@ export function UserQuizLiveFilters({
           }}
           disabled={false}
           categoryEnum={CategoryEnum.Quiz}
+          maxWidth={160}
         />
 
         {/* Interval seconds */}
         <CustomSelectFilter<number>
           label={t('refreshIntervalSeconds')}
           value={intervalSeconds}
-          onChange={(val) => { setIntervalSeconds(val); }}
+          onChange={(val) => {
+            setIntervalSeconds(val);
+          }}
           options={[
             { value: 5, label: '5' },
             { value: 10, label: '10' },
@@ -111,7 +119,25 @@ export function UserQuizLiveFilters({
             { value: 60, label: '60' },
           ]}
           size="small"
-          minWidth={180}
+          minWidth={120}
+          withAllOption={false}
+        />
+
+        {/* Page Size */}
+        <CustomSelectFilter<number>
+          label={t('pageSize')}
+          value={pageSize}
+          onChange={(val) => {
+            setPageSize(val ?? 0);
+          }}
+          options={[
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
+            { value: 200, label: '200' },
+            { value: 300, label: '300' },
+          ]}
+          size="small"
+          minWidth={120}
           withAllOption={false}
         />
 

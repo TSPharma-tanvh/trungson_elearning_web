@@ -6,8 +6,6 @@ export class UpdateCoursePathRequest {
   name?: string;
   detail?: string;
   isRequired?: boolean;
-  startTime?: string;
-  endTime?: string;
   status?: StatusEnum;
   displayType?: DisplayTypeEnum;
   userIds?: string;
@@ -34,8 +32,6 @@ export class UpdateCoursePathRequest {
       name: json.name,
       detail: json.detail,
       isRequired: json.isRequired,
-      startTime: json.startTime,
-      endTime: json.endTime,
       status: json.status,
       displayType: json.displayType,
       userIds: json.userIds,
@@ -59,8 +55,6 @@ export class UpdateCoursePathRequest {
       name: this.name,
       detail: this.detail,
       isRequired: this.isRequired,
-      startTime: this.startTime,
-      endTime: this.endTime,
       status: this.status,
       displayType: this.displayType,
       userIds: this.userIds,
@@ -85,8 +79,6 @@ export class UpdateCoursePathRequest {
     if (this.name) formData.append('name', this.name);
     if (this.detail) formData.append('detail', this.detail);
     if (this.isRequired !== undefined) formData.append('isRequired', String(this.isRequired));
-    if (this.startTime) formData.append('startTime', this.startTime);
-    if (this.endTime) formData.append('endTime', this.endTime);
     if (this.status !== undefined) formData.append('status', String(this.status));
     if (this.displayType !== undefined) formData.append('displayType', String(this.displayType));
     if (this.userIds) formData.append('userIds', this.userIds);

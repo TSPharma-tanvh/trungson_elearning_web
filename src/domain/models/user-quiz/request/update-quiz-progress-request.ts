@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { type StatusEnum, type UserQuizProgressEnum } from '@/utils/enum/core-enum';
 
 export class UpdateUserQuizRequest {
@@ -8,7 +9,6 @@ export class UpdateUserQuizRequest {
   deviceInfo?: string;
   deviceId?: string;
   deviceName?: string;
-  assignedAt?: Date;
   startedAt?: Date;
   completedAt?: Date;
   score?: number;
@@ -27,7 +27,6 @@ export class UpdateUserQuizRequest {
     dto.deviceInfo = json.deviceInfo;
     dto.deviceId = json.deviceId;
     dto.deviceName = json.deviceName;
-    dto.assignedAt = json.assignedAt ? new Date(json.assignedAt) : undefined;
     dto.startedAt = json.startedAt ? new Date(json.startedAt) : undefined;
     dto.completedAt = json.completedAt ? new Date(json.completedAt) : undefined;
     dto.score = json.score;
@@ -44,9 +43,8 @@ export class UpdateUserQuizRequest {
       deviceInfo: this.deviceInfo,
       deviceId: this.deviceId,
       deviceName: this.deviceName,
-      assignedAt: this.assignedAt?.toISOString(),
-      startedAt: this.startedAt?.toISOString(),
-      completedAt: this.completedAt?.toISOString(),
+      startedAt: DateTimeUtils.formatISODateToString(this.startedAt),
+      completedAt: DateTimeUtils.formatISODateToString(this.completedAt),
       score: this.score,
       attempts: this.attempts,
     };

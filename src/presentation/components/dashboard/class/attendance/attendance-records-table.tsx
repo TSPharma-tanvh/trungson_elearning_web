@@ -106,8 +106,10 @@ export default function AttendanceRecordsTable({
             <TableCell>{t('className')}</TableCell>
             <TableCell>{t('startAt')}</TableCell>
             <TableCell>{t('endAt')}</TableCell>
-            <TableCell>{t('checkinTime')}</TableCell>
-            <TableCell>{t('status')}</TableCell>
+            <TableCell>{t('checkInTime')}</TableCell>
+            <TableCell>{t('statusCheckIn')}</TableCell>
+            <TableCell>{t('checkOutTime')}</TableCell>
+            <TableCell>{t('statusCheckOut')}</TableCell>
             <TableCell>{t('enrollmentDate')}</TableCell>
             <TableCell>{t('approvedAt')}</TableCell>
           </>
@@ -142,8 +144,15 @@ export default function AttendanceRecordsTable({
 
             <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.endAt)}</TableCell>
 
-            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.checkinTime)}</TableCell>
-            <TableCell>{row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}</TableCell>
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.checkInTime)}</TableCell>
+            <TableCell>
+              {row.statusCheckIn ? t(row.statusCheckIn.charAt(0).toLowerCase() + t(row.statusCheckIn).slice(1)) : ''}
+            </TableCell>
+
+            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.checkOutTime)}</TableCell>
+            <TableCell>
+              {row.statusCheckOut ? t(row.statusCheckOut.charAt(0).toLowerCase() + t(row.statusCheckOut).slice(1)) : ''}
+            </TableCell>
             <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.enrollment?.enrollmentDate)}</TableCell>
             <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.enrollment?.approvedAt)}</TableCell>
             <TableCell align="right">

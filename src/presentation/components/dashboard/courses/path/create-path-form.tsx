@@ -38,8 +38,6 @@ export function CreateCoursePathDialog({
       name: '',
       detail: '',
       isRequired: false,
-      startTime: '',
-      endTime: '',
       status: StatusEnum.Enable,
       displayType: DisplayTypeEnum.Public,
       categoryEnum: CategoryEnum.Path,
@@ -149,28 +147,6 @@ export function CreateCoursePathDialog({
                     maxHeight: fullScreen ? `${window.innerHeight - 420}px` : 'auto',
                   },
                 }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('startTime')}
-                value={form.startTime}
-                onChange={(val) => {
-                  handleChange('startTime', val);
-                }}
-                disabled={disabled}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('endTime')}
-                value={form.endTime}
-                onChange={(val) => {
-                  handleChange('endTime', val);
-                }}
-                disabled={disabled}
               />
             </Grid>
 

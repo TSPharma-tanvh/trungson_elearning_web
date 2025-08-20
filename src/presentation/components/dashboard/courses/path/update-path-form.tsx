@@ -67,8 +67,6 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
         name: path.name || '',
         detail: path.detail || undefined,
         isRequired: path.isRequired || false,
-        startTime: path.startTime,
-        endTime: path.endTime,
         status: path.status !== undefined ? StatusEnum[path.status as keyof typeof StatusEnum] : undefined,
         displayType:
           path.displayType !== undefined
@@ -243,26 +241,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                 icon={<Note {...iconStyle} />}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('startTime')}
-                value={courseFormData.startTime}
-                onChange={(value) => {
-                  handleChange('startTime', value);
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('endTime')}
-                value={courseFormData.endTime}
-                onChange={(value) => {
-                  handleChange('endTime', value);
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
+
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('status')}

@@ -4,6 +4,7 @@ export class GetAttendanceRecordsRequest {
   userID?: string;
   levelID?: string;
   classID?: string;
+  enrollmentCriteriaId?: string;
   checkinTimeFrom?: Date;
   checkinTimeTo?: Date;
   status?: CheckinTimeEnum;
@@ -20,6 +21,7 @@ export class GetAttendanceRecordsRequest {
     dto.userID = json.userID;
     dto.levelID = json.levelID;
     dto.classID = json.classID;
+    dto.enrollmentCriteriaId = json.enrollmentCriteriaId;
     dto.checkinTimeFrom = json.checkinTimeFrom ? new Date(json.checkinTimeFrom) : undefined;
     dto.checkinTimeTo = json.checkinTimeTo ? new Date(json.checkinTimeTo) : undefined;
     dto.status = json.status;
@@ -34,6 +36,7 @@ export class GetAttendanceRecordsRequest {
       userID: this.userID,
       levelID: this.levelID,
       classID: this.classID,
+      enrollmentCriteriaId: this.enrollmentCriteriaId,
       checkinTimeFrom: this.checkinTimeFrom?.toISOString(),
       checkinTimeTo: this.checkinTimeTo?.toISOString(),
       status: this.status,

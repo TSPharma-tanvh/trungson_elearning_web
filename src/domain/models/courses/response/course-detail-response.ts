@@ -18,8 +18,6 @@ export class CourseDetailResponse {
   classTeacher?: ClassTeacherResponse;
   courseType?: string;
   displayType?: string;
-  startTime?: Date;
-  endTime?: Date;
   meetingLink?: string;
   scheduleStatus!: string;
   courseEnrollments?: EnrollmentCriteriaCourseRelationResponse[];
@@ -47,8 +45,6 @@ export class CourseDetailResponse {
       classTeacher: json.classTeacher ? ClassTeacherResponse.fromJson(json.classTeacher) : undefined,
       courseType: json.courseType,
       displayType: json.displayType,
-      startTime: json.startTime ? new Date(json.startTime) : undefined,
-      endTime: json.endTime ? new Date(json.endTime) : undefined,
       meetingLink: json.meetingLink,
       scheduleStatus: json.scheduleStatus,
       courseEnrollments: json.courseEnrollments?.map((e: any) => EnrollmentCriteriaCourseRelationResponse.fromJson(e)),
@@ -74,8 +70,6 @@ export class CourseDetailResponse {
       classTeacher: this.classTeacher?.toJson(),
       courseType: this.courseType,
       displayType: this.displayType,
-      startTime: this.startTime?.toISOString(),
-      endTime: this.endTime?.toISOString(),
       meetingLink: this.meetingLink,
       scheduleStatus: this.scheduleStatus,
       courseEnrollments: this.courseEnrollments?.map((e) => e.toJson()),

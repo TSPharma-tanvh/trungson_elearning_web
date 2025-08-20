@@ -343,6 +343,57 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
     );
   };
 
+  const renderTeacher = () => {
+    if (!classes.classTeacher) return null;
+
+    const teacher = classes.classTeacher;
+    const user = teacher.user;
+    const employee = user?.employee;
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title={t('teacherInformation')} />
+        <CardContent>
+          <Grid container spacing={2}>
+            {/* Avatar + Name */}
+            <Grid item xs={12} display="flex" alignItems="center" gap={2}>
+              <Avatar src={user?.thumbnail?.resourceUrl ?? user?.employee?.avatar} sx={{ width: 64, height: 64 }}>
+                {user?.employee?.name ?? '?'}
+              </Avatar>
+              <Box>
+                <Typography variant="h6">{user?.employee?.name}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {user?.userName}
+                </Typography>
+              </Box>
+            </Grid>
+
+            {/* Teacher Info Fields */}
+            {renderField('teacherId', teacher.id)}
+            {renderField(
+              'status',
+              teacher.status !== undefined
+                ? t(teacher.status?.charAt(0).toLowerCase() + t(teacher.status).slice(1))
+                : ''
+            )}
+            {renderField('description', teacher.description)}
+
+            {/* User Details */}
+            {renderField('userName', user?.userName)}
+            {renderField('phoneNumber', user?.phoneNumber)}
+            {renderField('employeeId', user?.employeeId)}
+
+            {/* Employee Details */}
+            {renderField('title', employee?.title)}
+            {renderField('department', employee?.currentDepartmentName)}
+            {renderField('position', employee?.currentPositionName)}
+            {renderField('gender', employee?.gender)}
+          </Grid>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
       <Box display="flex" alignItems="center" gap={2} mb={3}>
@@ -385,6 +436,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
           </Grid>
         </CardContent>
       </Card>
+      {renderTeacher()}
 
       {renderEnrollmentCriteria()}
       {renderFileQRResources()}

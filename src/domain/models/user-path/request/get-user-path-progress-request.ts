@@ -1,5 +1,6 @@
 export class GetUserPathProgressRequest {
   userID?: string;
+  enrollmentCriteriaId?: string;
   pathID?: string;
   progress?: number;
   startDate?: string;

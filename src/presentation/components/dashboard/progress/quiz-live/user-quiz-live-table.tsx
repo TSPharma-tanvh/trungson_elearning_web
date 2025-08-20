@@ -216,7 +216,13 @@ export default function UserQuizLiveTable({
                 {row.quiz?.title}
               </TableCell>
 
-              <TableCell sx={{ width: '10%' }}>
+              <TableCell
+                sx={{
+                  minWidth: 150,
+                  whiteSpace: 'normal',
+                  wordBreak: 'break-word',
+                }}
+              >
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar
                     src={
@@ -225,15 +231,17 @@ export default function UserQuizLiveTable({
                         : row.user?.thumbnail?.resourceUrl
                     }
                   >
-                    {row.user?.employee?.name?.[0]}
+                    {row.user?.employee?.name?.[0] || row.user?.userName?.[0]}
                   </Avatar>
                   <Box>
                     <Typography variant="subtitle2" noWrap>
-                      {row.user?.employee?.name}
+                      {row.user?.employee?.name || row.user?.userName}
                     </Typography>
-                    <Typography variant="subtitle2" noWrap>
-                      {row.user?.userName}
-                    </Typography>
+                    {row.user?.userName && (
+                      <Typography variant="body2" color="text.secondary" noWrap>
+                        {row.user?.userName}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
               </TableCell>

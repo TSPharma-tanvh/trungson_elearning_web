@@ -8,11 +8,18 @@ export class AttendanceRecordDetailResponse {
   levelID?: string;
   classID?: string;
   pathID?: string;
-  checkinTime?: Date;
+
   startAt?: Date;
   endAt?: Date;
+  checkInTime?: Date;
+  checkOutTime?: Date;
+
   minuteLate?: number;
-  status?: string;
+  minuteSoon?: number;
+
+  statusCheckIn?: string;
+  statusCheckOut?: string;
+
   class?: ClassResponse;
   user?: UserResponse;
   enrollment?: EnrollmentResponse;
@@ -28,11 +35,14 @@ export class AttendanceRecordDetailResponse {
       levelID: json.levelID,
       classID: json.classID,
       pathID: json.pathID,
-      checkinTime: json.checkinTime ? new Date(json.checkinTime) : undefined,
       startAt: json.startAt ? new Date(json.startAt) : undefined,
       endAt: json.endAt ? new Date(json.endAt) : undefined,
+      checkInTime: json.checkInTime ? new Date(json.checkInTime) : undefined,
+      checkOutTime: json.checkOutTime ? new Date(json.checkOutTime) : undefined,
       minuteLate: json.minuteLate,
-      status: json.status,
+      minuteSoon: json.minuteSoon,
+      statusCheckIn: json.statusCheckIn,
+      statusCheckOut: json.statusCheckOut,
       class: json.class ? ClassResponse.fromJson(json.class) : undefined,
       user: json.user ? UserResponse.fromJSON(json.user) : undefined,
       enrollment: json.enrollment ? EnrollmentResponse.fromJson(json.enrollment) : undefined,
@@ -46,11 +56,14 @@ export class AttendanceRecordDetailResponse {
       levelID: this.levelID,
       classID: this.classID,
       pathID: this.pathID,
-      checkinTime: this.checkinTime?.toISOString(),
       startAt: this.startAt?.toISOString(),
       endAt: this.endAt?.toISOString(),
+      checkInTime: this.checkInTime?.toISOString(),
+      checkOutTime: this.checkOutTime?.toISOString(),
       minuteLate: this.minuteLate,
-      status: this.status,
+      minuteSoon: this.minuteSoon,
+      statusCheckIn: this.statusCheckIn,
+      statusCheckOut: this.statusCheckOut,
       class: this.class?.toJson(),
       user: this.user?.toJSON(),
       enrollment: this.enrollment?.toJson(),

@@ -22,7 +22,7 @@ export default function Page(): React.JSX.Element {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
 
-  const { attendanceRecordsUsecase } = useDI();
+  const { attendanceRecordsUsecase, classUsecase, enrollUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetAttendanceRecordsRequest>(
@@ -123,7 +123,21 @@ export default function Page(): React.JSX.Element {
           {t('enrollUser')}
         </Button>
       </Stack>
-      <AttendanceRecordsFilters onFilter={handleFilter} />
+      <AttendanceRecordsFilters
+        onFilter={handleFilter}
+        classUsecase={classUsecase}
+        enrollUsecase={enrollUsecase}
+        form={filters}
+        handleChange={(field, value) => {
+          setFilters(
+            (prev) =>
+              new GetAttendanceRecordsRequest({
+                ...prev,
+                [field]: value,
+              })
+          );
+        }}
+      />
       <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>
         <AttendanceRecordsTable
           rows={attendanceRecordses}

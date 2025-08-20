@@ -76,8 +76,6 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         name: course.name || '',
         detail: course.detail || undefined,
         isRequired: course.isRequired || false,
-        startTime: course.startTime ? DateTimeUtils.formatISODateToString(course.startTime) : '',
-        endTime: course.endTime ? DateTimeUtils.formatISODateToString(course.endTime) : '',
         disableStatus:
           course.disableStatus !== undefined ? StatusEnum[course.disableStatus as keyof typeof StatusEnum] : undefined,
         displayType:
@@ -248,27 +246,6 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('startTime')}
-                value={formData.startTime}
-                onChange={(value) => {
-                  handleChange('startTime', value);
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('endTime')}
-                value={formData.endTime}
-                onChange={(value) => {
-                  handleChange('endTime', value);
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('disableStatus')}

@@ -46,8 +46,6 @@ export function CreateUserQuizProgressDialog({
     new CreateUserQuizRequest({
       userID: '',
       quizID: '',
-      assignedAt: new Date(),
-      isAutoSubmitted: true,
       progressStatus: UserProgressEnum.NotStarted,
       activeStatus: StatusEnum.Enable,
       enrollStatus: ApproveStatusEnum.Approve,
@@ -185,10 +183,10 @@ export function CreateUserQuizProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label={t('customStartTime')}
-                value={form.customStartTime ? DateTimeUtils.formatISODateToString(form.customStartTime) : undefined}
+                label={t('startTime')}
+                value={form.startTime ? DateTimeUtils.formatISODateToString(form.startTime) : undefined}
                 onChange={(value) => {
-                  handleChange('customStartTime', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('startTime', DateTimeUtils.formatStringToDateTime(value));
                 }}
                 disabled={disabled}
               />
@@ -196,10 +194,10 @@ export function CreateUserQuizProgressDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label={t('customEndTime')}
-                value={form.customEndTime ? DateTimeUtils.formatISODateToString(form.customEndTime) : undefined}
+                label={t('endTime')}
+                value={form.endTime ? DateTimeUtils.formatISODateToString(form.endTime) : undefined}
                 onChange={(value) => {
-                  handleChange('customEndTime', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('endTime', DateTimeUtils.formatStringToDateTime(value));
                 }}
                 disabled={disabled}
               />

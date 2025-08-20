@@ -24,7 +24,6 @@ export function UserQuizProgressFilters({
 }): React.JSX.Element {
   const { t } = useTranslation();
 
-  // Gom lại thành một object state
   const [form, setForm] = React.useState<Partial<GetUserQuizProgressRequest>>({
     searchText: '',
     progressStatus: undefined,
@@ -68,7 +67,9 @@ export function UserQuizProgressFilters({
         {/* Search */}
         <CustomSearchFilter
           value={form.searchText ?? ''}
-          onChange={(val) => { handleChange('searchText', val); }}
+          onChange={(val) => {
+            handleChange('searchText', val);
+          }}
           placeholder={t('searchProgress')}
         />
 
@@ -76,7 +77,9 @@ export function UserQuizProgressFilters({
         <CustomSelectFilter<UserQuizProgressEnum>
           label={t('status')}
           value={form.progressStatus}
-          onChange={(val) => { handleChange('progressStatus', val); }}
+          onChange={(val) => {
+            handleChange('progressStatus', val);
+          }}
           options={CoreEnumUtils.getEnumOptions(UserQuizProgressEnum)}
         />
 
@@ -84,7 +87,9 @@ export function UserQuizProgressFilters({
         <QuizSingleFilter
           quizUsecase={quizUsecase}
           value={form.quizId ?? ''}
-          onChange={(value) => { handleChange('quizId', value); }}
+          onChange={(value) => {
+            handleChange('quizId', value);
+          }}
           disabled={false}
         />
 
@@ -92,7 +97,9 @@ export function UserQuizProgressFilters({
         <EnrollmentSingleFilter
           enrollmentUsecase={enrollUsecase}
           value={form.enrollmentCriteriaId ?? ''}
-          onChange={(value: string) => { handleChange('enrollmentCriteriaId', value); }}
+          onChange={(value: string) => {
+            handleChange('enrollmentCriteriaId', value);
+          }}
           disabled={false}
           categoryEnum={CategoryEnum.Quiz}
         />

@@ -128,6 +128,7 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteUserQuizProgress={handleDeleteUserQuizProgress}
         onEditUserQuizProgress={handleEditUserQuizProgress}
+        onRefresh={fetchUserQuizProgress}
       />
 
       <CreateUserQuizProgressDialog

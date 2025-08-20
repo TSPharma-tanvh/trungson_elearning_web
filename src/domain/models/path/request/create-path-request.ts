@@ -4,8 +4,6 @@ export class CreateCoursePathRequest {
   name?: string;
   detail?: string;
   isRequired?: boolean;
-  startTime?: string;
-  endTime?: string;
   status?: StatusEnum;
   displayType?: DisplayTypeEnum;
   courseIds?: string;
@@ -27,8 +25,6 @@ export class CreateCoursePathRequest {
       name: json.name,
       detail: json.detail,
       isRequired: json.isRequired,
-      startTime: json.startTime,
-      endTime: json.endTime,
       status: json.status,
       displayType: json.displayType,
       courseIds: json.courseIds,
@@ -47,8 +43,6 @@ export class CreateCoursePathRequest {
       name: this.name,
       detail: this.detail,
       isRequired: this.isRequired,
-      startTime: this.startTime,
-      endTime: this.endTime,
       status: this.status,
       displayType: this.displayType,
       courseIds: this.courseIds,
@@ -68,8 +62,6 @@ export class CreateCoursePathRequest {
     if (this.name !== undefined) formData.append('Name', this.name);
     if (this.detail !== undefined) formData.append('Detail', this.detail);
     if (this.isRequired !== undefined) formData.append('IsRequired', this.isRequired.toString());
-    if (this.startTime !== undefined) formData.append('StartTime', this.startTime);
-    if (this.endTime !== undefined) formData.append('EndTime', this.endTime);
     if (this.status !== undefined) formData.append('Status', this.status.toString());
     if (this.displayType !== undefined) formData.append('DisplayType', this.displayType.toString());
     if (this.courseIds !== undefined) formData.append('CourseIds', this.courseIds);

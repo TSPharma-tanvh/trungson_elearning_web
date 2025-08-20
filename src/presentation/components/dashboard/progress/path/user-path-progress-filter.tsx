@@ -2,38 +2,54 @@
 
 import * as React from 'react';
 import { GetUserPathProgressRequest } from '@/domain/models/user-path/request/get-user-path-progress-request';
-import { CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
+import { EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
+import { PathUsecase } from '@/domain/usecases/path/path-usecase';
+import { CategoryEnum, CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
+import { PathSingleFilter } from '@/presentation/components/shared/courses/path/path-single-filter';
+import { EnrollmentSingleFilter } from '@/presentation/components/shared/enrollment/enrollment-single-filter';
 
 export function UserPathProgressFilters({
   onFilter,
+  pathUsecase,
+  enrollUsecase,
 }: {
   onFilter: (filters: GetUserPathProgressRequest) => void;
+  pathUsecase: PathUsecase;
+  enrollUsecase: EnrollmentUsecase;
 }): React.JSX.Element {
   const { t } = useTranslation();
-  const [searchText, setSearchText] = React.useState('');
-  const [_isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
-  const [status, setStatus] = React.useState<UserProgressEnum | undefined>(undefined);
+
+  // Gom form state vào 1 object
+  const [form, setForm] = React.useState<Partial<GetUserPathProgressRequest>>({
+    searchText: '',
+    status: undefined,
+    pathID: undefined,
+  });
+
+  const handleChange = <K extends keyof GetUserPathProgressRequest>(key: K, value: GetUserPathProgressRequest[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleFilter = () => {
     const request = new GetUserPathProgressRequest({
-      searchText: searchText || undefined,
-      status: status !== undefined ? UserProgressEnum[status] : undefined,
+      ...form,
       pageNumber: 1,
       pageSize: 10,
     });
-
     onFilter(request);
   };
 
   const handleClear = () => {
-    setSearchText('');
-    setIsRequired(undefined);
-    setStatus(undefined);
+    setForm({
+      searchText: '',
+      status: undefined,
+      pathID: undefined,
+    });
     onFilter(new GetUserPathProgressRequest({ pageNumber: 1, pageSize: 10 }));
   };
 
@@ -46,18 +62,46 @@ export function UserPathProgressFilters({
         border: '1px solid var(--mui-palette-primary-main)',
       }}
     >
-      {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchProgress')} />
+        {/* Search */}
+        <CustomSearchFilter
+          value={form.searchText ?? ''}
+          onChange={(val) => {
+            handleChange('searchText', val);
+          }}
+          placeholder={t('searchProgress')}
+        />
 
         {/* Status */}
-        <CustomSelectFilter<UserProgressEnum>
+        <CustomSelectFilter<string>
           label={t('status')}
-          value={status}
-          onChange={(val) => {
-            setStatus(val);
+          value={form.status}
+          onChange={(val) => handleChange('status', val)}
+          options={CoreEnumUtils.getEnumOptions(UserProgressEnum).map((opt) => ({
+            value: String(opt.value),
+            label: opt.label,
+          }))}
+        />
+
+        {/* Path */}
+        <PathSingleFilter
+          pathUsecase={pathUsecase}
+          value={form.pathID ?? ''}
+          onChange={(value: string) => {
+            handleChange('pathID', value);
           }}
-          options={CoreEnumUtils.getEnumOptions(UserProgressEnum)}
+          disabled={false}
+        />
+
+        {/* Enrollment Criteria */}
+        <EnrollmentSingleFilter
+          enrollmentUsecase={enrollUsecase}
+          value={form.enrollmentCriteriaId ?? ''}
+          onChange={(value: string) => {
+            handleChange('enrollmentCriteriaId', value);
+          }}
+          disabled={false}
+          categoryEnum={CategoryEnum.Path}
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

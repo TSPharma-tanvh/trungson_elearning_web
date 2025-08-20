@@ -174,8 +174,6 @@ export default function CoursePathTable({
                 <TableCell>{t('name')}</TableCell>
                 <TableCell>{t('detail')}</TableCell>
                 <TableCell>{t('required')}</TableCell>
-                <TableCell>{t('startTime')}</TableCell>
-                <TableCell>{t('endTime')}</TableCell>
                 <TableCell>{t('status')}</TableCell>
                 <TableCell>{t('displayType')}</TableCell>
                 <TableCell>{t('category')}</TableCell>
@@ -220,8 +218,6 @@ export default function CoursePathTable({
                         <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
                       )}
                     </TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateStringToString(row.startTime ?? '')}</TableCell>
-                    <TableCell>{DateTimeUtils.formatISODateStringToString(row.endTime ?? '')}</TableCell>
                     <TableCell>
                       {row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}
                     </TableCell>

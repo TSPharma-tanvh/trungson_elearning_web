@@ -32,6 +32,7 @@ interface UserQuizProgressTableProps {
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteUserQuizProgress: (id: string, quizId: string) => Promise<void>;
   onEditUserQuizProgress: (data: UpdateUserQuizRequest) => Promise<void>;
+  onRefresh: () => Promise<void>;
 }
 
 export default function UserQuizProgressTable({
@@ -43,6 +44,7 @@ export default function UserQuizProgressTable({
   onRowsPerPageChange,
   onDeleteUserQuizProgress,
   onEditUserQuizProgress,
+  onRefresh,
 }: UserQuizProgressTableProps) {
   const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
@@ -169,7 +171,7 @@ export default function UserQuizProgressTable({
             },
           },
           {
-            label: t('editScore'),
+            label: t('gradeQuiz'),
             onClick: (row) => {
               setEditUserQuizProgressData(row);
               setScoreOpen(true);
@@ -184,12 +186,15 @@ export default function UserQuizProgressTable({
         ]}
         renderHeader={() => (
           <>
-            <TableCell>{t('id')}</TableCell>
             <TableCell>{t('quizName')}</TableCell>
-            <TableCell>{t('userName')}</TableCell>
             <TableCell>{t('fullName')}</TableCell>
             <TableCell>{t('gender')}</TableCell>
             <TableCell>{t('score')}</TableCell>
+            <TableCell>{t('totalScore')}</TableCell>
+            <TableCell>{t('scoreToPass')}</TableCell>
+            <TableCell>{t('totalQuestion')}</TableCell>
+            <TableCell>{t('attempts')}</TableCell>
+            <TableCell>{t('maxAttempts')}</TableCell>
             <TableCell>{t('startDate')}</TableCell>
             <TableCell>{t('endDate')}</TableCell>
             <TableCell>{t('startedAt')}</TableCell>
@@ -227,16 +232,6 @@ export default function UserQuizProgressTable({
             >
               {t('currentDepartmentName')}
             </TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('currentPositionStateName')}
-            </TableCell>
 
             <TableCell>{t('cityName')}</TableCell>
           </>
@@ -244,16 +239,6 @@ export default function UserQuizProgressTable({
         renderRow={(row, isSelected, onSelect, onActionClick) => {
           return (
             <>
-              <TableCell
-                sx={{
-                  minWidth: 150,
-                  whiteSpace: 'normal',
-                  wordBreak: 'break-word',
-                }}
-              >
-                {row.id}
-              </TableCell>
-
               <TableCell
                 sx={{
                   minWidth: 150,
@@ -271,10 +256,6 @@ export default function UserQuizProgressTable({
                   wordBreak: 'break-word',
                 }}
               >
-                {row.user?.userName}
-              </TableCell>
-
-              <TableCell sx={{ width: '10%' }}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar
                     src={
@@ -283,12 +264,17 @@ export default function UserQuizProgressTable({
                         : row.user?.thumbnail?.resourceUrl
                     }
                   >
-                    {row.user?.employee?.name?.[0]}
+                    {row.user?.employee?.name?.[0] || row.user?.userName?.[0]}
                   </Avatar>
                   <Box>
                     <Typography variant="subtitle2" noWrap>
-                      {row.user?.employee?.name}
+                      {row.user?.employee?.name || row.user?.userName}
                     </Typography>
+                    {row.user?.userName && (
+                      <Typography variant="body2" color="text.secondary" noWrap>
+                        {row.user?.userName}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
               </TableCell>
@@ -296,6 +282,11 @@ export default function UserQuizProgressTable({
               <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
 
               <TableCell>{row.score}</TableCell>
+              <TableCell>{row.quiz?.totalScore}</TableCell>
+              <TableCell>{row.quiz?.scoreToPass}</TableCell>
+              <TableCell>{row.quiz?.totalQuestion}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.attempts}</TableCell>
+              <TableCell>{row.quiz?.maxAttempts}</TableCell>
               <TableCell>{row.startTime ? DateTimeUtils.formatDateTimeToDateString(row.startTime) : ''}</TableCell>
               <TableCell>{row.endTime ? DateTimeUtils.formatDateTimeToDateString(row.endTime) : ''}</TableCell>
               <TableCell>{row.startedAt ? DateTimeUtils.formatDateTimeToDateString(row.startedAt) : ''}</TableCell>
@@ -312,7 +303,6 @@ export default function UserQuizProgressTable({
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentDepartmentName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
               <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
 
               <TableCell align="right">
@@ -333,12 +323,14 @@ export default function UserQuizProgressTable({
         <UpdateUserQuizProgressFormDialog
           open={editOpen}
           data={editUserQuizProgressData}
-          onClose={() => {
+          onClose={async () => {
             setEditOpen(false);
+            await onRefresh();
           }}
           onSubmit={async (updatedData) => {
             await onEditUserQuizProgress(updatedData);
             setEditOpen(false);
+            await onRefresh();
           }}
         />
       ) : null}
@@ -357,12 +349,14 @@ export default function UserQuizProgressTable({
         <UpdateUserQuizScoreFormDialog
           open={scoreOpen}
           data={editUserQuizProgressData}
-          onClose={() => {
+          onClose={async () => {
             setScoreOpen(false);
+            await onRefresh();
           }}
           onSubmit={async (updatedData) => {
             await onEditUserQuizProgress(updatedData);
             setScoreOpen(false);
+            await onRefresh();
           }}
         />
       ) : null}

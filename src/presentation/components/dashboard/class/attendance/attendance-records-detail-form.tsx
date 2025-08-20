@@ -128,29 +128,18 @@ function AttendanceRecordDetails({
         <CardContent>
           <Grid container spacing={2}>
             {renderField('recordId', attendanceRecord.id)}
-            {renderField(
-              'status',
-              attendanceRecord.status
-                ? t(attendanceRecord.status.charAt(0).toLowerCase() + t(attendanceRecord.status).slice(1))
-                : ''
-            )}
+
             {renderField('userId', attendanceRecord.userID)}
             {renderField('classId', attendanceRecord.classID)}
             {renderField('classId', attendanceRecord.classID)}
-
-            {renderField(
-              'checkinTime',
-              attendanceRecord.checkinTime !== undefined
-                ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.checkinTime)
-                : ''
-            )}
-
             {renderField(
               'startAt',
               attendanceRecord.startAt !== undefined
                 ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.startAt)
                 : ''
             )}
+            {renderField('minuteLate', attendanceRecord.minuteLate)}
+            {renderField('minuteSoon', attendanceRecord.minuteSoon)}
 
             {renderField(
               'endAt',
@@ -158,8 +147,34 @@ function AttendanceRecordDetails({
                 ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.endAt)
                 : ''
             )}
+            {renderField(
+              'statusCheckIn',
+              attendanceRecord.statusCheckIn
+                ? t(attendanceRecord.statusCheckIn.charAt(0).toLowerCase() + t(attendanceRecord.statusCheckIn).slice(1))
+                : ''
+            )}
+            {renderField(
+              'checkInTime',
+              attendanceRecord.checkInTime !== undefined
+                ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.checkInTime)
+                : ''
+            )}
 
-            {renderField('minuteLate', attendanceRecord.minuteLate)}
+            {renderField(
+              'statusCheckOut',
+              attendanceRecord.statusCheckOut
+                ? t(
+                    attendanceRecord.statusCheckOut.charAt(0).toLowerCase() +
+                      t(attendanceRecord.statusCheckOut).slice(1)
+                  )
+                : ''
+            )}
+            {renderField(
+              'checkOutTime',
+              attendanceRecord.checkOutTime !== undefined
+                ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.checkOutTime)
+                : ''
+            )}
           </Grid>
         </CardContent>
       </Card>

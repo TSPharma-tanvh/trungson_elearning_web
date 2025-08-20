@@ -9,8 +9,6 @@ export class CoursePathResponse {
   name?: string;
   detail?: string;
   isRequired?: boolean;
-  startTime?: string;
-  endTime?: string;
   status?: string;
   displayType?: string;
   categoryID?: string;
@@ -27,8 +25,6 @@ export class CoursePathResponse {
     dto.name = json.name;
     dto.detail = json.detail;
     dto.isRequired = json.isRequired;
-    dto.startTime = json.startTime;
-    dto.endTime = json.endTime;
     dto.status = json.status;
     dto.displayType = json.displayType;
     dto.categoryID = json.categoryID;
@@ -53,8 +49,6 @@ export class CoursePathResponse {
       name: this.name,
       detail: this.detail,
       isRequired: this.isRequired,
-      startTime: this.startTime,
-      endTime: this.endTime,
       status: this.status,
       displayType: this.displayType,
       categoryID: this.categoryID,

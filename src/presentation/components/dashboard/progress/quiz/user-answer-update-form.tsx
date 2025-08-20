@@ -11,18 +11,20 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   Grid,
   IconButton,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { ListNumbers } from '@phosphor-icons/react';
+import { ListNumbers, TextAlignLeft } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -30,7 +32,7 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 
 interface AnswerDetailDialogProps {
   open: boolean;
-  answer: UserAnswerResponse;
+  answer: UserAnswerResponse | null;
   questionId: string;
   onClose: () => void;
   onSaved: () => void;
@@ -42,12 +44,31 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
   const { t } = useTranslation();
   const { questionUsecase, userAnswerUsecase } = useDI();
 
-  const [fullScreen, setFullScreen] = useState(false);
-  const [score, setScore] = useState(answer.score?.toString() ?? '');
+  const [id, setId] = useState('');
+  const [answerText, setAnswerText] = useState('');
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [score, setScore] = useState('');
   const [isScoreValid, setIsScoreValid] = useState(true);
   const [question, setQuestion] = useState<QuestionResponse | null>(null);
+
   const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fullScreen, setFullScreen] = useState(false);
+
+  useEffect(() => {
+    if (open && answer) {
+      setId(answer.id ?? '');
+      setAnswerText(answer.answerText ?? '');
+      setIsCorrect(answer.isCorrect ?? false);
+      setScore(answer.score?.toString() ?? '');
+    } else {
+      setId('');
+      setAnswerText('');
+      setIsCorrect(false);
+      setScore('');
+      setQuestion(null);
+    }
+  }, [open, answer]);
 
   useEffect(() => {
     if (open && questionId) {
@@ -55,41 +76,39 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
       questionUsecase
         .getQuestionById(questionId)
         .then(setQuestion)
-        .catch((error) => {
-          CustomSnackBar.showSnackbar('Lỗi khi lấy chi tiết câu hỏi', 'error');
-          console.error('Failed to fetch question:', error);
+        .catch(() => {
+          return;
         })
         .finally(() => setIsLoadingQuestion(false));
     }
   }, [open, questionId, questionUsecase]);
 
   const handleSave = async () => {
-    const numericValue = /^\d+$/.test(score) ? Number(score) : undefined;
+    const numericValue = score !== '' && !isNaN(Number(score)) ? Number(score) : undefined;
+
     if (numericValue !== undefined && question?.point !== undefined && numericValue > question.point) {
-      CustomSnackBar.showSnackbar(`Điểm không được vượt quá ${question.point}`, 'error');
+      CustomSnackBar.showSnackbar(t('scoreExceed', { point: question.point }), 'error');
       return;
     }
-
     setIsSubmitting(true);
 
     const req = new UpdateUserAnswerRequest({
-      id: answer.id ?? '',
-      score: numericValue ?? null,
+      id,
+      score: numericValue,
       answerText:
         question?.questionType === QuestionEnum[QuestionEnum.LongAnswer] ||
         question?.questionType === QuestionEnum[QuestionEnum.ShortAnswer]
-          ? answer.answerText ?? ''
+          ? answerText
           : null,
-      isCorrect: answer.isCorrect ?? null,
+      isCorrect,
     });
 
     try {
-      const result = await userAnswerUsecase.updateUserAnswer(req);
-
+      await userAnswerUsecase.updateUserAnswer(req);
       onSaved();
       onClose();
     } catch (e) {
-      return;
+      console.error(e);
     } finally {
       setIsSubmitting(false);
     }
@@ -158,18 +177,23 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
               <Typography variant="body2" sx={{ mt: 1 }}>
                 {t('score')}: {question.point ?? 0}
               </Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                {t('questionType')}:{' '}
+                {question.questionType
+                  ? t(question.questionType.charAt(0).toLowerCase() + t(question.questionType).slice(1))
+                  : ''}
+              </Typography>
             </>
           ) : (
             <Typography variant="body2">{t('questionDataNotAvailable')}</Typography>
           )}
+
           <Grid container spacing={2} sx={{ mt: 2 }}>
-            {renderField('answerId', answer.id)}
-            {renderField('questionId', answer.questionID)}
-            {renderField('answerText', answer.answerText)}
-            {renderField('answeredAt', DateTimeUtils.formatISODateToString(answer.answeredAt))}
-            {renderField('elapsedSeconds', answer.elapsedSeconds)}
-            {renderField('sessionID', answer.sessionID)}
-            {answer.selectedAnswers?.map((sa, saIndex) => (
+            {renderField('answerId', id)}
+            {renderField('questionId', answer?.questionID)}
+            {renderField('answerText', answer?.answerText)}
+
+            {answer?.selectedAnswers?.map((sa, saIndex) => (
               <Grid item xs={12} key={sa.id ?? saIndex}>
                 <Typography variant="body2" fontWeight={500}>
                   {t('selectedAnswer')} {saIndex + 1}:
@@ -177,19 +201,51 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
                 <Typography variant="body2">{sa.answer?.answerText ?? '-'}</Typography>
               </Grid>
             ))}
+
+            {renderField('answeredAt', DateTimeUtils.formatDateTimeToDateString(answer?.answeredAt))}
+
+            {/* Score input */}
             <Grid item xs={12}>
               <CustomTextField
                 label={t('answerScore')}
                 value={score}
                 onChange={(value) => {
                   setScore(value);
-                  const isValid = /^\d+$/.test(value) || value === '';
+                  const isValid = /^(\d+(\.\d*)?|\.\d+)?$/.test(value) || value === '';
                   setIsScoreValid(isValid);
                 }}
                 disabled={isSubmitting}
                 icon={<ListNumbers size={20} weight="fill" color="#616161" />}
-                inputMode="numeric"
+                inputMode="decimal"
                 onValidationChange={setIsScoreValid}
+              />
+            </Grid>
+
+            {/* Answer Text */}
+            {(question?.questionType === QuestionEnum[QuestionEnum.LongAnswer] ||
+              question?.questionType === QuestionEnum[QuestionEnum.ShortAnswer]) && (
+              <Grid item xs={12}>
+                <CustomTextField
+                  label={t('answerText')}
+                  value={answerText}
+                  onChange={setAnswerText}
+                  disabled={isSubmitting}
+                  icon={<TextAlignLeft size={20} weight="fill" color="#616161" />}
+                />
+              </Grid>
+            )}
+
+            {/* Is Correct */}
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isCorrect}
+                    onChange={(e) => setIsCorrect(e.target.checked)}
+                    disabled={isSubmitting}
+                  />
+                }
+                label={t('isCorrect')}
               />
             </Grid>
           </Grid>

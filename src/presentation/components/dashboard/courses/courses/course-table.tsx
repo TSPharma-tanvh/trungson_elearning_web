@@ -98,8 +98,6 @@ export default function CourseTable({
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('pathName')}</TableCell>
             <TableCell>{t('required')}</TableCell>
-            <TableCell>{t('startTime')}</TableCell>
-            <TableCell>{t('endTime')}</TableCell>
             <TableCell>{t('disableStatus')}</TableCell>
             <TableCell>{t('courseType')}</TableCell>
             <TableCell>{t('scheduleStatus')}</TableCell>
@@ -130,8 +128,6 @@ export default function CourseTable({
                 <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
               )}
             </TableCell>{' '}
-            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.startTime)}</TableCell>
-            <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.endTime)}</TableCell>
             <TableCell>
               {row.disableStatus ? t(row.disableStatus.charAt(0).toLowerCase() + t(row.disableStatus).slice(1)) : ''}
             </TableCell>

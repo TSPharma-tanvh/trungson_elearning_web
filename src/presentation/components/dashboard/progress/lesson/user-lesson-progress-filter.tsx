@@ -2,38 +2,56 @@
 
 import * as React from 'react';
 import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
-import { CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
+import { CourseSingleFilter } from '@/presentation/components/shared/courses/courses/course-single-filter';
+import { LessonSingleFilter } from '@/presentation/components/shared/courses/lessons/lesson-single-filter';
 
 export function UserLessonProgressFilters({
   onFilter,
+  courseUsecase,
+  lessonUsecase,
 }: {
   onFilter: (filters: GetUserLessonProgressRequest) => void;
+  courseUsecase: any;
+  lessonUsecase: any;
 }): React.JSX.Element {
   const { t } = useTranslation();
-  const [searchText, setSearchText] = React.useState('');
-  const [_isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
-  const [status, setStatus] = React.useState<UserProgressEnum | undefined>(undefined);
+
+  const [form, setForm] = React.useState<Partial<GetUserLessonProgressRequest>>({
+    searchText: '',
+    status: undefined,
+    courseID: undefined,
+    lessonID: undefined,
+  });
+
+  const handleChange = <K extends keyof GetUserLessonProgressRequest>(
+    key: K,
+    value: GetUserLessonProgressRequest[K]
+  ) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleFilter = () => {
     const request = new GetUserLessonProgressRequest({
-      searchText: searchText || undefined,
-      status: status !== undefined ? UserProgressEnum[status] : undefined,
+      ...form,
       pageNumber: 1,
       pageSize: 10,
     });
-
     onFilter(request);
   };
 
   const handleClear = () => {
-    setSearchText('');
-    setIsRequired(undefined);
-    setStatus(undefined);
+    setForm({
+      searchText: '',
+      status: undefined,
+      courseID: undefined,
+      lessonID: undefined,
+    });
     onFilter(new GetUserLessonProgressRequest({ pageNumber: 1, pageSize: 10 }));
   };
 
@@ -46,18 +64,39 @@ export function UserLessonProgressFilters({
         border: '1px solid var(--mui-palette-primary-main)',
       }}
     >
-      {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchProgress')} />
+        {/* Search */}
+        <CustomSearchFilter
+          value={form.searchText ?? ''}
+          onChange={(val) => handleChange('searchText', val)}
+          placeholder={t('searchProgress')}
+        />
 
         {/* Status */}
-        <CustomSelectFilter<UserProgressEnum>
+        <CustomSelectFilter<string>
           label={t('status')}
-          value={status}
-          onChange={(val) => {
-            setStatus(val);
-          }}
-          options={CoreEnumUtils.getEnumOptions(UserProgressEnum)}
+          value={form.status}
+          onChange={(val) => handleChange('status', val ?? '')}
+          options={CoreEnumUtils.getEnumOptions(UserProgressEnum).map((opt) => ({
+            value: String(opt.value),
+            label: opt.label,
+          }))}
+        />
+
+        {/* Course */}
+        <CourseSingleFilter
+          courseUsecase={courseUsecase}
+          value={form.courseID ?? ''}
+          onChange={(value: string) => handleChange('courseID', value)}
+          disabled={false}
+        />
+
+        {/* Lesson */}
+        <LessonSingleFilter
+          lessonUsecase={lessonUsecase}
+          value={form.lessonID ?? ''}
+          onChange={(value: string) => handleChange('lessonID', value)}
+          disabled={false}
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

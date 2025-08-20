@@ -1,4 +1,4 @@
-import { DateTimeUtils } from "@/utils/date-time-utils";
+import { DateTimeUtils } from '@/utils/date-time-utils';
 
 export class UpdateAttendanceRecordsRequest {
   id!: string;

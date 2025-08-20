@@ -1,6 +1,7 @@
 export class GetUserLessonProgressRequest {
   userID?: string;
   lessonID?: string;
+  courseID?: string;
   progress?: number;
   startDate?: Date;
   endDate?: Date;
@@ -18,6 +19,7 @@ export class GetUserLessonProgressRequest {
     const dto = new GetUserLessonProgressRequest();
     dto.userID = json.userID;
     dto.lessonID = json.lessonID;
+    dto.courseID = json.courseID;
     dto.progress = json.progress;
     dto.startDate = json.startDate ? new Date(json.startDate) : undefined;
     dto.endDate = json.endDate ? new Date(json.endDate) : undefined;
@@ -33,6 +35,7 @@ export class GetUserLessonProgressRequest {
     return {
       userID: this.userID,
       lessonID: this.lessonID,
+      courseID: this.courseID,
       progress: this.progress,
       startDate: this.startDate?.toISOString(),
       endDate: this.endDate?.toISOString(),

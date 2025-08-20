@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class UpdateUserLessonRequest {
   id!: string;
   userID?: string;
@@ -31,8 +33,8 @@ export class UpdateUserLessonRequest {
       userID: this.userID,
       lessonID: this.lessonID,
       progress: this.progress,
-      startDate: this.startDate?.toISOString(),
-      endDate: this.endDate?.toISOString(),
+      startDate: this.startDate ? DateTimeUtils.formatISODateToString(this.startDate) : undefined,
+      endDate: this.endDate ? DateTimeUtils.formatISODateToString(this.endDate) : undefined,
       lastAccess: this.lastAccess?.toISOString(),
       status: this.status,
     };
