@@ -14,5 +14,7 @@ export interface UserCourseProgressRepository {
 
   updateUserCourseProgress: (request: UpdateUserCourseProgressRequest) => Promise<ApiResponse>;
 
+  deleteUserCourseProgress: (id: string) => Promise<ApiResponse>;
+
   enrollUserListToCourse: (request: EnrollUserListToCourseRequest) => Promise<ApiResponse>;
 }

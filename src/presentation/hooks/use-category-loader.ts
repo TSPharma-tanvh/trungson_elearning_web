@@ -1,4 +1,3 @@
-import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
 import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
@@ -12,6 +11,7 @@ interface UseCategoryLoaderProps {
   categoryUsecase: CategoryUsecase | null;
   isOpen: boolean;
   categoryEnum: CategoryEnum;
+  searchText?: string;
 }
 
 interface CategoryLoaderState {
@@ -32,6 +32,7 @@ export function useCategoryLoader({
   categoryUsecase,
   isOpen,
   categoryEnum,
+  searchText: initialSearchText = '',
 }: UseCategoryLoaderProps): CategoryLoaderState {
   const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -42,7 +43,7 @@ export function useCategoryLoader({
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState(initialSearchText);
 
   const loadCategories = async (page: number, reset = false) => {
     if (!categoryUsecase || loadingCategories || !isOpen) return;
@@ -55,16 +56,16 @@ export function useCategoryLoader({
         category: CategoryEnumUtils.getCategoryKeyFromValue(categoryEnum),
         pageNumber: page,
         pageSize: 10,
-        searchText,
+        searchText: searchText || undefined,
       });
 
       const result: CategoryListResult = await categoryUsecase.getCategoryList(request);
 
       if (isOpen) {
-        setCategories(() => (reset || page === 1 ? result.categories : result.categories));
+        setCategories((prev) => (reset || page === 1 ? result.categories : [...prev, ...result.categories]));
         setHasMore(
           result.categories.length > 0 &&
-            result.totalRecords > (reset ? 0 : categories.length + result.categories.length)
+            result.totalRecords > (reset ? result.categories.length : categories.length + result.categories.length)
         );
         setPageNumber(page);
         setTotalPages(Math.ceil(result.totalRecords / 10));
@@ -96,7 +97,7 @@ export function useCategoryLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen, categoryEnum]);
+  }, [isOpen, categoryEnum, searchText]);
 
   return {
     categories,

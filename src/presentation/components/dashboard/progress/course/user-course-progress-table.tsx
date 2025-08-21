@@ -97,7 +97,6 @@ export default function UserCourseProgressTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteUserCourseProgresss}
-        deleteConfirmHeaderTitle={t('markDone')}
         actionMenuItems={[
           {
             label: t('viewDetails'),

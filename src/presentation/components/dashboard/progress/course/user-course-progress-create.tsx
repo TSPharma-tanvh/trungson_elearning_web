@@ -173,6 +173,19 @@ export function CreateUserCourseProgressDialog({
               />
             </Grid>
 
+            <Grid item xs={12}>
+              <EnrollmentSingleSelect
+                enrollmentUsecase={enrollUsecase}
+                value={form.quizEnrollmentCriteriaID ?? ''}
+                onChange={(value: string) => {
+                  handleChange('quizEnrollmentCriteriaID', value);
+                }}
+                disabled={false}
+                categoryEnum={CategoryEnum.Quiz}
+                label="quizEnrollmentCriteria"
+              />
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startTime')}
@@ -222,6 +235,22 @@ export function CreateUserCourseProgressDialog({
                 options={[
                   { value: ApproveStatusEnum.Approve, label: 'approve' },
                   { value: ApproveStatusEnum.Reject, label: 'reject' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<UserProgressEnum>
+                label={t('status')}
+                value={form.status}
+                onChange={(val) => {
+                  handleChange('status', val);
+                }}
+                disabled={disabled}
+                options={[
+                  { value: UserProgressEnum.NotStarted, label: 'notStarted' },
+                  { value: UserProgressEnum.Ongoing, label: 'ongoing' },
+                  { value: UserProgressEnum.Done, label: 'done' },
                 ]}
               />
             </Grid>

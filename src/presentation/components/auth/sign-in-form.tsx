@@ -33,7 +33,7 @@ const schema = zod.object({
 
 type Values = zod.infer<typeof schema>;
 
-const defaultValues = { email: 'admin', password: 'admin123' } satisfies Values;
+// const defaultValues = { email: 'admin', password: 'admin123' } satisfies Values;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
@@ -52,7 +52,7 @@ export function SignInForm(): React.JSX.Element {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
+  } = useForm<Values>({ resolver: zodResolver(schema) });
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
@@ -85,12 +85,12 @@ export function SignInForm(): React.JSX.Element {
     <Stack spacing={4}>
       <Stack spacing={1}>
         <Typography variant="h4">{t('signIn')}</Typography>
-        <Typography color="text.secondary" variant="body2">
+        {/* <Typography color="text.secondary" variant="body2">
           {t('dontHaveAnAccount')}{' '}
           <Link component={RouterLink} href={paths.auth.signUp} underline="hover" variant="subtitle2">
             {t('signUp')}
           </Link>
-        </Typography>
+        </Typography> */}
       </Stack>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
@@ -99,8 +99,8 @@ export function SignInForm(): React.JSX.Element {
             name="email"
             render={({ field }) => (
               <FormControl>
-                <InputLabel> {t('email')}</InputLabel>
-                <OutlinedInput {...field} label={t('email')} />
+                <InputLabel> {t('username')}</InputLabel>
+                <OutlinedInput {...field} label={t('username')} />
                 {/* {errors.email ? <FormHelperText>{errors.email.message}</FormHelperText> : null} */}
               </FormControl>
             )}
@@ -139,27 +139,17 @@ export function SignInForm(): React.JSX.Element {
               </FormControl>
             )}
           />
-          <div>
+          {/* <div>
             <Link component={RouterLink} href={paths.auth.resetPassword} variant="subtitle2">
               {t('forgotPassword')}
             </Link>
-          </div>
+          </div> */}
           {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
           <Button disabled={isPending} type="submit" variant="contained">
             {t('signIn')}
           </Button>
         </Stack>
       </form>
-      <Alert color="warning">
-        Use{' '}
-        <Typography component="span" sx={{ fontWeight: 700 }} variant="inherit">
-          admin{' '}
-        </Typography>{' '}
-        with password{' '}
-        <Typography component="span" sx={{ fontWeight: 700 }} variant="inherit">
-          admin123
-        </Typography>
-      </Alert>
     </Stack>
   );
 }

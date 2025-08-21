@@ -149,3 +149,8 @@ export const StatusDisplayNames: Record<StatusEnum, string> = {
   [StatusEnum.Disable]: 'disabled',
   [StatusEnum.Deleted]: 'deleted',
 };
+
+export function mapEnrollmentTypeToCategoryEnum(type: string): CategoryEnum | undefined {
+  const key = type as keyof typeof CategoryEnum;
+  return CategoryEnum[key];
+}

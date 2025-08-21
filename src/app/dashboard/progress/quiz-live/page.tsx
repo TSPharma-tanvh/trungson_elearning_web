@@ -25,7 +25,8 @@ export default function Page(): React.JSX.Element {
   const [totalCount, setTotalCount] = React.useState(0);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [intervalId, setIntervalId] = React.useState<NodeJS.Timeout | null>(null);
+
+  const [intervalId, setIntervalId] = React.useState<ReturnType<typeof setInterval> | null>(null);
 
   const fetchUserQuizProgress = React.useCallback(async () => {
     try {
@@ -47,7 +48,6 @@ export default function Page(): React.JSX.Element {
       setTotalCount(totalRecords);
     } catch (error) {
       resetAll();
-
       CustomSnackBar.showSnackbar(t('fetchError') ?? '', 'error');
     }
   }, [filters, page, rowsPerPage, userQuizProgressUsecase, intervalId, t]);

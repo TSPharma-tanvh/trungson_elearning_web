@@ -7,9 +7,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { UsersFour } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
 interface EnrollmentCreateProps {
@@ -27,8 +30,11 @@ export function CreateEnrollmentDialog({
   open,
   onClose,
 }: EnrollmentCreateProps) {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
+  const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState<CreateEnrollmentCriteriaRequest>(
     new CreateEnrollmentCriteriaRequest({
@@ -73,11 +79,29 @@ export function CreateEnrollmentDialog({
     };
   }, [fullScreen]);
 
+  const handleSave = async () => {
+    setIsSubmitting(true);
+    try {
+      const allValid = Object.values(fieldValidations).every((v) => v);
+      if (!allValid) {
+        CustomSnackBar.showSnackbar(t('someFieldsAreInvalid'), 'error');
+        return;
+      }
+
+      onSubmit(form);
+      onClose();
+    } catch (error) {
+      return undefined;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          Create Enrollment
+          {t('createEnrollment')}
         </Typography>
         <Box>
           <IconButton
@@ -120,23 +144,23 @@ export function CreateEnrollmentDialog({
           >
             <Grid item xs={12}>
               <CustomTextField
-                label="Tên khóa học"
+                label={t('name')}
                 value={form.name}
                 onChange={(val) => {
                   handleChange('name', val);
                 }}
-                disabled={disabled}
+                disabled={isSubmitting}
               />
             </Grid>
 
             <Grid item xs={12}>
               <CustomTextField
-                label="Chi tiết"
+                label={t('detail')}
                 value={form.desc}
                 onChange={(val) => {
                   handleChange('desc', val);
                 }}
-                disabled={disabled}
+                disabled={isSubmitting}
                 multiline
                 rows={detailRows}
                 sx={{
@@ -150,48 +174,66 @@ export function CreateEnrollmentDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
-                label="Trạng thái"
+                label={t('status')}
                 value={form.enrollmentStatus}
                 onChange={(val) => {
                   handleChange('enrollmentStatus', val);
                 }}
-                disabled={disabled}
+                disabled={isSubmitting}
                 options={[
-                  { value: StatusEnum.Enable, label: 'Kích hoạt' },
-                  { value: StatusEnum.Disable, label: 'Tạm khóa' },
-                  { value: StatusEnum.Deleted, label: 'Xoá' },
+                  { value: StatusEnum.Enable, label: 'enable' },
+                  { value: StatusEnum.Disable, label: 'disable' },
+                  { value: StatusEnum.Deleted, label: 'delete' },
                 ]}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<CategoryEnum>
-                label="Enrollment Criteria Type"
+                label={t('type')}
                 value={form.enrollmentCriteriaType ?? CategoryEnum.Path}
                 onChange={(val) => {
                   handleChange('enrollmentCriteriaType', val);
                 }}
-                disabled={disabled}
+                disabled={isSubmitting}
                 options={[
-                  { value: CategoryEnum.Path, label: 'Lộ trình' },
-                  { value: CategoryEnum.Course, label: 'Khóa học' },
-                  { value: CategoryEnum.Lesson, label: 'Bài học' },
-                  { value: CategoryEnum.Class, label: 'Lớp học' },
-                  { value: CategoryEnum.Quiz, label: 'Bài kiểm tra' },
-                  { value: CategoryEnum.Question, label: 'Câu hỏi' },
-                  { value: CategoryEnum.Answer, label: 'Câu trả lời' },
-                  { value: CategoryEnum.Criteria, label: 'Tiêu chí' },
+                  { value: CategoryEnum.Path, label: 'path' },
+                  { value: CategoryEnum.Course, label: 'course' },
+                  { value: CategoryEnum.Lesson, label: 'lesson' },
+                  { value: CategoryEnum.Class, label: 'class' },
+                  { value: CategoryEnum.Quiz, label: 'quiz' },
+                  { value: CategoryEnum.Question, label: 'question' },
+                  { value: CategoryEnum.Answer, label: 'answer' },
+                  { value: CategoryEnum.Criteria, label: 'criteria' },
                 ]}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                label={t('maxCapacity')}
+                value={form.maxCapacity?.toString() ?? ''}
+                onChange={(value) => {
+                  const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
+                  handleChange('maxCapacity', numericValue ?? 0);
+                }}
+                disabled={isSubmitting}
+                icon={<UsersFour />}
+                inputMode="numeric"
+                onValidationChange={(isValid) => {
+                  setFieldValidations((prev) => ({ ...prev, minuteLate: isValid }));
+                }}
+              />
+            </Grid>
+
             <Grid item xs={12}>
               <CustomButton
-                label="Tạo mới"
+                label={t('create')}
                 onClick={() => {
-                  onSubmit(form);
+                  handleSave();
                 }}
                 loading={loading}
-                disabled={disabled}
+                disabled={isSubmitting}
               />
             </Grid>
           </Grid>

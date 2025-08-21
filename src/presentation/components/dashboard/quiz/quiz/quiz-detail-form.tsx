@@ -178,7 +178,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="Attached Files" />
+        <CardHeader title={t('attachedFiles')} />
         <CardContent>
           <Grid container spacing={2}>
             {quiz.fileQuizRelation.map((r) => {

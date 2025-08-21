@@ -149,8 +149,6 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
                     {renderField(t('status'), course.disableStatus)}
                     {renderField(t('courseType'), course.courseType)}
                     {renderField(t('displayType'), course.displayType)}
-                    {renderField(t('startTime'), DateTimeUtils.formatDateTimeToDateString(course.startTime))}
-                    {renderField(t('endTime'), DateTimeUtils.formatDateTimeToDateString(course.endTime))}
                     {renderField(t('meetingLink'), course.meetingLink)}
                   </Grid>
                 </CardContent>

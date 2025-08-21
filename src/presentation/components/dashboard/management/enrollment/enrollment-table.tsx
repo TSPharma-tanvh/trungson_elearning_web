@@ -97,7 +97,7 @@ export default function EnrollmentTable({
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('targetType')}</TableCell>
             <TableCell>{t('maxCapacity')}</TableCell>
-            <TableCell>{t('disableStatus')}</TableCell>
+            <TableCell>{t('status')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -114,9 +114,17 @@ export default function EnrollmentTable({
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
               <Typography variant="body2">{row.desc}</Typography>
             </TableCell>
-            <TableCell>{row.enrollmentCriteriaType}</TableCell>
+            <TableCell>
+              {row.enrollmentCriteriaType
+                ? t(row.enrollmentCriteriaType.charAt(0).toLowerCase() + t(row.enrollmentCriteriaType).slice(1))
+                : ''}
+            </TableCell>
             <TableCell>{row.maxCapacity}</TableCell>
-            <TableCell>{row.enrollmentStatus}</TableCell>
+            <TableCell>
+              {row.enrollmentStatus
+                ? t(row.enrollmentStatus.charAt(0).toLowerCase() + t(row.enrollmentStatus).slice(1))
+                : ''}
+            </TableCell>
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

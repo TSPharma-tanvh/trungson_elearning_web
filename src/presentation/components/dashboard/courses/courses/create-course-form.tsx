@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
-import { CategoryEnum, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -34,6 +34,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
       disableStatus: StatusEnum.Enable,
       displayType: DisplayTypeEnum.Public,
       categoryEnum: CategoryEnum.Path,
+      courseType: LearningModeEnum.Offline,
     })
   );
 
@@ -169,6 +170,21 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                 options={[
                   { value: DisplayTypeEnum.Public, label: t('public') },
                   { value: DisplayTypeEnum.Private, label: t('private') },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<LearningModeEnum>
+                label={t('courseType')}
+                value={form.courseType}
+                onChange={(val) => {
+                  handleChange('courseType', val);
+                }}
+                disabled={disabled}
+                options={[
+                  { value: LearningModeEnum.Offline, label: t('offline') },
+                  { value: LearningModeEnum.Online, label: t('online') },
                 ]}
               />
             </Grid>

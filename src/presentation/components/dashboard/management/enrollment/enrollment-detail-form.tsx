@@ -70,8 +70,7 @@ function EnrollmentCriteriaDetails({
             {renderField('name', enrollment.path.name)}
             {renderField('detail', enrollment.path.detail)}
             {renderField('isRequired', enrollment.path.isRequired ? t('yes') : t('no'))}
-            {renderField('startTime', enrollment.path.startTime)}
-            {renderField('endTime', enrollment.path.endTime)}
+
             {renderField('status', enrollment.path.status)}
             {renderField('displayType', enrollment.path.displayType)}
             {renderField('categoryId', enrollment.path.categoryID)}
@@ -227,76 +226,76 @@ function EnrollmentCriteriaDetails({
     );
   };
 
-  const renderCourseEnrollments = () => {
-    if (!enrollment.courseEnrollments || enrollment.courseEnrollments.length === 0) return null;
+  // const renderCourseEnrollments = () => {
+  //   if (!enrollment.courseEnrollments || enrollment.courseEnrollments.length === 0) return null;
 
-    return (
-      <Box sx={{ mb: 2 }}>
-        <CardHeader title={t('courseEnrollments')} sx={{ pl: 2, pb: 1, mb: 2 }} />
-        {enrollment.courseEnrollments.map((courseEnroll, index) => {
-          const courseEnrollId = courseEnroll.id ?? `course-enrollment-${index}`;
-          const isExpanded = expandedSections[courseEnrollId] || false;
+  //   return (
+  //     <Box sx={{ mb: 2 }}>
+  //       <CardHeader title={t('courseEnrollments')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+  //       {enrollment.courseEnrollments.map((courseEnroll, index) => {
+  //         const courseEnrollId = courseEnroll.id ?? `course-enrollment-${index}`;
+  //         const isExpanded = expandedSections[courseEnrollId] || false;
 
-          return (
-            <Card
-              key={courseEnrollId}
-              sx={{
-                mb: 3,
-                mx: window.innerWidth < 600 ? 1 : 2,
-              }}
-            >
-              <CardHeader
-                title={courseEnroll.course?.name ?? `${t('courseEnrollments')} ${index + 1}`}
-                action={
-                  <IconButton
-                    onClick={() => {
-                      toggleExpanded(courseEnrollId);
-                    }}
-                    sx={{
-                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.2s',
-                    }}
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
-                }
-                sx={{ py: 1 }}
-              />
-              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                  <Grid container spacing={2}>
-                    {renderField('id', courseEnroll.id)}
-                    {renderField('enrollmentCriteriaId', courseEnroll.enrollmentCriteriaID)}
-                    {renderField('courseId', courseEnroll.courseID)}
-                    {courseEnroll.course ? (
-                      <>
-                        {renderField('courseName', courseEnroll.course.name)}
-                        {renderField('courseId', courseEnroll.course.id)}
-                        {renderField('pathId', courseEnroll.course.pathId)}
-                        {renderField('detail', courseEnroll.course.detail)}
-                        {renderField('isRequired', courseEnroll.course.isRequired ? 'Yes' : 'No')}
-                        {renderField('disableStatus', courseEnroll.course.disableStatus)}
-                        {renderField('teacherId', courseEnroll.course.teacherId)}
-                        {renderField('courseType', courseEnroll.course.courseType)}
-                        {renderField('displayType', courseEnroll.course.displayType)}
-                        {renderField('startTime', courseEnroll.course.startTime)}
-                        {renderField('endTime', courseEnroll.course.endTime)}
-                        {renderField('meetingLink', courseEnroll.course.meetingLink)}
-                        {renderField('scheduleStatus', courseEnroll.course.scheduleStatus)}
-                        {renderField('enrollmentCriteriaId', courseEnroll.course.enrollmentCriteriaId)}
-                        {renderField('categoryId', courseEnroll.course.categoryId)}
-                        {renderField('thumbnailId', courseEnroll.course.thumbnailId)}
-                      </>
-                    ) : null}
-                  </Grid>
-                </CardContent>
-              </Collapse>
-            </Card>
-          );
-        })}
-      </Box>
-    );
-  };
+  //         return (
+  //           <Card
+  //             key={courseEnrollId}
+  //             sx={{
+  //               mb: 3,
+  //               mx: window.innerWidth < 600 ? 1 : 2,
+  //             }}
+  //           >
+  //             <CardHeader
+  //               title={courseEnroll.course?.name ?? `${t('courseEnrollments')} ${index + 1}`}
+  //               action={
+  //                 <IconButton
+  //                   onClick={() => {
+  //                     toggleExpanded(courseEnrollId);
+  //                   }}
+  //                   sx={{
+  //                     transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+  //                     transition: 'transform 0.2s',
+  //                   }}
+  //                 >
+  //                   <ExpandMoreIcon />
+  //                 </IconButton>
+  //               }
+  //               sx={{ py: 1 }}
+  //             />
+  //             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+  //               <CardContent>
+  //                 <Grid container spacing={2}>
+  //                   {renderField('id', courseEnroll.id)}
+  //                   {renderField('enrollmentCriteriaId', courseEnroll.enrollmentCriteriaID)}
+  //                   {renderField('courseId', courseEnroll.courseID)}
+  //                   {courseEnroll.course ? (
+  //                     <>
+  //                       {renderField('courseName', courseEnroll.course.name)}
+  //                       {renderField('courseId', courseEnroll.course.id)}
+  //                       {renderField('pathId', courseEnroll.course.pathId)}
+  //                       {renderField('detail', courseEnroll.course.detail)}
+  //                       {renderField('isRequired', courseEnroll.course.isRequired ? 'Yes' : 'No')}
+  //                       {renderField('disableStatus', courseEnroll.course.disableStatus)}
+  //                       {renderField('teacherId', courseEnroll.course.teacherId)}
+  //                       {renderField('courseType', courseEnroll.course.courseType)}
+  //                       {renderField('displayType', courseEnroll.course.displayType)}
+  //                       {renderField('startTime', courseEnroll.course.startTime)}
+  //                       {renderField('endTime', courseEnroll.course.endTime)}
+  //                       {renderField('meetingLink', courseEnroll.course.meetingLink)}
+  //                       {renderField('scheduleStatus', courseEnroll.course.scheduleStatus)}
+  //                       {renderField('enrollmentCriteriaId', courseEnroll.course.enrollmentCriteriaId)}
+  //                       {renderField('categoryId', courseEnroll.course.categoryId)}
+  //                       {renderField('thumbnailId', courseEnroll.course.thumbnailId)}
+  //                     </>
+  //                   ) : null}
+  //                 </Grid>
+  //               </CardContent>
+  //             </Collapse>
+  //           </Card>
+  //         );
+  //       })}
+  //     </Box>
+  //   );
+  // };
 
   return (
     <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
@@ -327,7 +326,7 @@ function EnrollmentCriteriaDetails({
       {renderClassDetails()}
       {renderQuizDetails()}
       {renderEnrollments()}
-      {renderCourseEnrollments()}
+      {/* {renderCourseEnrollments()} */}
     </Box>
   );
 }

@@ -760,5 +760,8 @@
   "statusCheckIn": "Status Check In",
   "soon": "Soon",
   "checkOutTime": "Check Out Time",
-  "statusCheckOut": "Status Checkout"
+  "statusCheckOut": "Status Checkout",
+  "createEnrollment": "Create Enrollment",
+  "addUser": "Add User",
+  "relationId": "Relation Id"
 }

@@ -3,7 +3,7 @@ import { UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/reque
 import { type AttendanceRecordDetailResponse } from '@/domain/models/attendance/response/attendance-record-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { CheckinTimeEnum } from '@/utils/enum/core-enum';
+import { CheckinTimeEnum, CheckOutTimeEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -53,11 +53,14 @@ export function UpdateAttendanceRecordsFormDialog({
     if (attendanceRecord && open) {
       const newFormData = new UpdateAttendanceRecordsRequest({
         id: attendanceRecord.id || '',
-        checkinTime: attendanceRecord.checkinTime || undefined,
-        status: attendanceRecord.status || undefined,
+        checkInTime: attendanceRecord.checkInTime || undefined,
+        statusCheckIn: attendanceRecord.statusCheckIn || undefined,
+        checkOutTime: attendanceRecord.checkOutTime || undefined,
+        statusCheckOut: attendanceRecord.statusCheckOut || undefined,
         startAt: attendanceRecord.startAt || undefined,
         endAt: attendanceRecord.endAt || undefined,
         minuteLate: attendanceRecord.minuteLate || undefined,
+        minuteSoon: attendanceRecord.minuteSoon || undefined,
       });
       setFormData(newFormData);
     }
@@ -113,10 +116,10 @@ export function UpdateAttendanceRecordsFormDialog({
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label={t('checkinTime')}
-                value={formData.checkinTime ? DateTimeUtils.formatISODateToString(formData.checkinTime) : undefined}
+                label={t('checkInTime')}
+                value={formData.checkInTime ? DateTimeUtils.formatISODateToString(formData.checkInTime) : undefined}
                 onChange={(value) => {
-                  handleChange('checkinTime', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('checkInTime', DateTimeUtils.formatStringToDateTime(value));
                 }}
                 disabled={isSubmitting}
               />
@@ -124,16 +127,43 @@ export function UpdateAttendanceRecordsFormDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<string>
-                label={t('status')}
-                value={formData.status ?? ''}
+                label={t('statusCheckIn')}
+                value={formData.statusCheckIn ?? ''}
                 onChange={(val) => {
-                  handleChange('status', val ?? '');
+                  handleChange('statusCheckIn', val ?? '');
                 }}
                 disabled={false}
                 options={[
                   { value: CheckinTimeEnum[CheckinTimeEnum.Absent], label: 'absent' },
                   { value: CheckinTimeEnum[CheckinTimeEnum.OnTime], label: 'onTime' },
                   { value: CheckinTimeEnum[CheckinTimeEnum.Late], label: 'late' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('checkOutTime')}
+                value={formData.checkOutTime ? DateTimeUtils.formatISODateToString(formData.checkOutTime) : undefined}
+                onChange={(value) => {
+                  handleChange('checkOutTime', DateTimeUtils.formatStringToDateTime(value));
+                }}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<string>
+                label={t('statusCheckOut')}
+                value={formData.statusCheckOut ?? ''}
+                onChange={(val) => {
+                  handleChange('statusCheckOut', val ?? '');
+                }}
+                disabled={false}
+                options={[
+                  { value: CheckOutTimeEnum[CheckOutTimeEnum.Soon], label: 'soon' },
+                  { value: CheckOutTimeEnum[CheckOutTimeEnum.OnTime], label: 'onTime' },
+                  { value: CheckOutTimeEnum[CheckOutTimeEnum.Late], label: 'late' },
                 ]}
               />
             </Grid>
@@ -167,6 +197,18 @@ export function UpdateAttendanceRecordsFormDialog({
                 value={formData.minuteLate}
                 onChange={(val) => {
                   handleChange('minuteLate', Number(val));
+                }}
+                disabled={false}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                label={t('minuteSoon')}
+                type="number"
+                value={formData.minuteSoon}
+                onChange={(val) => {
+                  handleChange('minuteSoon', Number(val));
                 }}
                 disabled={false}
               />

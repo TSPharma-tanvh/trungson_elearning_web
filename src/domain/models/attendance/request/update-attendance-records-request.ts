@@ -5,11 +5,16 @@ export class UpdateAttendanceRecordsRequest {
   userID?: string;
   levelID?: string;
   classID?: string;
-  checkinTime?: Date;
+
   startAt?: Date;
   endAt?: Date;
   minuteLate?: number;
-  status?: string;
+  minuteSoon?: number;
+
+  checkInTime?: Date;
+  checkOutTime?: Date;
+  statusCheckIn?: string;
+  statusCheckOut?: string;
 
   constructor(init?: Partial<UpdateAttendanceRecordsRequest>) {
     Object.assign(this, init);
@@ -21,11 +26,17 @@ export class UpdateAttendanceRecordsRequest {
     dto.userID = json.userID;
     dto.levelID = json.levelID;
     dto.classID = json.classID;
-    dto.checkinTime = json.checkinTime ? new Date(json.checkinTime) : undefined;
+
     dto.startAt = json.startAt ? new Date(json.startAt) : undefined;
     dto.endAt = json.endAt ? new Date(json.endAt) : undefined;
     dto.minuteLate = json.minuteLate;
-    dto.status = json.status;
+    dto.minuteSoon = json.minuteSoon;
+
+    dto.checkInTime = json.checkInTime ? new Date(json.checkInTime) : undefined;
+    dto.checkOutTime = json.checkOutTime ? new Date(json.checkOutTime) : undefined;
+    dto.statusCheckIn = json.statusCheckIn;
+    dto.statusCheckOut = json.statusCheckOut;
+
     return dto;
   }
 
@@ -35,11 +46,16 @@ export class UpdateAttendanceRecordsRequest {
       userID: this.userID,
       levelID: this.levelID,
       classID: this.classID,
-      checkinTime: this.checkinTime ? DateTimeUtils.formatISODateToString(this.checkinTime) : undefined,
+
       startAt: this.startAt ? DateTimeUtils.formatISODateToString(this.startAt) : undefined,
       endAt: this.endAt ? DateTimeUtils.formatISODateToString(this.endAt) : undefined,
       minuteLate: this.minuteLate,
-      status: this.status,
+      minuteSoon: this.minuteSoon,
+
+      checkInTime: this.checkInTime ? DateTimeUtils.formatISODateToString(this.checkInTime) : undefined,
+      checkOutTime: this.checkOutTime ? DateTimeUtils.formatISODateToString(this.checkOutTime) : undefined,
+      statusCheckIn: this.statusCheckIn,
+      statusCheckOut: this.statusCheckOut,
     };
   }
 }

@@ -15,6 +15,7 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface AddUserProps {
   open: boolean;
@@ -23,6 +24,7 @@ interface AddUserProps {
 }
 
 export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit }) => {
+  const { t } = useTranslation();
   const { userUsecase } = useDI();
 
   const [formData, setFormData] = React.useState<RegisterRequestModel>(
@@ -62,12 +64,12 @@ export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit 
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Add New User</DialogTitle>
+      <DialogTitle>{t('addUser')}</DialogTitle>
       <DialogContent sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
-              label="Username"
+              label={t('username')}
               value={formData.userName}
               onChange={handleChange('userName')}
               fullWidth
@@ -84,7 +86,7 @@ export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit 
 
           <Grid item xs={12}>
             <TextField
-              label="Password"
+              label={t('password')}
               type={showPassword ? 'text' : 'password'}
               InputLabelProps={{ shrink: true }}
               value={formData.password}
@@ -114,7 +116,7 @@ export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit 
 
           <Grid item xs={12}>
             <TextField
-              label="Confirm Password"
+              label={t('confirmPassword')}
               type={showConfirmPassword ? 'text' : 'password'}
               InputLabelProps={{ shrink: true }}
               value={formData.confirmPassword}
@@ -146,10 +148,10 @@ export const AddUserDialog: React.FC<AddUserProps> = ({ open, onClose, onSubmit 
 
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onClose} disabled={submitting}>
-          Cancel
+          {t('cancel')}
         </Button>
         <Button onClick={handleSubmit} variant="contained" color="primary" disabled={submitting}>
-          {submitting ? 'Submitting...' : 'Submit'}
+          {submitting ? t('loading') : t('submit')}
         </Button>
       </DialogActions>
     </Dialog>

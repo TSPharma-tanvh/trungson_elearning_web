@@ -760,5 +760,9 @@
   "statusCheckIn": "Trạng thái vào lớp",
   "soon": "Sớm",
   "checkOutTime": "Thời gian ra khỏi lớp",
-  "statusCheckOut": "Trạng thái ra khỏi lớp"
+  "statusCheckOut": "Trạng thái ra khỏi lớp",
+  "createEnrollment": "Tạo tiêu chí",
+  "addUser": "Thêm người dùng",
+  "deletePermanently": "Xóa vĩnh viễn",
+  "relationId": "ID quan hệ"
 }

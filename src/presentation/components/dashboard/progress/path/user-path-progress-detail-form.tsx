@@ -92,14 +92,6 @@ function UserPathProgressDetails({
               {renderField('description', coursePath.detail)}
               {renderField('isRequired', coursePath.isRequired ? t('yes') : t('no'))}
               {renderField(
-                'startTime',
-                coursePath.startTime ? DateTimeUtils.formatISODateStringToString(coursePath.startTime) : ''
-              )}
-              {renderField(
-                'endTime',
-                coursePath.endTime ? DateTimeUtils.formatISODateStringToString(coursePath.endTime) : ''
-              )}
-              {renderField(
                 'status',
                 coursePath.status ? t(coursePath.status.charAt(0).toLowerCase() + t(coursePath.status.slice(1))) : ''
               )}
@@ -167,7 +159,11 @@ function UserPathProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => { handleViewCourseDetail(courseEnroll?.courseID ?? ''); }}>
+                    <IconButton
+                      onClick={() => {
+                        handleViewCourseDetail(courseEnroll?.courseID ?? '');
+                      }}
+                    >
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
@@ -277,7 +273,11 @@ function UserPathProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => { handleViewLessonDetail(lessonEnroll?.lessonID ?? ''); }}>
+                    <IconButton
+                      onClick={() => {
+                        handleViewLessonDetail(lessonEnroll?.lessonID ?? '');
+                      }}
+                    >
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
@@ -321,7 +321,10 @@ function UserPathProgressDetails({
                     )}
                     {renderField('startDate', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.startDate))}
                     {renderField('endDate', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.endDate))}
-                    {renderField('lastAccess', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.lastAccess))}
+                    {renderField(
+                      'lastAccess',
+                      DateTimeUtils.formatISODateStringToString(lessonEnroll.lastAccess ?? '')
+                    )}
                     {renderField(
                       'status',
                       lessonEnroll.status
@@ -386,7 +389,11 @@ function UserPathProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => { handleViewQuizDetail(quizEnroll.quizID ?? ''); }}>
+                    <IconButton
+                      onClick={() => {
+                        handleViewQuizDetail(quizEnroll.quizID ?? '');
+                      }}
+                    >
                       <InfoOutlined />
                     </IconButton>
                     <IconButton

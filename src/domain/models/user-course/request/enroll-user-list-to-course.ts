@@ -1,5 +1,5 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { type ApproveStatusEnum, type UserProgressEnum } from '@/utils/enum/core-enum';
+import { type ApproveStatusEnum, type StatusEnum, type UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class EnrollUserListToCourseRequest {
   userIDs: string[] = [];
@@ -9,7 +9,9 @@ export class EnrollUserListToCourseRequest {
   endDate?: Date;
   lastAccess?: Date;
   status!: UserProgressEnum;
+  activeStatus!: StatusEnum; // mới
   enrollmentCriteriaID?: string;
+  quizEnrollmentCriteriaID?: string; // mới
   userID?: string;
   approvedBy?: string;
   approvedAt?: Date;
@@ -29,7 +31,9 @@ export class EnrollUserListToCourseRequest {
       endDate: json.endDate ? new Date(json.endDate) : undefined,
       lastAccess: json.lastAccess ? new Date(json.lastAccess) : undefined,
       status: json.status,
+      activeStatus: json.activeStatus, // map mới
       enrollmentCriteriaID: json.enrollmentCriteriaID,
+      quizEnrollmentCriteriaID: json.quizEnrollmentCriteriaID, // map mới
       userID: json.userID,
       approvedBy: json.approvedBy,
       approvedAt: json.approvedAt ? new Date(json.approvedAt) : undefined,
@@ -47,7 +51,9 @@ export class EnrollUserListToCourseRequest {
       endDate: DateTimeUtils.formatISODateToString(this.endDate),
       lastAccess: this.lastAccess?.toISOString(),
       status: this.status,
+      activeStatus: this.activeStatus, // serialize mới
       enrollmentCriteriaID: this.enrollmentCriteriaID,
+      quizEnrollmentCriteriaID: this.quizEnrollmentCriteriaID, // serialize mới
       userID: this.userID,
       approvedBy: this.approvedBy,
       approvedAt: this.approvedAt?.toISOString(),

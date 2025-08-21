@@ -191,7 +191,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 label={t('firstName')}
                 value={formData.firstName || ''}
@@ -229,7 +229,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   ),
                 }}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <EmployeeSelectDialog
@@ -304,7 +304,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={12}>
+            {/* <Grid item xs={12} sm={12}>
               <TextField
                 label={t('phoneNumber')}
                 value={formData.phoneNumber || ''}
@@ -342,7 +342,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   ),
                 }}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={12}>
               <TextField

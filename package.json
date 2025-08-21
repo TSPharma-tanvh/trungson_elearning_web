@@ -1,6 +1,7 @@
 {
   "name": "material-kit-react",
   "version": "4.0.0",
+  "type": "module",
   "author": "Devias",
   "licence": "MIT",
   "homepage": "https://devias.io",

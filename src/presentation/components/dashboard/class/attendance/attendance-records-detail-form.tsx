@@ -138,15 +138,15 @@ function AttendanceRecordDetails({
                 ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.startAt)
                 : ''
             )}
-            {renderField('minuteLate', attendanceRecord.minuteLate)}
-            {renderField('minuteSoon', attendanceRecord.minuteSoon)}
-
             {renderField(
               'endAt',
               attendanceRecord.endAt !== undefined
                 ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.endAt)
                 : ''
             )}
+            {renderField('minuteLate', attendanceRecord.minuteLate)}
+            {renderField('minuteSoon', attendanceRecord.minuteSoon)}
+
             {renderField(
               'statusCheckIn',
               attendanceRecord.statusCheckIn

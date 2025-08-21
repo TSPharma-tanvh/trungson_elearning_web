@@ -172,9 +172,15 @@ export default function QuizTable({
                 <TableCell>{t('title')}</TableCell>
                 <TableCell>{t('detail')}</TableCell>
                 <TableCell>{t('status')}</TableCell>
+                <TableCell>{t('type')}</TableCell>
                 <TableCell>{t('totalQuestion')}</TableCell>
                 <TableCell>{t('totalScore')}</TableCell>
                 <TableCell>{t('scoreToPass')}</TableCell>
+                <TableCell>{t('canStartOver')}</TableCell>
+                <TableCell>{t('canShuffle')}</TableCell>
+                <TableCell>{t('isRequired')}</TableCell>
+                <TableCell>{t('isAutoSubmitted')}</TableCell>
+
                 <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
@@ -215,9 +221,18 @@ export default function QuizTable({
                       {' '}
                       {row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}
                     </TableCell>
+                    <TableCell>
+                      {' '}
+                      {row.type ? t(row.type.toString().charAt(0).toLowerCase() + t(row.type.toString()).slice(1)) : ''}
+                    </TableCell>
                     <TableCell>{row.totalQuestion}</TableCell>
                     <TableCell>{row.totalScore}</TableCell>
                     <TableCell>{row.scoreToPass}</TableCell>
+                    <TableCell>{row.canStartOver ? t('yes') : t('no')}</TableCell>
+                    <TableCell>{row.canShuffle ? t('yes') : t('no')}</TableCell>
+                    <TableCell>{row.isRequired ? t('yes') : t('no')}</TableCell>
+                    <TableCell>{row.isAutoSubmitted ? t('yes') : t('no')}</TableCell>
+
                     <TableCell align="right">
                       <IconButton
                         onClick={(event) => {

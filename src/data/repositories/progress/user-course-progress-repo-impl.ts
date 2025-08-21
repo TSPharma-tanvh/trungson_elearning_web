@@ -77,6 +77,21 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
     }
   }
 
+  async deleteUserCourseProgress(id: string): Promise<ApiResponse> {
+    try {
+      const response = await apiClient.delete<ApiResponse>(apiEndpoints.userCourseProgress.delete(id));
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch userCourseProgress info');
+    }
+  }
+
   async enrollUserListToCourse(request: EnrollUserListToCourseRequest): Promise<ApiResponse> {
     try {
       const response = await apiClient.post<ApiResponse>(apiEndpoints.userCourseProgress.enroll, request.toJSON());

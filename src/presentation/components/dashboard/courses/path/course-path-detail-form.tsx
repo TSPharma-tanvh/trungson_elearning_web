@@ -88,40 +88,6 @@ function PathInfoCard({ coursePath, fullScreen }: PathInfoCardProps) {
   );
 }
 
-// Schedule Information
-interface ScheduleCardProps {
-  coursePath: CoursePathResponse;
-}
-function ScheduleCard({ coursePath }: ScheduleCardProps) {
-  const { t } = useTranslation();
-
-  return (
-    <Card sx={{ mb: 2 }}>
-      <CardHeader title={t('schedule')} />
-      <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <Typography variant="subtitle2" fontWeight={500}>
-              {t('startTime')}
-            </Typography>
-            <CustomFieldTypography
-              value={coursePath.startTime ? DateTimeUtils.formatISODateStringToString(coursePath.startTime) : undefined}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Typography variant="subtitle2" fontWeight={500}>
-              {t('endTime')}
-            </Typography>
-            <CustomFieldTypography
-              value={coursePath.endTime ? DateTimeUtils.formatISODateStringToString(coursePath.endTime) : undefined}
-            />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
-}
-
 // Status and Requirements
 interface StatusCardProps {
   coursePath: CoursePathResponse;
@@ -379,12 +345,8 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Co
 
             {/* Grouped Path Details */}
             <PathInfoCard coursePath={coursePath} fullScreen={fullScreen} />
-            <ScheduleCard coursePath={coursePath} />
             <StatusCard coursePath={coursePath} />
 
-            <Box sx={{ mb: 2 }}>
-              <EnrollmentCard coursePath={coursePath} fullScreen={fullScreen} />
-            </Box>
             {/* Courses Section */}
             <Box sx={{ mb: 2 }}>
               <CardHeader title={t('includedCourses')} sx={{ pl: 2, pb: 1, mb: 2 }} />
@@ -397,6 +359,9 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Co
                   <CustomFieldTypography value={undefined} fallback={t('noCoursesIncluded')} />
                 </Box>
               )}
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <EnrollmentCard coursePath={coursePath} fullScreen={fullScreen} />
             </Box>
           </Box>
         )}

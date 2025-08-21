@@ -56,7 +56,12 @@ function CategoryDetails({ category, fullScreen }: { category: CategoryDetailRes
             {renderField('id', category.id)}
             {renderField('categoryName', category.categoryName)}
             {renderField('detail', category.description)}
-            {renderField('categoryType', category.category)}
+            {renderField(
+              'categoryType',
+              category.category
+                ? t(category.category.toString().charAt(0).toLowerCase() + t(category.category.toString()).slice(1))
+                : ''
+            )}
             {renderField('thumbnailId', category.thumbnail?.id)}
           </Grid>
         </CardContent>

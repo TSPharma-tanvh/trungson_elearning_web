@@ -60,12 +60,7 @@ export class UserCourseProgressUsecase {
   }
 
   async deleteUserCourseProgress(id: string): Promise<ApiResponse> {
-    const newFormData = new UpdateUserCourseProgressRequest({
-      id: id ?? '',
-      status: UserProgressEnum[UserProgressEnum.Done],
-    });
-
-    const result = await this.userCourseProgressRepo.updateUserCourseProgress(newFormData);
+    const result = await this.userCourseProgressRepo.deleteUserCourseProgress(id);
 
     return result;
   }

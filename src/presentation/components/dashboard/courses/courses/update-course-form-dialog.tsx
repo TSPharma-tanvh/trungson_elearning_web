@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, DisplayTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -80,10 +80,16 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           course.displayType !== undefined
             ? DisplayTypeEnum[course.displayType as keyof typeof DisplayTypeEnum]
             : undefined,
+        courseType:
+          course.courseType !== undefined
+            ? LearningModeEnum[course.courseType as keyof typeof LearningModeEnum]
+            : undefined,
         teacherID: course.teacherId || undefined,
-        enrollmentCriteriaType: CategoryEnum.Course,
+        enrollmentCriteriaType: course.pathId !== undefined ? undefined : CategoryEnum.Course,
         enrollmentCriteriaIDs:
-          course.courseEnrollments?.map((enrollment) => enrollment.enrollmentCriteriaID).join(',') || undefined,
+          course.pathId === undefined
+            ? course.courseEnrollments?.map((enrollment) => enrollment.enrollmentCriteriaID).join(',') || undefined
+            : undefined,
         categoryID: course.categoryId || undefined,
         thumbnailID: course.thumbnailId || undefined,
         lessonIds: course.lessons !== undefined ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
@@ -264,6 +270,21 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 }}
                 disabled={isSubmitting}
                 options={displayTypeOptions}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<LearningModeEnum>
+                label={t('courseType')}
+                value={formData.courseType ?? ''}
+                onChange={(val) => {
+                  handleChange('courseType', val);
+                }}
+                disabled={isSubmitting}
+                options={[
+                  { value: LearningModeEnum.Offline, label: t('offline') },
+                  { value: LearningModeEnum.Online, label: t('online') },
+                ]}
               />
             </Grid>
             <Grid item xs={12}>

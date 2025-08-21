@@ -74,8 +74,8 @@ function UserCourseProgressDetails({
               {renderField('name', course.name)}
               {renderField('description', course.detail)}
               {renderField('isRequired', course.isRequired ? t('yes') : t('no'))}
-              {renderField('startTime', course.startTime ? new Date(course.startTime).toLocaleString() : '')}
-              {renderField('endTime', course.endTime ? new Date(course.endTime).toLocaleString() : '')}
+              {/* {renderField('startTime', course.startTime ? new Date(course.startTime).toLocaleString() : '')}
+              {renderField('endTime', course.endTime ? new Date(course.endTime).toLocaleString() : '')} */}
               {renderField(
                 'status',
                 course.disableStatus
@@ -209,7 +209,11 @@ function UserCourseProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => { handleViewLessonDetail(lessonEnroll?.lessonID ?? ''); }}>
+                    <IconButton
+                      onClick={() => {
+                        handleViewLessonDetail(lessonEnroll?.lessonID ?? '');
+                      }}
+                    >
                       <InfoOutlined />
                     </IconButton>
 
@@ -254,7 +258,10 @@ function UserCourseProgressDetails({
                     )}
                     {renderField('startDate', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.startDate))}
                     {renderField('endDate', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.endDate))}
-                    {renderField('lastAccess', DateTimeUtils.formatDateTimeToDateString(lessonEnroll.lastAccess))}
+                    {renderField(
+                      'lastAccess',
+                      DateTimeUtils.formatISODateStringToString(lessonEnroll.lastAccess ?? '')
+                    )}
                     {renderField(
                       'status',
                       lessonEnroll.status
@@ -319,7 +326,11 @@ function UserCourseProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => { handleViewQuizDetail(quizEnroll.quizID ?? ''); }}>
+                    <IconButton
+                      onClick={() => {
+                        handleViewQuizDetail(quizEnroll.quizID ?? '');
+                      }}
+                    >
                       <InfoOutlined />
                     </IconButton>
                     <IconButton

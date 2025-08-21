@@ -128,6 +128,13 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
     }
   };
 
+  useEffect(() => {
+    if (!open) {
+      setPreviewUrl(null);
+      setThumbnailSource('select');
+    }
+  }, [open]);
+
   const iconStyle = {
     size: 20,
     weight: 'fill' as const,

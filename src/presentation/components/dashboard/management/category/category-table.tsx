@@ -114,7 +114,11 @@ export default function CategoryTable({
               <Typography variant="body2">{row.description}</Typography>
             </TableCell>
 
-            <TableCell>{row.category}</TableCell>
+            <TableCell>
+              {row.category
+                ? t(row.category.toString().charAt(0).toLowerCase() + t(row.category.toString()).slice(1))
+                : ''}
+            </TableCell>
 
             <TableCell align="right">
               <IconButton
