@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
-import { Clock, NumberCircleFive, UsersThree } from '@phosphor-icons/react';
+import { Clock, NumberCircleFive, NumberCircleNine, UsersThree } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
@@ -41,8 +41,6 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
       title: '',
       description: '',
       isRequired: true,
-      startTime: new Date(Date.now()),
-      endTime: new Date(Date.now()),
       status: StatusEnum.Enable,
       type: QuizTypeEnum.LessonQuiz,
       categoryEnum: CategoryEnum.Quiz,
@@ -110,8 +108,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
           title: '',
           description: '',
           isRequired: false,
-          startTime: new Date(Date.now()),
-          endTime: new Date(Date.now()),
+
           status: StatusEnum.Enable,
           type: QuizTypeEnum.LessonQuiz,
           categoryEnum: CategoryEnum.Quiz,
@@ -195,31 +192,8 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 sx={{
                   '& .MuiInputBase-root': {
                     height: fullScreen ? '100%' : 'auto',
-                    maxHeight: fullScreen ? `${window.innerHeight - 420}px` : 'auto',
                   },
                 }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('startTime')}
-                value={form.startTime?.toISOString()}
-                onChange={(val) => {
-                  handleChange('startTime', new Date(val));
-                }}
-                disabled={disabled}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('endTime')}
-                value={form.endTime?.toISOString()}
-                onChange={(val) => {
-                  handleChange('endTime', new Date(val));
-                }}
-                disabled={disabled}
               />
             </Grid>
 
@@ -273,16 +247,16 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label={t('maxCapacity')}
+                label={t('totalScore')}
                 required
-                value={form.maxCapacity?.toString() ?? ''}
+                value={form.totalScore?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
-                  handleChange('maxCapacity', numericValue);
+                  handleChange('totalScore', numericValue);
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"
-                icon={<UsersThree {...iconStyle} />}
+                icon={<NumberCircleNine {...iconStyle} />}
                 onValidationChange={(isValid) => {
                   setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
                 }}

@@ -8,8 +8,6 @@ export class CreateQuizRequest {
   isRequired = false;
   type: QuizTypeEnum = QuizTypeEnum.LessonQuiz;
   time!: string; // TimeSpan as string: "00:30:00"
-  startTime?: Date;
-  endTime?: Date;
   maxAttempts?: number;
   title = '';
   description?: string;
@@ -30,7 +28,7 @@ export class CreateQuizRequest {
   isAutoSubmitted?: boolean = true;
   enrollmentCriteriaType?: CategoryEnum;
   enrollmentStatus?: StatusEnum;
-  maxCapacity?: number;
+  totalScore?: number;
   enrollmentCourseIDs?: string;
 
   constructor(init?: Partial<CreateQuizRequest>) {
@@ -40,16 +38,12 @@ export class CreateQuizRequest {
   static fromJSON(json: any): CreateQuizRequest {
     const dto = new CreateQuizRequest();
     Object.assign(dto, json);
-    dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
-    dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
     return dto;
   }
 
   toJSON(): any {
     return {
       ...this,
-      startTime: this.startTime?.toISOString(),
-      endTime: this.endTime?.toISOString(),
     };
   }
 

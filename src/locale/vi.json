@@ -717,8 +717,8 @@
   "assignedAt": "Được đăng ký lúc",
   "userPathProgressInformation": "Thông tin tiến trình lộ trình người dùng",
   "userPathProgressDetails": "Chi tiết tiến trình lộ trình người dùng",
-  "startedAt": "Bắt đầu lúc",
-  "completedAt": "Hoàn thành lúc",
+  "startedAt": "Đã bắt đầu lúc",
+  "completedAt": "Đã hoàn thành lúc",
   "sessionId": "ID phiên",
   "userAgent": "Tác nhân người dùng",
   "location": "Vị trí",
@@ -727,7 +727,7 @@
   "actualStartDate": "Ngày bắt đầu thực tế",
   "actualEndDate": "Ngày kết thúc thực tế",
   "updateClass": "Cập nhật lớp",
-  "deleteForever": "Xóa vĩnh viễn",
+  "deletePermanently": "Xóa vĩnh viễn",
   "liveQuizTracking": "Theo dõi bài kiểm tra",
   "start": "Bắt đầu",
   "end": "Kết thúc",
@@ -763,6 +763,7 @@
   "statusCheckOut": "Trạng thái ra khỏi lớp",
   "createEnrollment": "Tạo tiêu chí",
   "addUser": "Thêm người dùng",
-  "deletePermanently": "Xóa vĩnh viễn",
-  "relationId": "ID quan hệ"
+  "relationId": "ID quan hệ",
+  "userQuizProgressId": "ID tiến trình kiểm tra người dùng",
+  "userAnswerId": "ID câu trả lời của người dùng"
 }

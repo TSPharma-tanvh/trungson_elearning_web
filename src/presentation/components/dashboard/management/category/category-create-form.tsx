@@ -140,7 +140,6 @@ export function CreateCategoryDialog({
                 sx={{
                   '& .MuiInputBase-root': {
                     height: fullScreen ? '100%' : 'auto',
-                    maxHeight: fullScreen ? `${window.innerHeight - 420}px` : 'auto',
                   },
                 }}
               />

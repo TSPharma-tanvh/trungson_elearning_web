@@ -351,6 +351,7 @@ export function CategorySelect({
         categoryUsecase={categoryUsecase}
         categoryEnum={categoryEnum}
         value={value || ''}
+        label={label}
       />
     </>
   );

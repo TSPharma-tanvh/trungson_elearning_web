@@ -236,7 +236,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.answerCategoryID}
-                label={t('answerCategory')}
+                label={'answerCategory'}
                 onChange={(value) => {
                   handleChange('answerCategoryID', value);
                 }}

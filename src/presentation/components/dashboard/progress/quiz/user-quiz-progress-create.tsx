@@ -50,6 +50,8 @@ export function CreateUserQuizProgressDialog({
       activeStatus: StatusEnum.Enable,
       enrollStatus: ApproveStatusEnum.Approve,
       approvedAt: new Date(),
+      startTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      endTime: new Date(Date.now() + 48 * 60 * 60 * 1000),
     })
   );
 

@@ -266,6 +266,11 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
                 ? t(question.questionType.charAt(0).toLowerCase() + t(question.questionType).slice(1))
                 : ''
             )}
+            {renderField(
+              'status',
+              question.status ? t(question.status.charAt(0).toLowerCase() + t(question.status).slice(1)) : ''
+            )}
+
             {renderField('categoryId', question.categoryId)}
             {renderField('thumbnailId', question.thumbnailId)}
           </Grid>

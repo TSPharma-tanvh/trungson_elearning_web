@@ -113,7 +113,7 @@ export default function UserCourseProgressTable({
             },
           },
           {
-            label: t('markDone'),
+            label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },

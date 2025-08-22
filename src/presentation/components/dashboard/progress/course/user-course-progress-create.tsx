@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ApproveStatusEnum, CategoryEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { ApproveStatusEnum, CategoryEnum, StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -41,13 +41,14 @@ export function CreateUserCourseProgressDialog({
 
   const [form, setForm] = useState<EnrollUserListToCourseRequest>(
     new EnrollUserListToCourseRequest({
-      userID: '',
       courseID: '',
       progress: 0,
-      startDate: new Date(),
-      endDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      startDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      endDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
       status: UserProgressEnum.NotStarted,
       enrollStatus: ApproveStatusEnum.Approve,
+      activeStatus: StatusEnum.Enable,
+      quizEnrollmentCriteriaID: '',
     })
   );
 
@@ -240,17 +241,17 @@ export function CreateUserCourseProgressDialog({
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<UserProgressEnum>
-                label={t('status')}
-                value={form.status}
+              <CustomSelectDropDown<StatusEnum>
+                label={t('activeStatus')}
+                value={form.activeStatus}
                 onChange={(val) => {
-                  handleChange('status', val);
+                  handleChange('activeStatus', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: UserProgressEnum.NotStarted, label: 'notStarted' },
-                  { value: UserProgressEnum.Ongoing, label: 'ongoing' },
-                  { value: UserProgressEnum.Done, label: 'done' },
+                  { value: StatusEnum.Enable, label: 'enable' },
+                  { value: StatusEnum.Disable, label: 'disable' },
+                  { value: StatusEnum.Deleted, label: 'deleted' },
                 ]}
               />
             </Grid>

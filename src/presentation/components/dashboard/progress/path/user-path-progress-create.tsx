@@ -44,8 +44,8 @@ export function CreateUserPathProgressDialog({
       userID: '',
       pathID: '',
       progress: 0,
-      startDate: new Date(),
-      endDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      startDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      endDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
       status: UserProgressEnum.NotStarted,
       enrollStatus: ApproveStatusEnum.Approve,
     })

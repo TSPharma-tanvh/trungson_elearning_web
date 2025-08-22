@@ -14,19 +14,23 @@ export const DateTimeUtils = {
     return date.format('DD/MM/YYYY hh:mm A');
   },
 
-  formatISODateToString(input?: string | Date): string {
-    if (!input) return '';
+  formatISODateToString(input?: string | Date): string | undefined {
+    if (!input) return undefined;
+
     let date: Date;
     if (typeof input === 'string') {
       date = new Date(input);
     } else {
       date = input;
     }
-    if (isNaN(date.getTime())) return '';
+
+    if (isNaN(date.getTime())) return undefined;
 
     const pad = (n: number): string => n.toString().padStart(2, '0');
 
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(
+      date.getHours()
+    )}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   },
 
   formatStringToDateTime(input: string): Date | undefined {

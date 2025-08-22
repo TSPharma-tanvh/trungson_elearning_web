@@ -60,8 +60,10 @@ export function UpdateUserQuizProgressFormDialog({
         userID: userQuizProgress.userId !== undefined ? userQuizProgress.userId : '',
         quizID: userQuizProgress.quizId || undefined,
         score: userQuizProgress.score || undefined,
-        startedAt: userQuizProgress.startedAt || undefined,
-        completedAt: userQuizProgress.completedAt || undefined,
+        startTime: userQuizProgress.startTime || undefined,
+        endTime: userQuizProgress.endTime || undefined,
+        startedAt: userQuizProgress.startedAt !== undefined ? userQuizProgress.startedAt : undefined,
+        completedAt: userQuizProgress.completedAt !== undefined ? userQuizProgress.completedAt : undefined,
         progressStatus:
           userQuizProgress.progressStatus !== undefined
             ? UserQuizProgressEnum[userQuizProgress.progressStatus as keyof typeof UserQuizProgressEnum]
@@ -172,6 +174,27 @@ export function UpdateUserQuizProgressFormDialog({
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startTime')}
+                value={formData.startTime ? DateTimeUtils.formatISODateToString(formData.startTime) : undefined}
+                onChange={(value) => {
+                  handleChange('startTime', DateTimeUtils.formatStringToDateTime(value));
+                }}
+                disabled={false}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('endTime')}
+                value={formData.endTime ? DateTimeUtils.formatISODateToString(formData.endTime) : undefined}
+                onChange={(value) => {
+                  handleChange('endTime', DateTimeUtils.formatStringToDateTime(value));
+                }}
+                disabled={false}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('startedAt')}
                 value={formData.startedAt ? DateTimeUtils.formatISODateToString(formData.startedAt) : undefined}
                 onChange={(value) => {
                   handleChange('startedAt', DateTimeUtils.formatStringToDateTime(value));
@@ -182,7 +205,7 @@ export function UpdateUserQuizProgressFormDialog({
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label={t('endTime')}
+                label={t('completedAt')}
                 value={formData.completedAt ? DateTimeUtils.formatISODateToString(formData.completedAt) : undefined}
                 onChange={(value) => {
                   handleChange('completedAt', DateTimeUtils.formatStringToDateTime(value));

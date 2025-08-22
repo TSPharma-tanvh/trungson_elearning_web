@@ -10,8 +10,6 @@ export class UpdateQuizRequest {
   isRequired?: boolean;
   type?: QuizTypeEnum;
   time?: string; // TimeSpan as ISO string or "HH:mm:ss"
-  startTime?: Date;
-  endTime?: Date;
   maxAttempts?: number;
   title?: string;
   description?: string;
@@ -32,8 +30,9 @@ export class UpdateQuizRequest {
   isAutoSubmitted?: boolean = true;
   enrollmentCriteriaType?: CategoryEnum;
   enrollmentStatus?: StatusEnum;
-  maxCapacity?: number;
+  totalScore?: number;
   enrollmentCourseIDs?: string;
+  scoreToPass?: number;
 
   constructor(init?: Partial<UpdateQuizRequest>) {
     Object.assign(this, init);
@@ -42,8 +41,6 @@ export class UpdateQuizRequest {
   static fromJSON(json: any): UpdateQuizRequest {
     const dto = new UpdateQuizRequest();
     Object.assign(dto, json);
-    dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
-    dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
     return dto;
   }
 
@@ -57,9 +54,6 @@ export class UpdateQuizRequest {
       isRequired: this.isRequired,
       type: this.type,
       time: this.time,
-      startTime: this.startTime ? DateTimeUtils.formatISODateToString(this.startTime) : undefined,
-      endTime: this.endTime ? DateTimeUtils.formatISODateToString(this.endTime) : undefined,
-      maxAttempts: this.maxAttempts,
       title: this.title,
       description: this.description,
       questionIDs: this.questionIDs,
@@ -77,8 +71,10 @@ export class UpdateQuizRequest {
       isAutoSubmitted: this.isAutoSubmitted,
       enrollmentCriteriaType: this.enrollmentCriteriaType,
       enrollmentStatus: this.enrollmentStatus,
-      maxCapacity: this.maxCapacity,
+      totalScore: this.totalScore,
       enrollmentCourseIDs: this.enrollmentCourseIDs,
+      scoreToPass: this.scoreToPass,
+
       // Files (thumbnail, resources) excluded here
     };
   }
@@ -88,7 +84,7 @@ export class UpdateQuizRequest {
 
     const appendIfExists = (key: string, value: unknown) => {
       if (value !== undefined && value !== null) {
-        formData.append(key, value instanceof Date ? DateTimeUtils.formatISODateToString(value) : value.toString());
+        formData.append(key, value.toString());
       }
     };
 
@@ -100,8 +96,6 @@ export class UpdateQuizRequest {
     appendIfExists('isRequired', this.isRequired);
     appendIfExists('type', this.type);
     appendIfExists('time', this.time);
-    appendIfExists('startTime', this.startTime ? DateTimeUtils.formatISODateToString(this.startTime) : undefined);
-    appendIfExists('endTime', this.endTime ? DateTimeUtils.formatISODateToString(this.endTime) : undefined);
     appendIfExists('maxAttempts', this.maxAttempts);
     appendIfExists('title', this.title);
     appendIfExists('description', this.description);
@@ -120,8 +114,9 @@ export class UpdateQuizRequest {
     appendIfExists('isAutoSubmitted', this.isAutoSubmitted);
     appendIfExists('enrollmentCriteriaType', this.enrollmentCriteriaType);
     appendIfExists('enrollmentStatus', this.enrollmentStatus);
-    appendIfExists('maxCapacity', this.maxCapacity);
+    appendIfExists('totalScore', this.totalScore);
     appendIfExists('enrollmentCourseIDs', this.enrollmentCourseIDs);
+    appendIfExists('scoreToPass', this.scoreToPass);
 
     if (this.thumbnail) {
       formData.append('thumbnail', this.thumbnail);

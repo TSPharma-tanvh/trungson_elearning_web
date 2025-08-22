@@ -26,7 +26,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, Clock, Image as ImageIcon, Tag } from '@phosphor-icons/react';
+import { Article, Clock, Image as ImageIcon, NumberCircleNine, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -85,10 +85,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
         id: quiz.id || '',
         title: quiz.title || '',
         description: quiz.description || undefined,
-        startTime: quiz.startTime ? quiz.startTime : undefined,
-        endTime: quiz.endTime ? quiz.endTime : undefined,
         time: quiz.time,
         status: quiz.status !== undefined ? StatusEnum[quiz.status as keyof typeof StatusEnum] : undefined,
+        scoreToPass: quiz.scoreToPass || undefined,
         enrollmentCriteriaType: CategoryEnum.Quiz,
         enrollmentCriteriaIDs: quiz.enrollmentCriteria?.map((enrollment) => enrollment.id).join(',') || undefined,
         categoryID: quiz.categoryID || undefined,
@@ -264,27 +263,6 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('startTime')}
-                value={formData.startTime?.toISOString()}
-                onChange={(value) => {
-                  handleChange('startTime', new Date(value));
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('endTime')}
-                value={formData.endTime?.toISOString()}
-                onChange={(value) => {
-                  handleChange('endTime', new Date(value));
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('time')}
                 value={formData.time}
@@ -300,15 +278,15 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label={t('maxCapacity')}
+                label={t('scoreToPass')}
                 inputMode="numeric"
-                value={formData.maxCapacity?.toString() ?? ''}
+                value={formData.scoreToPass?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
-                  handleChange('maxCapacity', numericValue);
+                  handleChange('scoreToPass', numericValue);
                 }}
                 disabled={isSubmitting}
-                icon={<Tag {...iconStyle} />}
+                icon={<NumberCircleNine {...iconStyle} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>

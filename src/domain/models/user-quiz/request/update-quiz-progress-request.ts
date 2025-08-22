@@ -9,10 +9,13 @@ export class UpdateUserQuizRequest {
   deviceInfo?: string;
   deviceId?: string;
   deviceName?: string;
+  assignedAt?: Date;
   startedAt?: Date;
   completedAt?: Date;
   score?: number;
   attempts?: number;
+  startTime?: Date;
+  endTime?: Date;
 
   constructor(init?: Partial<UpdateUserQuizRequest>) {
     Object.assign(this, init);
@@ -27,10 +30,13 @@ export class UpdateUserQuizRequest {
     dto.deviceInfo = json.deviceInfo;
     dto.deviceId = json.deviceId;
     dto.deviceName = json.deviceName;
+    dto.assignedAt = json.assignedAt ? new Date(json.assignedAt) : undefined;
     dto.startedAt = json.startedAt ? new Date(json.startedAt) : undefined;
     dto.completedAt = json.completedAt ? new Date(json.completedAt) : undefined;
     dto.score = json.score;
     dto.attempts = json.attempts;
+    dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
+    dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
     return dto;
   }
 
@@ -43,10 +49,13 @@ export class UpdateUserQuizRequest {
       deviceInfo: this.deviceInfo,
       deviceId: this.deviceId,
       deviceName: this.deviceName,
+      assignedAt: DateTimeUtils.formatISODateToString(this.assignedAt),
       startedAt: DateTimeUtils.formatISODateToString(this.startedAt),
       completedAt: DateTimeUtils.formatISODateToString(this.completedAt),
       score: this.score,
       attempts: this.attempts,
+      startTime: DateTimeUtils.formatISODateToString(this.startTime),
+      endTime: DateTimeUtils.formatISODateToString(this.endTime),
     };
   }
 }

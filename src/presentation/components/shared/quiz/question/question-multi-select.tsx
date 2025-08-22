@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { type QuestionUsecase } from '@/domain/usecases/question/question-usecase';
 import { useQuestionSelectLoader } from '@/presentation/hooks/question/use-question-select-loader';
+import { StatusEnum } from '@/utils/enum/core-enum';
 import { InfoOutlined, QuestionMarkOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -189,7 +190,15 @@ export function QuestionMultiSelect({
                 }}
               >
                 <Checkbox checked={checked} />
-                <ListItemText primary={item.questionText} />
+                <ListItemText
+                  primary={item.questionText}
+                  sx={{
+                    color:
+                      item.status == StatusEnum[StatusEnum.Enable]
+                        ? 'var(--mui-palette-primary-main)'
+                        : 'var(--mui-palette-error-main)',
+                  }}
+                />
                 <IconButton
                   size="small"
                   onClick={(e) => {
