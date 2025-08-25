@@ -3,6 +3,7 @@ import { type QuizTypeEnum } from '@/utils/enum/core-enum';
 import { AttendanceRecordResponse } from '../../attendance/response/attendance-record-response';
 import { CategoryResponse } from '../../category/response/category-response';
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';
+import { QuizEnrollmentCriteriaRelationResponse } from '../../criteria/response/quiz-enrollment-criteria-relation-response';
 import { FileQuizRelationResponse } from '../../file/response/file-quiz-relation-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
 import { UserQuizQuestionResponse } from '../../question/response/user-quiz-question-response';
@@ -26,6 +27,7 @@ export class QuizResponse {
   quizQuestions: UserQuizQuestionResponse[] = [];
 
   enrollmentCriteria?: EnrollmentCriteriaResponse[];
+  quizEnrollments?: QuizEnrollmentCriteriaRelationResponse[];
 
   fileQuizRelation?: FileQuizRelationResponse[];
   lessonID?: string;
@@ -41,7 +43,7 @@ export class QuizResponse {
   isRequired?: boolean;
   isAutoSubmitted?: boolean;
   type?: QuizTypeEnum;
-  time?: string; // backend sends “hh:mm:ss”; keep as string or parse to seconds -- be rules
+  time?: string;
   scoreToPass?: number;
   totalQuestion?: number;
   maxAttempts?: number;
@@ -71,6 +73,10 @@ export class QuizResponse {
 
     dto.enrollmentCriteria = Array.isArray(json.enrollmentCriteria)
       ? json.enrollmentCriteria.map((e: any) => EnrollmentCriteriaResponse.fromJSON(e))
+      : undefined;
+
+    dto.quizEnrollments = Array.isArray(json.quizEnrollments)
+      ? json.quizEnrollments.map((qe: any) => QuizEnrollmentCriteriaRelationResponse.fromJSON(qe))
       : undefined;
 
     dto.fileQuizRelation = Array.isArray(json.fileQuizRelation)
@@ -126,6 +132,7 @@ export class QuizResponse {
 
       quizQuestions: this.quizQuestions.map((q) => (q.toJSON ? q.toJSON() : q)),
       enrollmentCriteria: this.enrollmentCriteria?.map((e) => (e.toJSON ? e.toJSON() : e)),
+      quizEnrollments: this.quizEnrollments?.map((qe) => (qe.toJSON ? qe.toJSON() : qe)),
 
       fileQuizRelation: this.fileQuizRelation?.map((f) => (f.toJSON ? f.toJSON() : f)),
 

@@ -23,13 +23,7 @@ interface EnrollmentCreateProps {
   onClose: () => void;
 }
 
-export function CreateEnrollmentDialog({
-  disabled = false,
-  onSubmit,
-  loading = false,
-  open,
-  onClose,
-}: EnrollmentCreateProps) {
+export function CreateEnrollmentDialog({ onSubmit, loading = false, open, onClose }: EnrollmentCreateProps) {
   const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
@@ -228,8 +222,8 @@ export function CreateEnrollmentDialog({
             <Grid item xs={12}>
               <CustomButton
                 label={t('create')}
-                onClick={() => {
-                  handleSave();
+                onClick={async () => {
+                  await handleSave();
                 }}
                 loading={loading}
                 disabled={isSubmitting}

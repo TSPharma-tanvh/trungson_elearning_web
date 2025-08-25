@@ -59,8 +59,10 @@ export class CreateUserQuizRequest {
     this.userIDs.forEach((uid) => {
       form.append('userIDs', uid);
     });
-    if (this.startTime) form.append('startTime', DateTimeUtils.formatISODateToString(this.startTime));
-    if (this.endTime) form.append('endTime', DateTimeUtils.formatISODateToString(this.endTime));
+    const formattedStartTime = DateTimeUtils.formatISODateToString(this.startTime);
+    if (formattedStartTime !== undefined) form.append('startTime', formattedStartTime);
+    const formattedEndTime = DateTimeUtils.formatISODateToString(this.endTime);
+    if (formattedEndTime !== undefined) form.append('endTime', formattedEndTime);
     form.append('progressStatus', this.progressStatus.toString());
     form.append('activeStatus', this.activeStatus.toString());
     if (this.enrollmentCriteriaID) form.append('enrollmentCriteriaID', this.enrollmentCriteriaID);

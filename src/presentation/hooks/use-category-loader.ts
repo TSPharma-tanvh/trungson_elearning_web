@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
 import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';

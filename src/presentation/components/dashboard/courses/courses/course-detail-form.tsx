@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -39,7 +38,6 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
   const { t } = useTranslation();
   const [courseExpandedLessons, setCourseExpandedLessons] = useState<Record<string, boolean>>({});
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [viewOpen, setViewOpen] = React.useState(false);
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (

@@ -186,7 +186,7 @@ function UserPathProgressDetails({
                   <Grid container spacing={2}>
                     {renderField('id', courseEnroll.id)}
                     {renderField('detail', courseEnroll.courses?.detail)}
-                    {renderField('correct', courseEnroll.courses?.isRequired ? t('yes') : t('no'))}
+                    {renderField('isRequired', courseEnroll.courses?.isRequired ? t('yes') : t('no'))}
                     {renderField(
                       'disableStatus',
                       courseEnroll.courses?.disableStatus
@@ -205,7 +205,15 @@ function UserPathProgressDetails({
                           )
                         : ''
                     )}
-                    {renderField('displayType', courseEnroll.courses?.displayType)}
+                    {renderField(
+                      'displayType',
+                      courseEnroll.courses?.displayType
+                        ? t(
+                            courseEnroll.courses?.displayType.charAt(0).toLowerCase() +
+                              t(courseEnroll.courses?.displayType.slice(1))
+                          )
+                        : ''
+                    )}
                     {renderField('startDate', courseEnroll.startDate)}
                     {renderField('endDate', courseEnroll.endDate)}
                     {renderField('lastAccess', courseEnroll.lastAccess)}

@@ -194,7 +194,7 @@ export function QuestionMultiSelect({
                   primary={item.questionText}
                   sx={{
                     color:
-                      item.status == StatusEnum[StatusEnum.Enable]
+                      item.status === StatusEnum[StatusEnum.Enable]
                         ? 'var(--mui-palette-primary-main)'
                         : 'var(--mui-palette-error-main)',
                   }}

@@ -57,29 +57,36 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
   );
 
   const renderEnrollmentCriteria = () => {
-    if (!quiz.enrollmentCriteria || quiz.enrollmentCriteria.length === 0) return null;
+    if (!quiz.quizEnrollments || quiz.quizEnrollments.length === 0) return null;
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title="enrollmentCriteria" />
+        <CardHeader title={t('enrollmentCriteria')} />
         <CardContent>
-          {quiz.enrollmentCriteria.map((criteria, index) => (
-            <Box key={criteria.id ?? index} sx={{ mb: 2 }}>
-              <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-                criteriaNumber #{index + 1}
-              </Typography>
-              <Grid container spacing={2}>
-                {renderField('id', criteria.id)}
-                {renderField('name', criteria.name)}
-                {renderField('description', criteria.desc)}
-                {renderField('targetType', criteria.targetType)}
-                {renderField('targetId', criteria.targetID)}
-                {renderField('targetLevelId', criteria.targetLevelID)}
-                {renderField('maxCapacity', criteria.maxCapacity)}
-                {renderField('targetPharmacyId', criteria.targetPharmacyID)}
-              </Grid>
-            </Box>
-          ))}
+          {quiz.quizEnrollments.map((qe, index) => {
+            const criteria = qe.enrollmentCriteria;
+            if (!criteria) return null;
+
+            return (
+              <Box key={qe.id ?? index} sx={{ mb: 2 }}>
+                <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                  {t('criteriaNumber')} #{index + 1}
+                </Typography>
+                <Grid container spacing={2}>
+                  {renderField('relationId', qe.id)}
+                  {renderField('quizId', qe.quizID)}
+                  {renderField('criteriaId', criteria.id)}
+                  {renderField('name', criteria.name)}
+                  {renderField('description', criteria.desc)}
+                  {renderField('targetType', criteria.targetType)}
+                  {renderField('targetId', criteria.targetID)}
+                  {renderField('targetLevelId', criteria.targetLevelID)}
+                  {renderField('maxCapacity', criteria.maxCapacity)}
+                  {renderField('targetPharmacyId', criteria.targetPharmacyID)}
+                </Grid>
+              </Box>
+            );
+          })}
         </CardContent>
       </Card>
     );

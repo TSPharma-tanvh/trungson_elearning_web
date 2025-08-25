@@ -1,5 +1,13 @@
 - Development: npm run dev
 - Production:
   rm -r .next
+  npm install
   npm run build
   npm run start
+
+Notes:
+if any error happends,
+
+delete both folders .next and node_modules and run
+
+npm cache clean --force

@@ -30,7 +30,6 @@ import { Article, Clock, Image as ImageIcon, NumberCircleNine, Tag } from '@phos
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
@@ -89,7 +88,8 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
         status: quiz.status !== undefined ? StatusEnum[quiz.status as keyof typeof StatusEnum] : undefined,
         scoreToPass: quiz.scoreToPass || undefined,
         enrollmentCriteriaType: CategoryEnum.Quiz,
-        enrollmentCriteriaIDs: quiz.enrollmentCriteria?.map((enrollment) => enrollment.id).join(',') || undefined,
+        enrollmentCriteriaIDs:
+          quiz.quizEnrollments?.map((enrollment) => enrollment.enrollmentCriteria.id).join(',') || undefined,
         categoryID: quiz.categoryID || undefined,
         thumbnailID: quiz.thumbnailID || undefined,
         questionIDs:
@@ -240,7 +240,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomTextField
                 label={t('title')}
                 value={formData.title}
-                onChange={(value) => {
+                onChange={(value: string | undefined) => {
                   handleChange('title', value);
                 }}
                 disabled={isSubmitting}
@@ -252,7 +252,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomTextField
                 label={t('description')}
                 value={formData.description}
-                onChange={(value) => {
+                onChange={(value: string | undefined) => {
                   handleChange('description', value);
                 }}
                 disabled={isSubmitting}
@@ -266,7 +266,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <CustomTextField
                 label={t('time')}
                 value={formData.time}
-                onChange={(value) => {
+                onChange={(value: string | undefined) => {
                   handleChange('time', value);
                 }}
                 disabled={isSubmitting}
@@ -281,7 +281,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 label={t('scoreToPass')}
                 inputMode="numeric"
                 value={formData.scoreToPass?.toString() ?? ''}
-                onChange={(value) => {
+                onChange={(value: string) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
                   handleChange('scoreToPass', numericValue);
                 }}
@@ -294,7 +294,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 label={t('maxAttempts')}
                 inputMode="numeric"
                 value={formData.maxAttempts?.toString() ?? ''}
-                onChange={(value) => {
+                onChange={(value: string) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
                   handleChange('maxAttempts', numericValue);
                 }}
@@ -572,7 +572,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                     <CustomTextField
                       label={t('thumbnailDocumentNo')}
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => {
+                      onChange={(value: string | undefined) => {
                         handleChange('thumbDocumentNo', value);
                       }}
                       disabled={isSubmitting}
@@ -583,7 +583,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                     <CustomTextField
                       label={t('thumbnailPrefixName')}
                       value={formData.thumbPrefixName}
-                      onChange={(value) => {
+                      onChange={(value: string | undefined) => {
                         handleChange('thumbPrefixName', value);
                       }}
                       disabled={isSubmitting}

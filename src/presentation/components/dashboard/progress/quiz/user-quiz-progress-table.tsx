@@ -189,6 +189,7 @@ export default function UserQuizProgressTable({
             <TableCell>{t('quizName')}</TableCell>
             <TableCell>{t('fullName')}</TableCell>
             <TableCell>{t('gender')}</TableCell>
+            <TableCell>{t('progressStatus')}</TableCell>
             <TableCell>{t('score')}</TableCell>
             <TableCell>{t('totalScore')}</TableCell>
             <TableCell>{t('scoreToPass')}</TableCell>
@@ -200,7 +201,6 @@ export default function UserQuizProgressTable({
             <TableCell>{t('startedAt')}</TableCell>
             <TableCell>{t('completedAt')}</TableCell>
             <TableCell>{t('lastAccess')}</TableCell>
-            <TableCell>{t('progressStatus')}</TableCell>
             <TableCell>{t('activeStatus')}</TableCell>
             <TableCell
               sx={{
@@ -232,7 +232,6 @@ export default function UserQuizProgressTable({
             >
               {t('currentDepartmentName')}
             </TableCell>
-
             <TableCell>{t('cityName')}</TableCell>
           </>
         )}
@@ -270,15 +269,19 @@ export default function UserQuizProgressTable({
                     <Typography variant="subtitle2" noWrap>
                       {row.user?.employee?.name || row.user?.userName}
                     </Typography>
-                    {row.user?.userName ? <Typography variant="body2" color="text.secondary" noWrap>
+                    {row.user?.userName ? (
+                      <Typography variant="body2" color="text.secondary" noWrap>
                         {row.user?.userName}
-                      </Typography> : null}
+                      </Typography>
+                    ) : null}
                   </Box>
                 </Stack>
               </TableCell>
 
               <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
-
+              <TableCell align="center">
+                {row.progressStatus !== undefined ? renderProgressStatus(row.progressStatus) : ''}
+              </TableCell>
               <TableCell>{row.score}</TableCell>
               <TableCell>{row.quiz?.totalScore}</TableCell>
               <TableCell>{row.quiz?.scoreToPass}</TableCell>
@@ -290,10 +293,6 @@ export default function UserQuizProgressTable({
               <TableCell>{row.startedAt ? DateTimeUtils.formatDateTimeToDateString(row.startedAt) : ''}</TableCell>
               <TableCell>{row.completedAt ? DateTimeUtils.formatDateTimeToDateString(row.completedAt) : ''}</TableCell>
               <TableCell>{row.lastAccess ? DateTimeUtils.formatDateTimeToDateString(row.lastAccess) : ''}</TableCell>
-
-              <TableCell align="center">
-                {row.progressStatus !== undefined ? renderProgressStatus(row.progressStatus) : ''}
-              </TableCell>
 
               <TableCell align="center">
                 {row.activeStatus !== undefined ? renderActiveStatus(row.activeStatus) : ''}

@@ -32,16 +32,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import {
-  CheckCircle,
-  Envelope,
-  Eye,
-  EyeClosed,
-  IdentificationCard,
-  Image as ImageIcon,
-  Person,
-  Phone,
-} from '@phosphor-icons/react';
+import { CheckCircle, Eye, EyeClosed, Image as ImageIcon, Person } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { EmployeeSelectDialog } from '@/presentation/components/shared/management/employee/employee-select';

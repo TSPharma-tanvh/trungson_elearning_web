@@ -33,7 +33,7 @@ export class GetEmployeeRequest {
   toJson(): any {
     return {
       ...this,
-      hireDate: DateTimeUtils.formatISODateToString(this.hireDate).toString(),
+      hireDate: this.hireDate ? DateTimeUtils.formatISODateToString(this.hireDate)?.toString() : undefined,
     };
   }
 }

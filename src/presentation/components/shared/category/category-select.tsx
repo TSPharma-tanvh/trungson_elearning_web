@@ -7,7 +7,7 @@ import { type CategoryResponse } from '@/domain/models/category/response/categor
 import { type CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { useCategorySelectDebounce } from '@/presentation/hooks/category/use-category-select-debounce';
 import { useCategoryLoader } from '@/presentation/hooks/use-category-loader';
-import { CategoryEnumUtils, StatusEnum, type CategoryEnum } from '@/utils/enum/core-enum';
+import { CategoryEnumUtils, type CategoryEnum } from '@/utils/enum/core-enum';
 import { CategoryOutlined, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -22,7 +22,6 @@ import {
   DialogTitle,
   FormControl,
   IconButton,
-  InputAdornment,
   InputLabel,
   ListItemText,
   MenuItem,
@@ -31,7 +30,6 @@ import {
   Select,
   Typography,
   useMediaQuery,
-  type SelectChangeEvent,
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -49,10 +47,6 @@ interface CategorySelectDialogProps extends Omit<SelectProps<string>, 'value' | 
   label?: string;
   disabled?: boolean;
 }
-
-const filterOptions = {
-  disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
-};
 
 export function CategorySelectDialog({
   categoryUsecase,
@@ -98,10 +92,6 @@ export function CategorySelectDialog({
   const handleSave = () => {
     onChange(localValue);
     setDialogOpen(false);
-  };
-
-  const handleClearFilters = () => {
-    setLocalSearchText('');
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
@@ -298,12 +288,10 @@ export function CategorySelect({
   onChange,
   categoryEnum,
   label = 'category',
-  disabled = false,
   categories = [],
 }: CategorySelectProps) {
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryResponse | undefined>(undefined);
+  const [_selectedCategory, setSelectedCategory] = useState<CategoryResponse | undefined>(undefined);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -338,21 +326,19 @@ export function CategorySelect({
   }, [value, categoryUsecase, categories, loaded]);
 
   return (
-    <>
-      <CategorySelectDialog
-        open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-        onChange={(id: string) => {
-          onChange(id);
-          setOpen(false);
-        }}
-        categoryUsecase={categoryUsecase}
-        categoryEnum={categoryEnum}
-        value={value || ''}
-        label={label}
-      />
-    </>
+    <CategorySelectDialog
+      open={open}
+      onClose={() => {
+        setOpen(false);
+      }}
+      onChange={(id: string) => {
+        onChange(id);
+        setOpen(false);
+      }}
+      categoryUsecase={categoryUsecase}
+      categoryEnum={categoryEnum}
+      value={value || ''}
+      label={label}
+    />
   );
 }

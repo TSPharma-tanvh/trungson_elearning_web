@@ -2,11 +2,10 @@ import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateUserCourseProgressRequest } from '@/domain/models/user-course/request/create-user-course-progress-request';
 import { type EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { type GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
-import { UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
+import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
 import { UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { type UserCourseProgressResult } from '@/domain/models/user-course/response/user-course-progress-result';
 import { type UserCourseProgressRepository } from '@/domain/repositories/progress/user-course-progress-repository';
-import { UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class UserCourseProgressUsecase {
   constructor(private readonly userCourseProgressRepo: UserCourseProgressRepository) {}

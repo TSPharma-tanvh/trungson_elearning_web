@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { InputAdornment, TextField } from '@mui/material';
 import { type SxProps, type Theme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
