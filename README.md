@@ -6,7 +6,7 @@
   npm run start
 
 Notes:
-if any error happends,
+if any error happens,
 
 delete both folders .next and node_modules and run
 
