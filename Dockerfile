@@ -17,7 +17,6 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-# Copy output từ bước build
 COPY --from=base /app/.next ./.next
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package.json ./package.json
