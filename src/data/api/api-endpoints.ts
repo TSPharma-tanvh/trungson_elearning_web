@@ -350,20 +350,13 @@ const endpoints: EndpointDefinitions = {
 };
 
 const getBaseUrl = (): string => {
-  const local = process.env.NEXT_PUBLIC_LOCAL_DEV_BASE_URL;
   const production = process.env.NEXT_PUBLIC_PRODUCTION_DEV_BASE_URL;
 
-  const baseUrl = process.env.NODE_ENV === 'production' ? production : local;
-
-  if (!baseUrl) {
-    throw new Error(
-      `Missing ${
-        process.env.NODE_ENV === 'production' ? 'NEXT_PUBLIC_PRODUCTION_DEV_BASE_URL' : 'NEXT_PUBLIC_LOCAL_DEV_BASE_URL'
-      } environment variable.`
-    );
+  if (!production) {
+    throw new Error('Missing NEXT_PUBLIC_PRODUCTION_DEV_BASE_URL environment variable.');
   }
 
-  return baseUrl.replace(/\/+$/, '');
+  return production.replace(/\/+$/, '');
 };
 
 export const apiEndpoints: EndpointDefinitions = endpoints;
