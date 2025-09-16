@@ -765,5 +765,6 @@
   "addUser": "Add User",
   "relationId": "Relation Id",
   "userQuizProgressId": "User Quiz Progress Id",
-  "userAnswerId": "User Answer Id"
+  "userAnswerId": "User Answer Id",
+  "importUsers": "Import Users"
 }

@@ -1,8 +1,11 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
 import { type GetUserRequest } from '@/domain/models/user/request/get-user-request';
+import { CreateUsersFromExcelRequest } from '@/domain/models/user/request/import-user-request';
 import { type RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { type UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
+import { ImportUsersResponse } from '@/domain/models/user/response/import-users-response';
+import { UserImportResponse } from '@/domain/models/user/response/user-import-response';
 import { type UserListResult } from '@/domain/models/user/response/user-list-result';
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { type UserRepository } from '@/domain/repositories/user/user-repository';
@@ -81,5 +84,15 @@ export class UserUsecase {
     const result = await this.userRepo.registerUser(request);
 
     return result;
+  }
+
+  async importUsers(request: CreateUsersFromExcelRequest): Promise<ImportUsersResponse> {
+    const apiResponse = await this.userRepo.importUsers(request);
+
+    if (!apiResponse?.isSuccessStatusCode) {
+      throw new Error(apiResponse?.message || 'Failed to import users');
+    }
+
+    return ImportUsersResponse.fromJSON(apiResponse.result);
   }
 }

@@ -2,18 +2,23 @@
 
 import * as React from 'react';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
+import { CreateUsersFromExcelRequest } from '@/domain/models/user/request/import-user-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Download, Upload } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
 
 import { AddUserDialog } from '@/presentation/components/dashboard/management/users/add-user-dialog';
+import { ImportUsersDialog } from '@/presentation/components/dashboard/management/users/import-users-dialog';
 import { UsersFilters } from '@/presentation/components/dashboard/management/users/users-filters';
 import UsersTable from '@/presentation/components/dashboard/management/users/users-table';
+
+const excelLink = process.env.NEXT_PUBLIC_IMPORT_USER_FORM;
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
@@ -25,6 +30,7 @@ export default function Page(): React.JSX.Element {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
   const [filters, setFilters] = React.useState<GetUserRequest>(new GetUserRequest({ pageNumber: 1, pageSize: 10 }));
+  const [showImportDialog, setShowImportDialog] = React.useState(false);
 
   const fetchUsers = React.useCallback(async () => {
     try {
@@ -78,6 +84,17 @@ export default function Page(): React.JSX.Element {
     await fetchUsers();
   };
 
+  const handleImportUsers = async (request: CreateUsersFromExcelRequest) => {
+    try {
+      await userUsecase.importUsers(request);
+      await fetchUsers();
+
+      setShowImportDialog(false);
+    } catch (error) {
+      return undefined;
+    }
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -86,15 +103,22 @@ export default function Page(): React.JSX.Element {
             {t('users')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            {/* <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
-              Import
+            <Button
+              color="inherit"
+              startIcon={<Upload fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => {
+                setShowImportDialog(true);
+              }}
+            >
+              {t('importUsers')}
             </Button>
-            <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-              Export
+            <Button
+              color="inherit"
+              startIcon={<Download fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => window.open(excelLink, '_blank', 'noopener,noreferrer')}
+            >
+              {t('downloadExampleFile')}
             </Button>
-            <Button color="inherit" startIcon={<Copy fontSize="var(--icon-fontSize-md)" />}>
-              Copy
-            </Button> */}
           </Stack>
         </Stack>
         <div>
@@ -131,6 +155,16 @@ export default function Page(): React.JSX.Element {
         onSubmit={async () => {
           await fetchUsers();
           setShowForm(false);
+        }}
+      />
+
+      <ImportUsersDialog
+        onSubmit={handleImportUsers}
+        disabled={false}
+        loading={false}
+        open={showImportDialog}
+        onClose={() => {
+          setShowImportDialog(false);
         }}
       />
     </Stack>

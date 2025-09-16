@@ -18,6 +18,7 @@ interface UserEndpoints {
   getById: DynamicEndpoint;
   update: DynamicEndpoint;
   delete: DynamicEndpoint;
+  import: StaticEndpoint;
 }
 
 interface NotificationEndpoints {
@@ -213,6 +214,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `User/GetUserInfoById/${id}`,
     update: (id: string) => `User/UpdateUser/${id}`,
     delete: (id: string) => `User/DeleteUser/${id}`,
+    import: 'User/ImportUsers',
   },
   notifications: {
     getAll: 'notification/get-all-notification',
@@ -351,9 +353,14 @@ const endpoints: EndpointDefinitions = {
 
 const getBaseUrl = (): string => {
   const production = process.env.NEXT_PUBLIC_PRODUCTION_DEV_BASE_URL;
+  const dev = process.env.NEXT_PUBLIC_LOCAL_DEV_BASE_URL;
 
   if (!production) {
     throw new Error('Missing NEXT_PUBLIC_PRODUCTION_DEV_BASE_URL environment variable.');
+  }
+
+  if (!dev) {
+    throw new Error('Missing NEXT_PUBLIC_LOCAL_DEV_BASE_URL environment variable.');
   }
 
   return production.replace(/\/+$/, '');
