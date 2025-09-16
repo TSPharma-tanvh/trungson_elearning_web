@@ -5,7 +5,6 @@ import { CreateUsersFromExcelRequest } from '@/domain/models/user/request/import
 import { type RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { type UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { ImportUsersResponse } from '@/domain/models/user/response/import-users-response';
-import { UserImportResponse } from '@/domain/models/user/response/user-import-response';
 import { type UserListResult } from '@/domain/models/user/response/user-list-result';
 import { UserResponse } from '@/domain/models/user/response/user-response';
 import { type UserRepository } from '@/domain/repositories/user/user-repository';

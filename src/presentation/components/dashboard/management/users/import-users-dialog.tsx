@@ -65,9 +65,9 @@ export function ImportUsersDialog({
         CustomSnackBar.showSnackbar(t('fileIsRequired'), 'error');
         return;
       }
-      await onSubmit(form);
+      onSubmit(form);
     } catch (error) {
-      console.error(error);
+      return;
     } finally {
       onClose();
       setIsSubmitting(false);
@@ -93,7 +93,11 @@ export function ImportUsersDialog({
           {t('importUsers')}
         </Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -140,13 +144,9 @@ export function ImportUsersDialog({
                 <Button
                   variant="text"
                   fullWidth
-                  onClick={() =>
-                    handleFilePreview(
-                      URL.createObjectURL(form.excelFile as File),
-                      (form.excelFile as File).name,
-                      (form.excelFile as File).type
-                    )
-                  }
+                  onClick={() => {
+                    handleFilePreview(URL.createObjectURL(form.excelFile!), form.excelFile!.name, form.excelFile!.type);
+                  }}
                   sx={{
                     justifyContent: 'flex-start',
                     textAlign: 'left',
@@ -155,7 +155,7 @@ export function ImportUsersDialog({
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {(form.excelFile as File).name}
+                  {form.excelFile.name}
                 </Button>
               </Grid>
             ) : (
@@ -183,20 +183,28 @@ export function ImportUsersDialog({
           {filePreviewData.type?.includes('image') ? (
             <ImagePreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               imageUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : filePreviewData.type?.includes('video') ? (
             <VideoPreviewDialog
               open={filePreviewOpen}
-              onClose={() => setFilePreviewOpen(false)}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
               videoUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
             />
           ) : null}
         </>
