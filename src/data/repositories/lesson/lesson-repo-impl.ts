@@ -71,7 +71,7 @@ export class LessonRepoImpl implements LessonRepository {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        timeout: 3600000,
+        timeout: 10800000,
       });
 
       const apiResponse = response.data;
