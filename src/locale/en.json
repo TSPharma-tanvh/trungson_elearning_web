@@ -766,5 +766,6 @@
   "relationId": "Relation Id",
   "userQuizProgressId": "User Quiz Progress Id",
   "userAnswerId": "User Answer Id",
-  "importUsers": "Import Users"
+  "importUsers": "Import Users",
+  "enableAutoPlay": "Enable Auto Play"
 }

@@ -111,7 +111,7 @@ export default function LessonTable({
           <>
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
-            <TableCell>{t('enablePlay')}</TableCell>
+            <TableCell>{t('enableAutoPlay')}</TableCell>
             <TableCell>{t('required')}</TableCell>
             <TableCell>{t('status')}</TableCell>
             <TableCell>{t('lessonType')}</TableCell>

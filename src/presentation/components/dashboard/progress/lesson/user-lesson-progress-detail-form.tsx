@@ -80,7 +80,7 @@ function UserLessonProgressDetails({
               {renderField('id', lesson.id)}
               {renderField('name', lesson.name)}
               {renderField('description', lesson.detail)}
-              {renderField('enablePlay', lesson.enablePlay ? t('yes') : t('no'))}
+              {renderField('enableAutoPlay', lesson.enablePlay ? t('yes') : t('no'))}
               {renderField('status', lesson.status)}
               {renderField('lessonType', lesson.lessonType)}
               {renderField('categoryId', lesson.categoryID)}
@@ -205,7 +205,11 @@ function UserLessonProgressDetails({
                 }}
                 action={
                   <Box>
-                    <IconButton onClick={() => { handleViewQuizDetail(quizEnroll.quizID ?? ''); }}>
+                    <IconButton
+                      onClick={() => {
+                        handleViewQuizDetail(quizEnroll.quizID ?? '');
+                      }}
+                    >
                       <InfoOutlined />
                     </IconButton>
                     <IconButton

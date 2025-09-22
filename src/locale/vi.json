@@ -766,5 +766,6 @@
   "relationId": "ID quan hệ",
   "userQuizProgressId": "ID tiến trình kiểm tra người dùng",
   "userAnswerId": "ID câu trả lời của người dùng",
-  "importUsers": "Nhập người dùng"
+  "importUsers": "Nhập người dùng",
+  "enableAutoPlay": "Bật tự động phát"
 }

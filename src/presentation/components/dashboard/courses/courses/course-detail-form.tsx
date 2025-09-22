@@ -173,7 +173,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                   <Grid container spacing={2}>
                     {renderField('id', lesson.id)}
                     {renderField('detail', lesson.detail)}
-                    {renderField('enablePlay', lesson.enablePlay ? 'Yes' : 'No')}
+                    {renderField('enableAutoPlay', lesson.enablePlay ? 'Yes' : 'No')}
                     {renderField('status', lesson.status)}
                     {renderField('lessonType', lesson.lessonType)}
                     {renderField('enrollmentCriteriaID', lesson.enrollmentCriteriaID)}
