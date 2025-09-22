@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ApiResponse } from '@/domain/models/core/api-response';
 import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -19,6 +20,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  LinearProgress,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
@@ -41,7 +43,7 @@ interface EditLessonDialogProps {
   open: boolean;
   data: LessonDetailResponse | null;
   onClose: () => void;
-  onSubmit: (data: UpdateLessonRequest) => void;
+  onSubmit: (request: UpdateLessonRequest, onProgress?: (progress: number) => void) => Promise<ApiResponse>;
 }
 
 export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }: EditLessonDialogProps) {
@@ -57,13 +59,15 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
   const [videoSource, setVideoSource] = useState<'upload' | 'select'>('select');
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [totalChunks, setTotalChunks] = useState(0);
 
   useEffect(() => {
     async function setupFormData() {
       if (lesson && open) {
         let videoFile: File | undefined;
 
-        if (lesson.video?.resourceUrl && !formData.video) {
+        if (lesson.video?.resourceUrl && !formData.videoChunk) {
           const fetchedFile = await urlToFile(lesson.video.resourceUrl, lesson.video.name ?? '');
           if (fetchedFile) {
             videoFile = fetchedFile;
@@ -87,11 +91,11 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
           categoryEnum: CategoryEnum.Lesson,
           isDeleteOldThumbnail: false,
           videoID: lesson.videoID,
-          video: videoFile,
+          videoChunk: videoFile,
+          uploadID: lesson.id,
         });
 
         setFormData(newFormData);
-
         setPreviewUrl(lesson.thumbnail?.resourceUrl ?? null);
         setVideoPreviewUrl(lesson.video?.resourceUrl ?? null);
       }
@@ -142,17 +146,19 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
 
   const handleVideoSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
     if (newSource) {
-      if (newSource === 'upload' && formData.video) {
-        setVideoPreviewUrl(URL.createObjectURL(formData.video));
+      if (newSource === 'upload' && formData.videoChunk) {
+        setVideoPreviewUrl(URL.createObjectURL(formData.videoChunk));
       }
       setVideoSource(newSource);
       if (newSource === 'upload') {
-        handleChange('video', undefined);
+        handleChange('videoChunk', undefined);
         handleChange('videoDocumentNo', undefined);
         handleChange('videoPrefixName', undefined);
         setVideoPreviewUrl(null);
+        setTotalChunks(0);
+        setUploadProgress(0);
       } else {
-        handleChange('video', undefined);
+        handleChange('videoChunk', undefined);
         if (formData.videoID) {
           fileUsecase
             .getFileResouceById(formData.videoID)
@@ -170,11 +176,17 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
   };
 
   const handleVideoUpload = (file: File | null) => {
-    handleChange('video', file ?? undefined);
     if (file) {
+      const chunkSize = 5 * 1024 * 1024; // 5 MB
+      const calculatedTotalChunks = Math.ceil(file.size / chunkSize);
+      setTotalChunks(calculatedTotalChunks);
+      handleChange('videoChunk', file);
       setVideoPreviewUrl(URL.createObjectURL(file));
     } else {
+      handleChange('videoChunk', undefined);
       setVideoPreviewUrl(null);
+      setTotalChunks(0);
+      setUploadProgress(0);
     }
   };
 
@@ -221,21 +233,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
 
   const handleSave = async () => {
     setIsSubmitting(true);
-
     try {
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => {
-          reject(new Error('Request timeout after 1 hour'));
-        }, 3600000);
-      });
-
-      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- Fix ESLint
-      await Promise.race([onSubmit(formData), timeoutPromise]);
-      setVideoPreviewUrl('');
-      setPreviewUrl('');
+      await onSubmit(
+        new UpdateLessonRequest({ ...formData }),
+        (progress: number) => setUploadProgress(progress) // nhận từ repo
+      );
       onClose();
     } catch (error) {
-      return undefined;
+      CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Error', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -388,21 +393,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               />
             </Grid>
 
-            {/* <Grid item xs={12} sm={6}>
-              <EnrollmentSelect
-                enrollmentUsecase={enrollUsecase}
-                categoryEnum={CategoryEnum.Lesson}
-                value={
-                  formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
-                }
-                onChange={(value: string[]) => handleChange('enrollmentCriteriaIDs', value.join(','))}
-                disabled={isSubmitting}
-                label="Enrollment Criteria"
-              />
-            </Grid> */}
-
-            {/* Image */}
-
+            {/* Thumbnail */}
             <Grid item xs={12}>
               <Typography variant="h6">{t('updateThumbnail')}</Typography>
             </Grid>
@@ -479,7 +470,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                       />
                     </Button>
                   </Grid>
-                  <Grid item xs={12} />
                   <Grid item xs={12}>
                     <FormControlLabel
                       control={
@@ -524,7 +514,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             ) : null}
 
             {/* Video */}
-
             <Grid item xs={12}>
               <Typography variant="h6">{t('updateVideo')}</Typography>
             </Grid>
@@ -534,7 +523,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                 value={videoSource}
                 exclusive
                 onChange={handleVideoSourceChange}
-                aria-label={t('thumbnailSource')}
+                aria-label={t('videoSource')}
                 fullWidth
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
@@ -563,9 +552,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
                       label={t('videoDocumentNo')}
-                      value={formData.thumbDocumentNo}
+                      value={formData.videoDocumentNo} // Fixed from thumbDocumentNo
                       onChange={(value) => {
-                        handleChange('thumbDocumentNo', value);
+                        handleChange('videoDocumentNo', value);
                       }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
@@ -574,9 +563,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
                       label={t('videoPrefixName')}
-                      value={formData.thumbPrefixName}
+                      value={formData.videoPrefixName} // Fixed from thumbPrefixName
                       onChange={(value) => {
-                        handleChange('thumbPrefixName', value);
+                        handleChange('videoPrefixName', value);
                       }}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
@@ -601,6 +590,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                       />
                     </Button>
                   </Grid>
+                  {totalChunks > 0 && (
+                    <Grid item xs={12}>
+                      <Typography variant="body2">
+                        {t('uploading')} {Math.round(uploadProgress)}% ({formData.chunkIndex ?? 0} / {totalChunks})
+                      </Typography>
+                      <LinearProgress variant="determinate" value={uploadProgress} sx={{ mt: 1 }} />
+                    </Grid>
+                  )}
                 </Grid>
               )}
             </Grid>

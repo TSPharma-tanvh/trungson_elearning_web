@@ -2,7 +2,7 @@ import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { type GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
+import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
 
 import { apiClient } from '@/data/api/api-client';
@@ -23,7 +23,7 @@ export class LessonRepoImpl implements LessonRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch lesson info');
     }
   }
 
@@ -38,7 +38,7 @@ export class LessonRepoImpl implements LessonRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch lesson info');
     }
   }
 
@@ -59,30 +59,66 @@ export class LessonRepoImpl implements LessonRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to create course');
+      throw new Error(error?.message || 'Failed to create lesson');
     }
   }
 
-  async updateLesson(request: UpdateLessonRequest): Promise<ApiResponse> {
+  async updateLesson(request: UpdateLessonRequest, onProgress?: (progress: number) => void): Promise<ApiResponse> {
     try {
-      const formData = request.toFormData();
+      if (request.videoChunk && request.videoChunk instanceof File) {
+        const chunkSize = 5 * 1024 * 1024;
+        const totalChunks = Math.ceil(request.videoChunk.size / chunkSize);
+        const videoId = request.videoID;
+        let lastResponse: ApiResponse | null = null;
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.lessons.update, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        timeout: 10800000,
-      });
+        for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+          const start = chunkIndex * chunkSize;
+          const end = Math.min(start + chunkSize, request.videoChunk.size);
+          const chunk = request.videoChunk.slice(start, end);
+          // Use the original video filename for all chunks
+          const chunkFile = new File([chunk], request.videoChunk.name, { type: 'video/mp4' });
 
-      const apiResponse = response.data;
+          const isLastChunk = chunkIndex === totalChunks - 1;
 
-      if (!apiResponse?.isSuccessStatusCode) {
-        throw new Error(apiResponse?.message || 'Unknown API error');
+          const chunkRequest = new UpdateLessonRequest({
+            ...request,
+            videoChunk: chunkFile,
+            chunkIndex,
+            totalChunks,
+            videoID: videoId,
+          });
+
+          const formData = chunkRequest.toFormData();
+
+          const response = await apiClient.put<ApiResponse>(apiEndpoints.lessons.update, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            timeout: 10800000,
+          });
+
+          const apiResponse = response.data;
+
+          if (!apiResponse?.isSuccessStatusCode) {
+            throw new Error(apiResponse?.message || `Chunk ${chunkIndex} upload failed`);
+          }
+
+          if (onProgress) {
+            onProgress(((chunkIndex + 1) / totalChunks) * 100);
+          }
+
+          lastResponse = apiResponse;
+        }
+
+        return lastResponse!;
       }
 
-      return apiResponse;
+      const response = await apiClient.put<ApiResponse>(apiEndpoints.lessons.update, request.toFormData(), {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to update lesson');
     }
   }
 }

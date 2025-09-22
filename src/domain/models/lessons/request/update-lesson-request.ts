@@ -16,11 +16,14 @@ export class UpdateLessonRequest {
   thumbPrefixName?: string;
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
-  video?: File;
+  videoChunk?: File; // Changed from video to videoChunk
   videoID?: string;
+  uploadID?: string;
   videoDocumentNo?: string;
   videoPrefixName?: string;
   isRequired?: boolean;
+  chunkIndex?: number; // Added
+  totalChunks?: number; // Added
 
   constructor(init?: Partial<UpdateLessonRequest>) {
     Object.assign(this, init);
@@ -42,10 +45,13 @@ export class UpdateLessonRequest {
       thumbPrefixName: json.thumbPrefixName,
       isDeleteOldThumbnail: json.isDeleteOldThumbnail,
       categoryEnum: json.categoryEnum,
-      videoID: json.thumbnailID,
+      videoID: json.videoID,
+      uploadID: json.uploadID,
       videoDocumentNo: json.videoDocumentNo,
       videoPrefixName: json.videoPrefixName,
       isRequired: json.isRequired,
+      chunkIndex: json.chunkIndex,
+      totalChunks: json.totalChunks,
     });
   }
 
@@ -66,9 +72,12 @@ export class UpdateLessonRequest {
       isDeleteOldThumbnail: this.isDeleteOldThumbnail,
       categoryEnum: this.categoryEnum,
       videoID: this.videoID,
+      uploadID: this.uploadID,
       videoDocumentNo: this.videoDocumentNo,
       videoPrefixName: this.videoPrefixName,
       isRequired: this.isRequired,
+      chunkIndex: this.chunkIndex,
+      totalChunks: this.totalChunks,
     };
   }
 
@@ -84,17 +93,28 @@ export class UpdateLessonRequest {
     if (this.lessonType !== undefined) form.append('LessonType', this.lessonType.toString());
     if (this.quizIDs) form.append('QuizIDs', this.quizIDs);
     if (this.categoryID) form.append('CategoryID', this.categoryID);
+
+    // Thumbnail
     if (this.thumbnailID) form.append('ThumbnailID', this.thumbnailID);
     if (this.thumbnail) form.append('Thumbnail', this.thumbnail);
     if (this.thumbDocumentNo) form.append('ThumbDocumentNo', this.thumbDocumentNo);
     if (this.thumbPrefixName) form.append('ThumbPrefixName', this.thumbPrefixName);
-    if (this.isDeleteOldThumbnail !== undefined)
+    if (this.isDeleteOldThumbnail !== undefined) {
       form.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
-    if (this.categoryEnum !== undefined) form.append('CategoryEnum', this.categoryEnum.toString());
-    if (this.video) form.append('Video', this.video);
-    if (this.videoID) form.append('VideoID', this.videoID);
-    if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
-    if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
+    }
+    form.append('UploadID', this.uploadID ?? '');
+    // Video
+    if (this.videoChunk) {
+      form.append('VideoChunk', this.videoChunk);
+      if (this.chunkIndex !== undefined) form.append('ChunkIndex', this.chunkIndex.toString());
+      if (this.totalChunks !== undefined) form.append('TotalChunks', this.totalChunks.toString());
+      if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
+      if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
+    } else if (this.videoID) {
+      // Nếu không upload chunk => chỉ gửi videoID
+      form.append('VideoID', this.videoID);
+    }
+
     if (this.isRequired !== undefined) form.append('IsRequired', this.isRequired.toString());
 
     return form;
