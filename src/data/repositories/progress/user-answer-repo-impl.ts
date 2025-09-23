@@ -2,13 +2,13 @@ import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type UpdateUserAnswerRequest } from '@/domain/models/user-answer/request/update-user-answer-request';
 import { type UserAnswerRepository } from '@/domain/repositories/progress/user-answer-progress-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class UserAnswerRepoImpl implements UserAnswerRepository {
   async updateUserAnswer(request: UpdateUserAnswerRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.userAnswerProgress.update, request.toJson());
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.userAnswerProgress.update, request.toJson());
 
       const apiResponse = response.data;
 

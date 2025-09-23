@@ -5,13 +5,13 @@ import { type GetPathRequest } from '@/domain/models/path/request/get-path-reque
 import { type UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { type PathRepository } from '@/domain/repositories/path/path-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class PathRepoImpl implements PathRepository {
   async getPathListInfo(request: GetPathRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.path.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.path.getAll, {
         params: request.toJson(),
       });
 
@@ -29,7 +29,7 @@ export class PathRepoImpl implements PathRepository {
 
   async getPathDetailInfo(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.path.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.path.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -43,7 +43,7 @@ export class PathRepoImpl implements PathRepository {
   }
   async createPath(request: CreateCoursePathRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.path.create, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.path.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -65,7 +65,7 @@ export class PathRepoImpl implements PathRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.path.update, formData, {
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.path.update, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -5,13 +5,13 @@ import { type GetRoleRequest } from '@/domain/models/role/request/get-role-reque
 import { type UpdateRoleRequest } from '@/domain/models/role/request/update-role-request';
 import { type RoleRepository } from '@/domain/repositories/role/role-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class RoleRepositoryImpl implements RoleRepository {
   async getAllPermissions(): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.role.getPermissions);
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.role.getPermissions);
 
       const apiResponse = response.data;
 
@@ -27,7 +27,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
   async getAllRoles(request: GetRoleRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.role.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.role.getAll, {
         params: request.toJSON(),
       });
 
@@ -45,7 +45,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
   async createRole(request: CreateRoleRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.role.createRole, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.role.createRole, request.toJSON());
 
       const apiResponse = response.data;
 
@@ -61,7 +61,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
   async updateRole(id: string, request: UpdateRoleRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.role.updateRole(id), request.toJSON());
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.role.updateRole(id), request.toJSON());
 
       const apiResponse = response.data;
 
@@ -77,7 +77,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
   async deleteRole(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.delete<ApiResponse>(apiEndpoints.role.deleteRole(id));
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.role.deleteRole(id));
 
       const apiResponse = response.data;
 

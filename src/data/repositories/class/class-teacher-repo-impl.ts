@@ -5,13 +5,13 @@ import { type GetClassTeacherRequest } from '@/domain/models/teacher/request/get
 import { type UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
 import { type ClassTeacherRepository } from '@/domain/repositories/class/class-teacher-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class ClassTeacherRepoImpl implements ClassTeacherRepository {
   async getClassTeacherListInfo(request: GetClassTeacherRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.classTeacher.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.classTeacher.getAll, {
         params: request.toJSON(),
       });
 
@@ -29,7 +29,7 @@ export class ClassTeacherRepoImpl implements ClassTeacherRepository {
 
   async getClassTeacherById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.classTeacher.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.classTeacher.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -44,7 +44,7 @@ export class ClassTeacherRepoImpl implements ClassTeacherRepository {
 
   async createClassTeacher(request: CreateClassTeacherRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.classTeacher.create, request.toJson());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.classTeacher.create, request.toJson());
 
       const apiResponse = response.data;
 
@@ -62,7 +62,7 @@ export class ClassTeacherRepoImpl implements ClassTeacherRepository {
     try {
       const json = request.toJson();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.classTeacher.update, json);
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.classTeacher.update, json);
 
       const apiResponse = response.data;
 

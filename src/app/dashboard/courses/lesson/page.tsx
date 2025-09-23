@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
@@ -11,7 +12,9 @@ import { Stack } from '@mui/system';
 import { Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
+import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateLessonDialog } from '@/presentation/components/dashboard/courses/lessons/create-lesson-form';
+import { UpdateLessonFormDialog } from '@/presentation/components/dashboard/courses/lessons/edit-lesson-form';
 import LessonTable from '@/presentation/components/dashboard/courses/lessons/lesson-table';
 import { LessonsFilters } from '@/presentation/components/dashboard/courses/lessons/lessons-filter';
 
@@ -21,11 +24,12 @@ export default function Page(): React.JSX.Element {
   const [filters, setFilters] = React.useState<GetLessonRequest>(new GetLessonRequest({ pageNumber: 1, pageSize: 10 }));
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
   const [lessons, setLessons] = React.useState<LessonDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [_deleteLoading, setDeleteLoading] = React.useState(false);
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  const [showEditDialog, setShowEditDialog] = React.useState(false);
+  const [selectedLesson, setSelectedLesson] = React.useState<LessonDetailResponse | null>(null);
 
   const fetchLessons = React.useCallback(async () => {
     try {
@@ -38,7 +42,7 @@ export default function Page(): React.JSX.Element {
       setLessons(Lessons);
       setTotalCount(totalRecords);
     } catch (error) {
-      return undefined;
+      CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to fetch lessons', 'error');
     }
   }, [filters, page, rowsPerPage, lessonUsecase]);
 
@@ -66,34 +70,23 @@ export default function Page(): React.JSX.Element {
       await lessonUsecase.createLesson(request);
       setShowCreateDialog(false);
       await fetchLessons();
+      CustomSnackBar.showSnackbar(t('lessonCreated'), 'success');
     } catch (error) {
-      return undefined;
+      CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to create lesson', 'error');
     }
   };
 
-  const handleEditLessonPath = async (request: UpdateLessonRequest) => {
+  const handleEditLesson = async (
+    request: UpdateLessonRequest,
+    options?: { suppressSuccessMessage?: boolean }
+  ): Promise<ApiResponse> => {
     try {
-      await lessonUsecase.updateLesson(request);
-      await fetchLessons();
-    } catch (error) {
-      return undefined;
-    }
-  };
+      const response = await lessonUsecase.updateLesson(request, options);
 
-  const handleDeleteLessons = async (ids: string[]) => {
-    try {
-      setDeleteLoading(true);
-      for (const id of ids) {
-        const response = await lessonUsecase.deleteLesson(id);
-        if (!response) {
-          throw new Error(`Failed to delete path with ID: ${id}`);
-        }
-      }
-      await fetchLessons();
+      return response;
     } catch (error) {
-      return undefined;
-    } finally {
-      setDeleteLoading(false);
+      CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to update lesson', 'error');
+      throw error;
     }
   };
 
@@ -124,7 +117,12 @@ export default function Page(): React.JSX.Element {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteLessonPaths={handleDeleteLessons}
-        onEditLesson={handleEditLessonPath}
+        onEditLesson={handleEditLesson}
+        onEditSuccess={async () => {
+          await fetchLessons();
+          setShowEditDialog(false);
+          setSelectedLesson(null);
+        }}
       />
       <CreateLessonDialog
         onSubmit={handleCreateLesson}
@@ -137,4 +135,22 @@ export default function Page(): React.JSX.Element {
       />
     </Stack>
   );
+
+  async function handleDeleteLessons(ids: string[]) {
+    try {
+      setDeleteLoading(true);
+      for (const id of ids) {
+        const response = await lessonUsecase.deleteLesson(id);
+        if (!response) {
+          throw new Error(`Failed to delete lesson with ID: ${id}`);
+        }
+      }
+      await fetchLessons();
+      CustomSnackBar.showSnackbar(t('lessonsDeleted'), 'success');
+    } catch (error) {
+      CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to delete lessons', 'error');
+    } finally {
+      setDeleteLoading(false);
+    }
+  }
 }

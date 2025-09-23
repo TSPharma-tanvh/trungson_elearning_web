@@ -5,13 +5,13 @@ import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CategoryRepository } from '@/domain/repositories/category/category-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class CategoryRepositoryImpl implements CategoryRepository {
   async getCategoryById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.category.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.category.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -26,7 +26,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
   async getCategoryListInfo(request: GetCategoryRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.category.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.category.getAll, {
         params: request.toJSON(),
       });
       const apiResponse = response.data;
@@ -43,7 +43,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
   async createCategory(request: CreateCategoryRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.category.create, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.category.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -66,7 +66,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.category.update, formData, {
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.category.update, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -87,7 +87,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
   async deleteCategory(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.delete<ApiResponse>(apiEndpoints.category.delete(id));
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.category.delete(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {

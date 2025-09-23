@@ -5,13 +5,13 @@ import { type GetEnrollmentCriteriaRequest } from '@/domain/models/enrollment/re
 import { type UpdateEnrollmentCriteriaRequest } from '@/domain/models/enrollment/request/update-enrollment-criteria-request';
 import { type EnrollmentCriteriaRepository } from '@/domain/repositories/enrollment/enrollment-criteria-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class EnrollmentRepoImpl implements EnrollmentCriteriaRepository {
   async getEnrollmentList(request: GetEnrollmentCriteriaRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.enrollment.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.enrollment.getAll, {
         params: request.toJSON(),
       });
 
@@ -29,7 +29,7 @@ export class EnrollmentRepoImpl implements EnrollmentCriteriaRepository {
 
   async getEnrollmentById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.enrollment.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.enrollment.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -44,7 +44,7 @@ export class EnrollmentRepoImpl implements EnrollmentCriteriaRepository {
 
   async createEnrollment(request: CreateEnrollmentCriteriaRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.enrollment.create, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.enrollment.create, request.toJSON());
 
       const apiResponse = response.data;
 
@@ -60,7 +60,7 @@ export class EnrollmentRepoImpl implements EnrollmentCriteriaRepository {
 
   async updateEnrollment(request: UpdateEnrollmentCriteriaRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.enrollment.update, request.toJSON());
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.enrollment.update, request.toJSON());
 
       const apiResponse = response.data;
 

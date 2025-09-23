@@ -12,7 +12,12 @@ import qs from 'qs';
 import { paths } from '@/paths';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
-import { apiEndpoints, getBaseUrl } from './api-endpoints'; // ✅ Add getBaseUrl
+import { apiEndpoints, getBaseUrl } from './api-endpoints';
+
+//custom options
+export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  suppressSuccessMessage?: boolean;
+}
 
 class ApiClient {
   private static instance: ApiClient;
@@ -21,11 +26,6 @@ class ApiClient {
   private constructor() {
     this.client = axios.create({
       baseURL: getBaseUrl(),
-      // headers: {
-      //   // 'Content-Type': 'application/json',
-      //   // Accept: 'application/json',
-      //   'Content-Type': undefined,
-      // },
       paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
       withCredentials: true,
       timeout: 100000,
@@ -33,17 +33,17 @@ class ApiClient {
     this.setupInterceptors();
   }
 
-  public static getInstance(): AxiosInstance {
+  // instance
+  public static getInstance(): ApiClient {
     if (!ApiClient.instance) {
       ApiClient.instance = new ApiClient();
     }
-    return ApiClient.instance.client;
+    return ApiClient.instance;
   }
 
   private setupInterceptors(): void {
     this.client.interceptors.request.use(
-      (config) => {
-        // Inject Authorization, Accept-Language, etc.
+      (config: InternalAxiosRequestConfig) => {
         const token = ApiClient.getAuthToken();
         if (token && config.headers) {
           config.headers['Authorization'] = `Bearer ${token}`;
@@ -64,14 +64,17 @@ class ApiClient {
           if (!data.isSuccessStatusCode) {
             CustomSnackBar.showSnackbar(data.message || 'Unknown error', 'error');
             throw new Error(data.message || 'API logic error');
-          } else if (data.message && response.config.method?.toLowerCase() !== 'get') {
+          } else if (
+            data.message &&
+            response.config.method?.toLowerCase() !== 'get' &&
+            !(response.config as CustomAxiosRequestConfig).suppressSuccessMessage
+          ) {
             CustomSnackBar.showSnackbar(data.message, 'success');
           }
         }
 
         return response;
       },
-      // inside this.client.interceptors.response.use(
       async (error) => {
         if (axios.isAxiosError(error)) {
           const status = error.response?.status;
@@ -79,14 +82,11 @@ class ApiClient {
 
           if (status === 400 && data?.errors) {
             const errorMessages: string[] = [];
-
             Object.entries(data.errors).forEach(([field, messages]) => {
               if (Array.isArray(messages)) {
                 messages.forEach((msg) => errorMessages.push(`${field}: ${msg}`));
               }
             });
-
-            // Show all validation messages
             errorMessages.forEach((msg) => {
               CustomSnackBar.showSnackbar(msg, 'error');
             });
@@ -95,7 +95,6 @@ class ApiClient {
             CustomSnackBar.showSnackbar(msg, 'error');
           }
 
-          // Handle 401
           if (status === 401) {
             const refreshToken = StoreLocalManager.getLocalData(AppStrings.REFRESH_TOKEN);
             const accessToken = StoreLocalManager.getLocalData(AppStrings.ACCESS_TOKEN) ?? '';
@@ -128,6 +127,24 @@ class ApiClient {
     );
   }
 
+  // method
+  public async get<T>(url: string, config?: CustomAxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.client.get<T>(url, config);
+  }
+
+  public async post<T>(url: string, data?: unknown, config?: CustomAxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.client.post<T>(url, data, config);
+  }
+
+  public async put<T>(url: string, data?: unknown, config?: CustomAxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.client.put<T>(url, data, config);
+  }
+
+  public async delete<T>(url: string, config?: CustomAxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.client.delete<T>(url, config);
+  }
+
+  // helpers
   private static getAuthToken(): string | null {
     return StoreLocalManager.getLocalData(AppStrings.ACCESS_TOKEN) || null;
   }
@@ -175,22 +192,6 @@ class ApiClient {
       return false;
     }
   }
-
-  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.get<T>(url, config);
-  }
-
-  public async post<T>(url: string, data: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.post<T>(url, data, config);
-  }
-
-  public async put<T>(url: string, data: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.put<T>(url, data, config);
-  }
-
-  public async delete<T>(url: string): Promise<AxiosResponse<T>> {
-    return this.client.delete<T>(url);
-  }
 }
 
-export const apiClient = ApiClient.getInstance();
+export const customApiClient = ApiClient.getInstance();

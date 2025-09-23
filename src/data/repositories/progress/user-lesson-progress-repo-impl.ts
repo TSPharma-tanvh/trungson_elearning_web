@@ -5,13 +5,13 @@ import { type GetUserLessonProgressRequest } from '@/domain/models/user-lesson/r
 import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { type UserLessonProgressRepository } from '@/domain/repositories/progress/user-lesson-progress-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class UserLessonProgressRepoImpl implements UserLessonProgressRepository {
   async getUserLessonProgressListInfo(request: GetUserLessonProgressRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.userLessonProgress.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userLessonProgress.getAll, {
         params: request.toJSON(),
       });
 
@@ -29,7 +29,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
 
   async getUserLessonProgressById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.userLessonProgress.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.userLessonProgress.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -44,7 +44,10 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
 
   async createUserLessonProgress(request: CreateUserLessonRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.userLessonProgress.create, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.userLessonProgress.create,
+        request.toJSON()
+      );
 
       const apiResponse = response.data;
 
@@ -62,7 +65,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
     try {
       const formData = request.toJSON();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.userLessonProgress.update, formData);
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.userLessonProgress.update, formData);
 
       const apiResponse = response.data;
 

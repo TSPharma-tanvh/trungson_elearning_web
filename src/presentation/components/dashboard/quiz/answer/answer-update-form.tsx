@@ -62,6 +62,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
     title?: string;
     type?: string;
   } | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (answer && open) {
@@ -77,6 +78,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
+      setPreviewUrl(answer.thumbnail?.resourceUrl ?? null);
     }
   }, [answer, open, fileUsecase]);
 
@@ -84,30 +86,54 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
     setFormData((prev) => new UpdateAnswerRequest({ ...prev, [field]: value }));
   };
 
-  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
-    if (newSource) {
-      setThumbnailSource(newSource);
-      if (newSource === 'upload') {
-        setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
+  const handleThumbnailSourceChange = async (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (!newSource) return;
+    setThumbnailSource(newSource);
+
+    if (newSource === 'upload') {
+      // file
+      if (thumbnailFile) {
+        setPreviewUrl(URL.createObjectURL(thumbnailFile));
       } else {
-        handleChange('thumbnail', undefined);
-        if (formData.thumbnailID) {
-          fileUsecase
-            .getFileResouceById(formData.thumbnailID)
-            .then((file) => {
-              setPreviewUrl(file.resourceUrl || null);
-            })
-            .catch(() => {
-              setPreviewUrl(null);
-            });
-        } else {
+        setPreviewUrl(null);
+      }
+    } else {
+      // thumbnail id
+      if (formData.thumbnailID) {
+        try {
+          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          setPreviewUrl(file.resourceUrl || null);
+        } catch {
           setPreviewUrl(null);
         }
+      } else {
+        setPreviewUrl(null);
+      }
+    }
+  };
+
+  const handleFileSelectChange = async (id: string) => {
+    handleChange('thumbnailID', id);
+    if (id) {
+      try {
+        const file = await fileUsecase.getFileResouceById(id);
+        setPreviewUrl(file.resourceUrl || null);
+        if (thumbnailSource === 'select') {
+          setPreviewUrl(file.resourceUrl || null);
+        }
+      } catch {
+        setPreviewUrl(null);
+      }
+    } else {
+      setPreviewUrl(null);
+      if (thumbnailSource === 'select') {
+        setPreviewUrl(null);
       }
     }
   };
 
   const handleFileUpload = (file: File | null) => {
+    setThumbnailFile(file);
     handleChange('thumbnail', file ?? undefined);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
@@ -119,10 +145,25 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      onSubmit(formData);
+      if (thumbnailSource === 'upload') {
+        onSubmit(
+          new UpdateAnswerRequest({
+            ...formData,
+            thumbnailID: undefined,
+          })
+        );
+      } else {
+        onSubmit(
+          new UpdateAnswerRequest({
+            ...formData,
+            thumbnail: undefined,
+          })
+        );
+      }
+
       onClose();
-    } catch (error) {
-      CustomSnackBar.showSnackbar('Failed to update answer', 'error');
+    } catch (e) {
+      return null;
     } finally {
       setIsSubmitting(false);
     }
@@ -269,9 +310,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                   type={FileResourceEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
-                  onChange={(ids) => {
-                    handleChange('thumbnailID', ids);
-                  }}
+                  onChange={handleFileSelectChange}
                   label={t('thumbnail')}
                   disabled={isSubmitting}
                 />
@@ -333,33 +372,34 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                       label="Delete Old Thumbnail"
                     />
                   </Grid>
-                  {previewUrl ? (
-                    <Grid item xs={12}>
-                      <Box
-                        sx={{
-                          width: fullScreen ? 400 : 200,
-                          height: fullScreen ? 400 : 200,
-                          borderRadius: 1,
-                          border: '1px solid #ccc',
-                          overflow: 'hidden',
-                          mt: 2,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          mx: 'auto',
-                        }}
-                      >
-                        <img
-                          src={previewUrl}
-                          alt="Thumbnail Preview"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      </Box>
-                    </Grid>
-                  ) : null}
                 </Grid>
               )}
             </Grid>
+
+            {previewUrl ? (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    width: fullScreen ? 400 : 200,
+                    height: fullScreen ? 400 : 200,
+                    borderRadius: 1,
+                    border: '1px solid #ccc',
+                    overflow: 'hidden',
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mx: 'auto',
+                  }}
+                >
+                  <img
+                    src={previewUrl}
+                    alt="Thumbnail Preview"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </Box>
+              </Grid>
+            ) : null}
           </Grid>
         </Box>
       </DialogContent>

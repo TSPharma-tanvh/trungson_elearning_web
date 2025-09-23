@@ -182,7 +182,7 @@ export function EmployeeSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t(searchEmployee)} />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchEmployee')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}

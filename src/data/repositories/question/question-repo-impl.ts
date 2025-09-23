@@ -5,13 +5,13 @@ import { type GetQuestionRequest } from '@/domain/models/question/request/get-qu
 import { type UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
 import { type QuestionRepository } from '@/domain/repositories/question/question-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class QuestionRepoImpl implements QuestionRepository {
   async getQuestionListInfo(request: GetQuestionRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.questions.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.questions.getAll, {
         params: request.toJSON(),
       });
 
@@ -29,7 +29,7 @@ export class QuestionRepoImpl implements QuestionRepository {
 
   async getQuestionById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.questions.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.questions.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -44,7 +44,7 @@ export class QuestionRepoImpl implements QuestionRepository {
 
   async createQuestion(request: CreateQuestionRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.questions.create, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.questions.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -67,7 +67,7 @@ export class QuestionRepoImpl implements QuestionRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.questions.update, formData, {
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.questions.update, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

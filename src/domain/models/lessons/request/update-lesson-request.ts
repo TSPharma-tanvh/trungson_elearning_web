@@ -16,14 +16,14 @@ export class UpdateLessonRequest {
   thumbPrefixName?: string;
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
-  videoChunk?: File; // Changed from video to videoChunk
+  videoChunk?: File;
   videoID?: string;
   uploadID?: string;
   videoDocumentNo?: string;
   videoPrefixName?: string;
   isRequired?: boolean;
-  chunkIndex?: number; // Added
-  totalChunks?: number; // Added
+  chunkIndex?: number;
+  totalChunks?: number;
 
   constructor(init?: Partial<UpdateLessonRequest>) {
     Object.assign(this, init);
@@ -94,6 +94,8 @@ export class UpdateLessonRequest {
     if (this.quizIDs) form.append('QuizIDs', this.quizIDs);
     if (this.categoryID) form.append('CategoryID', this.categoryID);
 
+    form.append('UploadID', this.uploadID ?? '');
+
     // Thumbnail
     if (this.thumbnailID) form.append('ThumbnailID', this.thumbnailID);
     if (this.thumbnail) form.append('Thumbnail', this.thumbnail);
@@ -102,18 +104,14 @@ export class UpdateLessonRequest {
     if (this.isDeleteOldThumbnail !== undefined) {
       form.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
     }
-    form.append('UploadID', this.uploadID ?? '');
+
     // Video
-    if (this.videoChunk) {
-      form.append('VideoChunk', this.videoChunk);
-      if (this.chunkIndex !== undefined) form.append('ChunkIndex', this.chunkIndex.toString());
-      if (this.totalChunks !== undefined) form.append('TotalChunks', this.totalChunks.toString());
-      if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
-      if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
-    } else if (this.videoID) {
-      // Nếu không upload chunk => chỉ gửi videoID
-      form.append('VideoID', this.videoID);
-    }
+    if (this.videoChunk) form.append('VideoChunk', this.videoChunk);
+    if (this.chunkIndex !== undefined) form.append('ChunkIndex', this.chunkIndex.toString());
+    if (this.totalChunks !== undefined) form.append('TotalChunks', this.totalChunks.toString());
+    if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
+    if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
+    if (this.videoID) form.append('VideoID', this.videoID);
 
     if (this.isRequired !== undefined) form.append('IsRequired', this.isRequired.toString());
 

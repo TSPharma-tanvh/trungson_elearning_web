@@ -3,12 +3,12 @@ import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
 import { type FileResourceRepository } from '@/domain/repositories/file/file-resources-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class FileResourceRepositoryImpl implements FileResourceRepository {
   async getFileResourceList(request: GetFileResourcesRequest): Promise<ApiPaginationResponse> {
-    const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.fileResources.getAll, {
+    const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.fileResources.getAll, {
       params: request.toJson(),
     });
 
@@ -26,7 +26,7 @@ export class FileResourceRepositoryImpl implements FileResourceRepository {
 
   async getFileResouceById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.fileResources.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.fileResources.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {

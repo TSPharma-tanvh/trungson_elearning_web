@@ -6,13 +6,13 @@ import { type GetUserQuizProgressRequest } from '@/domain/models/user-quiz/reque
 import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressRepository } from '@/domain/repositories/progress/user-quiz-progress-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
   async getUserQuizProgressListInfo(request: GetUserQuizProgressRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.userQuizProgress.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userQuizProgress.getAll, {
         params: request.toJson(),
       });
 
@@ -30,7 +30,7 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
 
   async getUserQuizProgressById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.userQuizProgress.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.userQuizProgress.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -45,7 +45,7 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
 
   async createUserQuizProgress(request: CreateUserQuizRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.userQuizProgress.create, request.toJson());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.userQuizProgress.create, request.toJson());
 
       const apiResponse = response.data;
 
@@ -63,7 +63,7 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
     try {
       const formData = request.toJson();
 
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.userQuizProgress.update, formData);
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.userQuizProgress.update, formData);
 
       const apiResponse = response.data;
 
@@ -79,7 +79,7 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
 
   async getUserQuizLiveStatus(request: GetUserQuizLiveStatusRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.userQuizProgress.live, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userQuizProgress.live, {
         params: request.toJson(),
       });
 

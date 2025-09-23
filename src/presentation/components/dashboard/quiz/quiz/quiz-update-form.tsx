@@ -77,6 +77,8 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
     title?: string;
     type?: string;
   } | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [selectedResourceIDs, setSelectedResourceIDs] = useState<string[]>([]);
 
   useEffect(() => {
     if (quiz && open) {
@@ -111,6 +113,12 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
+
+      setPreviewUrl(quiz.thumbnail?.resourceUrl ?? null);
+
+      setSelectedResourceIDs(
+        quiz.fileQuizRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ?? []
+      );
     }
   }, [quiz, open, fileUsecase]);
 
@@ -118,26 +126,28 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
     setFormData((prev) => new UpdateQuizRequest({ ...prev, [field]: value }));
   };
 
-  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
-    if (newSource) {
-      setThumbnailSource(newSource);
-      if (newSource === 'upload') {
-        handleChange('thumbnailID', undefined);
-        setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
+  const handleThumbnailSourceChange = async (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (!newSource) return;
+    setThumbnailSource(newSource);
+
+    if (newSource === 'upload') {
+      // file
+      if (thumbnailFile) {
+        setPreviewUrl(URL.createObjectURL(thumbnailFile));
       } else {
-        handleChange('thumbnail', undefined);
-        if (formData.thumbnailID) {
-          fileUsecase
-            .getFileResouceById(formData.thumbnailID)
-            .then((file) => {
-              setPreviewUrl(file.resourceUrl || null);
-            })
-            .catch(() => {
-              setPreviewUrl(null);
-            });
-        } else {
+        setPreviewUrl(null);
+      }
+    } else {
+      // thumbnail id
+      if (formData.thumbnailID) {
+        try {
+          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          setPreviewUrl(file.resourceUrl || null);
+        } catch {
           setPreviewUrl(null);
         }
+      } else {
+        setPreviewUrl(null);
       }
     }
   };
@@ -148,17 +158,22 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
+        if (thumbnailSource === 'select') {
+          setPreviewUrl(file.resourceUrl || null);
+        }
+      } catch {
         setPreviewUrl(null);
       }
     } else {
       setPreviewUrl(null);
+      if (thumbnailSource === 'select') {
+        setPreviewUrl(null);
+      }
     }
   };
 
   const handleFileUpload = (file: File | null) => {
+    setThumbnailFile(file);
     handleChange('thumbnail', file ?? undefined);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
@@ -169,7 +184,6 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
 
   const handleMultipleFileUpload = (files: File[]) => {
     setUploadedFiles(files);
-    handleChange('resources', files);
   };
 
   const handleFilePreview = (url: string, title?: string, type?: string) => {
@@ -180,7 +194,21 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      onSubmit(formData);
+      if (thumbnailSource === 'upload') {
+        formData.thumbnailID = undefined;
+      } else {
+        formData.thumbnail = undefined;
+      }
+
+      if (fileSelectSource === 'upload') {
+        formData.resourceIDs = undefined;
+        formData.resources = uploadedFiles;
+      } else {
+        formData.resources = undefined;
+        formData.resourceIDs = selectedResourceIDs.join(',');
+      }
+
+      onSubmit(new UpdateQuizRequest({ ...formData }));
       onClose();
     } catch (error) {
       return undefined;
@@ -191,7 +219,15 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
 
   useEffect(() => {
     if (!open) {
+      setFormData(new UpdateQuizRequest({}));
+      setPreviewUrl(null);
+      setThumbnailSource('select');
+      setThumbnailFile(null);
       setUploadedFiles([]);
+      setFilePreviewOpen(false);
+      setFilePreviewData(null);
+      setSelectedResourceIDs([]);
+      setFileSelectSource('multi-select');
     }
   }, [open]);
 
@@ -439,9 +475,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
-                  value={formData.resourceIDs?.split(',').filter(Boolean) ?? []}
+                  value={selectedResourceIDs}
                   onChange={(ids) => {
-                    handleChange('resourceIDs', ids.join(','));
+                    setSelectedResourceIDs(ids);
                   }}
                   disabled={false}
                   showTypeSwitcher
@@ -471,7 +507,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               </Grid>
             )}
 
-            {formData.resourceIDs && formData.resourceIDs.length > 0 ? (
+            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource == 'multi-select' ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
@@ -504,7 +540,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 </Grid>
               </Grid>
             ) : null}
-            {uploadedFiles.length > 0 && (
+            {uploadedFiles.length > 0 && fileSelectSource == 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('uploadedFiles')}
@@ -635,33 +671,33 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                       label={t('deleteOldThumbnail')}
                     />
                   </Grid>
-                  {previewUrl ? (
-                    <Grid item xs={12}>
-                      <Box
-                        sx={{
-                          width: fullScreen ? 400 : 200,
-                          height: fullScreen ? 400 : 200,
-                          borderRadius: 1,
-                          border: '1px solid #ccc',
-                          overflow: 'hidden',
-                          mt: 2,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          mx: 'auto',
-                        }}
-                      >
-                        <img
-                          src={previewUrl}
-                          alt="Thumbnail Preview"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      </Box>
-                    </Grid>
-                  ) : null}
                 </Grid>
               )}
             </Grid>
+            {previewUrl ? (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    width: fullScreen ? 400 : 200,
+                    height: fullScreen ? 400 : 200,
+                    borderRadius: 1,
+                    border: '1px solid #ccc',
+                    overflow: 'hidden',
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mx: 'auto',
+                  }}
+                >
+                  <img
+                    src={previewUrl}
+                    alt="Thumbnail Preview"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </Box>
+              </Grid>
+            ) : null}
           </Grid>
         </Box>
       </DialogContent>

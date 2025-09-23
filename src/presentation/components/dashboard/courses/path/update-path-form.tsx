@@ -58,6 +58,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (path && open) {
@@ -81,18 +82,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
       });
       setCourseFormData(newFormData);
 
-      if (path.thumbnailID) {
-        fileUsecase
-          .getFileResouceById(path.thumbnailID)
-          .then((file) => {
-            setPreviewUrl(file.resourceUrl || null);
-          })
-          .catch(() => {
-            setPreviewUrl(null);
-          });
-      } else {
-        setPreviewUrl(null);
-      }
+      setPreviewUrl(path.thumbnail?.resourceUrl ?? null);
     }
   }, [path, open, fileUsecase]);
 
@@ -103,6 +93,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
       );
       setPreviewUrl(null);
       setThumbnailSource('select');
+      setThumbnailFile(null);
     }
   }, [open]);
 
@@ -110,26 +101,28 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
     setCourseFormData((prev) => new UpdateCoursePathRequest({ ...prev, [field]: value }));
   };
 
-  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
-    if (newSource) {
-      setThumbnailSource(newSource);
-      if (newSource === 'upload') {
-        handleChange('thumbnailID', undefined);
-        setPreviewUrl(courseFormData.thumbnail ? URL.createObjectURL(courseFormData.thumbnail) : null);
+  const handleThumbnailSourceChange = async (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (!newSource) return;
+    setThumbnailSource(newSource);
+
+    if (newSource === 'upload') {
+      // file
+      if (thumbnailFile) {
+        setPreviewUrl(URL.createObjectURL(thumbnailFile));
       } else {
-        handleChange('thumbnail', undefined);
-        if (courseFormData.thumbnailID) {
-          fileUsecase
-            .getFileResouceById(courseFormData.thumbnailID)
-            .then((file) => {
-              setPreviewUrl(file.resourceUrl || null);
-            })
-            .catch(() => {
-              setPreviewUrl(null);
-            });
-        } else {
+        setPreviewUrl(null);
+      }
+    } else {
+      // thumbnail id
+      if (courseFormData.thumbnailID) {
+        try {
+          const file = await fileUsecase.getFileResouceById(courseFormData.thumbnailID);
+          setPreviewUrl(file.resourceUrl || null);
+        } catch {
           setPreviewUrl(null);
         }
+      } else {
+        setPreviewUrl(null);
       }
     }
   };
@@ -140,17 +133,22 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
+        if (thumbnailSource === 'select') {
+          setPreviewUrl(file.resourceUrl || null);
+        }
+      } catch {
         setPreviewUrl(null);
       }
     } else {
       setPreviewUrl(null);
+      if (thumbnailSource === 'select') {
+        setPreviewUrl(null);
+      }
     }
   };
 
   const handleFileUpload = (file: File | null) => {
+    setThumbnailFile(file);
     handleChange('thumbnail', file ?? undefined);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
@@ -162,7 +160,21 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      onSubmit(courseFormData);
+      if (thumbnailSource === 'upload') {
+        onSubmit(
+          new UpdateCoursePathRequest({
+            ...courseFormData,
+            thumbnailID: undefined,
+          })
+        );
+      } else {
+        onSubmit(
+          new UpdateCoursePathRequest({
+            ...courseFormData,
+            thumbnail: undefined,
+          })
+        );
+      }
       setPreviewUrl('');
       onClose();
     } catch (error) {

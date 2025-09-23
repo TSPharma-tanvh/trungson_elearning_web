@@ -4,13 +4,13 @@ import { type GetUserDevicesRequest } from '@/domain/models/user-devices/request
 import { type UpdateUserDevicesRequest } from '@/domain/models/user-devices/request/update-user-devices-request';
 import { type UserDevicesRepository } from '@/domain/repositories/user/device-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class UserDevicesRepoImpl implements UserDevicesRepository {
   async getUserDevicesListInfo(request: GetUserDevicesRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.userDevices.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userDevices.getAll, {
         params: request.toJSON(),
       });
 
@@ -28,7 +28,7 @@ export class UserDevicesRepoImpl implements UserDevicesRepository {
 
   async getUserDevicesById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.userDevices.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.userDevices.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -43,7 +43,7 @@ export class UserDevicesRepoImpl implements UserDevicesRepository {
 
   async deleteUserDevicesById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.delete<ApiResponse>(apiEndpoints.userDevices.delete, {
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.userDevices.delete, {
         params: { id },
       });
 
@@ -61,7 +61,7 @@ export class UserDevicesRepoImpl implements UserDevicesRepository {
 
   async updateUserDevices(request: UpdateUserDevicesRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.userDevices.update, request.toJSON());
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.userDevices.update, request.toJSON());
 
       const apiResponse = response.data;
 

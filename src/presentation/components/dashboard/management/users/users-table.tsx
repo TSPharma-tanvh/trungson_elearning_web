@@ -185,9 +185,9 @@ export default function UsersTable({
                 </TableCell>
                 <TableCell>{t('id')}</TableCell>
                 <TableCell>{t('user')}</TableCell>
-                <TableCell>{t('employeeName')}</TableCell>
-                <TableCell>{t('phoneNumber')}</TableCell>
                 <TableCell>{t('email')}</TableCell>
+                <TableCell>{t('position')}</TableCell>
+                <TableCell>{t('department')}</TableCell>
                 <TableCell>{t('roles')}</TableCell>
                 <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
@@ -226,9 +226,11 @@ export default function UsersTable({
                         </Box>
                       </Stack>
                     </TableCell>{' '}
-                    <TableCell sx={{ width: '15%' }}>{row.employee?.name}</TableCell>
-                    <TableCell>{row.phoneNumber}</TableCell>
-                    <TableCell>{row.email}</TableCell>
+                    <TableCell>{row.employee?.mail}</TableCell>
+                    <TableCell>
+                      {row.employee && `${row.employee.currentPositionName} (${row.employee.currentPositionStateName})`}
+                    </TableCell>
+                    <TableCell>{row.employee?.currentDepartmentName}</TableCell>
                     <TableCell>{row.roles?.join(', ')}</TableCell>
                     <TableCell align="right">
                       <IconButton

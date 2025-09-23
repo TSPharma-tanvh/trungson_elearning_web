@@ -767,5 +767,6 @@
   "userQuizProgressId": "User Quiz Progress Id",
   "userAnswerId": "User Answer Id",
   "importUsers": "Import Users",
-  "enableAutoPlay": "Enable Auto Play"
+  "enableAutoPlay": "Enable Auto Play",
+  "uploading": "Uploading"
 }

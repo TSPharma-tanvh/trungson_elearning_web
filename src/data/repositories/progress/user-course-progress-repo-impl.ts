@@ -6,13 +6,13 @@ import { type GetUserCourseProgressRequest } from '@/domain/models/user-course/r
 import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
 import { type UserCourseProgressRepository } from '@/domain/repositories/progress/user-course-progress-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class UserCourseProgressRepoImpl implements UserCourseProgressRepository {
   async getUserCourseProgressListInfo(request: GetUserCourseProgressRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.userCourseProgress.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userCourseProgress.getAll, {
         params: request.toJSON(),
       });
 
@@ -30,7 +30,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
   async getUserCourseProgressById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.userCourseProgress.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.userCourseProgress.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -45,7 +45,10 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
   async createUserCourseProgress(request: CreateUserCourseProgressRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.userCourseProgress.create, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.userCourseProgress.create,
+        request.toJSON()
+      );
 
       const apiResponse = response.data;
 
@@ -63,7 +66,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
     try {
       const formData = request.toJSON();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.userCourseProgress.update, formData);
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.userCourseProgress.update, formData);
 
       const apiResponse = response.data;
 
@@ -79,7 +82,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
   async deleteUserCourseProgress(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.delete<ApiResponse>(apiEndpoints.userCourseProgress.delete(id));
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.userCourseProgress.delete(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -94,7 +97,10 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
   async enrollUserListToCourse(request: EnrollUserListToCourseRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.userCourseProgress.enroll, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.userCourseProgress.enroll,
+        request.toJSON()
+      );
 
       const apiResponse = response.data;
 

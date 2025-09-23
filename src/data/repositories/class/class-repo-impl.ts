@@ -5,13 +5,13 @@ import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type ClassRepository } from '@/domain/repositories/class/class-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class ClassRepoImpl implements ClassRepository {
   async getClassListInfo(request: GetClassRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.class.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.class.getAll, {
         params: request.toJson(),
       });
 
@@ -29,7 +29,7 @@ export class ClassRepoImpl implements ClassRepository {
 
   async getClassById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.class.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.class.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -44,7 +44,7 @@ export class ClassRepoImpl implements ClassRepository {
 
   async createClass(request: CreateClassRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.class.create, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.class.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -67,7 +67,7 @@ export class ClassRepoImpl implements ClassRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.class.update, formData, {
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.class.update, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

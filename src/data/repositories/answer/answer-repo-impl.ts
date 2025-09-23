@@ -5,13 +5,13 @@ import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type AnswerRepository } from '@/domain/repositories/answer/answer-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class AnswerRepoImpl implements AnswerRepository {
   async getAnswerListInfo(request: GetAnswerRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.answers.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.answers.getAll, {
         params: request.toJSON(),
       });
 
@@ -29,7 +29,7 @@ export class AnswerRepoImpl implements AnswerRepository {
 
   async getAnswerById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.answers.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.answers.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -44,7 +44,7 @@ export class AnswerRepoImpl implements AnswerRepository {
 
   async createAnswer(request: CreateAnswerRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.answers.create, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.answers.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -67,7 +67,7 @@ export class AnswerRepoImpl implements AnswerRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.answers.update, formData, {
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.answers.update, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

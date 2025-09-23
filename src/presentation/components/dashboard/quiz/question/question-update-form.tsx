@@ -66,6 +66,8 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
     title?: string;
     type?: string;
   } | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [selectedResourceIDs, setSelectedResourceIDs] = useState<string[]>([]);
 
   useEffect(() => {
     if (question && open) {
@@ -95,6 +97,13 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
+      setPreviewUrl(question.thumbnail?.resourceUrl ?? null);
+
+      setSelectedResourceIDs(
+        question.fileQuestionRelation
+          ?.map((item) => item.fileResources?.id)
+          .filter((id): id is string => Boolean(id)) ?? []
+      );
     }
   }, [question, open, fileUsecase]);
 
@@ -115,30 +124,34 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
     }
   }, [filePreviewData, filePreviewOpen]);
 
-  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
-    if (newSource) {
-      setThumbnailSource(newSource);
-      if (newSource === 'upload') {
-        setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
+  const handleThumbnailSourceChange = async (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (!newSource) return;
+    setThumbnailSource(newSource);
+
+    if (newSource === 'upload') {
+      // file
+      if (thumbnailFile) {
+        setPreviewUrl(URL.createObjectURL(thumbnailFile));
       } else {
-        handleChange('thumbnail', undefined);
-        if (formData.thumbnailID) {
-          fileUsecase
-            .getFileResouceById(formData.thumbnailID)
-            .then((file) => {
-              setPreviewUrl(file.resourceUrl || null);
-            })
-            .catch(() => {
-              setPreviewUrl(null);
-            });
-        } else {
+        setPreviewUrl(null);
+      }
+    } else {
+      // thumbnail id
+      if (formData.thumbnailID) {
+        try {
+          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          setPreviewUrl(file.resourceUrl || null);
+        } catch {
           setPreviewUrl(null);
         }
+      } else {
+        setPreviewUrl(null);
       }
     }
   };
 
   const handleFileUpload = (file: File | null) => {
+    setThumbnailFile(file);
     handleChange('thumbnail', file ?? undefined);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
@@ -149,7 +162,6 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
 
   const handleMultipleFileUpload = (files: File[]) => {
     setUploadedFiles(files);
-    handleChange('resources', files);
   };
 
   const handleFilePreview = (url: string, title?: string, type?: string) => {
@@ -160,16 +172,42 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      onSubmit(formData);
-      setUploadedFiles([]);
-      setPreviewUrl(null);
+      if (thumbnailSource === 'upload') {
+        formData.thumbnailID = undefined;
+      } else {
+        formData.thumbnail = undefined;
+      }
+
+      if (fileSelectSource === 'upload') {
+        formData.resourceIDs = undefined;
+        formData.resources = uploadedFiles;
+      } else {
+        formData.resources = undefined;
+        formData.resourceIDs = selectedResourceIDs.join(',');
+      }
+
+      onSubmit(new UpdateQuestionRequest({ ...formData }));
       onClose();
     } catch (error) {
-      CustomSnackBar.showSnackbar('Failed to update question', 'error');
+      return undefined;
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (!open) {
+      setFormData(new UpdateQuestionRequest({}));
+      setPreviewUrl(null);
+      setThumbnailSource('select');
+      setThumbnailFile(null);
+      setUploadedFiles([]);
+      setFilePreviewOpen(false);
+      setFilePreviewData(null);
+      setSelectedResourceIDs([]);
+      setFileSelectSource('multi-select');
+    }
+  }, [open]);
 
   const iconStyle = {
     size: 20,
@@ -318,11 +356,10 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
-                  value={formData.resourceIDs?.split(',').filter(Boolean) ?? []}
+                  value={selectedResourceIDs}
                   onChange={(ids) => {
-                    handleChange('resourceIDs', ids.join(','));
+                    setSelectedResourceIDs(ids);
                   }}
-                  label={t('selectFiles')}
                   disabled={false}
                   showTypeSwitcher
                   allowAllTypes
@@ -351,7 +388,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               </Grid>
             )}
 
-            {formData.resourceIDs && formData.resourceIDs.length > 0 ? (
+            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource == 'multi-select' ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
@@ -384,7 +421,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                 </Grid>
               </Grid>
             ) : null}
-            {uploadedFiles.length > 0 && (
+            {uploadedFiles.length > 0 && fileSelectSource == 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('uploadedFiles')}
@@ -519,33 +556,34 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                       label={t('deleteOldThumbnail')}
                     />
                   </Grid>
-                  {previewUrl ? (
-                    <Grid item xs={12}>
-                      <Box
-                        sx={{
-                          width: fullScreen ? 400 : 200,
-                          height: fullScreen ? 400 : 200,
-                          borderRadius: 1,
-                          border: '1px solid #ccc',
-                          overflow: 'hidden',
-                          mt: 2,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          mx: 'auto',
-                        }}
-                      >
-                        <img
-                          src={previewUrl}
-                          alt={t('thumbnailPreview')}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      </Box>
-                    </Grid>
-                  ) : null}
                 </Grid>
               )}
             </Grid>
+
+            {previewUrl ? (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    width: fullScreen ? 400 : 200,
+                    height: fullScreen ? 400 : 200,
+                    borderRadius: 1,
+                    border: '1px solid #ccc',
+                    overflow: 'hidden',
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mx: 'auto',
+                  }}
+                >
+                  <img
+                    src={previewUrl}
+                    alt={t('thumbnailPreview')}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </Box>
+              </Grid>
+            ) : null}
           </Grid>
         </Box>
       </DialogContent>

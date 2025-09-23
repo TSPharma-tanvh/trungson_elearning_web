@@ -43,10 +43,11 @@ interface EditLessonDialogProps {
   open: boolean;
   data: LessonDetailResponse | null;
   onClose: () => void;
-  onSubmit: (request: UpdateLessonRequest, onProgress?: (progress: number) => void) => Promise<ApiResponse>;
+  onSubmit: (request: UpdateLessonRequest, options?: { suppressSuccessMessage?: boolean }) => Promise<ApiResponse>;
+  onSuccess?: () => void;
 }
 
-export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }: EditLessonDialogProps) {
+export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, onSuccess }: EditLessonDialogProps) {
   const theme = useTheme();
   const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -61,6 +62,10 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [totalChunks, setTotalChunks] = useState(0);
+  const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
 
   useEffect(() => {
     async function setupFormData() {
@@ -68,9 +73,13 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
         let videoFile: File | undefined;
 
         if (lesson.video?.resourceUrl && !formData.videoChunk) {
-          const fetchedFile = await urlToFile(lesson.video.resourceUrl, lesson.video.name ?? '');
-          if (fetchedFile) {
-            videoFile = fetchedFile;
+          try {
+            const fetchedFile = await urlToFile(lesson.video.resourceUrl, lesson.video.name ?? '');
+            if (fetchedFile) {
+              videoFile = fetchedFile;
+            }
+          } catch (error) {
+            CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to fetch video file', 'error');
           }
         }
 
@@ -98,6 +107,10 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
         setFormData(newFormData);
         setPreviewUrl(lesson.thumbnail?.resourceUrl ?? null);
         setVideoPreviewUrl(lesson.video?.resourceUrl ?? null);
+        setSelectedVideoId(lesson.video?.id ?? null);
+        setUploadProgress(0);
+        setTotalChunks(0);
+        setCurrentChunkIndex(0);
       }
     }
     void setupFormData();
@@ -117,76 +130,86 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
   }
 
   const handleChange = <K extends keyof UpdateLessonRequest>(field: K, value: UpdateLessonRequest[K]) => {
-    setFormData((prev) => new UpdateLessonRequest({ ...prev, [field]: value }));
+    setFormData((prev) => {
+      const newData = new UpdateLessonRequest({ ...prev, [field]: value });
+      return newData;
+    });
   };
 
-  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
-    if (newSource) {
-      if (newSource === 'upload' && formData.thumbnail) {
-        setPreviewUrl(URL.createObjectURL(formData.thumbnail));
+  const handleThumbnailSourceChange = (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (!newSource) return;
+    setThumbnailSource(newSource);
+
+    if (newSource === 'upload') {
+      if (thumbnailFile) {
+        setPreviewUrl(URL.createObjectURL(thumbnailFile));
+      } else {
+        setPreviewUrl(null);
       }
-      setThumbnailSource(newSource);
-      if (newSource !== 'upload') {
-        handleChange('thumbnail', undefined);
-        if (formData.thumbnailID) {
-          fileUsecase
-            .getFileResouceById(formData.thumbnailID)
-            .then((file) => {
-              setPreviewUrl(file.resourceUrl || null);
-            })
-            .catch(() => {
-              setPreviewUrl(null);
-            });
-        } else {
-          setPreviewUrl(null);
-        }
+    } else {
+      if (formData.thumbnailID) {
+        fileUsecase
+          .getFileResouceById(formData.thumbnailID)
+          .then((file) => setPreviewUrl(file.resourceUrl || null))
+          .catch(() => setPreviewUrl(null));
+      } else {
+        setPreviewUrl(null);
       }
     }
   };
 
-  const handleVideoSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
-    if (newSource) {
-      if (newSource === 'upload' && formData.videoChunk) {
-        setVideoPreviewUrl(URL.createObjectURL(formData.videoChunk));
-      }
-      setVideoSource(newSource);
-      if (newSource === 'upload') {
-        handleChange('videoChunk', undefined);
-        handleChange('videoDocumentNo', undefined);
-        handleChange('videoPrefixName', undefined);
-        setVideoPreviewUrl(null);
-        setTotalChunks(0);
+  const handleVideoSourceChange = (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (!newSource) return;
+    setVideoSource(newSource);
+
+    if (newSource === 'upload') {
+      // Lưu lại videoID trước khi bỏ
+      setSelectedVideoId(formData.videoID ?? null);
+
+      // Khi chuyển sang upload, bỏ videoID khỏi formData
+      setFormData((prev) => new UpdateLessonRequest({ ...prev, videoID: undefined }));
+
+      if (videoFile) {
+        const url = URL.createObjectURL(videoFile);
+        setVideoPreviewUrl(url);
+
+        const chunkSize = 5 * 1024 * 1024; // 5 MB
+        const calculatedTotalChunks = Math.ceil(videoFile.size / chunkSize);
+        setTotalChunks(calculatedTotalChunks);
+        setCurrentChunkIndex(0);
         setUploadProgress(0);
+      }
+    } else {
+      // Khi quay lại select, restore lại videoID từ selectedVideoId
+      setFormData(
+        (prev) => new UpdateLessonRequest({ ...prev, videoChunk: undefined, videoID: selectedVideoId ?? undefined })
+      );
+
+      if (selectedVideoId) {
+        fileUsecase
+          .getFileResouceById(selectedVideoId)
+          .then((file) => setVideoPreviewUrl(file.resourceUrl || null))
+          .catch(() => setVideoPreviewUrl(null));
       } else {
-        handleChange('videoChunk', undefined);
-        if (formData.videoID) {
-          fileUsecase
-            .getFileResouceById(formData.videoID)
-            .then((file) => {
-              setVideoPreviewUrl(file.resourceUrl || null);
-            })
-            .catch(() => {
-              setVideoPreviewUrl(null);
-            });
-        } else {
-          setVideoPreviewUrl(null);
-        }
+        setVideoPreviewUrl(null);
       }
     }
   };
 
   const handleVideoUpload = (file: File | null) => {
+    setVideoFile(file);
     if (file) {
       const chunkSize = 5 * 1024 * 1024; // 5 MB
       const calculatedTotalChunks = Math.ceil(file.size / chunkSize);
       setTotalChunks(calculatedTotalChunks);
-      handleChange('videoChunk', file);
+      setCurrentChunkIndex(0);
+      setUploadProgress(0);
       setVideoPreviewUrl(URL.createObjectURL(file));
     } else {
-      handleChange('videoChunk', undefined);
       setVideoPreviewUrl(null);
       setTotalChunks(0);
       setUploadProgress(0);
+      setCurrentChunkIndex(0);
     }
   };
 
@@ -223,7 +246,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
   };
 
   const handleFileUpload = (file: File | null) => {
-    handleChange('thumbnail', file ?? undefined);
+    setThumbnailFile(file);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
     } else {
@@ -232,16 +255,78 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
   };
 
   const handleSave = async () => {
+    if (!formData || !formData.id || !formData.name) {
+      CustomSnackBar.showSnackbar(!formData ? t('formDataMissing') : t('requiredFieldsMissing'), 'error');
+      return;
+    }
+
     setIsSubmitting(true);
+
     try {
-      await onSubmit(
-        new UpdateLessonRequest({ ...formData }),
-        (progress: number) => setUploadProgress(progress) // nhận từ repo
-      );
-      onClose();
+      let lastResponse: ApiResponse | null = null;
+
+      // thumbnail
+      const thumbnailPayload =
+        thumbnailSource === 'upload'
+          ? { ...formData, thumbnailID: undefined, thumbnail: thumbnailFile ?? undefined }
+          : { ...formData, thumbnail: undefined };
+
+      // video
+      if (videoSource === 'upload' && videoFile) {
+        // upload video by chunk
+        const chunkSize = 5 * 1024 * 1024;
+        const totalChunks = Math.ceil(videoFile.size / chunkSize);
+
+        for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+          const start = chunkIndex * chunkSize;
+          const end = Math.min(start + chunkSize, videoFile.size);
+          const chunk = videoFile.slice(start, end);
+          const chunkFile = new File([chunk], videoFile.name, { type: videoFile.type });
+
+          const chunkRequest = new UpdateLessonRequest({
+            ...thumbnailPayload,
+            videoChunk: chunkFile,
+            chunkIndex,
+            totalChunks,
+          });
+
+          const response = await onSubmit(chunkRequest, {
+            suppressSuccessMessage: chunkIndex < totalChunks - 1,
+          });
+
+          setCurrentChunkIndex(chunkIndex + 1);
+          setUploadProgress(((chunkIndex + 1) / totalChunks) * 100);
+          lastResponse = response;
+
+          if (chunkIndex === totalChunks - 1 && lastResponse) {
+            setUploadProgress(0);
+            setTotalChunks(0);
+            setCurrentChunkIndex(0);
+            onClose();
+          }
+        }
+      } else {
+        // select video
+        const request = new UpdateLessonRequest({
+          ...thumbnailPayload,
+          videoChunk: undefined,
+          videoID: videoSource === 'select' ? formData.videoID : undefined,
+        });
+
+        const response = await onSubmit(request, { suppressSuccessMessage: false });
+        lastResponse = response;
+
+        if (lastResponse) {
+          setUploadProgress(0);
+          setTotalChunks(0);
+          setCurrentChunkIndex(0);
+          onClose();
+        }
+      }
     } catch (error) {
-      CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Error', 'error');
+      console.error(error);
     } finally {
+      if (onSuccess) onSuccess();
       setIsSubmitting(false);
     }
   };
@@ -259,6 +344,19 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
       clearInterval(intervalId);
     };
   }, [isSubmitting]);
+
+  useEffect(() => {
+    if (!open) {
+      setFormData(new UpdateLessonRequest({}));
+      setPreviewUrl(null);
+      setVideoPreviewUrl(null);
+      setUploadProgress(0);
+      setTotalChunks(0);
+      setCurrentChunkIndex(0);
+      setThumbnailSource('select');
+      setVideoSource('select');
+    }
+  }, [open]);
 
   const iconStyle = {
     size: 20,
@@ -393,7 +491,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               />
             </Grid>
 
-            {/* Thumbnail */}
             <Grid item xs={12}>
               <Typography variant="h6">{t('updateThumbnail')}</Typography>
             </Grid>
@@ -513,7 +610,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
               </Grid>
             ) : null}
 
-            {/* Video */}
             <Grid item xs={12}>
               <Typography variant="h6">{t('updateVideo')}</Typography>
             </Grid>
@@ -552,7 +648,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
                       label={t('videoDocumentNo')}
-                      value={formData.videoDocumentNo} // Fixed from thumbDocumentNo
+                      value={formData.videoDocumentNo}
                       onChange={(value) => {
                         handleChange('videoDocumentNo', value);
                       }}
@@ -563,7 +659,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
                       label={t('videoPrefixName')}
-                      value={formData.videoPrefixName} // Fixed from thumbPrefixName
+                      value={formData.videoPrefixName}
                       onChange={(value) => {
                         handleChange('videoPrefixName', value);
                       }}
@@ -592,10 +688,57 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
                   </Grid>
                   {totalChunks > 0 && (
                     <Grid item xs={12}>
-                      <Typography variant="body2">
-                        {t('uploading')} {Math.round(uploadProgress)}% ({formData.chunkIndex ?? 0} / {totalChunks})
-                      </Typography>
-                      <LinearProgress variant="determinate" value={uploadProgress} sx={{ mt: 1 }} />
+                      <Box
+                        sx={{
+                          mt: 2,
+                          p: 2,
+
+                          textAlign: 'center',
+                        }}
+                      >
+                        <Box sx={{ position: 'relative', height: 24 }}>
+                          {/* Thanh progress */}
+                          <LinearProgress
+                            variant="determinate"
+                            value={uploadProgress}
+                            sx={{
+                              height: 24,
+                              borderRadius: 12,
+                              [`& .MuiLinearProgress-bar`]: {
+                                borderRadius: 12,
+                                backgroundColor:
+                                  uploadProgress < 100 ? theme.palette.primary.main : theme.palette.secondary.main,
+                              },
+                              // backgroundColor: theme.palette.grey[300],
+                            }}
+                          />
+
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              position: 'absolute',
+                              inset: 0,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontWeight: 600,
+                              color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+                            }}
+                          >
+                            {Math.round(uploadProgress)}%
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {/* CSS keyframes cho gradient */}
+                      <style>
+                        {`
+        @keyframes moveGradient {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 100% 50%; }
+        }
+      `}
+                      </style>
                     </Grid>
                   )}
                 </Grid>
@@ -634,7 +777,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit }
             onClick={handleSave}
             variant="contained"
             sx={{ width: isMobile ? '100%' : '180px' }}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !formData.id || !formData.name} // Disable if required fields are missing
           >
             {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>

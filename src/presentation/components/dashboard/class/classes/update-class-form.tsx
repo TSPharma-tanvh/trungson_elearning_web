@@ -67,6 +67,8 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
     title?: string;
     type?: string;
   } | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [selectedResourceIDs, setSelectedResourceIDs] = useState<string[]>([]);
 
   const [fieldValidations, _setFieldValidations] = useState<Record<string, boolean>>({});
 
@@ -105,6 +107,11 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
         isDeleteOldThumbnail: false,
       });
       setFormData(newFormData);
+      setPreviewUrl(classes.thumbnail?.resourceUrl ?? null);
+
+      setSelectedResourceIDs(
+        classes.fileClassRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ?? []
+      );
     }
   }, [classes, open]);
 
@@ -121,30 +128,46 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
     }
   }, [filePreviewData, filePreviewOpen]);
 
+  useEffect(() => {
+    if (!open) {
+      setFormData(new UpdateClassRequest({}));
+      setPreviewUrl(null);
+      setThumbnailSource('select');
+      setThumbnailFile(null);
+      setUploadedFiles([]);
+      setFilePreviewOpen(false);
+      setFilePreviewData(null);
+      setSelectedResourceIDs([]);
+      setFileSelectSource('multi-select');
+    }
+  }, [open]);
+
   const handleChange = <K extends keyof UpdateClassRequest>(field: K, value: UpdateClassRequest[K]) => {
     setFormData((prev) => new UpdateClassRequest({ ...prev, [field]: value }));
   };
 
-  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
-    if (newSource) {
-      setThumbnailSource(newSource);
-      if (newSource === 'upload') {
-        handleChange('thumbnailID', undefined);
-        setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
+  const handleThumbnailSourceChange = async (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (!newSource) return;
+    setThumbnailSource(newSource);
+
+    if (newSource === 'upload') {
+      // file
+      if (thumbnailFile) {
+        setPreviewUrl(URL.createObjectURL(thumbnailFile));
       } else {
-        handleChange('thumbnail', undefined);
-        if (formData.thumbnailID) {
-          fileUsecase
-            .getFileResouceById(formData.thumbnailID)
-            .then((file) => {
-              setPreviewUrl(file.resourceUrl || null);
-            })
-            .catch(() => {
-              setPreviewUrl(null);
-            });
-        } else {
+        setPreviewUrl(null);
+      }
+    } else {
+      // thumbnail id
+      if (formData.thumbnailID) {
+        try {
+          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          setPreviewUrl(file.resourceUrl || null);
+        } catch {
           setPreviewUrl(null);
         }
+      } else {
+        setPreviewUrl(null);
       }
     }
   };
@@ -155,17 +178,22 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
+        if (thumbnailSource === 'select') {
+          setPreviewUrl(file.resourceUrl || null);
+        }
+      } catch {
         setPreviewUrl(null);
       }
     } else {
       setPreviewUrl(null);
+      if (thumbnailSource === 'select') {
+        setPreviewUrl(null);
+      }
     }
   };
 
   const handleFileUpload = (file: File | null) => {
+    setThumbnailFile(file);
     handleChange('thumbnail', file ?? undefined);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
@@ -176,7 +204,6 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
 
   const handleMultipleFileUpload = (files: File[]) => {
     setUploadedFiles(files);
-    handleChange('resources', files);
   };
 
   const handleFilePreview = (url: string, title?: string, type?: string) => {
@@ -186,14 +213,29 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
 
   const handleSave = async () => {
     setIsSubmitting(true);
+
+    const allValid = Object.values(fieldValidations).every((v) => v);
+    if (!allValid) {
+      CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
+      return;
+    }
+
     try {
-      const allValid = Object.values(fieldValidations).every((v) => v);
-      if (!allValid) {
-        CustomSnackBar.showSnackbar('Một số trường không hợp lệ', 'error');
-        return;
+      if (thumbnailSource === 'upload') {
+        formData.thumbnailID = undefined;
+      } else {
+        formData.thumbnail = undefined;
       }
 
-      onSubmit(formData);
+      if (fileSelectSource === 'upload') {
+        formData.resourceIDs = undefined;
+        formData.resources = uploadedFiles;
+      } else {
+        formData.resources = undefined;
+        formData.resourceIDs = selectedResourceIDs.join(',');
+      }
+
+      onSubmit(new UpdateClassRequest({ ...formData }));
       onClose();
     } catch (error) {
       return undefined;
@@ -201,12 +243,6 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
       setIsSubmitting(false);
     }
   };
-
-  useEffect(() => {
-    if (!open) {
-      setUploadedFiles([]);
-    }
-  }, [open]);
 
   const iconStyle = {
     size: 20,
@@ -416,11 +452,10 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
-                  value={formData.resourceIDs?.split(',').filter(Boolean) ?? []}
+                  value={selectedResourceIDs}
                   onChange={(ids) => {
-                    handleChange('resourceIDs', ids.join(','));
+                    setSelectedResourceIDs(ids);
                   }}
-                  label={t('selectFiles')}
                   disabled={false}
                   showTypeSwitcher
                   allowAllTypes
@@ -448,7 +483,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 </Button>
               </Grid>
             )}
-            {formData.resourceIDs && formData.resourceIDs.length > 0 ? (
+            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource == 'multi-select' ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
@@ -481,7 +516,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 </Grid>
               </Grid>
             ) : null}
-            {uploadedFiles.length > 0 && (
+            {uploadedFiles.length > 0 && fileSelectSource == 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('uploadedFiles')}
@@ -613,33 +648,34 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                       label={t('deleteOldThumbnail')}
                     />
                   </Grid>
-                  {previewUrl ? (
-                    <Grid item xs={12}>
-                      <Box
-                        sx={{
-                          width: fullScreen ? 400 : 200,
-                          height: fullScreen ? 400 : 200,
-                          borderRadius: 1,
-                          border: '1px solid #ccc',
-                          overflow: 'hidden',
-                          mt: 2,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          mx: 'auto',
-                        }}
-                      >
-                        <img
-                          src={previewUrl}
-                          alt={t('thumbnailPreview')}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      </Box>
-                    </Grid>
-                  ) : null}
                 </Grid>
               )}
             </Grid>
+
+            {previewUrl ? (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    width: fullScreen ? 400 : 200,
+                    height: fullScreen ? 400 : 200,
+                    borderRadius: 1,
+                    border: '1px solid #ccc',
+                    overflow: 'hidden',
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mx: 'auto',
+                  }}
+                >
+                  <img
+                    src={previewUrl}
+                    alt={t('thumbnailPreview')}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </Box>
+              </Grid>
+            ) : null}
 
             <Grid item xs={12} sm={6}>
               <FormControlLabel

@@ -1,4 +1,5 @@
 import React from 'react';
+import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { CancelOutlined, CheckCircleOutline, MoreVert, Visibility } from '@mui/icons-material';
@@ -21,7 +22,11 @@ interface LessonTableProps {
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteLessonPaths: (ids: string[]) => Promise<void>;
-  onEditLesson: (data: UpdateLessonRequest) => Promise<void>;
+  onEditLesson: (
+    data: UpdateLessonRequest,
+    options?: { suppressSuccessMessage?: boolean }
+  ) => Promise<ApiResponse<any>>;
+  onEditSuccess: () => void;
 }
 
 export default function LessonTable({
@@ -33,6 +38,7 @@ export default function LessonTable({
   onRowsPerPageChange,
   onDeleteLessonPaths: onDeleteLesson,
   onEditLesson,
+  onEditSuccess,
 }: LessonTableProps) {
   const { t } = useTranslation();
   const [editLessonData, setEditLessonData] = React.useState<LessonDetailResponse | null>(null);
@@ -202,10 +208,13 @@ export default function LessonTable({
           data={editLessonData}
           onClose={() => {
             setEditOpen(false);
+            setEditLessonData(null);
           }}
-          onSubmit={async (updatedData) => {
-            await onEditLesson(updatedData);
+          onSubmit={onEditLesson}
+          onSuccess={() => {
+            onEditSuccess();
             setEditOpen(false);
+            setEditLessonData(null);
           }}
         />
       ) : null}
@@ -216,6 +225,7 @@ export default function LessonTable({
           lessonId={editLessonData.id ?? null}
           onClose={() => {
             setViewOpen(false);
+            setEditLessonData(null);
           }}
         />
       ) : null}
@@ -225,6 +235,7 @@ export default function LessonTable({
           open={previewImageOpen}
           onClose={() => {
             setPreviewImageOpen(false);
+            setPreviewFile(null);
           }}
           imageUrl={previewFile.url}
           title={previewFile.title}
@@ -240,6 +251,7 @@ export default function LessonTable({
           open={previewVideoOpen}
           onClose={() => {
             setPreviewVideoOpen(false);
+            setPreviewFile(null);
           }}
           videoUrl={previewFile.url}
           title={previewFile.title}

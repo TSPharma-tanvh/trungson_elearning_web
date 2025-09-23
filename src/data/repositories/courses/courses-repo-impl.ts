@@ -5,13 +5,13 @@ import { type GetCourseRequest } from '@/domain/models/courses/request/get-cours
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseRepository } from '@/domain/repositories/courses/course-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class CourseRepoImpl implements CourseRepository {
   async getCourseListInfo(request: GetCourseRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.courses.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.courses.getAll, {
         params: request.toJSON(),
       });
 
@@ -29,7 +29,7 @@ export class CourseRepoImpl implements CourseRepository {
 
   async getCourseById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.courses.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.courses.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -44,7 +44,7 @@ export class CourseRepoImpl implements CourseRepository {
 
   async createCourse(request: CreateCourseRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.courses.create, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.courses.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -67,7 +67,7 @@ export class CourseRepoImpl implements CourseRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.courses.update, formData, {
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.courses.update, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

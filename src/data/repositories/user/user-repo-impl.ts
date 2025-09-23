@@ -7,13 +7,13 @@ import { type RegisterRequestModel } from '@/domain/models/user/request/register
 import { type UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { type UserRepository } from '@/domain/repositories/user/user-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class UserRepositoryImpl implements UserRepository {
   async getUserDetailInfo(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.user.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.user.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -30,7 +30,7 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.user.update(id), formData, {
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.user.update(id), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -51,7 +51,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async getUserListInfo(request: GetUserRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.user.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.user.getAll, {
         params: request.toJSON(),
       });
 
@@ -69,7 +69,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.identity.signUp, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.identity.signUp, request.toJSON());
 
       const apiResponse = response.data;
 
@@ -85,7 +85,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async changePassword(request: ChangePasswordRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.identity.changePassword, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.identity.changePassword, request.toJSON());
 
       const apiResponse = response.data;
 
@@ -101,7 +101,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async importUsers(request: CreateUsersFromExcelRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.user.import, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.user.import, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

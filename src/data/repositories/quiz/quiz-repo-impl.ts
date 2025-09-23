@@ -6,13 +6,13 @@ import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-reque
 import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizRepository } from '@/domain/repositories/quiz/quiz-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class QuizRepoImpl implements QuizRepository {
   async getQuizListInfo(request: GetQuizRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.quiz.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.quiz.getAll, {
         params: request.toJSON(),
       });
 
@@ -30,7 +30,7 @@ export class QuizRepoImpl implements QuizRepository {
 
   async getQuizById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.quiz.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.quiz.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -45,7 +45,7 @@ export class QuizRepoImpl implements QuizRepository {
 
   async createQuiz(request: CreateQuizRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.quiz.create, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -66,7 +66,7 @@ export class QuizRepoImpl implements QuizRepository {
 
   async createQuizFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.quiz.createByExcel, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.createByExcel, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -89,7 +89,7 @@ export class QuizRepoImpl implements QuizRepository {
     try {
       const formData = request.toFormData();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.quiz.update, formData, {
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.quiz.update, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

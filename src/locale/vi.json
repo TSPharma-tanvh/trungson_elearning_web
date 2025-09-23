@@ -208,7 +208,7 @@
   "download": "Tải",
   "updatePharmacyGPP": "Cập nhật GPP Nhà thuốc",
   "uploadFile": "Tải tệp lên",
-  "uploadFiles": "Tải nhiều tệp lên",
+  "uploadFiles": "Tải các tệp lên",
   "clickToUpload": "Nhấn để tải lên",
   "pharmacyExterior": "Hình Mặt Ngoài nhà thuốc (Bao gồm bản hiệu + Cửa ra vào)",
   "addressSign": "Hình Bảng Địa chỉ (Bảng địa chỉ phải thấy rõ thông tin chữ trên bảng)",
@@ -545,7 +545,7 @@
   "duration": "Thời lượng",
   "classType": "Loại lớp học",
   "classDetails": "Chi tiết lớp học",
-  "attachedFiles": "tệp đính kèm",
+  "attachedFiles": "Tệp đính kèm",
   "noPreview": "Không có xem trước",
   "classInformation": "Thông tin lớp học",
   "className": "Tên lớp học",
@@ -767,5 +767,6 @@
   "userQuizProgressId": "ID tiến trình kiểm tra người dùng",
   "userAnswerId": "ID câu trả lời của người dùng",
   "importUsers": "Nhập người dùng",
-  "enableAutoPlay": "Bật tự động phát"
+  "enableAutoPlay": "Bật tự động phát",
+  "uploading": "Đang tải lên"
 }

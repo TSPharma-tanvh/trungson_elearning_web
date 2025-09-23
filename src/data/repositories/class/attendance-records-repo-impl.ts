@@ -6,13 +6,13 @@ import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type AttendanceRecordsRepository } from '@/domain/repositories/class/attendance-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
   async getAttendanceRecordsListInfo(request: GetAttendanceRecordsRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.attendanceRecords.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.attendanceRecords.getAll, {
         params: request.toJson(),
       });
 
@@ -30,7 +30,7 @@ export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
 
   async getAttendanceRecordsById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.attendanceRecords.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.attendanceRecords.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -45,7 +45,7 @@ export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
 
   async createAttendanceRecords(request: CreateAttendanceRecordsRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.attendanceRecords.create, request.toJson());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.attendanceRecords.create, request.toJson());
 
       const apiResponse = response.data;
 
@@ -63,7 +63,7 @@ export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
     try {
       const formData = request.toJson();
 
-      const response = await apiClient.put<ApiResponse>(apiEndpoints.attendanceRecords.update, formData);
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.attendanceRecords.update, formData);
 
       const apiResponse = response.data;
 
@@ -79,7 +79,7 @@ export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
 
   async deleteAttendanceRecords(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.delete<ApiResponse>(apiEndpoints.attendanceRecords.delete(id));
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.attendanceRecords.delete(id));
 
       const apiResponse = response.data;
 
@@ -95,7 +95,7 @@ export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
 
   async enrollUserListToClass(request: EnrollUserListToClassRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.attendanceRecords.enroll, request.toJson());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.attendanceRecords.enroll, request.toJson());
 
       const apiResponse = response.data;
 

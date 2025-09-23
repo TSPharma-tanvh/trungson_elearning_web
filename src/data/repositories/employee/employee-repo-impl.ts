@@ -5,13 +5,13 @@ import { type GetEmployeeRequest } from '@/domain/models/employee/request/get-em
 import { type SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
 import { type EmployeeRepository } from '@/domain/repositories/employee/employee-repository';
 
-import { apiClient } from '@/data/api/api-client';
+import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class EmployeeRepoImpl implements EmployeeRepository {
   async getEmployeeListInfo(request: GetEmployeeRequest): Promise<ApiPaginationResponse> {
     try {
-      const response = await apiClient.get<ApiPaginationResponse>(apiEndpoints.employee.getAll, {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.employee.getAll, {
         params: request.toJson(),
       });
 
@@ -29,7 +29,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
   async getEmployeeById(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.get<ApiResponse>(apiEndpoints.employee.getById(id));
+      const response = await customApiClient.get<ApiResponse>(apiEndpoints.employee.getById(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {
@@ -44,7 +44,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
   async getEmployeeFromHrm(request: GetEmployeeFromHrmRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.employee.getHrm, {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.employee.getHrm, {
         params: request.toJson(),
       });
 
@@ -62,7 +62,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
   async syncEmployeeFromHrm(request: SyncEmployeeFromHrmRequest): Promise<ApiResponse> {
     try {
-      const response = await apiClient.post<ApiResponse>(apiEndpoints.employee.syncHrm, {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.employee.syncHrm, {
         params: request.toJson(),
       });
 
@@ -80,7 +80,7 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
   async deleteEmployee(id: string): Promise<ApiResponse> {
     try {
-      const response = await apiClient.delete<ApiResponse>(apiEndpoints.employee.delete(id));
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.employee.delete(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {

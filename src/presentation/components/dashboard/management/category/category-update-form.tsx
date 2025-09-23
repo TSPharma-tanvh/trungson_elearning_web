@@ -28,7 +28,6 @@ import {
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
@@ -50,6 +49,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (category && open) {
@@ -66,7 +66,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
         thumbnailID: category.thumbnail?.id || undefined,
         isDeleteOldThumbnail: false,
       });
-
+      setPreviewUrl(category.thumbnail?.resourceUrl ?? null);
       setFormData(newFormData);
     }
   }, [category, open, fileUsecase]);
@@ -75,25 +75,28 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
     setFormData((prev) => new UpdateCategoryRequest({ ...prev, [field]: value }));
   };
 
-  const handleThumbnailSourceChange = (event: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
-    if (newSource) {
-      setThumbnailSource(newSource);
-      if (newSource === 'upload') {
-        setPreviewUrl(formData.thumbnail ? URL.createObjectURL(formData.thumbnail) : null);
+  const handleThumbnailSourceChange = async (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
+    if (!newSource) return;
+    setThumbnailSource(newSource);
+
+    if (newSource === 'upload') {
+      // file
+      if (thumbnailFile) {
+        setPreviewUrl(URL.createObjectURL(thumbnailFile));
       } else {
-        handleChange('thumbnail', undefined);
-        if (formData.thumbnailID) {
-          fileUsecase
-            .getFileResouceById(formData.thumbnailID)
-            .then((file) => {
-              setPreviewUrl(file.resourceUrl || null);
-            })
-            .catch(() => {
-              setPreviewUrl(null);
-            });
-        } else {
+        setPreviewUrl(null);
+      }
+    } else {
+      // thumbnail id
+      if (formData.thumbnailID) {
+        try {
+          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          setPreviewUrl(file.resourceUrl || null);
+        } catch {
           setPreviewUrl(null);
         }
+      } else {
+        setPreviewUrl(null);
       }
     }
   };
@@ -104,17 +107,22 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
       try {
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
+        if (thumbnailSource === 'select') {
+          setPreviewUrl(file.resourceUrl || null);
+        }
+      } catch {
         setPreviewUrl(null);
       }
     } else {
       setPreviewUrl(null);
+      if (thumbnailSource === 'select') {
+        setPreviewUrl(null);
+      }
     }
   };
 
   const handleFileUpload = (file: File | null) => {
+    setThumbnailFile(file);
     handleChange('thumbnail', file ?? undefined);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
@@ -126,14 +134,35 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      onSubmit(formData);
+      if (thumbnailSource === 'upload') {
+        onSubmit(
+          new UpdateCategoryRequest({
+            ...formData,
+            thumbnailID: undefined,
+          })
+        );
+      } else {
+        onSubmit(
+          new UpdateCategoryRequest({
+            ...formData,
+            thumbnail: undefined,
+          })
+        );
+      }
       onClose();
-    } catch (error) {
-      return undefined;
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (!open) {
+      setFormData(new UpdateCategoryRequest({}));
+      setPreviewUrl(null);
+      setThumbnailSource('select');
+      setThumbnailFile(null);
+    }
+  }, [open]);
 
   const iconStyle = {
     size: 20,
@@ -301,33 +330,34 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                       label={t('deleteOldThumbnail')}
                     />
                   </Grid>
-                  {previewUrl ? (
-                    <Grid item xs={12}>
-                      <Box
-                        sx={{
-                          width: fullScreen ? 400 : 200,
-                          height: fullScreen ? 400 : 200,
-                          borderRadius: 1,
-                          border: '1px solid #ccc',
-                          overflow: 'hidden',
-                          mt: 2,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          mx: 'auto',
-                        }}
-                      >
-                        <img
-                          src={previewUrl}
-                          alt={t('thumbnailPreview')}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      </Box>
-                    </Grid>
-                  ) : null}
                 </Grid>
               )}
             </Grid>
+
+            {previewUrl ? (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    width: fullScreen ? 400 : 200,
+                    height: fullScreen ? 400 : 200,
+                    borderRadius: 1,
+                    border: '1px solid #ccc',
+                    overflow: 'hidden',
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mx: 'auto',
+                  }}
+                >
+                  <img
+                    src={previewUrl}
+                    alt={t('thumbnailPreview')}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </Box>
+              </Grid>
+            ) : null}
           </Grid>
         </Box>
       </DialogContent>
