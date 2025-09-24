@@ -87,7 +87,7 @@ export default function ClassTable({
             <TableCell>{t('qrCodeUrl')}</TableCell>
             <TableCell>{t('attendanceRecordsCount')}</TableCell>
             <TableCell>{t('enrollmentCriteriaCount')}</TableCell>
-            <TableCell>{t('teacherId')}</TableCell>
+            <TableCell>{t('teacher')}</TableCell>
             <TableCell>{t('classType')}</TableCell>
             <TableCell>{t('scheduleStatus')}</TableCell>
             <TableCell>{t('category')}</TableCell>
@@ -132,9 +132,8 @@ export default function ClassTable({
               </Typography>
             </TableCell>
             <TableCell>{row.enrollmentCriteria !== undefined ? row.enrollmentCriteria.length : ''}</TableCell>
-            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 30, maxWidth: 350 }}>
-              <Typography variant="body2">{row.teacherID}</Typography>
-            </TableCell>
+            <TableCell>{row.classTeacher?.user?.employee?.name}</TableCell>
+
             <TableCell>
               {row.classType ? t(row.classType.charAt(0).toLowerCase() + t(row.classType).slice(1)) : ''}
             </TableCell>

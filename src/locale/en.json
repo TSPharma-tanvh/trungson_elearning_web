@@ -768,5 +768,6 @@
   "userAnswerId": "User Answer Id",
   "importUsers": "Import Users",
   "enableAutoPlay": "Enable Auto Play",
-  "uploading": "Uploading"
+  "uploading": "Uploading",
+  "hasPath": "Has Path"
 }

@@ -1,4 +1,4 @@
-import { type CategoryEnum, type LearningModeEnum, type StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, type LearningModeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateLessonRequest {
   id!: string;
@@ -15,7 +15,7 @@ export class UpdateLessonRequest {
   thumbDocumentNo?: string;
   thumbPrefixName?: string;
   isDeleteOldThumbnail?: boolean;
-  categoryEnum?: CategoryEnum;
+  categoryEnum?: string;
   videoChunk?: File;
   videoID?: string;
   uploadID?: string;
@@ -93,6 +93,7 @@ export class UpdateLessonRequest {
     if (this.lessonType !== undefined) form.append('LessonType', this.lessonType.toString());
     if (this.quizIDs) form.append('QuizIDs', this.quizIDs);
     if (this.categoryID) form.append('CategoryID', this.categoryID);
+    if (this.categoryEnum) form.append('CategoryEnum', this.categoryEnum);
 
     form.append('UploadID', this.uploadID ?? '');
 

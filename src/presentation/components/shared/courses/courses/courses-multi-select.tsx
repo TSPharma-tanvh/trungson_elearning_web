@@ -245,7 +245,7 @@ export function CourseMultiSelectDialog({
               >
                 {filterOptions.courseType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {t(opt !== undefined ? LearningModeDisplayNames[opt] : 'all')}
+                    {t(opt !== undefined ? t(LearningModeDisplayNames[opt]) : t('all'))}
                   </MenuItem>
                 ))}
               </Select>

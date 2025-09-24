@@ -1,8 +1,8 @@
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
 
 export class CategoryResponse {
-  id = '';
-  categoryName = '';
+  id: string = '';
+  categoryName: string = '';
   description?: string;
   category?: string;
   thumbnail?: FileResourcesResponse;

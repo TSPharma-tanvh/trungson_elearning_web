@@ -74,6 +74,10 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
           const criteriaId = criteria.id ?? `${index}`;
           const isExpanded = criteriaExpanded[criteriaId] || false;
 
+          // lấy danh sách file QR có enrollmentCriteriaId match
+          const relatedQRFiles =
+            classes.fileClassQRRelation?.filter((qr) => qr.enrollmentCriteriaId === criteria.id) ?? [];
+
           return (
             <Card
               key={criteriaId}
@@ -109,15 +113,15 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                 sx={{ py: 1 }}
               />
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                  <Grid container spacing={2}>
+                <CardContent sx={{ p: 0 }}>
+                  <Grid container spacing={2} sx={{ m: 0, p: 2 }}>
                     {renderField('id', criteria.id)}
                     {renderField('name', criteria.name)}
                     {renderField('description', criteria.desc)}
                     {renderField(
                       'targetType',
                       criteria.targetType !== undefined
-                        ? t(criteria.targetType?.charAt(0).toLowerCase() + t(criteria.targetType).slice(1))
+                        ? t(criteria.targetType?.charAt(0).toLowerCase() + criteria.targetType.slice(1))
                         : ''
                     )}
                     {renderField('targetId', criteria.targetID)}
@@ -125,6 +129,95 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                     {renderField('maxCapacity', criteria.maxCapacity)}
                     {renderField('targetPharmacyId', criteria.targetPharmacyID)}
                   </Grid>
+
+                  {relatedQRFiles.length > 0 && (
+                    <Box sx={{ p: 2 }}>
+                      <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                        {t('qrCodeFiles')}
+                      </Typography>
+                      <Grid container spacing={2}>
+                        {relatedQRFiles.map((relation, qrIndex) => {
+                          const res = relation.fileResources;
+                          if (!res) return null;
+
+                          const isImage = res.type?.startsWith('image');
+                          const isVideo = res.type?.startsWith('video');
+                          const isOther = !isImage && !isVideo;
+
+                          return (
+                            <Grid item xs={12} sm={fullScreen ? 4 : 6} key={res.id ?? qrIndex}>
+                              <Box
+                                sx={{
+                                  position: 'relative',
+                                  width: '100%',
+                                  paddingTop: '56.25%',
+                                  borderRadius: 1,
+                                  overflow: 'hidden',
+                                  mb: 1,
+                                }}
+                              >
+                                {isImage ? (
+                                  <Box
+                                    component="img"
+                                    src={res.resourceUrl}
+                                    alt={res.name}
+                                    onClick={() => {
+                                      setPreviewUrl(res.resourceUrl ?? '');
+                                    }}
+                                    sx={{
+                                      position: 'absolute',
+                                      top: 0,
+                                      left: 0,
+                                      width: '100%',
+                                      height: '100%',
+                                      objectFit: 'contain',
+                                      cursor: 'pointer',
+                                    }}
+                                  />
+                                ) : null}
+
+                                {isVideo ? (
+                                  <Box
+                                    sx={{
+                                      position: 'absolute',
+                                      top: 0,
+                                      left: 0,
+                                      width: '100%',
+                                      height: '100%',
+                                    }}
+                                  >
+                                    <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
+                                  </Box>
+                                ) : null}
+
+                                {isOther ? (
+                                  <Box
+                                    sx={{
+                                      position: 'absolute',
+                                      top: 0,
+                                      left: 0,
+                                      width: '100%',
+                                      height: '100%',
+                                      backgroundColor: '#f5f5f5',
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    <Typography variant="body2">{t('noPreview')}</Typography>
+                                  </Box>
+                                ) : null}
+                              </Box>
+
+                              <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>
+                                {res.name}
+                              </Typography>
+                            </Grid>
+                          );
+                        })}
+                      </Grid>
+                    </Box>
+                  )}
                 </CardContent>
               </Collapse>
 
@@ -235,114 +328,6 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
     );
   };
 
-  const renderFileQRResources = () => {
-    if (!classes.fileClassQRRelation?.length) return null;
-
-    return (
-      <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('qrCodeFiles')} />
-        <CardContent>
-          <Grid container spacing={2}>
-            {classes.fileClassQRRelation.map((relation, index) => {
-              const res = relation.fileResources;
-              if (!res) return null;
-
-              const isImage = res.type?.startsWith('image');
-              const isVideo = res.type?.startsWith('video');
-              const isOther = !isImage && !isVideo;
-
-              return (
-                <Grid item xs={12} sm={fullScreen ? 4 : 6} key={res.id ?? index}>
-                  <Typography variant="subtitle2" fontWeight={500}>
-                    {t('qrCode')} #{index + 1}
-                  </Typography>
-
-                  <Box
-                    sx={{
-                      position: 'relative',
-                      width: '100%',
-                      paddingTop: '56.25%',
-                      borderRadius: 1,
-                      overflow: 'hidden',
-                      mb: 1,
-                    }}
-                  >
-                    {isImage ? (
-                      <Box
-                        component="img"
-                        src={res.resourceUrl}
-                        alt={res.name}
-                        onClick={() => {
-                          setPreviewUrl(res.resourceUrl ?? '');
-                        }}
-                        sx={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'contain',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    ) : null}
-
-                    {isVideo ? (
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
-                        }}
-                      >
-                        <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
-                      </Box>
-                    ) : null}
-
-                    {isOther ? (
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
-                          backgroundColor: '#f5f5f5',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography variant="body2">{t('noPreview')}</Typography>
-                      </Box>
-                    ) : null}
-                  </Box>
-
-                  <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>
-                    {res.name}
-                  </Typography>
-
-                  {relation.enrollmentCriteria ? (
-                    <Box mt={1}>
-                      <Typography variant="body2" fontWeight={500}>
-                        {t('criteria')}:
-                      </Typography>
-                      <Typography variant="body2">
-                        {relation.enrollmentCriteria.name ?? t('unnamedCriteria')}
-                      </Typography>
-                    </Box>
-                  ) : null}
-                </Grid>
-              );
-            })}
-          </Grid>
-        </CardContent>
-      </Card>
-    );
-  };
-
   const renderTeacher = () => {
     if (!classes.classTeacher) return null;
 
@@ -372,9 +357,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
             {renderField('teacherId', teacher.id)}
             {renderField(
               'status',
-              teacher.status !== undefined
-                ? t(teacher.status?.charAt(0).toLowerCase() + t(teacher.status).slice(1))
-                : ''
+              teacher.status !== undefined ? t(teacher.status?.charAt(0).toLowerCase() + teacher.status.slice(1)) : ''
             )}
             {renderField('description', teacher.description)}
 
@@ -415,14 +398,14 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
             {renderField(
               'classType',
               classes.classType !== undefined
-                ? t(classes.classType?.charAt(0).toLowerCase() + t(classes.classType).slice(1))
+                ? t(classes.classType?.charAt(0).toLowerCase() + classes.classType.slice(1))
                 : ''
             )}
             {renderField('meetingLink', classes.meetingLink)}
             {renderField(
               'scheduleStatus',
               classes.scheduleStatus !== undefined
-                ? t(classes.scheduleStatus?.charAt(0).toLowerCase() + t(classes.scheduleStatus).slice(1))
+                ? t(classes.scheduleStatus?.charAt(0).toLowerCase() + classes.scheduleStatus.slice(1))
                 : ''
             )}
             {renderField('categoryId', classes.categoryID)}
@@ -437,12 +420,8 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
         </CardContent>
       </Card>
       {renderTeacher()}
-
-      {renderEnrollmentCriteria()}
-      {renderFileQRResources()}
-
       {renderFileResources()}
-
+      {renderEnrollmentCriteria()}
       {previewUrl ? (
         <ImagePreviewDialog
           open={Boolean(previewUrl)}

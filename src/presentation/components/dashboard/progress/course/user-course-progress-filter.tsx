@@ -71,7 +71,9 @@ export function UserCourseProgressFilters({
         {/* Search */}
         <CustomSearchFilter
           value={form.searchText ?? ''}
-          onChange={(val) => { handleChange('searchText', val); }}
+          onChange={(val) => {
+            handleChange('searchText', val);
+          }}
           placeholder={t('searchProgress')}
         />
 
@@ -79,7 +81,9 @@ export function UserCourseProgressFilters({
         <CustomSelectFilter<string>
           label={t('status')}
           value={form.status as unknown as string}
-          onChange={(val) => { handleChange('status', String(val)); }}
+          onChange={(val) => {
+            handleChange('status', String(val));
+          }}
           options={CoreEnumUtils.getEnumOptions(UserProgressEnum).map((opt) => ({
             value: String(opt.value),
             label: opt.label,
@@ -100,20 +104,25 @@ export function UserCourseProgressFilters({
         <EnrollmentSingleFilter
           enrollmentUsecase={enrollUsecase}
           value={form.enrollmentCriteriaId ?? ''}
-          onChange={(value: string) => { handleChange('enrollmentCriteriaId', value); }}
+          onChange={(value: string) => {
+            handleChange('enrollmentCriteriaId', value);
+          }}
           disabled={false}
           categoryEnum={category}
         />
 
-        <CustomSelectFilter<string>
-          label={t('category')}
-          value={String(category)}
-          onChange={(val) => { setCategory(Number(val) as CategoryEnum); }}
+        <CustomSelectFilter<boolean>
+          label={t('hasPath')}
+          value={form.hasPath}
+          onChange={(val) => {
+            handleChange('hasPath', val);
+          }}
           options={[
-            { value: String(CategoryEnum.Path), label: 'path' },
-            { value: String(CategoryEnum.Course), label: 'course' },
+            { value: true, label: 'yes' },
+            { value: false, label: 'no' },
           ]}
-          withAllOption={false}
+          withAllOption
+          allLabel="all"
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

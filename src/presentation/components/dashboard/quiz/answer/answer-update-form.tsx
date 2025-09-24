@@ -318,7 +318,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Document No"
+                      label={t('thumbnailDocumentNo')}
                       value={formData.thumbDocumentNo}
                       onChange={(value) => {
                         handleChange('thumbDocumentNo', value);
@@ -329,7 +329,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
-                      label="Thumbnail Prefix Name"
+                      label={t('thumbnailPrefixName')}
                       value={formData.thumbPrefixName}
                       onChange={(value) => {
                         handleChange('thumbPrefixName', value);
@@ -346,7 +346,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                       disabled={isSubmitting}
                       startIcon={<ImageIcon {...iconStyle} />}
                     >
-                      Upload Thumbnail
+                      {t('uploadThumbnail')}
                       <input
                         type="file"
                         hidden
@@ -369,7 +369,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                           disabled={isSubmitting}
                         />
                       }
-                      label="Delete Old Thumbnail"
+                      label={t('deleteOldThumbnail')}
                     />
                   </Grid>
                 </Grid>
@@ -394,7 +394,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                 >
                   <img
                     src={previewUrl}
-                    alt="Thumbnail Preview"
+                    alt={t('thumbnailPreview')}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </Box>
@@ -422,7 +422,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleSave}
@@ -430,7 +430,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
             sx={{ width: isMobile ? '100%' : '180px' }}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Save'}
+            {isSubmitting ? <CircularProgress size={24} /> : t('save')}
           </Button>
         </Box>
       </DialogActions>

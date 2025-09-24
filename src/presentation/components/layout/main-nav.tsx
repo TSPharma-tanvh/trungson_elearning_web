@@ -94,11 +94,11 @@ export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.J
                 {isSideNavOpen ? <CollapseIcon /> : <ExpandIcon />}
               </IconButton>
             </Tooltip>
-            <Tooltip title="Search">
+            {/* <Tooltip title="Search">
               <IconButton aria-label="Search">
                 <MagnifyingGlassIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </Stack>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
             <LanguagePopover data={_langs} />

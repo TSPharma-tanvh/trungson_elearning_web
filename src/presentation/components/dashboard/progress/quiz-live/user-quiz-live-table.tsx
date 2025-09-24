@@ -248,7 +248,7 @@ export default function UserQuizLiveTable({
               <TableCell>{row.quiz?.totalScore}</TableCell>
               <TableCell>{row.quiz?.scoreToPass}</TableCell>
               <TableCell>{row.quiz?.totalQuestion}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.attempts}</TableCell>
+              <TableCell>{row.attempts}</TableCell>
               <TableCell>{row.quiz?.maxAttempts}</TableCell>
 
               <TableCell>{row.startTime ? DateTimeUtils.formatDateTimeToDateString(row.startTime) : ''}</TableCell>

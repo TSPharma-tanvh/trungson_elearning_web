@@ -249,7 +249,11 @@ export default function TeacherTable({
           rowsPerPage={rowsPerPage}
           onPageChange={onPageChange}
           onRowsPerPageChange={onRowsPerPageChange}
-          labelDisplayedRows={() => `Page ${page + 1} of ${Math.ceil(count / rowsPerPage)}`}
+          labelRowsPerPage={t('rowsPerPage')}
+          labelDisplayedRows={() => {
+            const totalPages = Math.ceil(count / rowsPerPage);
+            return t('paginationInfo', { currentPage: page + 1, totalPages });
+          }}
         />
       </Card>
 

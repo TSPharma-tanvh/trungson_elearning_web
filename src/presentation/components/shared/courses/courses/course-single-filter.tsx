@@ -258,7 +258,7 @@ export function CourseSingleFilter({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchCourses')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('courseType')}</InputLabel>

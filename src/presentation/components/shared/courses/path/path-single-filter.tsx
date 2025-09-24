@@ -237,7 +237,7 @@ export function PathSingleFilter({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchPaths')} />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchPath')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('pathType')}</InputLabel>

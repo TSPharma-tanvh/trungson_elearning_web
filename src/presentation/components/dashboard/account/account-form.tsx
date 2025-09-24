@@ -1,108 +1,100 @@
 'use client';
 
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
+import { ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { useUserInfo } from '@/presentation/hooks/user/use-user-info';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Avatar,
-  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
   Divider,
-  FormControl,
   Grid,
-  InputLabel,
-  OutlinedInput,
+  IconButton,
   Stack,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { UpdatePasswordForm } from './update-password-form';
+import { CustomTextField } from '../../core/text-field/custom-textfield';
 
 export function AccountForm(): React.JSX.Element {
   const { t } = useTranslation();
   const { userUsecase } = useDI();
   const { user, loading } = useUserInfo();
-  const [formData, setFormData] = useState<UpdateUserInfoRequest>(new UpdateUserInfoRequest());
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
-  const [localUser, setLocalUser] = useState(user);
 
-  useEffect(() => {
-    if (user) {
-      setFormData(
-        new UpdateUserInfoRequest({
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-        })
-      );
-      setLocalUser(user);
-    }
-  }, [user]);
+  const [oldPassword, setOldPassword] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+
+  const [showOldPassword, setShowOldPassword] = React.useState(false);
+  const [showNewPassword, setShowNewPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isOldValid, setIsOldValid] = React.useState(true);
+  const [isNewValid, setIsNewValid] = React.useState(true);
+  const [isConfirmValid, setIsConfirmValid] = React.useState(true);
 
   if (loading || !user) return <div>Loading...</div>;
 
-  const handleChange = (field: keyof UpdateUserInfoRequest, value: unknown) => {
-    setFormData((prev) => {
-      const updatedData = { ...prev, [field]: value };
-      return new UpdateUserInfoRequest(updatedData);
+  const handleSubmit = async () => {
+    if (!isOldValid || !isNewValid || !isConfirmValid) {
+      console.warn('Password fields are invalid');
+      return;
+    }
+
+    const userId = StoreLocalManager.getLocalData(AppStrings.USER_ID) ?? '';
+    if (!userId) {
+      console.error('User ID not found in local storage');
+      return;
+    }
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      console.warn('Please fill all password fields');
+      return;
+    }
+
+    const request = new ChangePasswordRequest({
+      userId,
+      oldPassword,
+      newPassword,
+      passwordConfirm: confirmPassword,
     });
-  };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    handleChange('thumbnail', file);
-    setThumbnailPreview(URL.createObjectURL(file));
-  };
+    if (!userUsecase?.changePassword) {
+      console.error('userUsecase.changePassword is undefined');
+      return;
+    }
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    setIsSubmitting(true);
     try {
-      const userId = StoreLocalManager.getLocalData(AppStrings.USER_ID) ?? '';
-      await userUsecase.updateUserInfo(userId, formData);
-
-      const updatedUser = await userUsecase.getUserInfo();
-
-      if (updatedUser.id !== undefined) {
-        const userJson = updatedUser.toJSON() as Record<string, unknown>;
-        StoreLocalManager.saveLocalData(AppStrings.USER_DATA, userJson);
-        window.dispatchEvent(
-          new StorageEvent('storage', {
-            key: AppStrings.USER_DATA,
-            newValue: JSON.stringify(userJson),
-          })
-        );
-      }
-
-      setLocalUser(updatedUser);
-
-      if (formData.thumbnail instanceof File) {
-        setThumbnailPreview(URL.createObjectURL(formData.thumbnail));
-      }
+      await userUsecase.changePassword(request);
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
     } catch (error) {
-      return undefined;
+      console.error('Error changing password:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const avatarUrl = thumbnailPreview ?? user?.thumbnail?.resourceUrl ?? user?.employee?.avatar;
+  const avatarUrl = user?.thumbnail?.resourceUrl ?? user?.employee?.avatar;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <Typography variant="h4" marginBottom={4} sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-          {t('account')}
-        </Typography>
-      </div>
+    <div>
+      <Typography variant="h4" marginBottom={4} sx={{ color: 'var(--mui-palette-secondary-main)' }}>
+        {t('account')}
+      </Typography>
+
       <Card
         sx={{
           p: 0,
@@ -112,109 +104,79 @@ export function AccountForm(): React.JSX.Element {
           borderRadius: '16px',
         }}
       >
-        <CardHeader subheader={t('theInformationCanBeEdited')} title={t('profile')} />
-        <Divider
-          sx={{
-            color: 'var(--mui-palette-primary-main)',
-          }}
-        />
+        <CardHeader subheader={t('updatePassword')} title={t('password')} />
+        <Divider sx={{ color: 'var(--mui-palette-primary-main)' }} />
         <CardContent>
           <Grid container spacing={3}>
-            {/* Left: Avatar */}
             <Grid item lg={4} md={6} xs={12}>
               <Stack spacing={2} sx={{ alignItems: 'center' }}>
                 <Avatar src={avatarUrl} sx={{ height: '80px', width: '80px' }} />
                 <Stack spacing={1} sx={{ textAlign: 'center' }}>
-                  <Typography variant="h5">
-                    {localUser?.firstName ?? '...'} {localUser?.lastName ?? ''}
-                  </Typography>
+                  <Typography variant="h5">{user?.employee?.name ?? user?.userName}</Typography>
                   <Typography color="text.secondary" variant="body2">
-                    {localUser?.employee?.address ?? ''}
+                    {user?.employee?.address ?? ''}
                   </Typography>
                 </Stack>
-                <Button variant="text" component="label">
-                  {t('uploadPicture')}
-                  <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
-                </Button>
               </Stack>
             </Grid>
 
-            {/* Right: Info fields */}
             <Grid item lg={8} md={6} xs={12}>
-              <Grid container spacing={3}>
-                <Grid item md={6} xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor="first-name">{t('firstName')}</InputLabel>
-                    <OutlinedInput
-                      id="first-name"
-                      label={t('firstName')}
-                      value={formData.firstName || ''}
-                      onChange={(e) => {
-                        handleChange('firstName', e.target.value);
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor="last-name">{t('lastName')}</InputLabel>
-                    <OutlinedInput
-                      id="last-name"
-                      label={t('lastName')}
-                      value={formData.lastName || ''}
-                      onChange={(e) => {
-                        handleChange('lastName', e.target.value);
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor="email">{t('email')}</InputLabel>
-                    <OutlinedInput
-                      id="email"
-                      label={t('email')}
-                      value={formData.email || ''}
-                      onChange={(e) => {
-                        handleChange('email', e.target.value);
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
+              <Stack spacing={3} sx={{ maxWidth: 'sm' }}>
+                <CustomTextField
+                  label={t('oldPassword')}
+                  value={oldPassword}
+                  onChange={setOldPassword}
+                  disabled={isSubmitting}
+                  type={showOldPassword ? 'text' : 'password'}
+                  icon={
+                    <IconButton onClick={() => setShowOldPassword((prev) => !prev)} edge="end">
+                      {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  }
+                  required
+                  onValidationChange={setIsOldValid}
+                />
 
-                <Grid item md={6} xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor="phoneNumber">{t('phoneNumber')}</InputLabel>
-                    <OutlinedInput
-                      id="phoneNumber"
-                      label={t('phoneNumber')}
-                      value={formData.phoneNumber || ''}
-                      onChange={(e) => {
-                        handleChange('phoneNumber', e.target.value);
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
+                <CustomTextField
+                  label={t('newPassword')}
+                  value={newPassword}
+                  onChange={setNewPassword}
+                  disabled={isSubmitting}
+                  type={showNewPassword ? 'text' : 'password'}
+                  icon={
+                    <IconButton onClick={() => setShowNewPassword((prev) => !prev)} edge="end">
+                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  }
+                  required
+                  onValidationChange={setIsNewValid}
+                />
+
+                <CustomTextField
+                  label={t('confirmPassword')}
+                  value={confirmPassword}
+                  onChange={setConfirmPassword}
+                  disabled={isSubmitting}
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  icon={
+                    <IconButton onClick={() => setShowConfirmPassword((prev) => !prev)} edge="end">
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  }
+                  required
+                  onValidationChange={setIsConfirmValid}
+                />
+              </Stack>
             </Grid>
           </Grid>
         </CardContent>
-
-        <Divider
-          sx={{
-            color: 'var(--mui-palette-primary-main)',
-          }}
-        />
+        <Divider sx={{ color: 'var(--mui-palette-primary-main)' }} />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained" type="submit">
-            {t('save')}
+          <Button variant="contained" disabled={isSubmitting} onClick={handleSubmit}>
+            {t('update')}
           </Button>
         </CardActions>
       </Card>
-
-      <Box mt={4}>
-        <UpdatePasswordForm />
-      </Box>
-    </form>
+    </div>
   );
 }

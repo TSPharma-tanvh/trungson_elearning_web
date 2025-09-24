@@ -30,7 +30,6 @@ import { Article, Clock, Image as ImageIcon, NumberCircleNine, Tag } from '@phos
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { EnrollmentMultiSelect } from '@/presentation/components/shared/enrollment/enrollment-multi-select';
@@ -82,6 +81,9 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
 
   useEffect(() => {
     if (quiz && open) {
+      const resourceIds =
+        quiz.fileQuizRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ?? [];
+
       const newFormData = new UpdateQuizRequest({
         id: quiz.id || '',
         title: quiz.title || '',
@@ -98,11 +100,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
           quiz.quizQuestions !== undefined
             ? quiz.quizQuestions.map((lesson) => lesson.question?.id).join(',') || ''
             : undefined,
-        resourceIDs:
-          quiz.fileQuizRelation
-            ?.map((item) => item.fileResources?.id)
-            .filter((id): id is string => Boolean(id))
-            .join(',') || undefined,
+        resourceIDs: resourceIds.join(',') || undefined,
         categoryEnum: CategoryEnum.Quiz,
         canStartOver: quiz.canStartOver,
         canShuffle: quiz.canShuffle,
@@ -115,10 +113,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
       setFormData(newFormData);
 
       setPreviewUrl(quiz.thumbnail?.resourceUrl ?? null);
-
-      setSelectedResourceIDs(
-        quiz.fileQuizRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ?? []
-      );
+      setSelectedResourceIDs(resourceIds);
     }
   }, [quiz, open, fileUsecase]);
 
@@ -474,7 +469,6 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
                   value={selectedResourceIDs}
                   onChange={(ids) => {
                     setSelectedResourceIDs(ids);
@@ -507,13 +501,13 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               </Grid>
             )}
 
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource == 'multi-select' ? (
+            {selectedResourceIDs.length > 0 && fileSelectSource == 'multi-select' ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
                 </Typography>
                 <Grid container spacing={1} direction="column">
-                  {formData.resourceIDs.split(',').map((id) => {
+                  {selectedResourceIDs.map((id) => {
                     const file = quiz?.fileQuizRelation?.find((f) => f.fileResources?.id === id)?.fileResources;
                     if (!file) return null;
                     return (
@@ -540,6 +534,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 </Grid>
               </Grid>
             ) : null}
+
             {uploadedFiles.length > 0 && fileSelectSource == 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>

@@ -53,7 +53,7 @@ export class CourseDetailResponse {
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
       fileCourseRelation: json.fileCourseRelation?.map((f: any) => FileCourseRelationResponse.fromJson(f)),
       lessons: json.lessons?.map((l: any) => LessonResponse.fromJSON(l)),
-      category: json.thumbnail ? CategoryResponse.fromJSON(json.thumbnail) : undefined,
+      category: json.category ? CategoryResponse.fromJSON(json.category) : undefined,
     });
   }
 

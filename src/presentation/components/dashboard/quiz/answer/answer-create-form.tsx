@@ -232,8 +232,8 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="select" aria-label={t('selectFromResource')}>
-                  {t('selectFromResource')}
+                <ToggleButton value="select" aria-label={t('selectFromResources')}>
+                  {t('selectFromResources')}
                 </ToggleButton>
                 <ToggleButton value="upload" aria-label={t('uploadFile')}>
                   {t('uploadFile')}

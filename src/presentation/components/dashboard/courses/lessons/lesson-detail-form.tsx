@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { CoreEnumUtils, DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -217,6 +218,63 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
     );
   };
 
+  const renderCategory = () => {
+    if (!lesson.category) return null;
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title={t('category')} />
+        <CardContent>
+          <Box key={lesson.category.id}>
+            <Grid container spacing={2}>
+              {renderField('id', lesson.category.id)}
+              {renderField('name', lesson.category.categoryName)}
+              {renderField('description', lesson.category.description)}
+            </Grid>
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderCourse = () => {
+    if (!lesson.course) return null;
+
+    const course = lesson.course;
+    const toLowerFirst = (str: string) => (str ? str.charAt(0).toLowerCase() + str.slice(1) : '');
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title={t('course')} />
+        <CardContent>
+          <Grid container spacing={2}>
+            {renderField('id', course.id)}
+            {renderField('name', course.name)}
+            {renderField('detail', course.detail)}
+            {renderField('required', course.isRequired ? t('yes') : t('no'))}
+
+            {renderField(
+              'courseType',
+              course.courseType ? t(course.courseType.charAt(0).toLowerCase() + course.courseType.slice(1)) : ''
+            )}
+
+            {renderField(
+              'scheduleStatus',
+              course.scheduleStatus
+                ? t(course.scheduleStatus.charAt(0).toLowerCase() + course.scheduleStatus.slice(1))
+                : ''
+            )}
+
+            {renderField(
+              'displayType',
+              course.displayType ? t(course.displayType.charAt(0).toLowerCase() + course.displayType.slice(1)) : ''
+            )}
+          </Grid>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <>
       <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
@@ -253,10 +311,12 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
               {renderField('lessonVideoFileName', lesson.video?.name)}
             </Grid>
           </CardContent>
-        </Card>
+        </Card>{' '}
+        {renderCourse()}
         {renderVideoPreview()}
-        {renderEnrollmentCriteria()}
+        {renderCategory()}
         {renderQuizzes()}
+        {renderEnrollmentCriteria()}
         {renderUserProgress()}
       </Box>
       <ImagePreviewDialog

@@ -6,7 +6,7 @@ import { type CoursePathResponse } from '@/domain/models/path/response/course-pa
 import { type PathUsecase } from '@/domain/usecases/path/path-usecase';
 import { usePathSelectDebounce } from '@/presentation/hooks/path/use-path-select-debounce';
 import { usePathSelectLoader } from '@/presentation/hooks/path/use-path-select-loader';
-import { Book } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -35,6 +35,7 @@ import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
+import CoursePathDetailForm from '@/presentation/components/dashboard/courses/path/course-path-detail-form';
 
 interface PathSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   pathUsecase: PathUsecase | null;
@@ -63,7 +64,8 @@ export function PathSelectDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = usePathSelectDebounce(localSearchText, 300);
   const [selectedPathMap, setSelectedPathMap] = useState<Record<string, CoursePathResponse>>({});
-
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [selectedPath, setSelectedPath] = React.useState<CoursePathResponse | null>(null);
   const {
     paths,
     loadingPaths,
@@ -200,11 +202,11 @@ export function PathSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search paths..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchPath')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('pathType')}</InputLabel>
-              {/* <Select
+              <Select
                 value={pathType !== undefined ? String(pathType) : ''}
                 onChange={(e: SelectChangeEvent<string>) =>
                   setPathType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
@@ -216,8 +218,8 @@ export function PathSelectDialog({
                     {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
                   </MenuItem>
                 ))}
-              </Select> */}
-            </FormControl>
+              </Select>
+            </FormControl> */}
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>
@@ -237,6 +239,17 @@ export function PathSelectDialog({
               >
                 <Checkbox checked={localValue === path.id} />
                 <ListItemText primary={path.name} />
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPath(path);
+                    setViewOpen(true);
+                  }}
+                  aria-label={t('showDetails')}
+                >
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
             {loadingPaths ? (
@@ -272,6 +285,16 @@ export function PathSelectDialog({
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedPath ? (
+        <CoursePathDetailForm
+          open={viewOpen}
+          coursePathId={selectedPath.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

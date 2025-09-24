@@ -222,7 +222,7 @@ export function CourseSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search courses..." />
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchCourses')} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('courseType')}</InputLabel>
@@ -231,11 +231,11 @@ export function CourseSelectDialog({
                 onChange={(e: SelectChangeEvent) => {
                   setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
                 }}
-                label="Course Type"
+                label={t('courseType')}
               >
                 {filterOptions.courseType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
+                    {opt !== undefined ? t(LearningModeDisplayNames[opt]) : t('all')}
                   </MenuItem>
                 ))}
               </Select>

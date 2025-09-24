@@ -325,9 +325,9 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
           </Grid>
         </CardContent>
       </Card>
-      {renderEnrollmentCriteria()}
       {renderQuestions()}
       {renderFiles()}
+      {renderEnrollmentCriteria()}
 
       {/* question details */}
       {selectedQuestion ? (

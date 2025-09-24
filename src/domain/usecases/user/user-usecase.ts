@@ -74,6 +74,8 @@ export class UserUsecase {
     if (userId === null || userId === undefined || userId.trim() === '') {
       throw new Error('User ID is missing.');
     }
+
+    console.log('changing password');
     const response = await this.userRepo.changePassword(request);
 
     return response;

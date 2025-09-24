@@ -391,7 +391,19 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 options={scheduleStatusOptions}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={formData.categoryID}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
+                categoryEnum={CategoryEnum.Class}
+                disabled={isSubmitting}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <EnrollmentMultiSelect
                 enrollmentUsecase={enrollUsecase}
                 categoryEnum={CategoryEnum.Class}
@@ -404,18 +416,6 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 disabled={isSubmitting}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <CategorySelect
-                categoryUsecase={categoryUsecase}
-                value={formData.categoryID}
-                onChange={(value) => {
-                  handleChange('categoryID', value);
-                }}
-                categoryEnum={CategoryEnum.Class}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
             <Grid item xs={12}>
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}

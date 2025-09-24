@@ -455,7 +455,7 @@
   "link": "Đường dẫn",
   "coursePathDetails": "Chi tiết lộ trình khóa học",
   "unnamedPath": "Lộ trình chưa đặt tên",
-  "includedCourses": "Khóa học bao gồm",
+  "includedCourses": "Các khoá học",
   "noCoursesIncluded": "Không có khóa học nào trong lộ trình này.",
   "updateCoursePath": "Cập nhật lộ trình khoá học",
   "searchCourses": "Tìm kiếm khoá học",
@@ -768,5 +768,6 @@
   "userAnswerId": "ID câu trả lời của người dùng",
   "importUsers": "Nhập người dùng",
   "enableAutoPlay": "Bật tự động phát",
-  "uploading": "Đang tải lên"
+  "uploading": "Đang tải lên",
+  "hasPath": "Có lộ trình"
 }

@@ -14,7 +14,7 @@ import {
   StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
-import { Book } from '@mui/icons-material';
+import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -44,6 +44,7 @@ import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
+import LessonDetailForm from '@/presentation/components/dashboard/courses/lessons/lesson-detail-form';
 
 interface LessonSingleSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   lessonUsecase: LessonUsecase;
@@ -78,7 +79,9 @@ export function LessonSingleSelectDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useLessonSelectDebounce(localSearchText, 300);
   const [selectedLessonMap, setSelectedLessonMap] = useState<Record<string, LessonDetailResponse>>({});
-
+  const [viewOpen, setViewOpen] = React.useState(false);
+  const [selectedLesson, setSelectedLesson] = React.useState<LessonDetailResponse | null>(null);
+  
   const {
     lessons,
     loadingLessons,
@@ -303,6 +306,18 @@ export function LessonSingleSelectDialog({
               >
                 <Checkbox checked={localValue.includes(lesson.id)} />
                 <ListItemText primary={lesson.name} />
+
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedLesson(lesson);
+                    setViewOpen(true);
+                  }}
+                  aria-label={t('showDetails')}
+                >
+                  <InfoOutlined />
+                </IconButton>
               </MenuItem>
             ))}
             {loadingLessons ? (
@@ -338,6 +353,16 @@ export function LessonSingleSelectDialog({
           </Box>
         </DialogActions>
       </Dialog>
+
+      {selectedLesson ? (
+        <LessonDetailForm
+          open={viewOpen}
+          lessonId={selectedLesson.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

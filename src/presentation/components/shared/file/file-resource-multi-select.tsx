@@ -108,7 +108,11 @@ export function FileResourceMultiSelect({
         )
       ).then((newFiles) => {
         const validNewFiles = newFiles.filter((f): f is FileResourcesResponse => Boolean(f));
-        setSelectedFiles((prev) => [...prev, ...validNewFiles]);
+        setSelectedFiles((prev) => {
+          const all = [...prev, ...validNewFiles];
+          const unique = Array.from(new Map(all.map((f) => [f.id, f])).values());
+          return unique;
+        });
       });
     }
   }, [value]);
@@ -127,8 +131,11 @@ export function FileResourceMultiSelect({
 
   const handleConfirm = () => {
     const newSelectedFiles = files.filter((f) => selectedIds.includes(f.id ?? ''));
+    const all = [...selectedFiles, ...newSelectedFiles];
+    const unique = Array.from(new Map(all.map((f) => [f.id, f])).values());
+
     onChange(selectedIds);
-    setSelectedFiles(newSelectedFiles);
+    setSelectedFiles(unique);
     setOpen(false);
   };
 

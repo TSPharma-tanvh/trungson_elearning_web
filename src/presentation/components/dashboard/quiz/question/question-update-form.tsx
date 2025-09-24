@@ -319,7 +319,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <CustomSelectDropDown
                 label={t('canShuffle')}
                 value={String(formData.canShuffle ?? '')}
@@ -333,7 +333,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
 
             {/* Upload file resources */}
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
                 {t('uploadFiles')}
               </Typography>
@@ -449,7 +449,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   ))}
                 </Grid>
               </Grid>
-            )}
+            )} */}
 
             {/* Thumbnail */}
 
@@ -467,7 +467,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                 sx={{ mb: 2 }}
               >
                 <ToggleButton value="select" aria-label="select from resources">
-                  {t('selectFromResource')}
+                  {t('selectFromResources')}
                 </ToggleButton>
                 <ToggleButton value="upload" aria-label="upload file">
                   {t('uploadFile')}

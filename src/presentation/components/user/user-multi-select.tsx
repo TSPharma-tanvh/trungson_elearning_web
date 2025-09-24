@@ -256,9 +256,9 @@ export function UserMultiSelectDialog({
         <DialogActions sx={{ flexDirection: 'column', gap: 2 }}>
           {totalPages > 1 && <Pagination count={totalPages} page={pageNumber} onChange={handlePageChange} />}
           <Box display="flex" gap={1}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained">
-              Save
+              {t('save')}
             </Button>
           </Box>
         </DialogActions>

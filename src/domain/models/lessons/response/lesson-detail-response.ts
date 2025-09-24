@@ -4,6 +4,9 @@ import { FileResourcesResponse } from '@/domain/models/file/response/file-resour
 import { QuizLessonResponse } from '@/domain/models/quiz/response/quiz-lesson-response';
 import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-lesson-response';
 
+import { CourseDetailResponse } from '../../courses/response/course-detail-response';
+import { CourseResponse } from '../../courses/response/course-response';
+
 export class LessonDetailResponse {
   id = '';
   courseID?: string;
@@ -23,6 +26,7 @@ export class LessonDetailResponse {
   thumbnail?: FileResourcesResponse;
   video?: FileResourcesResponse;
   isRequired?: boolean;
+  course?: CourseDetailResponse;
 
   constructor(init?: Partial<LessonDetailResponse>) {
     Object.assign(this, init);
@@ -50,6 +54,7 @@ export class LessonDetailResponse {
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
       video: json.video ? FileResourcesResponse.fromJson(json.video) : undefined,
       isRequired: json.isRequired,
+      course: json.course ? CourseDetailResponse.fromJSON(json.course) : undefined,
     });
   }
 
@@ -73,6 +78,7 @@ export class LessonDetailResponse {
       thumbnail: this.thumbnail?.toJson(),
       video: this.video?.toJson(),
       isRequired: this.isRequired,
+      course: this.course?.toJSON(),
     };
   }
 }
