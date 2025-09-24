@@ -65,7 +65,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
-      console.error(error);
+      return;
     } finally {
       setIsSubmitting(false);
     }
@@ -110,11 +110,15 @@ export function UpdatePasswordForm(): React.JSX.Element {
                     label={t('oldPassword')}
                     type={showOldPassword ? 'text' : 'password'}
                     value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)}
+                    onChange={(e) => {
+                      setOldPassword(e.target.value);
+                    }}
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowOldPassword((prev) => !prev)}
+                          onClick={() => {
+                            setShowOldPassword((prev) => !prev);
+                          }}
                           edge="end"
                           aria-label="toggle password visibility"
                         >
@@ -131,11 +135,15 @@ export function UpdatePasswordForm(): React.JSX.Element {
                     label={t('newPassword')}
                     type={showNewPassword ? 'text' : 'password'}
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    onChange={(e) => {
+                      setNewPassword(e.target.value);
+                    }}
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowNewPassword((prev) => !prev)}
+                          onClick={() => {
+                            setShowNewPassword((prev) => !prev);
+                          }}
                           edge="end"
                           aria-label="toggle password visibility"
                         >
@@ -152,11 +160,15 @@ export function UpdatePasswordForm(): React.JSX.Element {
                     label={t('confirmPassword')}
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                    }}
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowConfirmPassword((prev) => !prev)}
+                          onClick={() => {
+                            setShowConfirmPassword((prev) => !prev);
+                          }}
                           edge="end"
                           aria-label="toggle password visibility"
                         >

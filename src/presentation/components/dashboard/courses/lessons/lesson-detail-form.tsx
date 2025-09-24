@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { CoreEnumUtils, DisplayTypeEnum, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -241,7 +240,6 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
     if (!lesson.course) return null;
 
     const course = lesson.course;
-    const toLowerFirst = (str: string) => (str ? str.charAt(0).toLowerCase() + str.slice(1) : '');
 
     return (
       <Card sx={{ mb: 2 }}>

@@ -5,7 +5,6 @@ import { QuizLessonResponse } from '@/domain/models/quiz/response/quiz-lesson-re
 import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-lesson-response';
 
 import { CourseDetailResponse } from '../../courses/response/course-detail-response';
-import { CourseResponse } from '../../courses/response/course-response';
 
 export class LessonDetailResponse {
   id = '';

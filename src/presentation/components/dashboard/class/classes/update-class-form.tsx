@@ -483,7 +483,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 </Button>
               </Grid>
             )}
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource == 'multi-select' ? (
+            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource === 'multi-select' ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
@@ -516,7 +516,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 </Grid>
               </Grid>
             ) : null}
-            {uploadedFiles.length > 0 && fileSelectSource == 'upload' && (
+            {uploadedFiles.length > 0 && fileSelectSource === 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('uploadedFiles')}

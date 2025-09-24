@@ -29,7 +29,6 @@ import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
@@ -562,7 +561,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               </Grid>
             )}
 
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource == 'multi-select' ? (
+            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource === 'multi-select' ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
@@ -595,7 +594,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 </Grid>
               </Grid>
             ) : null}
-            {uploadedFiles.length > 0 && fileSelectSource == 'upload' && (
+            {uploadedFiles.length > 0 && fileSelectSource === 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('uploadedFiles')}

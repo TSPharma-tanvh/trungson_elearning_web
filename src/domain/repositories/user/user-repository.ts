@@ -2,7 +2,7 @@ import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type ChangePasswordRequest } from '@/domain/models/user/request/change-password-request';
 import { type GetUserRequest } from '@/domain/models/user/request/get-user-request';
-import { CreateUsersFromExcelRequest } from '@/domain/models/user/request/import-user-request';
+import { type CreateUsersFromExcelRequest } from '@/domain/models/user/request/import-user-request';
 import { type RegisterRequestModel } from '@/domain/models/user/request/register-request';
 import { type UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 

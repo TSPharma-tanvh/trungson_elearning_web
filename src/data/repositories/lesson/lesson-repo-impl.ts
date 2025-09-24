@@ -2,7 +2,7 @@ import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { type GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
+import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
 
 import { customApiClient } from '@/data/api/api-client';

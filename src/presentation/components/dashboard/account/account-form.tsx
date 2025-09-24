@@ -47,18 +47,15 @@ export function AccountForm(): React.JSX.Element {
 
   const handleSubmit = async () => {
     if (!isOldValid || !isNewValid || !isConfirmValid) {
-      console.warn('Password fields are invalid');
       return;
     }
 
     const userId = StoreLocalManager.getLocalData(AppStrings.USER_ID) ?? '';
     if (!userId) {
-      console.error('User ID not found in local storage');
       return;
     }
 
     if (!oldPassword || !newPassword || !confirmPassword) {
-      console.warn('Please fill all password fields');
       return;
     }
 
@@ -70,7 +67,6 @@ export function AccountForm(): React.JSX.Element {
     });
 
     if (!userUsecase?.changePassword) {
-      console.error('userUsecase.changePassword is undefined');
       return;
     }
 
@@ -81,7 +77,6 @@ export function AccountForm(): React.JSX.Element {
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
-      console.error('Error changing password:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -129,7 +124,12 @@ export function AccountForm(): React.JSX.Element {
                   disabled={isSubmitting}
                   type={showOldPassword ? 'text' : 'password'}
                   icon={
-                    <IconButton onClick={() => setShowOldPassword((prev) => !prev)} edge="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowOldPassword((prev) => !prev);
+                      }}
+                      edge="end"
+                    >
                       {showOldPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   }
@@ -144,7 +144,12 @@ export function AccountForm(): React.JSX.Element {
                   disabled={isSubmitting}
                   type={showNewPassword ? 'text' : 'password'}
                   icon={
-                    <IconButton onClick={() => setShowNewPassword((prev) => !prev)} edge="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowNewPassword((prev) => !prev);
+                      }}
+                      edge="end"
+                    >
                       {showNewPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   }
@@ -159,7 +164,12 @@ export function AccountForm(): React.JSX.Element {
                   disabled={isSubmitting}
                   type={showConfirmPassword ? 'text' : 'password'}
                   icon={
-                    <IconButton onClick={() => setShowConfirmPassword((prev) => !prev)} edge="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowConfirmPassword((prev) => !prev);
+                      }}
+                      edge="end"
+                    >
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   }

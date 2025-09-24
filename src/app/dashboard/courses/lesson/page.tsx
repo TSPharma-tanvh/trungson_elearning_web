@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateLessonDialog } from '@/presentation/components/dashboard/courses/lessons/create-lesson-form';
-import { UpdateLessonFormDialog } from '@/presentation/components/dashboard/courses/lessons/edit-lesson-form';
 import LessonTable from '@/presentation/components/dashboard/courses/lessons/lesson-table';
 import { LessonsFilters } from '@/presentation/components/dashboard/courses/lessons/lessons-filter';
 
@@ -26,10 +25,10 @@ export default function Page(): React.JSX.Element {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [lessons, setLessons] = React.useState<LessonDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [_deleteLoading, setDeleteLoading] = React.useState(false);
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showEditDialog, setShowEditDialog] = React.useState(false);
-  const [selectedLesson, setSelectedLesson] = React.useState<LessonDetailResponse | null>(null);
+  const [_showEditDialog, setShowEditDialog] = React.useState(false);
+  const [_selectedLesson, setSelectedLesson] = React.useState<LessonDetailResponse | null>(null);
 
   const fetchLessons = React.useCallback(async () => {
     try {

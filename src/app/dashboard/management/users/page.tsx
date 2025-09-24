@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
-import { CreateUsersFromExcelRequest } from '@/domain/models/user/request/import-user-request';
+import { type CreateUsersFromExcelRequest } from '@/domain/models/user/request/import-user-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';

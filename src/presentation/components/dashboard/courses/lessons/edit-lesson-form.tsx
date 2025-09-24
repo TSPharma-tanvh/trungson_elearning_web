@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ApiResponse } from '@/domain/models/core/api-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
 import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -62,7 +62,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [totalChunks, setTotalChunks] = useState(0);
-  const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
+  const [_currentChunkIndex, setCurrentChunkIndex] = useState(0);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
@@ -70,13 +70,11 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   useEffect(() => {
     async function setupFormData() {
       if (lesson && open) {
-        let videoFile: File | undefined;
-
         if (lesson.video?.resourceUrl && !formData.videoChunk) {
           try {
             const fetchedFile = await urlToFile(lesson.video.resourceUrl, lesson.video.name ?? '');
             if (fetchedFile) {
-              videoFile = fetchedFile;
+              setVideoFile(fetchedFile);
             }
           } catch (error) {
             CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to fetch video file', 'error');
@@ -100,7 +98,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
           categoryEnum: CategoryEnum[CategoryEnum.Lesson],
           isDeleteOldThumbnail: false,
           videoID: lesson.videoID,
-          videoChunk: videoFile,
+          videoChunk: videoFile ?? undefined,
           uploadID: lesson.id,
         });
 
@@ -146,15 +144,17 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       } else {
         setPreviewUrl(null);
       }
+    } else if (formData.thumbnailID) {
+      fileUsecase
+        .getFileResouceById(formData.thumbnailID)
+        .then((file) => {
+          setPreviewUrl(file.resourceUrl || null);
+        })
+        .catch(() => {
+          setPreviewUrl(null);
+        });
     } else {
-      if (formData.thumbnailID) {
-        fileUsecase
-          .getFileResouceById(formData.thumbnailID)
-          .then((file) => setPreviewUrl(file.resourceUrl || null))
-          .catch(() => setPreviewUrl(null));
-      } else {
-        setPreviewUrl(null);
-      }
+      setPreviewUrl(null);
     }
   };
 
@@ -188,8 +188,12 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       if (selectedVideoId) {
         fileUsecase
           .getFileResouceById(selectedVideoId)
-          .then((file) => setVideoPreviewUrl(file.resourceUrl || null))
-          .catch(() => setVideoPreviewUrl(null));
+          .then((file) => {
+            setVideoPreviewUrl(file.resourceUrl || null);
+          })
+          .catch(() => {
+            setVideoPreviewUrl(null);
+          });
       } else {
         setVideoPreviewUrl(null);
       }
@@ -255,7 +259,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   };
 
   const handleSave = async () => {
-    if (!formData || !formData.id || !formData.name) {
+    if (!formData?.id || !formData.name) {
       CustomSnackBar.showSnackbar(!formData ? t('formDataMissing') : t('requiredFieldsMissing'), 'error');
       return;
     }
@@ -275,9 +279,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       if (videoSource === 'upload' && videoFile) {
         // upload video by chunk
         const chunkSize = 5 * 1024 * 1024;
-        const totalChunks = Math.ceil(videoFile.size / chunkSize);
+        const totalChunksCount = Math.ceil(videoFile.size / chunkSize);
 
-        for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+        for (let chunkIndex = 0; chunkIndex < totalChunksCount; chunkIndex++) {
           const start = chunkIndex * chunkSize;
           const end = Math.min(start + chunkSize, videoFile.size);
           const chunk = videoFile.slice(start, end);
@@ -287,18 +291,18 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             ...thumbnailPayload,
             videoChunk: chunkFile,
             chunkIndex,
-            totalChunks,
+            totalChunks: totalChunksCount,
           });
 
           const response = await onSubmit(chunkRequest, {
-            suppressSuccessMessage: chunkIndex < totalChunks - 1,
+            suppressSuccessMessage: chunkIndex < totalChunksCount - 1,
           });
 
           setCurrentChunkIndex(chunkIndex + 1);
-          setUploadProgress(((chunkIndex + 1) / totalChunks) * 100);
+          setUploadProgress(((chunkIndex + 1) / totalChunksCount) * 100);
           lastResponse = response;
 
-          if (chunkIndex === totalChunks - 1 && lastResponse) {
+          if (chunkIndex === totalChunksCount - 1 && lastResponse) {
             setUploadProgress(0);
             setTotalChunks(0);
             setCurrentChunkIndex(0);
@@ -324,7 +328,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         }
       }
     } catch (error) {
-      console.error(error);
+      return;
     } finally {
       if (onSuccess) onSuccess();
       setIsSubmitting(false);

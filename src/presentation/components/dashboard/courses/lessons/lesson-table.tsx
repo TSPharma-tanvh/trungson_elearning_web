@@ -25,7 +25,7 @@ interface LessonTableProps {
   onEditLesson: (
     data: UpdateLessonRequest,
     options?: { suppressSuccessMessage?: boolean }
-  ) => Promise<ApiResponse<any>>;
+  ) => Promise<ApiResponse>;
   onEditSuccess: () => void;
 }
 

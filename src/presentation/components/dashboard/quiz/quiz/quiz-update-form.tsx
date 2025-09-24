@@ -501,7 +501,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               </Grid>
             )}
 
-            {selectedResourceIDs.length > 0 && fileSelectSource == 'multi-select' ? (
+            {selectedResourceIDs.length > 0 && fileSelectSource === 'multi-select' ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
@@ -535,7 +535,7 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
               </Grid>
             ) : null}
 
-            {uploadedFiles.length > 0 && fileSelectSource == 'upload' && (
+            {uploadedFiles.length > 0 && fileSelectSource === 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('uploadedFiles')}

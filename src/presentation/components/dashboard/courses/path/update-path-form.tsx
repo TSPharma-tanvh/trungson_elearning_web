@@ -32,7 +32,6 @@ import { Image as ImageIcon, Note, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';

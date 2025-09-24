@@ -13,7 +13,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { CaretLeft as CollapseIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
 import { CaretRight as ExpandIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
 import { List as ListIcon } from '@phosphor-icons/react/dist/ssr/List';
-import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 
 import { logger } from '@/lib/default-logger';
 

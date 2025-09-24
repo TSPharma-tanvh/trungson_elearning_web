@@ -228,7 +228,7 @@ export default function UsersTable({
                     </TableCell>{' '}
                     <TableCell>{row.employee?.mail}</TableCell>
                     <TableCell>
-                      {row.employee && `${row.employee.currentPositionName} (${row.employee.currentPositionStateName})`}
+                      {row.employee ? `${row.employee.currentPositionName} (${row.employee.currentPositionStateName})` : null}
                     </TableCell>
                     <TableCell>{row.employee?.currentDepartmentName}</TableCell>
                     <TableCell>{row.roles?.join(', ')}</TableCell>
