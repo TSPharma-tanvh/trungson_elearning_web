@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { type UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { type UserResponse } from '@/domain/models/user/response/user-response';
-import { MoreVert } from '@mui/icons-material';
+import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -189,6 +189,7 @@ export default function UsersTable({
                 <TableCell>{t('position')}</TableCell>
                 <TableCell>{t('department')}</TableCell>
                 <TableCell>{t('roles')}</TableCell>
+                <TableCell>{t('isActive')}</TableCell>
                 <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
@@ -228,10 +229,19 @@ export default function UsersTable({
                     </TableCell>{' '}
                     <TableCell>{row.employee?.mail}</TableCell>
                     <TableCell>
-                      {row.employee ? `${row.employee.currentPositionName} (${row.employee.currentPositionStateName})` : null}
+                      {row.employee
+                        ? `${row.employee.currentPositionName} (${row.employee.currentPositionStateName})`
+                        : null}
                     </TableCell>
                     <TableCell>{row.employee?.currentDepartmentName}</TableCell>
                     <TableCell>{row.roles?.join(', ')}</TableCell>
+                    <TableCell>
+                      {row.isActive ? (
+                        <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
+                      ) : (
+                        <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
+                      )}
+                    </TableCell>{' '}
                     <TableCell align="right">
                       <IconButton
                         onClick={(event) => {
