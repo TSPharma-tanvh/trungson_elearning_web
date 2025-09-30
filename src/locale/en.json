@@ -769,5 +769,7 @@
   "importUsers": "Import Users",
   "enableAutoPlay": "Enable Auto Play",
   "uploading": "Uploading",
-  "hasPath": "Has Path"
+  "hasPath": "Has Path",
+  "noAnswersAvailable": "No Answers Available",
+  "quizDataNotAvailable": "Quiz Data Not Available"
 }

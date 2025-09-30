@@ -769,5 +769,7 @@
   "importUsers": "Nhập người dùng",
   "enableAutoPlay": "Bật tự động phát",
   "uploading": "Đang tải lên",
-  "hasPath": "Có lộ trình"
+  "hasPath": "Có lộ trình",
+  "noAnswersAvailable": "Không có câu trả lời khả dụng",
+  "quizDataNotAvailable": "Dữ liệu câu hỏi không khả dụng"
 }
