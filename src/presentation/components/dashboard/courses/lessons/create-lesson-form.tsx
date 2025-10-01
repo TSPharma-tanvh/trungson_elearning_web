@@ -215,9 +215,7 @@ export function CreateLessonDialog({
 
           {/* Thumbnail Upload */}
           <Grid item xs={12}>
-            <Typography variant="h6">
-              {t('thumbnail')} ({t('required')})
-            </Typography>
+            <Typography variant="h6">{t('thumbnail')}</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <CustomTextField
