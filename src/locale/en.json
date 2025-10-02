@@ -772,5 +772,6 @@
   "hasPath": "Has Path",
   "noAnswersAvailable": "No Answers Available",
   "quizDataNotAvailable": "Quiz Data Not Available",
-  "createRole": "Create Role"
+  "createRole": "Create Role",
+  "lessonUrl": "Lesson Url"
 }

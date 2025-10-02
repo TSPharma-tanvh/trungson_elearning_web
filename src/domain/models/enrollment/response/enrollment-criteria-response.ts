@@ -13,7 +13,7 @@ export class EnrollmentCriteriaResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): EnrollmentCriteriaResponse {
+  static fromJson(json: any): EnrollmentCriteriaResponse {
     return new EnrollmentCriteriaResponse({
       id: json.id,
       name: json.name,
@@ -27,7 +27,7 @@ export class EnrollmentCriteriaResponse {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       name: this.name,

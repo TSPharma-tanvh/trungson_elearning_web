@@ -16,11 +16,11 @@ export class UpdateUserCourseProgressRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(data: any): UpdateUserCourseProgressRequest {
+  static fromJson(data: any): UpdateUserCourseProgressRequest {
     return new UpdateUserCourseProgressRequest(data);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return { ...this };
   }
 

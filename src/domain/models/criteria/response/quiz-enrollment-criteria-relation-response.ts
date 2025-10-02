@@ -9,21 +9,21 @@ export class QuizEnrollmentCriteriaRelationResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): QuizEnrollmentCriteriaRelationResponse {
+  static fromJson(json: any): QuizEnrollmentCriteriaRelationResponse {
     return new QuizEnrollmentCriteriaRelationResponse({
       id: json.id,
       quizID: json.quizID,
       enrollmentCriteria: json.enrollmentCriteria
-        ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
+        ? EnrollmentCriteriaResponse.fromJson(json.enrollmentCriteria)
         : new EnrollmentCriteriaResponse(),
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       quizID: this.quizID,
-      enrollmentCriteria: this.enrollmentCriteria ? this.enrollmentCriteria.toJSON() : null,
+      enrollmentCriteria: this.enrollmentCriteria ? this.enrollmentCriteria.toJson() : null,
     };
   }
 }

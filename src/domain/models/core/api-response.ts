@@ -13,11 +13,11 @@ export class ApiResponse<T = any> {
     return this.statusCode >= 200 && this.statusCode < 300;
   }
 
-  static fromJSON<T>(json: any): ApiResponse<T> {
+  static fromJson<T>(json: any): ApiResponse<T> {
     return new ApiResponse<T>(json.statusCode, json.message, json.result);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       statusCode: this.statusCode,
       message: this.message,

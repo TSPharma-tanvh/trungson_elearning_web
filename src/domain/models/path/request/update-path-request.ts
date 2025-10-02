@@ -26,7 +26,7 @@ export class UpdateCoursePathRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UpdateCoursePathRequest {
+  static fromJson(json: any): UpdateCoursePathRequest {
     return new UpdateCoursePathRequest({
       id: json.id,
       name: json.name,
@@ -49,7 +49,7 @@ export class UpdateCoursePathRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       name: this.name,

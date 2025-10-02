@@ -52,7 +52,7 @@ export class UserRepositoryImpl implements UserRepository {
   async getUserListInfo(request: GetUserRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.user.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;
@@ -69,7 +69,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async registerUser(request: RegisterRequestModel): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.identity.signUp, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.identity.signUp, request.toJson());
 
       const apiResponse = response.data;
 
@@ -85,7 +85,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async changePassword(request: ChangePasswordRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.identity.changePassword, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.identity.changePassword, request.toJson());
 
       const apiResponse = response.data;
 

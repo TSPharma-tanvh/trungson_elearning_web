@@ -16,7 +16,7 @@ export class UserResponse {
   rolePermissions: Record<string, string[]> = {};
   employee?: EmployeeResponse;
 
-  static fromJSON(json: any): UserResponse {
+  static fromJson(json: any): UserResponse {
     const dto = new UserResponse();
     dto.id = json.id;
     dto.userName = json.userName;
@@ -30,11 +30,11 @@ export class UserResponse {
     dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined;
     dto.roles = json.roles ?? [];
     dto.rolePermissions = json.rolePermissions ?? {};
-    dto.employee = json.employee ? EmployeeResponse.fromJSON(json.employee) : undefined;
+    dto.employee = json.employee ? EmployeeResponse.fromJson(json.employee) : undefined;
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       userName: this.userName,
@@ -48,7 +48,7 @@ export class UserResponse {
       thumbnail: this.thumbnail?.toJson(),
       roles: this.roles,
       rolePermissions: this.rolePermissions,
-      employee: this.employee?.toJSON(),
+      employee: this.employee?.toJson(),
     };
   }
 }

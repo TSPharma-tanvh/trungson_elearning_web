@@ -178,7 +178,7 @@ class ApiClient {
         accessToken,
       });
 
-      const apiResponse = ApiResponse.fromJSON<{ token: string; refreshToken: string }>(response.data);
+      const apiResponse = ApiResponse.fromJson<{ token: string; refreshToken: string }>(response.data);
 
       if (apiResponse.isSuccessStatusCode && apiResponse.result) {
         StoreLocalManager.saveLocalData(AppStrings.ACCESS_TOKEN, apiResponse.result.token);

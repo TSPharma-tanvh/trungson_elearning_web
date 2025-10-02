@@ -44,7 +44,7 @@ export class CreateCourseRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): CreateCourseRequest {
+  static fromJson(json: any): CreateCourseRequest {
     return new CreateCourseRequest({
       pathID: json.pathID,
       detail: json.detail,
@@ -72,7 +72,7 @@ export class CreateCourseRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       pathID: this.pathID,
       detail: this.detail,

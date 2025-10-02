@@ -19,7 +19,7 @@ export class UserLessonProgressUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map((x) => UserLessonProgressDetailResponse.fromJSON(x));
+    const data = result.result.map((x) => UserLessonProgressDetailResponse.fromJson(x));
 
     return {
       progress: data,
@@ -36,7 +36,7 @@ export class UserLessonProgressUsecase {
 
     const result = await this.userLessonProgressRepo.getUserLessonProgressById(id);
 
-    const userResponse = UserLessonProgressDetailResponse.fromJSON(result.result);
+    const userResponse = UserLessonProgressDetailResponse.fromJson(result.result);
 
     return userResponse;
   }

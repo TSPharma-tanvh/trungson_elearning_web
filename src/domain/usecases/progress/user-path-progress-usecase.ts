@@ -17,8 +17,8 @@ export class UserPathProgressUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    // const data = result.result.map(UserPathProgressDetailResponse.fromJSON);
-    const data = result.result.map((x) => UserPathProgressDetailResponse.fromJSON(x));
+    // const data = result.result.map(UserPathProgressDetailResponse.fromJson);
+    const data = result.result.map((x) => UserPathProgressDetailResponse.fromJson(x));
 
     return {
       progress: data,
@@ -35,7 +35,7 @@ export class UserPathProgressUsecase {
 
     const result = await this.userPathProgressRepo.getUserPathProgressById(id);
 
-    const userResponse = UserPathProgressDetailResponse.fromJSON(result.result);
+    const userResponse = UserPathProgressDetailResponse.fromJson(result.result);
 
     return userResponse;
   }

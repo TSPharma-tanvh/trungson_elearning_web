@@ -22,7 +22,7 @@ export class EnrollUserListToCourseRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): EnrollUserListToCourseRequest {
+  static fromJson(json: any): EnrollUserListToCourseRequest {
     return new EnrollUserListToCourseRequest({
       userIDs: json.userIDs ?? [],
       courseID: json.courseID,
@@ -42,7 +42,7 @@ export class EnrollUserListToCourseRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userIDs: this.userIDs,
       courseID: this.courseID,

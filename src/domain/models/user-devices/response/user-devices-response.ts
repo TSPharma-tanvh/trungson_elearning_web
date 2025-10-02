@@ -17,7 +17,7 @@ export class UserDeviceResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UserDeviceResponse {
+  static fromJson(json: any): UserDeviceResponse {
     return new UserDeviceResponse({
       id: json.id,
       userID: json.userID,
@@ -29,11 +29,11 @@ export class UserDeviceResponse {
       signInAt: json.signInAt ? new Date(json.signInAt) : undefined,
       signOutAt: json.signOutAt ? new Date(json.signOutAt) : undefined,
       lastAccess: json.lastAccess ? new Date(json.lastAccess) : undefined,
-      user: json.user ? UserDetailResponse.fromJSON(json.user) : undefined,
+      user: json.user ? UserDetailResponse.fromJson(json.user) : undefined,
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       userID: this.userID,
@@ -45,7 +45,7 @@ export class UserDeviceResponse {
       signInAt: this.signInAt?.toISOString(),
       signOutAt: this.signOutAt?.toISOString(),
       lastAccess: this.lastAccess?.toISOString(),
-      user: this.user?.toJSON(),
+      user: this.user?.toJson(),
     };
   }
 }

@@ -111,21 +111,7 @@ export function AttendanceRecordsFilters({
           {t('filter')}
         </Button>
 
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={handleClear}
-          sx={{
-            color: 'var(--mui-palette-primary-main)',
-            borderColor: 'var(--mui-palette-primary-main)',
-            borderRadius: '12px',
-            textTransform: 'none',
-            '&:hover': {
-              borderColor: 'var(--mui-palette-secondary-main)',
-              color: 'var(--mui-palette-secondary-main)',
-            },
-          }}
-        >
+        <Button variant="outlined" color="secondary" size="small" onClick={handleClear}>
           {t('clear')}
         </Button>
       </Stack>

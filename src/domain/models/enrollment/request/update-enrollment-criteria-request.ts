@@ -15,11 +15,11 @@ export class UpdateEnrollmentCriteriaRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UpdateEnrollmentCriteriaRequest {
+  static fromJson(json: any): UpdateEnrollmentCriteriaRequest {
     return new UpdateEnrollmentCriteriaRequest(json);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       name: this.name,

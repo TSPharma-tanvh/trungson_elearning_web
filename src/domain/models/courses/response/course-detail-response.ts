@@ -32,7 +32,7 @@ export class CourseDetailResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): CourseDetailResponse {
+  static fromJson(json: any): CourseDetailResponse {
     return new CourseDetailResponse({
       id: json.id,
       pathId: json.pathId,
@@ -52,12 +52,12 @@ export class CourseDetailResponse {
       thumbnailId: json.thumbnailId,
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
       fileCourseRelation: json.fileCourseRelation?.map((f: any) => FileCourseRelationResponse.fromJson(f)),
-      lessons: json.lessons?.map((l: any) => LessonResponse.fromJSON(l)),
-      category: json.category ? CategoryResponse.fromJSON(json.category) : undefined,
+      lessons: json.lessons?.map((l: any) => LessonResponse.fromJson(l)),
+      category: json.category ? CategoryResponse.fromJson(json.category) : undefined,
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       pathId: this.pathId,
@@ -77,8 +77,8 @@ export class CourseDetailResponse {
       thumbnailId: this.thumbnailId,
       thumbnail: this.thumbnail?.toJson(),
       fileCourseRelation: this.fileCourseRelation?.map((f) => f.toJson()),
-      lessons: this.lessons?.map((l) => l.toJSON()),
-      category: this.category?.toJSON(),
+      lessons: this.lessons?.map((l) => l.toJson()),
+      category: this.category?.toJson(),
     };
   }
 }

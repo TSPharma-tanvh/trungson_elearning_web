@@ -18,11 +18,11 @@ export class UpdateAnswerRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UpdateAnswerRequest {
+  static fromJson(json: any): UpdateAnswerRequest {
     return new UpdateAnswerRequest(json);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       questionID: this.questionID,

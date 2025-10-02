@@ -52,7 +52,7 @@ export class QuizResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): QuizResponse {
+  static fromJson(json: any): QuizResponse {
     const dto = new QuizResponse();
 
     dto.id = json.id;
@@ -68,34 +68,34 @@ export class QuizResponse {
     dto.thumbnailID = json.thumbnailID;
 
     dto.quizQuestions = Array.isArray(json.quizQuestions)
-      ? json.quizQuestions.map((q: any) => UserQuizQuestionResponse.fromJSON(q))
+      ? json.quizQuestions.map((q: any) => UserQuizQuestionResponse.fromJson(q))
       : [];
 
     dto.enrollmentCriteria = Array.isArray(json.enrollmentCriteria)
-      ? json.enrollmentCriteria.map((e: any) => EnrollmentCriteriaResponse.fromJSON(e))
+      ? json.enrollmentCriteria.map((e: any) => EnrollmentCriteriaResponse.fromJson(e))
       : undefined;
 
     dto.quizEnrollments = Array.isArray(json.quizEnrollments)
-      ? json.quizEnrollments.map((qe: any) => QuizEnrollmentCriteriaRelationResponse.fromJSON(qe))
+      ? json.quizEnrollments.map((qe: any) => QuizEnrollmentCriteriaRelationResponse.fromJson(qe))
       : undefined;
 
     dto.fileQuizRelation = Array.isArray(json.fileQuizRelation)
-      ? json.fileQuizRelation.map((f: any) => FileQuizRelationResponse.fromJSON(f))
+      ? json.fileQuizRelation.map((f: any) => FileQuizRelationResponse.fromJson(f))
       : undefined;
 
     dto.lessonID = json.lessonID;
     dto.levelID = json.levelID;
-    dto.lesson = json.lesson ? QuizLessonResponse.fromJSON(json.lesson) : undefined;
+    dto.lesson = json.lesson ? QuizLessonResponse.fromJson(json.lesson) : undefined;
 
     dto.categoryID = json.categoryID;
-    dto.category = json.category ? CategoryResponse.fromJSON(json.category) : undefined;
+    dto.category = json.category ? CategoryResponse.fromJson(json.category) : undefined;
 
     dto.userQuizProgress = Array.isArray(json.userQuizProgress)
-      ? json.userQuizProgress.map((p: any) => UserQuizProgressionResponse.fromJSON(p))
+      ? json.userQuizProgress.map((p: any) => UserQuizProgressionResponse.fromJson(p))
       : undefined;
 
     dto.userAnswer = Array.isArray(json.userAnswer)
-      ? json.userAnswer.map((a: any) => UserAnswerResponse.fromJSON(a))
+      ? json.userAnswer.map((a: any) => UserAnswerResponse.fromJson(a))
       : undefined;
 
     dto.attendanceRecords = Array.isArray(json.attendanceRecords)
@@ -116,7 +116,7 @@ export class QuizResponse {
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       title: this.title,
@@ -130,21 +130,21 @@ export class QuizResponse {
       thumbnail: this.thumbnail?.toJson?.() ?? this.thumbnail,
       thumbnailID: this.thumbnailID,
 
-      quizQuestions: this.quizQuestions.map((q) => (q.toJSON ? q.toJSON() : q)),
-      enrollmentCriteria: this.enrollmentCriteria?.map((e) => (e.toJSON ? e.toJSON() : e)),
-      quizEnrollments: this.quizEnrollments?.map((qe) => (qe.toJSON ? qe.toJSON() : qe)),
+      quizQuestions: this.quizQuestions.map((q) => (q.toJson ? q.toJson() : q)),
+      enrollmentCriteria: this.enrollmentCriteria?.map((e) => (e.toJson ? e.toJson() : e)),
+      quizEnrollments: this.quizEnrollments?.map((qe) => (qe.toJson ? qe.toJson() : qe)),
 
-      fileQuizRelation: this.fileQuizRelation?.map((f) => (f.toJSON ? f.toJSON() : f)),
+      fileQuizRelation: this.fileQuizRelation?.map((f) => (f.toJson ? f.toJson() : f)),
 
       lessonID: this.lessonID,
       levelID: this.levelID,
-      lesson: this.lesson?.toJSON?.() ?? this.lesson,
+      lesson: this.lesson?.toJson?.() ?? this.lesson,
 
       categoryID: this.categoryID,
-      category: this.category?.toJSON?.() ?? this.category,
+      category: this.category?.toJson?.() ?? this.category,
 
-      userQuizProgress: this.userQuizProgress?.map((p) => (p.toJSON ? p.toJSON() : p)),
-      userAnswer: this.userAnswer?.map((a) => (a.toJSON ? a.toJSON() : a)),
+      userQuizProgress: this.userQuizProgress?.map((p) => (p.toJson ? p.toJson() : p)),
+      userAnswer: this.userAnswer?.map((a) => (a.toJson ? a.toJson() : a)),
       attendanceRecords: this.attendanceRecords?.map((r) => (r.toJson ? r.toJson() : r)),
 
       canStartOver: this.canStartOver,

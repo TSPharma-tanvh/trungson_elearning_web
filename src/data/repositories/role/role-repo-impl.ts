@@ -28,7 +28,7 @@ export class RoleRepositoryImpl implements RoleRepository {
   async getAllRoles(request: GetRoleRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.role.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;
@@ -45,7 +45,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
   async createRole(request: CreateRoleRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.role.createRole, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.role.createRole, request.toJson());
 
       const apiResponse = response.data;
 
@@ -61,7 +61,7 @@ export class RoleRepositoryImpl implements RoleRepository {
 
   async updateRole(id: string, request: UpdateRoleRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.put<ApiResponse>(apiEndpoints.role.updateRole(id), request.toJSON());
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.role.updateRole(id), request.toJson());
 
       const apiResponse = response.data;
 

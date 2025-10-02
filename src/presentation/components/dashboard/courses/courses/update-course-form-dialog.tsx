@@ -85,6 +85,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           course.courseType !== undefined
             ? LearningModeEnum[course.courseType as keyof typeof LearningModeEnum]
             : undefined,
+        meetingLink: course.meetingLink || undefined,
         teacherID: course.teacherId || undefined,
         enrollmentCriteriaType: course.pathId !== undefined ? undefined : CategoryEnum.Course,
         enrollmentCriteriaIDs:
@@ -327,6 +328,21 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 ]}
               />
             </Grid>
+
+            {formData.courseType === LearningModeEnum.Online && (
+              <Grid item xs={12}>
+                <CustomTextField
+                  label={t('meetingLink')}
+                  value={formData.meetingLink}
+                  onChange={(val) => {
+                    handleChange('meetingLink', val);
+                  }}
+                  disabled={false}
+                  sx={{ '& .MuiInputBase-root': { height: fullScreen ? '100%' : 'auto' } }}
+                />
+              </Grid>
+            )}
+
             <Grid item xs={12}>
               <LessonMultiSelectDialog
                 lessonUsecase={lessonUsecase}

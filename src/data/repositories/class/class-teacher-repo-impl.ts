@@ -12,7 +12,7 @@ export class ClassTeacherRepoImpl implements ClassTeacherRepository {
   async getClassTeacherListInfo(request: GetClassTeacherRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.classTeacher.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;

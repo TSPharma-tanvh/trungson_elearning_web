@@ -188,6 +188,20 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
 
+            {form.courseType === LearningModeEnum.Online && (
+              <Grid item xs={12}>
+                <CustomTextField
+                  label={t('meetingLink')}
+                  value={form.meetingLink}
+                  onChange={(val) => {
+                    handleChange('meetingLink', val);
+                  }}
+                  disabled={false}
+                  sx={{ '& .MuiInputBase-root': { height: fullScreen ? '100%' : 'auto' } }}
+                />
+              </Grid>
+            )}
+
             <Grid item xs={12}>
               <CustomButton
                 label={t('create')}

@@ -17,8 +17,8 @@ export class UserCourseProgressUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    // const data = result.result.map(UserCourseProgressResponse.fromJSON);
-    const data = result.result.map((x) => UserCourseProgressResponse.fromJSON(x));
+    // const data = result.result.map(UserCourseProgressResponse.fromJson);
+    const data = result.result.map((x) => UserCourseProgressResponse.fromJson(x));
 
     return {
       courses: data,
@@ -35,7 +35,7 @@ export class UserCourseProgressUsecase {
 
     const result = await this.userCourseProgressRepo.getUserCourseProgressById(id);
 
-    const userResponse = UserCourseProgressResponse.fromJSON(result.result);
+    const userResponse = UserCourseProgressResponse.fromJson(result.result);
 
     return userResponse;
   }

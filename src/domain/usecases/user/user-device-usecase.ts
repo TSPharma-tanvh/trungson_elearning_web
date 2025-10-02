@@ -15,7 +15,7 @@ export class UserDevicesUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map((x) => UserDeviceResponse.fromJSON(x));
+    const data = result.result.map((x) => UserDeviceResponse.fromJson(x));
 
     return {
       devices: data,
@@ -32,7 +32,7 @@ export class UserDevicesUsecase {
 
     const result = await this.UserDevicesRepo.getUserDevicesById(id);
 
-    const userResponse = UserDeviceResponse.fromJSON(result.result);
+    const userResponse = UserDeviceResponse.fromJson(result.result);
 
     return userResponse;
   }

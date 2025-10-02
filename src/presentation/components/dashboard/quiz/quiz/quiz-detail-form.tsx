@@ -78,7 +78,12 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                   {renderField('criteriaId', criteria.id)}
                   {renderField('name', criteria.name)}
                   {renderField('description', criteria.desc)}
-                  {renderField('targetType', criteria.targetType)}
+                  {renderField(
+                    'targetType',
+                    criteria.targetType
+                      ? t(criteria.targetType.charAt(0).toLowerCase() + t(criteria.targetType.slice(1)))
+                      : ''
+                  )}
                   {renderField('targetId', criteria.targetID)}
                   {renderField('targetLevelId', criteria.targetLevelID)}
                   {renderField('maxCapacity', criteria.maxCapacity)}
@@ -167,9 +172,17 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                         : ''
                     )}
                     {renderField('point', question.question?.point)}
-                    {renderField('canShuffle', question.question?.canShuffle)}
+                    {renderField('canShuffle', question.question?.canShuffle ? t('yes') : 'no')}
                     {renderField('totalAnswer', question.question?.totalAnswer)}
-                    {renderField('status', question.question?.status)}
+                    {renderField(
+                      'status',
+                      question.question?.status
+                        ? t(
+                            question.question.status.toString().charAt(0).toLowerCase() +
+                              t(question.question.status.toString().slice(1))
+                          )
+                        : ''
+                    )}
                   </Grid>
                 </CardContent>
               </Collapse>
@@ -304,7 +317,10 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
             {renderField('id', quiz.id)}
             {renderField('title', quiz.title)}
             {renderField('description', quiz.description)}
-            {renderField('status', quiz.status)}
+            {renderField(
+              'status',
+              quiz.status ? t(quiz.status.toString().charAt(0).toLowerCase() + t(quiz.status.toString().slice(1))) : ''
+            )}
             {renderField(
               'startTime',
               quiz.startTime ? DateTimeUtils.formatDateTimeToDateString(quiz.startTime) : undefined

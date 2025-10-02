@@ -12,19 +12,19 @@ export class UserQuizQuestionResponse {
     }
   }
 
-  static fromJSON(json: any): UserQuizQuestionResponse {
+  static fromJson(json: any): UserQuizQuestionResponse {
     return new UserQuizQuestionResponse({
       quizID: json.quizID,
       questionID: json.questionID,
-      question: json.question ? QuestionResponse.fromJSON(json.question) : undefined,
+      question: json.question ? QuestionResponse.fromJson(json.question) : undefined,
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       quizID: this.quizID,
       questionID: this.questionID,
-      question: this.question ? this.question.toJSON() : undefined,
+      question: this.question ? this.question.toJson() : undefined,
     };
   }
 }

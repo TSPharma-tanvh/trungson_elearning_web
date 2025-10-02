@@ -11,7 +11,7 @@ export class CategoryResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): CategoryResponse {
+  static fromJson(json: any): CategoryResponse {
     return new CategoryResponse({
       id: json.id,
       categoryName: json.categoryName,
@@ -21,7 +21,7 @@ export class CategoryResponse {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       categoryName: this.categoryName,

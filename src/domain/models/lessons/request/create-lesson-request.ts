@@ -2,30 +2,39 @@ import { LearningModeEnum, StatusEnum, type CategoryEnum } from '@/utils/enum/co
 
 export class CreateLessonRequest {
   courseID?: string;
-  name?: string;
+  name!: string; // Required
   detail?: string;
-  enablePlay = true;
-  status: StatusEnum = StatusEnum.Enable;
-  lessonType: LearningModeEnum = LearningModeEnum.Online;
+
+  enablePlay!: boolean; // Required
+  status!: StatusEnum; // Required
+  lessonType!: LearningModeEnum; // Required
+  isRequired!: boolean; // Required
+
   quizIDs?: string;
   categoryID?: string;
+
+  // Thumbnail
   thumbnailID?: string;
   thumbnail?: File;
   thumbDocumentNo?: string;
   thumbPrefixName?: string;
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
-  isRequired?: boolean;
 
-  video!: File;
+  // Video chunk upload
+  videoID?: string;
+  uploadID?: string;
+  videoChunk!: File; // Required
   videoDocumentNo?: string;
   videoPrefixName?: string;
+  chunkIndex = 0;
+  totalChunks = 0;
 
   constructor(init?: Partial<CreateLessonRequest>) {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): CreateLessonRequest {
+  static fromJson(json: any): CreateLessonRequest {
     return new CreateLessonRequest({
       courseID: json.courseID,
       name: json.name,
@@ -33,6 +42,7 @@ export class CreateLessonRequest {
       enablePlay: json.enablePlay,
       status: json.status,
       lessonType: json.lessonType,
+      isRequired: json.isRequired,
       quizIDs: json.quizIDs,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
@@ -40,13 +50,16 @@ export class CreateLessonRequest {
       thumbPrefixName: json.thumbPrefixName,
       isDeleteOldThumbnail: json.isDeleteOldThumbnail,
       categoryEnum: json.categoryEnum,
+      videoID: json.videoID,
+      uploadID: json.uploadID,
       videoDocumentNo: json.videoDocumentNo,
       videoPrefixName: json.videoPrefixName,
-      isRequired: json.isRequired,
+      chunkIndex: json.chunkIndex,
+      totalChunks: json.totalChunks,
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       courseID: this.courseID,
       name: this.name,
@@ -54,6 +67,7 @@ export class CreateLessonRequest {
       enablePlay: this.enablePlay,
       status: this.status,
       lessonType: this.lessonType,
+      isRequired: this.isRequired,
       quizIDs: this.quizIDs,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
@@ -61,9 +75,12 @@ export class CreateLessonRequest {
       thumbPrefixName: this.thumbPrefixName,
       isDeleteOldThumbnail: this.isDeleteOldThumbnail,
       categoryEnum: this.categoryEnum,
+      videoID: this.videoID,
+      uploadID: this.uploadID,
       videoDocumentNo: this.videoDocumentNo,
       videoPrefixName: this.videoPrefixName,
-      isRequired: this.isRequired,
+      chunkIndex: this.chunkIndex,
+      totalChunks: this.totalChunks,
     };
   }
 
@@ -74,29 +91,41 @@ export class CreateLessonRequest {
     if (this.name) form.append('Name', this.name);
     if (this.detail) form.append('Detail', this.detail);
 
-    form.append('EnablePlay', this.enablePlay?.toString() ?? 'true');
-    if (this.status !== undefined) form.append('Status', this.status.toString());
-    if (this.lessonType !== undefined) form.append('LessonType', this.lessonType.toString());
+    // Required
+    form.append('EnablePlay', this.enablePlay.toString());
+    form.append('Status', this.status.toString());
+    form.append('LessonType', this.lessonType.toString());
+
+    form.append('IsRequired', this.isRequired.toString());
 
     if (this.quizIDs) form.append('QuizIDs', this.quizIDs);
     if (this.categoryID) form.append('CategoryID', this.categoryID);
+
+    // Thumbnail
     if (this.thumbnailID) form.append('ThumbnailID', this.thumbnailID);
     if (this.thumbnail) form.append('Thumbnail', this.thumbnail);
     if (this.thumbDocumentNo) form.append('ThumbDocumentNo', this.thumbDocumentNo);
     if (this.thumbPrefixName) form.append('ThumbPrefixName', this.thumbPrefixName);
-    if (this.isDeleteOldThumbnail !== undefined)
+    if (this.isDeleteOldThumbnail !== undefined) {
       form.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
-    if (this.categoryEnum !== undefined) form.append('CategoryEnum', this.categoryEnum.toString());
-
-    //Check required field video
-    if (!this.video) {
-      throw new Error('Video is required but missing');
     }
-    form.append('Video', this.video);
+    if (this.categoryEnum !== undefined) {
+      form.append('CategoryEnum', this.categoryEnum.toString());
+    }
 
+    // Video chunk upload (Required)
+    if (!this.videoChunk) {
+      throw new Error('VideoChunk is required but missing');
+    }
+    form.append('VideoChunk', this.videoChunk);
+
+    if (this.videoID) form.append('VideoID', this.videoID);
+    if (this.uploadID) form.append('UploadID', this.uploadID);
     if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
     if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
-    if (this.isRequired !== undefined) form.append('IsRequired', this.isRequired.toString());
+
+    form.append('ChunkIndex', this.chunkIndex.toString());
+    form.append('TotalChunks', this.totalChunks.toString());
 
     return form;
   }

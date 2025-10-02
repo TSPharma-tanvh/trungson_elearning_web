@@ -19,19 +19,19 @@ export class UserDetailResponse {
   constructor(init?: Partial<UserDetailResponse>) {
     Object.assign(this, init);
   }
-  static fromJSON(data: any): UserDetailResponse {
+  static fromJson(data: any): UserDetailResponse {
     return new UserDetailResponse({
       ...data,
       thumbnail: data.thumbnail ? FileResourcesResponse.fromJson(data.thumbnail) : undefined,
-      employee: data.employee ? EmployeeResponse.fromJSON(data.employee) : undefined,
+      employee: data.employee ? EmployeeResponse.fromJson(data.employee) : undefined,
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       ...this,
       thumbnail: this.thumbnail?.toJson(),
-      employee: this.employee?.toJSON(),
+      employee: this.employee?.toJson(),
     };
   }
 }

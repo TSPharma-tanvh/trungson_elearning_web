@@ -19,7 +19,7 @@ export class UserAnswerAnswerRelationResponse {
       id: json.id,
       answerID: json.answerID,
       userAnswerID: json.userAnswerID,
-      answer: json.answer ? AnswerResponse.fromJSON(json.answer) : undefined,
+      answer: json.answer ? AnswerResponse.fromJson(json.answer) : undefined,
     });
   }
 
@@ -28,7 +28,7 @@ export class UserAnswerAnswerRelationResponse {
       id: this.id,
       answerID: this.answerID,
       userAnswerID: this.userAnswerID,
-      answer: this.answer ? this.answer.toJSON() : undefined,
+      answer: this.answer ? this.answer.toJson() : undefined,
     };
   }
 }

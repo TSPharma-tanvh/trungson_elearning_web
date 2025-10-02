@@ -27,7 +27,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   async getCategoryListInfo(request: GetCategoryRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.category.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
       const apiResponse = response.data;
 

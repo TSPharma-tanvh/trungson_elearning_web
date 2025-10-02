@@ -50,7 +50,7 @@ export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerReque
 
         {/* Is Required */}
         <CustomSelectFilter<boolean>
-          label={t('correct')}
+          label={t('isCorrect')}
           value={isCorrect}
           onChange={setIsCorrect}
           options={[

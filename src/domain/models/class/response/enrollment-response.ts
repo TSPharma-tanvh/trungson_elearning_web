@@ -30,7 +30,7 @@ export class EnrollmentResponse {
       rejectedReason: json.rejectedReason,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
       enrollmentCriteria: json.enrollmentCriteria
-        ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
+        ? EnrollmentCriteriaResponse.fromJson(json.enrollmentCriteria)
         : undefined,
     });
   }
@@ -47,7 +47,7 @@ export class EnrollmentResponse {
       approvedAt: this.approvedAt?.toISOString(),
       rejectedReason: this.rejectedReason,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
-      enrollmentCriteria: this.enrollmentCriteria?.toJSON(),
+      enrollmentCriteria: this.enrollmentCriteria?.toJson(),
     };
   }
 }

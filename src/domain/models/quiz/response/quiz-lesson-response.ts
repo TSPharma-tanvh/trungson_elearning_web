@@ -11,7 +11,7 @@ export class QuizLessonResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): QuizLessonResponse {
+  static fromJson(json: any): QuizLessonResponse {
     return new QuizLessonResponse({
       id: json.id,
       title: json.title,
@@ -23,7 +23,7 @@ export class QuizLessonResponse {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       title: this.title,

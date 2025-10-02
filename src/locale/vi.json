@@ -772,5 +772,6 @@
   "hasPath": "Có lộ trình",
   "noAnswersAvailable": "Không có câu trả lời khả dụng",
   "quizDataNotAvailable": "Dữ liệu câu hỏi không khả dụng",
-  "createRole": "Tạo vai trò"
+  "createRole": "Tạo vai trò",
+  "lessonUrl": "Đường dẫn bài học"
 }

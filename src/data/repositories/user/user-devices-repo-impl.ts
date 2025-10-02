@@ -11,7 +11,7 @@ export class UserDevicesRepoImpl implements UserDevicesRepository {
   async getUserDevicesListInfo(request: GetUserDevicesRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userDevices.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;
@@ -61,7 +61,7 @@ export class UserDevicesRepoImpl implements UserDevicesRepository {
 
   async updateUserDevices(request: UpdateUserDevicesRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.put<ApiResponse>(apiEndpoints.userDevices.update, request.toJSON());
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.userDevices.update, request.toJson());
 
       const apiResponse = response.data;
 

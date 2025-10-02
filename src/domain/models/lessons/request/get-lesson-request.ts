@@ -15,7 +15,7 @@ export class GetLessonRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetLessonRequest {
+  static fromJson(json: any): GetLessonRequest {
     return new GetLessonRequest({
       name: json.name,
       courseID: json.courseID,
@@ -29,7 +29,7 @@ export class GetLessonRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       name: this.name,
       courseID: this.courseID,

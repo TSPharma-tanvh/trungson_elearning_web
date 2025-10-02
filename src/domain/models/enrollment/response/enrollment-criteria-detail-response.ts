@@ -45,7 +45,7 @@ export class EnrollmentCriteriaDetailResponse {
       classID: json.classID,
       class: json.class ? ClassResponse.fromJson(json.class) : undefined,
       quizID: json.quizID,
-      quiz: json.quiz ? QuizResponse.fromJSON(json.quiz) : undefined,
+      quiz: json.quiz ? QuizResponse.fromJson(json.quiz) : undefined,
       targetPharmacyID: json.targetPharmacyID,
       enrollments: json.enrollments?.map((e: any) => EnrollmentResponse.fromJson(e)),
       courseEnrollments: json.courseEnrollments?.map((ce: any) =>
@@ -70,7 +70,7 @@ export class EnrollmentCriteriaDetailResponse {
       classID: this.classID,
       class: this.class ? this.class.toJson() : undefined,
       quizID: this.quizID,
-      quiz: this.quiz ? this.quiz.toJSON() : undefined,
+      quiz: this.quiz ? this.quiz.toJson() : undefined,
       targetPharmacyID: this.targetPharmacyID,
       enrollments: this.enrollments?.map((e) => e.toJson()),
       courseEnrollments: this.courseEnrollments?.map((ce) => ce.toJson()),

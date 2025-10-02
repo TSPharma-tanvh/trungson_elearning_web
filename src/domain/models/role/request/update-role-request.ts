@@ -11,7 +11,7 @@ export class UpdateRoleRequest {
     this.isActive = init?.isActive ?? true;
   }
 
-  static fromJSON(json: any): UpdateRoleRequest {
+  static fromJson(json: any): UpdateRoleRequest {
     return new UpdateRoleRequest({
       name: json.name,
       description: json.description,
@@ -20,7 +20,7 @@ export class UpdateRoleRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       name: this.name,
       description: this.description,

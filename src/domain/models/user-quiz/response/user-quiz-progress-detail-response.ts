@@ -63,9 +63,9 @@ export class UserQuizProgressDetailResponse {
     dto.location = json.location;
     dto.enrollmentId = json.enrollmentId;
 
-    dto.user = json.user ? UserDetailResponse.fromJSON(json.user) : undefined;
-    dto.quiz = json.quiz ? QuizResponse.fromJSON(json.quiz) : undefined;
-    dto.userAnswers = json.userAnswers?.map((a: any) => UserAnswerResponse.fromJSON(a)) || [];
+    dto.user = json.user ? UserDetailResponse.fromJson(json.user) : undefined;
+    dto.quiz = json.quiz ? QuizResponse.fromJson(json.quiz) : undefined;
+    dto.userAnswers = json.userAnswers?.map((a: any) => UserAnswerResponse.fromJson(a)) || [];
     dto.enrollment = json.enrollment ? EnrollmentResponse.fromJson(json.enrollment) : undefined;
 
     return dto;
@@ -96,9 +96,9 @@ export class UserQuizProgressDetailResponse {
       os: this.os,
       location: this.location,
       enrollmentId: this.enrollmentId,
-      user: this.user?.toJSON(),
-      quiz: this.quiz?.toJSON(),
-      userAnswers: this.userAnswers?.map((x) => x.toJSON()),
+      user: this.user?.toJson(),
+      quiz: this.quiz?.toJson(),
+      userAnswers: this.userAnswers?.map((x) => x.toJson()),
       enrollment: this.enrollment?.toJson(),
     };
   }

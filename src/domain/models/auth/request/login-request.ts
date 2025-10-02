@@ -7,11 +7,11 @@ export class LoginRequest {
     this.password = password;
   }
 
-  static fromJSON(json: any): LoginRequest {
+  static fromJson(json: any): LoginRequest {
     return new LoginRequest(json.userName, json.password);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userName: this.userName,
       password: this.password,

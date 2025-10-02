@@ -26,26 +26,26 @@ export class UserCourseProgressResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(data: any): UserCourseProgressResponse {
+  static fromJson(data: any): UserCourseProgressResponse {
     return new UserCourseProgressResponse({
       ...data,
-      courses: data.courses ? CourseDetailResponse.fromJSON(data.courses) : undefined,
-      user: data.user ? UserDetailResponse.fromJSON(data.user) : undefined,
+      courses: data.courses ? CourseDetailResponse.fromJson(data.courses) : undefined,
+      user: data.user ? UserDetailResponse.fromJson(data.user) : undefined,
       enrollment: data.enrollment ? EnrollmentResponse.fromJson(data.user) : undefined,
       userLessonProgressResponse: Array.isArray(data.userLessonProgressResponse)
-        ? data.userLessonProgressResponse.map((x: any) => UserLessonProgressDetailResponse.fromJSON(x))
+        ? data.userLessonProgressResponse.map((x: any) => UserLessonProgressDetailResponse.fromJson(x))
         : [],
       userQuizProgressResponse: Array.isArray(data.userQuizProgressResponse)
-        ? data.userQuizProgressResponse.map((x: any) => UserQuizProgressionResponse.fromJSON(x))
+        ? data.userQuizProgressResponse.map((x: any) => UserQuizProgressionResponse.fromJson(x))
         : [],
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       ...this,
-      courses: this.courses?.toJSON(),
-      user: this.user?.toJSON(),
+      courses: this.courses?.toJson(),
+      user: this.user?.toJson(),
     };
   }
 

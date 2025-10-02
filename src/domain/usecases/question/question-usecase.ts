@@ -17,8 +17,8 @@ export class QuestionUsecase {
       throw new Error('Failed to load question list.');
     }
 
-    // const data = result.result.map(QuestionResponse.fromJSON);
-    const data = result.result.map((x) => QuestionResponse.fromJSON(x));
+    // const data = result.result.map(QuestionResponse.fromJson);
+    const data = result.result.map((x) => QuestionResponse.fromJson(x));
 
     return {
       questions: data,
@@ -35,7 +35,7 @@ export class QuestionUsecase {
 
     const result = await this.courseRepo.getQuestionById(id);
 
-    const userResponse = QuestionResponse.fromJSON(result.result);
+    const userResponse = QuestionResponse.fromJson(result.result);
 
     return userResponse;
   }

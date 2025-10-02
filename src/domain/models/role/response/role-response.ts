@@ -11,7 +11,7 @@ export class RoleResponse {
     if (init?.id) this.id = init.id;
   }
 
-  static fromJSON(json: any): RoleResponse {
+  static fromJson(json: any): RoleResponse {
     return new RoleResponse({
       id: json?.id,
       name: json?.name ?? '',

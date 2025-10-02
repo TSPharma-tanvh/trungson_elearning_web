@@ -13,11 +13,11 @@ export class UpdateUserPathProgressRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(data: any): UpdateUserPathProgressRequest {
+  static fromJson(data: any): UpdateUserPathProgressRequest {
     return new UpdateUserPathProgressRequest(data);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return { ...this };
   }
 

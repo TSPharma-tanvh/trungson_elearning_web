@@ -436,6 +436,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                 icon={<Article {...iconStyle} />}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('lessonType')}

@@ -9,7 +9,7 @@ export class GetRoleRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetRoleRequest {
+  static fromJson(json: any): GetRoleRequest {
     return new GetRoleRequest({
       id: json?.id,
       name: json?.name,
@@ -19,7 +19,7 @@ export class GetRoleRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       name: this.name,

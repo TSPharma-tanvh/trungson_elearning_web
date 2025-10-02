@@ -25,7 +25,7 @@ export class GetEnrollmentCriteriaRequest {
     });
   }
 
-  static fromJSON(json: any): GetEnrollmentCriteriaRequest {
+  static fromJson(json: any): GetEnrollmentCriteriaRequest {
     return new GetEnrollmentCriteriaRequest({
       targetType: json.targetType ? CategoryEnum[json.targetType as keyof typeof CategoryEnum] : undefined,
       disableStatus: json.disableStatus ? StatusEnum[json.disableStatus as keyof typeof StatusEnum] : undefined,
@@ -39,7 +39,7 @@ export class GetEnrollmentCriteriaRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       targetType: this.targetType,
       disableStatus: this.disableStatus,

@@ -21,7 +21,7 @@ export class UserLessonProgressDetailResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UserLessonProgressDetailResponse {
+  static fromJson(json: any): UserLessonProgressDetailResponse {
     return new UserLessonProgressDetailResponse({
       id: json.id,
       userID: json.userID,
@@ -33,15 +33,15 @@ export class UserLessonProgressDetailResponse {
       actualStartDate: json.actualStartDate,
       actualEndDate: json.actualEndDate,
       status: json.status,
-      lessons: json.lessons ? LessonDetailResponse.fromJSON(json.lessons) : undefined,
-      user: json.user ? UserDetailResponse.fromJSON(json.user) : undefined,
+      lessons: json.lessons ? LessonDetailResponse.fromJson(json.lessons) : undefined,
+      user: json.user ? UserDetailResponse.fromJson(json.user) : undefined,
       userQuizProgressResponse: Array.isArray(json.userQuizProgressResponse)
-        ? json.userQuizProgressResponse.map((x: any) => UserQuizProgressionResponse.fromJSON(x))
+        ? json.userQuizProgressResponse.map((x: any) => UserQuizProgressionResponse.fromJson(x))
         : [],
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       userID: this.userID,
@@ -53,9 +53,9 @@ export class UserLessonProgressDetailResponse {
       actualStartDate: this.actualStartDate,
       actualEndDate: this.actualEndDate,
       status: this.status,
-      lessons: this.lessons?.toJSON(),
-      user: this.user?.toJSON(),
-      userQuizProgressResponse: this.userQuizProgressResponse?.map((x) => x.toJSON()),
+      lessons: this.lessons?.toJson(),
+      user: this.user?.toJson(),
+      userQuizProgressResponse: this.userQuizProgressResponse?.map((x) => x.toJson()),
     };
   }
 }

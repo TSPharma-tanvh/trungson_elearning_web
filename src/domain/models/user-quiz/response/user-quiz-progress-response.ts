@@ -37,7 +37,7 @@ export class UserQuizProgressionResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UserQuizProgressionResponse {
+  static fromJson(json: any): UserQuizProgressionResponse {
     const dto = new UserQuizProgressionResponse();
     dto.id = json.id!;
     dto.userID = json.userID;
@@ -61,14 +61,14 @@ export class UserQuizProgressionResponse {
     dto.deviceName = json.deviceName;
     dto.os = json.os;
     dto.location = json.location;
-    dto.quiz = json.quiz ? QuizResponse.fromJSON(json.quiz) : undefined;
+    dto.quiz = json.quiz ? QuizResponse.fromJson(json.quiz) : undefined;
     dto.userAnswers = Array.isArray(json.userAnswers)
-      ? json.userAnswers.map((a: any) => UserAnswerResponse.fromJSON(a))
+      ? json.userAnswers.map((a: any) => UserAnswerResponse.fromJson(a))
       : undefined;
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       userID: this.userID,
@@ -92,8 +92,8 @@ export class UserQuizProgressionResponse {
       deviceName: this.deviceName,
       os: this.os,
       location: this.location,
-      quiz: this.quiz?.toJSON?.(),
-      userAnswers: this.userAnswers?.map((a) => a.toJSON?.()),
+      quiz: this.quiz?.toJson?.(),
+      userAnswers: this.userAnswers?.map((a) => a.toJson?.()),
     };
   }
 }

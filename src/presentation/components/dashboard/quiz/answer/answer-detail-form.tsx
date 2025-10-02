@@ -75,48 +75,32 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
         </CardContent>
       </Card>
 
-      {answer.userAnswerAnswersRelations.length > 0 && (
-        <Box sx={{ mb: 2 }}>
-          <CardHeader title={t('userAnswerRelations')} sx={{ pl: 1, pb: 1 }} />
-          {answer.userAnswerAnswersRelations.map((rel, index) => {
-            const relId = `${rel.answerID}-${rel.userAnswerID}`;
-            const isExpanded = expanded[relId] || false;
-
-            return (
-              <Card key={relId} sx={{ mb: 2 }}>
-                <CardHeader
-                  title={`${t('answer')} ${index + 1}`}
-                  action={
-                    <IconButton
-                      onClick={() => {
-                        toggleExpand(relId);
-                      }}
-                      sx={{
-                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.2s',
-                      }}
-                    >
-                      <ExpandMoreIcon />
-                    </IconButton>
-                  }
-                  sx={{ py: 1 }}
-                />
-                <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                  <CardContent>
-                    <Grid container spacing={2}>
-                      {renderField('answerID', rel.answerID)}
-                      {renderField('userAnswerID', rel.userAnswerID)}
-                      {renderField('userID', rel.userAnswer?.userID)}
-                      {renderField('quizID', rel.userAnswer?.quizID)}
-                      {renderField('questionID', rel.userAnswer?.questionID)}
-                      {renderField('userQuizProgressID', rel.userAnswer?.userQuizProgressID)}
-                    </Grid>
-                  </CardContent>
-                </Collapse>
-              </Card>
-            );
-          })}
-        </Box>
+      {answer.question && (
+        <Card sx={{ mb: 2 }}>
+          <CardHeader title={t('questionInformation')} />
+          <CardContent>
+            <Grid container spacing={2}>
+              {renderField('questionID', answer.question.id)}
+              {renderField('questionText', answer.question.questionText)}
+              {renderField(
+                'questionType',
+                answer.question.questionType
+                  ? t(answer.question.questionType.charAt(0).toLowerCase() + t(answer.question.questionType).slice(1))
+                  : ''
+              )}
+              {renderField('point', answer.question.point)}
+              {renderField('canShuffle', answer.question.canShuffle ? t('yes') : t('no'))}
+              {renderField(
+                'status',
+                answer.question.status
+                  ? t(answer.question.status.charAt(0).toLowerCase() + t(answer.question.status).slice(1))
+                  : ''
+              )}
+              {renderField('categoryID', answer.question.categoryId)}
+              {renderField('thumbnailID', answer.question.thumbnailId)}
+            </Grid>
+          </CardContent>
+        </Card>
       )}
 
       {previewImage ? (

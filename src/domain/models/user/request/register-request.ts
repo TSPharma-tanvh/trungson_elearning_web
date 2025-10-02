@@ -15,7 +15,7 @@ export class RegisterRequestModel {
     this.phoneNumber = init?.phoneNumber ?? '';
   }
 
-  toJSON() {
+  toJson() {
     return {
       userName: this.userName,
       password: this.password,

@@ -18,7 +18,7 @@ export class EnrollmentCriteriaCourseRelation {
       enrollmentCriteriaID: json.enrollmentCriteriaID,
       courseID: json.courseID,
       enrollmentCriteria: json.enrollmentCriteria
-        ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
+        ? EnrollmentCriteriaResponse.fromJson(json.enrollmentCriteria)
         : undefined,
     });
   }
@@ -28,7 +28,7 @@ export class EnrollmentCriteriaCourseRelation {
       id: this.id,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
       courseID: this.courseID,
-      enrollmentCriteria: this.enrollmentCriteria ? this.enrollmentCriteria.toJSON() : undefined,
+      enrollmentCriteria: this.enrollmentCriteria ? this.enrollmentCriteria.toJson() : undefined,
     };
   }
 }

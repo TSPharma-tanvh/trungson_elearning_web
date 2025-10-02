@@ -8,7 +8,7 @@ export class UserImportResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UserImportResponse {
+  static fromJson(json: any): UserImportResponse {
     return new UserImportResponse({
       username: json?.username ?? '',
       role: json?.role ?? '',
@@ -17,7 +17,7 @@ export class UserImportResponse {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       username: this.username,
       role: this.role,

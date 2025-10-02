@@ -22,7 +22,7 @@ export class GetCourseRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetCourseRequest {
+  static fromJson(json: any): GetCourseRequest {
     return new GetCourseRequest({
       pathID: json.pathID,
       name: json.name,
@@ -43,7 +43,7 @@ export class GetCourseRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       pathID: this.pathID,
       name: this.name,

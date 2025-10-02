@@ -22,7 +22,7 @@ export class QuestionResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): QuestionResponse {
+  static fromJson(json: any): QuestionResponse {
     const dto = new QuestionResponse();
     dto.id = json.id;
     dto.questionText = json.questionText;
@@ -34,16 +34,16 @@ export class QuestionResponse {
     dto.categoryId = json.categoryId;
     dto.thumbnailId = json.thumbnailId;
 
-    dto.category = json.category ? CategoryResponse.fromJSON(json.category) : undefined;
+    dto.category = json.category ? CategoryResponse.fromJson(json.category) : undefined;
     dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined;
     dto.fileQuestionRelation =
-      json.fileQuestionRelation?.map((f: any) => FileQuestionRelationResponse.fromJSON(f)) ?? [];
-    dto.answers = json.answers?.map((a: any) => AnswerResponse.fromJSON(a)) ?? [];
+      json.fileQuestionRelation?.map((f: any) => FileQuestionRelationResponse.fromJson(f)) ?? [];
+    dto.answers = json.answers?.map((a: any) => AnswerResponse.fromJson(a)) ?? [];
 
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       questionText: this.questionText,
@@ -54,10 +54,10 @@ export class QuestionResponse {
       status: this.status,
       categoryId: this.categoryId,
       thumbnailId: this.thumbnailId,
-      category: this.category?.toJSON(),
+      category: this.category?.toJson(),
       thumbnail: this.thumbnail?.toJson(),
-      fileQuestionRelation: this.fileQuestionRelation.map((f) => f.toJSON()),
-      answers: this.answers.map((a) => a.toJSON()),
+      fileQuestionRelation: this.fileQuestionRelation.map((f) => f.toJson()),
+      answers: this.answers.map((a) => a.toJson()),
     };
   }
 }

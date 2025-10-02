@@ -12,7 +12,7 @@ export class LessonRepoImpl implements LessonRepository {
   async getLessonListInfo(request: GetLessonRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.lessons.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;

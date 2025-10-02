@@ -50,14 +50,14 @@ export class EmployeeResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): EmployeeResponse {
+  static fromJson(json: any): EmployeeResponse {
     return new EmployeeResponse({
       ...json,
       photo: Array.isArray(json.photo) ? json.photo : undefined,
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       ...this,
       photo: this.photo,

@@ -37,13 +37,13 @@ export class UpdateQuizRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UpdateQuizRequest {
+  static fromJson(json: any): UpdateQuizRequest {
     const dto = new UpdateQuizRequest();
     Object.assign(dto, json);
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       lessonID: this.lessonID,

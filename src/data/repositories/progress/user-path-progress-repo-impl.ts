@@ -13,7 +13,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
   async getUserPathProgressListInfo(request: GetUserPathProgressRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userPathProgress.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;
@@ -45,7 +45,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
 
   async createUserPathProgress(request: CreateUserPathProgressRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.userPathProgress.create, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.userPathProgress.create, request.toJson());
 
       const apiResponse = response.data;
 
@@ -61,7 +61,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
 
   async updateUserPathProgress(request: UpdateUserPathProgressRequest): Promise<ApiResponse> {
     try {
-      const formData = request.toJSON();
+      const formData = request.toJson();
 
       const response = await customApiClient.put<ApiResponse>(apiEndpoints.userPathProgress.update, formData);
 
@@ -95,7 +95,7 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
 
   async enrollUserListToPath(request: EnrollUserListToPathRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.userPathProgress.enroll, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.userPathProgress.enroll, request.toJson());
 
       const apiResponse = response.data;
 

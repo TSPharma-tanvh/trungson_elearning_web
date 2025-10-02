@@ -24,7 +24,7 @@ export class FileClassQRRelationResponse {
       class: json.class ? ClassResponse.fromJson(json.class) : undefined,
       fileResources: json.fileResources ? FileResourcesResponse.fromJson(json.fileResources) : undefined,
       enrollmentCriteria: json.enrollmentCriteria
-        ? EnrollmentCriteriaResponse.fromJSON(json.enrollmentCriteria)
+        ? EnrollmentCriteriaResponse.fromJson(json.enrollmentCriteria)
         : undefined,
     });
   }
@@ -37,7 +37,7 @@ export class FileClassQRRelationResponse {
       enrollmentCriteriaId: this.enrollmentCriteriaId,
       class: this.class?.toJson(),
       fileResources: this.fileResources?.toJson(),
-      enrollmentCriteria: this.enrollmentCriteria?.toJSON(),
+      enrollmentCriteria: this.enrollmentCriteria?.toJson(),
     };
   }
 }

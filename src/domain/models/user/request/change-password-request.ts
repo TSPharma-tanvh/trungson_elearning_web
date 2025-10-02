@@ -11,7 +11,7 @@ export class ChangePasswordRequest {
     this.passwordConfirm = init?.passwordConfirm ?? '';
   }
 
-  static fromJSON(json: any): ChangePasswordRequest {
+  static fromJson(json: any): ChangePasswordRequest {
     return new ChangePasswordRequest({
       userId: json.userId,
       oldPassword: json.oldPassword,
@@ -20,7 +20,7 @@ export class ChangePasswordRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userId: this.userId,
       oldPassword: this.oldPassword,

@@ -21,7 +21,7 @@ export class EnrollUserListToPathRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): EnrollUserListToPathRequest {
+  static fromJson(json: any): EnrollUserListToPathRequest {
     return new EnrollUserListToPathRequest({
       userIDs: json.userIDs ?? [],
       pathID: json.pathID,
@@ -40,7 +40,7 @@ export class EnrollUserListToPathRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userIDs: this.userIDs,
       pathID: this.pathID,

@@ -13,7 +13,7 @@ export class QuizRepoImpl implements QuizRepository {
   async getQuizListInfo(request: GetQuizRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.quiz.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;

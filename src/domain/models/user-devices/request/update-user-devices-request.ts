@@ -14,7 +14,7 @@ export class UpdateUserDevicesRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UpdateUserDevicesRequest {
+  static fromJson(json: any): UpdateUserDevicesRequest {
     return new UpdateUserDevicesRequest({
       id: json.id,
       userID: json.userID,
@@ -29,7 +29,7 @@ export class UpdateUserDevicesRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       userID: this.userID,

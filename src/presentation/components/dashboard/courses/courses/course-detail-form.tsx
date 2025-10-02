@@ -61,9 +61,17 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {renderField('id', coursePath.id)}
             {renderField('name', coursePath.name)}
             {renderField('detail', coursePath.detail)}
-            {renderField('isRequired', coursePath.isRequired ? 'Yes' : 'No')}
-            {renderField('status', coursePath.status)}
-            {renderField('displayType', coursePath.displayType)}
+            {renderField('isRequired', coursePath.isRequired ? t('yes') : t('no'))}
+            {renderField(
+              'status',
+              coursePath.status ? t(coursePath.status?.charAt(0).toLowerCase() + t(coursePath.status).slice(1)) : ''
+            )}
+            {renderField(
+              'displayType',
+              coursePath.displayType
+                ? t(coursePath.displayType?.charAt(0).toLowerCase() + t(coursePath.displayType).slice(1))
+                : ''
+            )}
             {renderField('categoryId', coursePath.categoryID)}
             {renderField('thumbnailId', coursePath.thumbnailID)}
           </Grid>
@@ -112,7 +120,12 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                   {renderField('criteriaId', criteria.id)}
                   {renderField('name', criteria.name)}
                   {renderField('description', criteria.desc)}
-                  {renderField('targetType', criteria.targetType)}
+                  {renderField(
+                    'targetType',
+                    criteria.targetType
+                      ? t(criteria.targetType?.charAt(0).toLowerCase() + t(criteria.targetType).slice(1))
+                      : ''
+                  )}
                   {renderField('targetID', criteria.targetID)}
                   {renderField('targetLevelID', criteria.targetLevelID)}
                   {renderField('maxCapacity', criteria.maxCapacity)}
@@ -173,9 +186,14 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                   <Grid container spacing={2}>
                     {renderField('id', lesson.id)}
                     {renderField('detail', lesson.detail)}
-                    {renderField('enableAutoPlay', lesson.enablePlay ? 'Yes' : 'No')}
+                    {renderField('enableAutoPlay', lesson.enablePlay ? t('yes') : t('no'))}
                     {renderField('status', lesson.status)}
-                    {renderField('lessonType', lesson.lessonType)}
+                    {renderField(
+                      'lessonType',
+                      lesson.lessonType
+                        ? t(lesson.lessonType?.charAt(0).toLowerCase() + t(lesson.lessonType).slice(1))
+                        : ''
+                    )}
                     {renderField('enrollmentCriteriaID', lesson.enrollmentCriteriaID)}
                     {renderField('categoryID', lesson.categoryID)}
                     {renderField('thumbnailID', lesson.thumbnailID)}
@@ -366,10 +384,26 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {renderField('name', course.name)}
             {renderField('detail', course.detail)}
             {renderField('isRequired', course.isRequired ? t('yes') : t('no'))}
-            {renderField('courseType', course.courseType)}
-            {renderField('displayType', course.displayType)}
-            {renderField('disableStatus', course.disableStatus)}
-            {renderField('scheduleStatus', course.scheduleStatus)}
+            {renderField(
+              'courseType',
+              course.courseType ? t(course.courseType.charAt(0).toLowerCase() + t(course.courseType).slice(1)) : ''
+            )}
+            {renderField(
+              'displayType',
+              course.displayType ? t(course.displayType.charAt(0).toLowerCase() + t(course.displayType).slice(1)) : ''
+            )}
+            {renderField(
+              'disableStatus',
+              course.disableStatus
+                ? t(course.disableStatus.charAt(0).toLowerCase() + t(course.disableStatus).slice(1))
+                : ''
+            )}
+            {renderField(
+              'scheduleStatus',
+              course.scheduleStatus
+                ? t(course.scheduleStatus.charAt(0).toLowerCase() + t(course.scheduleStatus).slice(1))
+                : ''
+            )}
             {renderField('teacherId', course.teacherId)}
             {renderField('meetingLink', course.meetingLink)}
             {/* {renderField('enrollmentCriteriaId', course.enrollmentCriteria.id)} */}

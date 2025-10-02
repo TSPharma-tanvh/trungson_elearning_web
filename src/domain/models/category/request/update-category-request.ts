@@ -23,7 +23,7 @@ export class UpdateCategoryRequest {
     this.isDeleteOldThumbnail = data.isDeleteOldThumbnail;
   }
 
-  static fromJSON(json: any): UpdateCategoryRequest {
+  static fromJson(json: any): UpdateCategoryRequest {
     return new UpdateCategoryRequest({
       id: json.id,
       categoryName: json.categoryName,
@@ -36,7 +36,7 @@ export class UpdateCategoryRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       categoryName: this.categoryName,

@@ -23,7 +23,7 @@ export class UserAnswerResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UserAnswerResponse {
+  static fromJson(json: any): UserAnswerResponse {
     if (!json) {
       throw new Error('Invalid JSON for UserAnswerResponse');
     }
@@ -39,14 +39,14 @@ export class UserAnswerResponse {
       score: json.score,
       sessionID: json.sessionID,
       elapsedSeconds: json.elapsedSeconds,
-      question: json.question ? QuestionResponse.fromJSON(json.question) : undefined,
+      question: json.question ? QuestionResponse.fromJson(json.question) : undefined,
       selectedAnswers: json.selectedAnswers
         ? json.selectedAnswers.map((sa: any) => UserAnswerAnswerRelationResponse.fromJson(sa))
         : [],
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       userID: this.userID,
@@ -59,7 +59,7 @@ export class UserAnswerResponse {
       score: this.score,
       sessionID: this.sessionID,
       elapsedSeconds: this.elapsedSeconds,
-      question: this.question ? this.question.toJSON() : undefined,
+      question: this.question ? this.question.toJson() : undefined,
       selectedAnswers: this.selectedAnswers ? this.selectedAnswers.map((sa) => sa.toJson()) : [],
     };
   }

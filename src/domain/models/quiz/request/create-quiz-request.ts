@@ -35,13 +35,13 @@ export class CreateQuizRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): CreateQuizRequest {
+  static fromJson(json: any): CreateQuizRequest {
     const dto = new CreateQuizRequest();
     Object.assign(dto, json);
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       ...this,
     };

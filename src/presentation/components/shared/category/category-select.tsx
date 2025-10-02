@@ -309,7 +309,7 @@ export function CategorySelect({
         const cat: CategoryResponse = {
           id: detail.id ?? '',
           categoryName: detail.categoryName ?? '',
-          toJSON: () => ({
+          toJson: () => ({
             id: detail.id,
             categoryName: detail.categoryName,
           }),

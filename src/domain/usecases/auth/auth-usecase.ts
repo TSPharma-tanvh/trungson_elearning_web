@@ -17,7 +17,7 @@ export class SignInUseCase {
     }
     const result = await this.authRepo.login(request);
 
-    const loginResponse = LoginResponse.fromJSON(result.result);
+    const loginResponse = LoginResponse.fromJson(result.result);
 
     StoreLocalManager.saveIfValid(AppStrings.ACCESS_TOKEN, loginResponse.token);
     StoreLocalManager.saveIfValid(AppStrings.REFRESH_TOKEN, loginResponse.refreshToken);
@@ -25,7 +25,7 @@ export class SignInUseCase {
 
     // // Save entire user object if essential fields are valid
     // if (StoreLocalManager.isValid(result.token) && StoreLocalManager.isValid(result.userId)) {
-    //   StoreLocalManager.saveLocalData(AppStrings.USER_DATA, result.toJSON());
+    //   StoreLocalManager.saveLocalData(AppStrings.USER_DATA, result.toJson());
     // }
 
     return loginResponse;

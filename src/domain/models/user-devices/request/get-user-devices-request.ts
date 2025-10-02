@@ -19,7 +19,7 @@ export class GetUserDevicesRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetUserDevicesRequest {
+  static fromJson(json: any): GetUserDevicesRequest {
     return new GetUserDevicesRequest({
       userID: json.userID,
       deviceName: json.deviceName,
@@ -39,7 +39,7 @@ export class GetUserDevicesRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userID: this.userID,
       deviceName: this.deviceName,

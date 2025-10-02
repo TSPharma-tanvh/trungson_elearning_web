@@ -11,7 +11,7 @@ export class CreateUserLessonRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): CreateUserLessonRequest {
+  static fromJson(json: any): CreateUserLessonRequest {
     const dto = new CreateUserLessonRequest();
     dto.userID = json.userID;
     dto.lessonID = json.lessonID;
@@ -23,7 +23,7 @@ export class CreateUserLessonRequest {
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userID: this.userID,
       lessonID: this.lessonID,

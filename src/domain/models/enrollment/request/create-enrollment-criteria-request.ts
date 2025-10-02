@@ -21,7 +21,7 @@ export class CreateEnrollmentCriteriaRequest {
     this.targetPharmacyID = data.targetPharmacyID;
   }
 
-  static fromJSON(json: any): CreateEnrollmentCriteriaRequest {
+  static fromJson(json: any): CreateEnrollmentCriteriaRequest {
     return new CreateEnrollmentCriteriaRequest({
       name: json.name,
       desc: json.desc,
@@ -38,7 +38,7 @@ export class CreateEnrollmentCriteriaRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       name: this.name,
       desc: this.desc,

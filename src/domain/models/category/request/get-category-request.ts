@@ -10,7 +10,7 @@ export class GetCategoryRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetCategoryRequest {
+  static fromJson(json: any): GetCategoryRequest {
     return new GetCategoryRequest({
       searchText: json.searchText,
       category: json.category,
@@ -21,7 +21,7 @@ export class GetCategoryRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       searchText: this.searchText,
       category: this.category,

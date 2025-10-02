@@ -12,7 +12,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
   async getUserLessonProgressListInfo(request: GetUserLessonProgressRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userLessonProgress.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;
@@ -46,7 +46,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
     try {
       const response = await customApiClient.post<ApiResponse>(
         apiEndpoints.userLessonProgress.create,
-        request.toJSON()
+        request.toJson()
       );
 
       const apiResponse = response.data;
@@ -63,7 +63,7 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
 
   async updateUserLessonProgress(request: UpdateUserLessonRequest): Promise<ApiResponse> {
     try {
-      const formData = request.toJSON();
+      const formData = request.toJson();
 
       const response = await customApiClient.put<ApiResponse>(apiEndpoints.userLessonProgress.update, formData);
 

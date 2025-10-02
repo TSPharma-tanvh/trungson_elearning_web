@@ -19,7 +19,7 @@ export class ApiPaginationResponse<T = any> extends ApiResponse<T> {
     this.totalRecords = totalRecords;
   }
 
-  static fromJSON<T>(json: any): ApiPaginationResponse<T> {
+  static fromJson<T>(json: any): ApiPaginationResponse<T> {
     return new ApiPaginationResponse<T>(
       json.statusCode,
       json.message,
@@ -30,7 +30,7 @@ export class ApiPaginationResponse<T = any> extends ApiResponse<T> {
     );
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       statusCode: this.statusCode,
       message: this.message,

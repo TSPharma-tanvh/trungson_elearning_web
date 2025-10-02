@@ -18,7 +18,7 @@ export class QuizUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map((x) => QuizResponse.fromJSON(x));
+    const data = result.result.map((x) => QuizResponse.fromJson(x));
 
     return {
       quizzes: data,
@@ -35,7 +35,7 @@ export class QuizUsecase {
 
     const result = await this.courseRepo.getQuizById(id);
 
-    const userResponse = QuizResponse.fromJSON(result.result);
+    const userResponse = QuizResponse.fromJson(result.result);
 
     return userResponse;
   }

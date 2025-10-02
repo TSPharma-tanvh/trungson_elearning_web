@@ -1,4 +1,4 @@
-import { FileResourcesResponse } from "./file-resources-response";
+import { FileResourcesResponse } from './file-resources-response';
 
 export class FileQuizRelationResponse {
   id?: string;
@@ -10,7 +10,7 @@ export class FileQuizRelationResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): FileQuizRelationResponse {
+  static fromJson(json: any): FileQuizRelationResponse {
     return new FileQuizRelationResponse({
       id: json.id,
       quizId: json.quizId,
@@ -19,7 +19,7 @@ export class FileQuizRelationResponse {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       quizId: this.quizId,

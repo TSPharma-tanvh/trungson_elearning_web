@@ -25,7 +25,7 @@ export class GetQuizRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetQuizRequest {
+  static fromJson(json: any): GetQuizRequest {
     const dto = new GetQuizRequest();
     Object.assign(dto, json);
     dto.startDateFrom = json.startDateFrom ? new Date(json.startDateFrom) : undefined;
@@ -35,7 +35,7 @@ export class GetQuizRequest {
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       ...this,
       startDateFrom: this.startDateFrom?.toISOString(),

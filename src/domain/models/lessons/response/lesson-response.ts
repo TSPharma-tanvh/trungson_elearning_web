@@ -15,7 +15,7 @@ export class LessonResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): LessonResponse {
+  static fromJson(json: any): LessonResponse {
     return new LessonResponse({
       id: json.id,
       courseID: json.courseID,
@@ -31,7 +31,7 @@ export class LessonResponse {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       courseID: this.courseID,

@@ -20,7 +20,7 @@ export class UserAnswerResponseDetail {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UserAnswerResponseDetail {
+  static fromJson(json: any): UserAnswerResponseDetail {
     return new UserAnswerResponseDetail({
       id: json.id,
       userID: json.userID,
@@ -34,11 +34,11 @@ export class UserAnswerResponseDetail {
       sessionID: json.sessionID,
       elapsedSeconds: json.elapsedSeconds,
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
-      selectedAnswers: json.selectedAnswers?.map((x: any) => UserAnswerAnswerRelationDetailResponse.fromJSON(x)) ?? [],
+      selectedAnswers: json.selectedAnswers?.map((x: any) => UserAnswerAnswerRelationDetailResponse.fromJson(x)) ?? [],
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       userID: this.userID,
@@ -52,7 +52,7 @@ export class UserAnswerResponseDetail {
       sessionID: this.sessionID,
       elapsedSeconds: this.elapsedSeconds,
       thumbnail: this.thumbnail?.toJson(),
-      selectedAnswers: this.selectedAnswers.map((x) => x.toJSON()),
+      selectedAnswers: this.selectedAnswers.map((x) => x.toJson()),
     };
   }
 }

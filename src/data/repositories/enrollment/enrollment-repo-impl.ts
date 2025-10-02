@@ -12,7 +12,7 @@ export class EnrollmentRepoImpl implements EnrollmentCriteriaRepository {
   async getEnrollmentList(request: GetEnrollmentCriteriaRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.enrollment.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;
@@ -44,7 +44,7 @@ export class EnrollmentRepoImpl implements EnrollmentCriteriaRepository {
 
   async createEnrollment(request: CreateEnrollmentCriteriaRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.enrollment.create, request.toJSON());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.enrollment.create, request.toJson());
 
       const apiResponse = response.data;
 
@@ -60,7 +60,7 @@ export class EnrollmentRepoImpl implements EnrollmentCriteriaRepository {
 
   async updateEnrollment(request: UpdateEnrollmentCriteriaRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.put<ApiResponse>(apiEndpoints.enrollment.update, request.toJSON());
+      const response = await customApiClient.put<ApiResponse>(apiEndpoints.enrollment.update, request.toJson());
 
       const apiResponse = response.data;
 

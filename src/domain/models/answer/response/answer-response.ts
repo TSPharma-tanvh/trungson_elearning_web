@@ -10,7 +10,7 @@ export class AnswerResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): AnswerResponse {
+  static fromJson(json: any): AnswerResponse {
     const dto = new AnswerResponse();
     dto.id = json.id;
     dto.questionID = json.questionID;
@@ -21,7 +21,7 @@ export class AnswerResponse {
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       questionID: this.questionID,

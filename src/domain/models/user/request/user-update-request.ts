@@ -35,7 +35,7 @@ export class UpdateUserInfoRequest {
     }
   }
 
-  static fromJSON(json: any): UpdateUserInfoRequest {
+  static fromJson(json: any): UpdateUserInfoRequest {
     return new UpdateUserInfoRequest({
       userName: json.userName,
       email: json.email,
@@ -54,7 +54,7 @@ export class UpdateUserInfoRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userName: this.userName,
       email: this.email,

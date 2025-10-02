@@ -13,11 +13,11 @@ export class GetAnswerRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetAnswerRequest {
+  static fromJson(json: any): GetAnswerRequest {
     return new GetAnswerRequest(json);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       questionID: this.questionID,
       answerText: this.answerText,

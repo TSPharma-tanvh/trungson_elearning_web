@@ -12,7 +12,7 @@ export class QuestionRepoImpl implements QuestionRepository {
   async getQuestionListInfo(request: GetQuestionRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.questions.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;

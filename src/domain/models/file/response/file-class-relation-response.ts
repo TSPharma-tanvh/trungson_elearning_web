@@ -1,4 +1,4 @@
-import { FileResourcesResponse } from "./file-resources-response";
+import { FileResourcesResponse } from './file-resources-response';
 
 export class FileClassRelationResponse {
   id?: string;

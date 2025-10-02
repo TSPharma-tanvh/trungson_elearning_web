@@ -23,7 +23,7 @@ export class UserUsecase {
 
     const result = await this.userRepo.getUserDetailInfo(userId);
 
-    const userResponse = UserResponse.fromJSON(result.result);
+    const userResponse = UserResponse.fromJson(result.result);
 
     return userResponse;
   }
@@ -35,7 +35,7 @@ export class UserUsecase {
 
     const result = await this.userRepo.getUserDetailInfo(id);
 
-    const userResponse = UserResponse.fromJSON(result.result);
+    const userResponse = UserResponse.fromJson(result.result);
 
     return userResponse;
   }
@@ -57,8 +57,8 @@ export class UserUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    // const data = result.result.map(UserResponse.fromJSON);
-    const data = result.result.map((x) => UserResponse.fromJSON(x));
+    // const data = result.result.map(UserResponse.fromJson);
+    const data = result.result.map((x) => UserResponse.fromJson(x));
 
     return {
       users: data,
@@ -93,6 +93,6 @@ export class UserUsecase {
       throw new Error(apiResponse?.message || 'Failed to import users');
     }
 
-    return ImportUsersResponse.fromJSON(apiResponse.result);
+    return ImportUsersResponse.fromJson(apiResponse.result);
   }
 }

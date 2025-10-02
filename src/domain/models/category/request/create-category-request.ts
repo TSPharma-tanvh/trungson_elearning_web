@@ -21,7 +21,7 @@ export class CreateCategoryRequest {
     this.isDeleteOldThumbnail = data.isDeleteOldThumbnail;
   }
 
-  static fromJSON(json: any): CreateCategoryRequest {
+  static fromJson(json: any): CreateCategoryRequest {
     return new CreateCategoryRequest({
       categoryName: json.categoryName,
       description: json.description,
@@ -33,7 +33,7 @@ export class CreateCategoryRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       categoryName: this.categoryName,
       description: this.description,

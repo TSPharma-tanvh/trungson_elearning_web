@@ -9,11 +9,11 @@ export class LoginResponse {
     this.userId = userId;
   }
 
-  static fromJSON(json: any): LoginResponse {
+  static fromJson(json: any): LoginResponse {
     return new LoginResponse(json.token, json.refreshToken, json.userId);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       token: this.token,
       refreshToken: this.refreshToken,

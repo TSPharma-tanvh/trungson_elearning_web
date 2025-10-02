@@ -8,16 +8,16 @@ export class ImportUsersResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): ImportUsersResponse {
+  static fromJson(json: any): ImportUsersResponse {
     return new ImportUsersResponse({
-      successes: Array.isArray(json?.successes) ? json.successes.map((x: any) => UserImportResponse.fromJSON(x)) : [],
+      successes: Array.isArray(json?.successes) ? json.successes.map((x: any) => UserImportResponse.fromJson(x)) : [],
       errors: Array.isArray(json?.errors) ? json.errors : [],
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
-      successes: this.successes.map((x) => x.toJSON()),
+      successes: this.successes.map((x) => x.toJson()),
       errors: this.errors,
     };
   }

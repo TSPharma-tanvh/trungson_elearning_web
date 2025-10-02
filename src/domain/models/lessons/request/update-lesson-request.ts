@@ -29,7 +29,7 @@ export class UpdateLessonRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UpdateLessonRequest {
+  static fromJson(json: any): UpdateLessonRequest {
     return new UpdateLessonRequest({
       id: json.id,
       courseID: json.courseID,
@@ -55,7 +55,7 @@ export class UpdateLessonRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       courseID: this.courseID,
@@ -91,6 +91,7 @@ export class UpdateLessonRequest {
     if (this.enablePlay !== undefined) form.append('EnablePlay', this.enablePlay.toString());
     if (this.status !== undefined) form.append('Status', this.status.toString());
     if (this.lessonType !== undefined) form.append('LessonType', this.lessonType.toString());
+
     if (this.quizIDs) form.append('QuizIDs', this.quizIDs);
     if (this.categoryID) form.append('CategoryID', this.categoryID);
     if (this.categoryEnum) form.append('CategoryEnum', this.categoryEnum);

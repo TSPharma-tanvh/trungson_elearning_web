@@ -44,7 +44,7 @@ export class AttendanceRecordDetailResponse {
       statusCheckIn: json.statusCheckIn,
       statusCheckOut: json.statusCheckOut,
       class: json.class ? ClassResponse.fromJson(json.class) : undefined,
-      user: json.user ? UserResponse.fromJSON(json.user) : undefined,
+      user: json.user ? UserResponse.fromJson(json.user) : undefined,
       enrollment: json.enrollment ? EnrollmentResponse.fromJson(json.enrollment) : undefined,
     });
   }
@@ -65,7 +65,7 @@ export class AttendanceRecordDetailResponse {
       statusCheckIn: this.statusCheckIn,
       statusCheckOut: this.statusCheckOut,
       class: this.class?.toJson(),
-      user: this.user?.toJSON(),
+      user: this.user?.toJson(),
       enrollment: this.enrollment?.toJson(),
     };
   }

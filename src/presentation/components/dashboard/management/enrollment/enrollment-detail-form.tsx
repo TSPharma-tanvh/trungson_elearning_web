@@ -71,8 +71,18 @@ function EnrollmentCriteriaDetails({
             {renderField('detail', enrollment.path.detail)}
             {renderField('isRequired', enrollment.path.isRequired ? t('yes') : t('no'))}
 
-            {renderField('status', enrollment.path.status)}
-            {renderField('displayType', enrollment.path.displayType)}
+            {renderField(
+              'status',
+              enrollment.path.status
+                ? t(enrollment.path.status.charAt(0).toLowerCase() + t(enrollment.path.status).slice(1))
+                : ''
+            )}
+            {renderField(
+              'displayType',
+              enrollment.path.displayType
+                ? t(enrollment.path.displayType.charAt(0).toLowerCase() + t(enrollment.path.displayType).slice(1))
+                : ''
+            )}
             {renderField('categoryId', enrollment.path.categoryID)}
             {renderField('thumbnailId', enrollment.path.thumbnailID)}
           </Grid>
@@ -92,9 +102,25 @@ function EnrollmentCriteriaDetails({
             {renderField('courseId', enrollment.courses?.id)}
             {renderField('name', enrollment.courses?.name)}
             {renderField('detail', enrollment.courses?.detail)}
-            {renderField('isRequired', enrollment.courses?.isRequired)}
-            {renderField('disableStatus', enrollment.courses?.disableStatus)}
-            {renderField('scheduleStatus', enrollment.courses?.scheduleStatus)}
+            {renderField('isRequired', enrollment.courses?.isRequired ? t('yes') : t('no'))}
+            {renderField(
+              'disableStatus',
+              enrollment.courses?.disableStatus
+                ? t(
+                    enrollment.courses?.disableStatus?.toString().charAt(0).toLowerCase() +
+                      t(enrollment.courses?.disableStatus.toString() ?? '').slice(1)
+                  )
+                : ''
+            )}
+            {renderField(
+              'scheduleStatus',
+              enrollment.courses?.scheduleStatus
+                ? t(
+                    enrollment.courses?.scheduleStatus?.toString().charAt(0).toLowerCase() +
+                      t(enrollment.courses?.scheduleStatus.toString() ?? '').slice(1)
+                  )
+                : ''
+            )}
           </Grid>
         </CardContent>
       </Card>
@@ -155,9 +181,17 @@ function EnrollmentCriteriaDetails({
             )}
             {renderField('totalScore', enrollment.quiz?.totalScore)}
             {renderField('canStartOver', enrollment.quiz?.canStartOver)}
-            {renderField('isRequired', enrollment.quiz?.isRequired)}
-            {renderField('isAutoSubmitted', enrollment.quiz?.isAutoSubmitted)}
-            {renderField('type', enrollment.quiz?.type)}
+            {renderField('isRequired', enrollment.quiz?.isRequired ? t('yes') : t('no'))}
+            {renderField('isAutoSubmitted', enrollment.quiz?.isAutoSubmitted ? t('yes') : t('no'))}
+            {renderField(
+              'type',
+              enrollment.quiz?.type
+                ? t(
+                    enrollment.quiz?.type.toString().charAt(0).toLowerCase() +
+                      t(enrollment.quiz?.type.toString()).slice(1)
+                  )
+                : ''
+            )}
             {renderField('time', enrollment.quiz?.time)}
             {renderField('scoreToPass', enrollment.quiz?.scoreToPass)}
             {renderField('totalQuestion', enrollment.quiz?.totalQuestion)}
@@ -309,8 +343,21 @@ function EnrollmentCriteriaDetails({
             {renderField('id', enrollment.id)}
             {renderField('name', enrollment.name)}
             {renderField('desc', enrollment.desc)}
-            {renderField('enrollmentCriteriaType', enrollment.enrollmentCriteriaType)}
-            {renderField('enrollmentStatus', enrollment.enrollmentStatus)}
+            {renderField(
+              'enrollmentCriteriaType',
+              enrollment.enrollmentCriteriaType
+                ? t(
+                    enrollment.enrollmentCriteriaType.charAt(0).toLowerCase() +
+                      t(enrollment.enrollmentCriteriaType).slice(1)
+                  )
+                : ''
+            )}
+            {renderField(
+              'enrollmentStatus',
+              enrollment.enrollmentStatus
+                ? t(enrollment.enrollmentStatus.charAt(0).toLowerCase() + t(enrollment.enrollmentStatus).slice(1))
+                : ''
+            )}
             {renderField('maxCapacity', enrollment.maxCapacity)}
             {renderField('targetLevelID', enrollment.targetLevelID)}
             {renderField('pathID', enrollment.pathID)}

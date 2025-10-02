@@ -11,21 +11,21 @@ export class UserAnswerAnswerRelationDetailResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): UserAnswerAnswerRelationDetailResponse {
+  static fromJson(json: any): UserAnswerAnswerRelationDetailResponse {
     return new UserAnswerAnswerRelationDetailResponse({
       answerID: json.answerID,
       userAnswerID: json.userAnswerID,
-      answer: json.answer ? AnswerResponse.fromJSON(json.answer) : undefined,
-      userAnswer: json.userAnswer ? UserAnswerResponse.fromJSON(json.userAnswer) : undefined,
+      answer: json.answer ? AnswerResponse.fromJson(json.answer) : undefined,
+      userAnswer: json.userAnswer ? UserAnswerResponse.fromJson(json.userAnswer) : undefined,
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       answerID: this.answerID,
       userAnswerID: this.userAnswerID,
-      answer: this.answer?.toJSON(),
-      userAnswer: this.userAnswer?.toJSON(),
+      answer: this.answer?.toJson(),
+      userAnswer: this.userAnswer?.toJson(),
     };
   }
 }

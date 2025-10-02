@@ -13,7 +13,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
   async getUserCourseProgressListInfo(request: GetUserCourseProgressRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.userCourseProgress.getAll, {
-        params: request.toJSON(),
+        params: request.toJson(),
       });
 
       const apiResponse = response.data;
@@ -47,7 +47,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
     try {
       const response = await customApiClient.post<ApiResponse>(
         apiEndpoints.userCourseProgress.create,
-        request.toJSON()
+        request.toJson()
       );
 
       const apiResponse = response.data;
@@ -64,7 +64,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
 
   async updateUserCourseProgress(request: UpdateUserCourseProgressRequest): Promise<ApiResponse> {
     try {
-      const formData = request.toJSON();
+      const formData = request.toJson();
 
       const response = await customApiClient.put<ApiResponse>(apiEndpoints.userCourseProgress.update, formData);
 
@@ -99,7 +99,7 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
     try {
       const response = await customApiClient.post<ApiResponse>(
         apiEndpoints.userCourseProgress.enroll,
-        request.toJSON()
+        request.toJson()
       );
 
       const apiResponse = response.data;

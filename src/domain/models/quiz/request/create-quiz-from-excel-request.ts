@@ -16,7 +16,7 @@ export class CreateQuizFromExcelRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): CreateQuizFromExcelRequest {
+  static fromJson(json: any): CreateQuizFromExcelRequest {
     const dto = new CreateQuizFromExcelRequest();
     Object.assign(dto, json);
     return dto;

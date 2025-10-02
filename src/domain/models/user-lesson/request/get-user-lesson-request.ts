@@ -15,7 +15,7 @@ export class GetUserLessonProgressRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetUserLessonProgressRequest {
+  static fromJson(json: any): GetUserLessonProgressRequest {
     const dto = new GetUserLessonProgressRequest();
     dto.userID = json.userID;
     dto.lessonID = json.lessonID;
@@ -31,7 +31,7 @@ export class GetUserLessonProgressRequest {
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userID: this.userID,
       lessonID: this.lessonID,

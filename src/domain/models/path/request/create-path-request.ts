@@ -20,7 +20,7 @@ export class CreateCoursePathRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): CreateCoursePathRequest {
+  static fromJson(json: any): CreateCoursePathRequest {
     return new CreateCoursePathRequest({
       name: json.name,
       detail: json.detail,
@@ -38,7 +38,7 @@ export class CreateCoursePathRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       name: this.name,
       detail: this.detail,

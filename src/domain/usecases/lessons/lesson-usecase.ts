@@ -17,8 +17,8 @@ export class LessonUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    // const data = result.result.map(LessonDetailResponse.fromJSON);
-    const data = result.result.map((x) => LessonDetailResponse.fromJSON(x));
+    // const data = result.result.map(LessonDetailResponse.fromJson);
+    const data = result.result.map((x) => LessonDetailResponse.fromJson(x));
 
     return {
       Lessons: data,
@@ -35,7 +35,7 @@ export class LessonUsecase {
 
     const result = await this.lessonRepo.getLessonById(id);
 
-    const userResponse = LessonDetailResponse.fromJSON(result.result);
+    const userResponse = LessonDetailResponse.fromJson(result.result);
 
     return userResponse;
   }

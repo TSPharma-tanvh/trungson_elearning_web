@@ -13,7 +13,7 @@ export class GetUserRequest {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): GetUserRequest {
+  static fromJson(json: any): GetUserRequest {
     return new GetUserRequest({
       userId: json?.userId,
       userName: json?.userName,
@@ -27,7 +27,7 @@ export class GetUserRequest {
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       userId: this.userId,
       userName: this.userName,
@@ -48,7 +48,10 @@ export class GetUserRequest {
     if (this.email) form.append('email', this.email);
     if (this.firstName) form.append('firstName', this.firstName);
     if (this.lastName) form.append('lastName', this.lastName);
-    if (this.roles?.length) this.roles.forEach((role) => { form.append('roles', role); });
+    if (this.roles?.length)
+      this.roles.forEach((role) => {
+        form.append('roles', role);
+      });
     if (this.searchTerm) form.append('searchTerm', this.searchTerm);
     form.append('pageNumber', String(this.pageNumber));
     form.append('pageSize', String(this.pageSize));

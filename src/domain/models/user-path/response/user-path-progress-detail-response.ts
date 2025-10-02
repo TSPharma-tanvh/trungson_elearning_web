@@ -28,31 +28,31 @@ export class UserPathProgressDetailResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(data: any): UserPathProgressDetailResponse {
+  static fromJson(data: any): UserPathProgressDetailResponse {
     return new UserPathProgressDetailResponse({
       ...data,
       coursePath: data.coursePath ? CoursePathResponse.fromJson(data.coursePath) : undefined,
-      user: data.user ? UserDetailResponse.fromJSON(data.user) : undefined,
+      user: data.user ? UserDetailResponse.fromJson(data.user) : undefined,
       userCourseProgressResponse: Array.isArray(data.userCourseProgressResponse)
-        ? data.userCourseProgressResponse.map((x: any) => UserCourseProgressResponse.fromJSON(x))
+        ? data.userCourseProgressResponse.map((x: any) => UserCourseProgressResponse.fromJson(x))
         : [],
       userLessonProgressResponse: Array.isArray(data.userLessonProgressResponse)
-        ? data.userLessonProgressResponse.map((x: any) => UserLessonProgressDetailResponse.fromJSON(x))
+        ? data.userLessonProgressResponse.map((x: any) => UserLessonProgressDetailResponse.fromJson(x))
         : [],
       userQuizProgressResponse: Array.isArray(data.userQuizProgressResponse)
-        ? data.userQuizProgressResponse.map((x: any) => UserQuizProgressionResponse.fromJSON(x))
+        ? data.userQuizProgressResponse.map((x: any) => UserQuizProgressionResponse.fromJson(x))
         : [],
     });
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       ...this,
       coursePath: this.coursePath?.toJson(),
-      user: this.user?.toJSON(),
-      userCourseProgressResponse: this.userCourseProgressResponse?.map((x) => x.toJSON()),
-      userLessonProgressResponse: this.userLessonProgressResponse?.map((x) => x.toJSON()),
-      userQuizProgressResponse: this.userQuizProgressResponse?.map((x) => x.toJSON()),
+      user: this.user?.toJson(),
+      userCourseProgressResponse: this.userCourseProgressResponse?.map((x) => x.toJson()),
+      userLessonProgressResponse: this.userLessonProgressResponse?.map((x) => x.toJson()),
+      userQuizProgressResponse: this.userQuizProgressResponse?.map((x) => x.toJson()),
     };
   }
 }

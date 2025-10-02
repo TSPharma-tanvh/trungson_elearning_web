@@ -16,7 +16,7 @@ export class EmployeeUsecase {
       throw new Error('Failed to load user list.');
     }
 
-    const data = result.result.map((x) => EmployeeResponse.fromJSON(x));
+    const data = result.result.map((x) => EmployeeResponse.fromJson(x));
 
     return {
       employees: data,
@@ -33,7 +33,7 @@ export class EmployeeUsecase {
 
     const result = await this.courseRepo.getEmployeeById(id);
 
-    const userResponse = EmployeeResponse.fromJSON(result.result);
+    const userResponse = EmployeeResponse.fromJson(result.result);
 
     return userResponse;
   }

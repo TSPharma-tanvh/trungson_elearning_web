@@ -18,11 +18,11 @@ export class PermissionResponse {
     return parts.length > 1 ? parts[1] : undefined;
   }
 
-  static fromJSON(json: any): PermissionResponse {
+  static fromJson(json: any): PermissionResponse {
     return new PermissionResponse(json.name, json.value, json.groupName, json.description);
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       name: this.name,
       value: this.value,

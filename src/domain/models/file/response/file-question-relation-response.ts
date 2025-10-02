@@ -10,7 +10,7 @@ export class FileQuestionRelationResponse {
     Object.assign(this, init);
   }
 
-  static fromJSON(json: any): FileQuestionRelationResponse {
+  static fromJson(json: any): FileQuestionRelationResponse {
     const dto = new FileQuestionRelationResponse();
     dto.id = json.id;
     dto.questionId = json.questionId;
@@ -19,7 +19,7 @@ export class FileQuestionRelationResponse {
     return dto;
   }
 
-  toJSON(): any {
+  toJson(): any {
     return {
       id: this.id,
       questionId: this.questionId,
