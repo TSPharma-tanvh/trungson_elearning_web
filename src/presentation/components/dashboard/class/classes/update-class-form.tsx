@@ -369,17 +369,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 disabled={false}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
-                label={t('classType')}
-                value={formData.classType ?? ''}
-                onChange={(value) => {
-                  handleChange('classType', value);
-                }}
-                disabled={isSubmitting}
-                options={classTypeOptions}
-              />
-            </Grid>
+
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('scheduleStatus')}
@@ -403,6 +393,33 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                 disabled={isSubmitting}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown
+                label={t('classType')}
+                value={formData.classType ?? ''}
+                onChange={(value) => {
+                  handleChange('classType', value);
+                }}
+                disabled={isSubmitting}
+                options={classTypeOptions}
+              />
+            </Grid>
+
+            {formData.classType === LearningModeEnum.Online && (
+              <Grid item xs={12}>
+                <CustomTextField
+                  label={t('meetingLink')}
+                  value={formData.meetingLink}
+                  onChange={(val) => {
+                    handleChange('meetingLink', val);
+                  }}
+                  disabled={false}
+                  sx={{ '& .MuiInputBase-root': { height: fullScreen ? '100%' : 'auto' } }}
+                />
+              </Grid>
+            )}
+
             <Grid item xs={12}>
               <EnrollmentMultiSelect
                 enrollmentUsecase={enrollUsecase}

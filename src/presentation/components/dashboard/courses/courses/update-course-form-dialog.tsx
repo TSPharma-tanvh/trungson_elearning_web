@@ -314,7 +314,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <CustomSelectDropDown<LearningModeEnum>
                 label={t('courseType')}
                 value={formData.courseType ?? ''}
@@ -351,7 +351,6 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                   handleChange('lessonIds', value.join(','));
                 }}
                 disabled={isSubmitting}
-                pathID={formData.id}
               />
             </Grid>
 

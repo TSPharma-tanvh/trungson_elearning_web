@@ -98,7 +98,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
 
         {/* Schedule status */}
         <CustomSelectFilter<ScheduleStatusEnum>
-          label={t('status')}
+          label={t('scheduleStatus')}
           value={scheduleStatus}
           onChange={(val) => {
             setScheduleStatus(val);

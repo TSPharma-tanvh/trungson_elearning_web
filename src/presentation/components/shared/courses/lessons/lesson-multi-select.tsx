@@ -52,7 +52,6 @@ interface LessonMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'valu
   onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
-  pathID?: string;
 }
 
 const filterOptions = {

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -12,6 +13,9 @@ import { useTranslation } from 'react-i18next';
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
+import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
+import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
 
 interface CreateCourseProps {
   disabled?: boolean;
@@ -23,6 +27,8 @@ interface CreateCourseProps {
 
 export function CreateCourseDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateCourseProps) {
   const { t } = useTranslation();
+  const { categoryUsecase, lessonUsecase, enrollUsecase, fileUsecase, classTeacherUsecase } = useDI();
+
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
 
@@ -173,7 +179,17 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
+              <LessonMultiSelectDialog
+                lessonUsecase={lessonUsecase}
+                value={form.lessonIds ? form.lessonIds.split(',').filter((id) => id) : []}
+                onChange={(value: string[]) => {
+                  handleChange('lessonIds', value.join(','));
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <CustomSelectDropDown<LearningModeEnum>
                 label={t('courseType')}
                 value={form.courseType}
@@ -201,6 +217,27 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                 />
               </Grid>
             )}
+
+            <Grid item xs={12}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={form.categoryID}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
+                categoryEnum={CategoryEnum.Course}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <ClassTeacherSelectDialog
+                classUsecase={classTeacherUsecase}
+                value={form.teacherID ?? ''}
+                onChange={(value) => {
+                  handleChange('teacherID', value);
+                }}
+              />
+            </Grid>
 
             <Grid item xs={12}>
               <CustomButton

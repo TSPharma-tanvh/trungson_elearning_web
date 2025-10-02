@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateClassRequest } from '@/domain/models/class/request/create-class-request';
+import { LearningModeEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -19,6 +20,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
+import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
 interface CreateClassProps {
@@ -77,6 +79,11 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
       window.removeEventListener('resize', updateRows);
     };
   }, [fullScreen]);
+
+  const classTypeOptions = [
+    { value: LearningModeEnum.Online, label: 'online' },
+    { value: LearningModeEnum.Offline, label: 'offline' },
+  ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -163,6 +170,31 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
               disabled={disabled}
             />
           </Grid> */}
+
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDown
+              label={t('classType')}
+              value={form.classType ?? ''}
+              onChange={(value) => {
+                handleChange('classType', value);
+              }}
+              options={classTypeOptions}
+            />
+          </Grid>
+
+          {form.classType === LearningModeEnum.Online && (
+            <Grid item xs={12}>
+              <CustomTextField
+                label={t('meetingLink')}
+                value={form.meetingLink}
+                onChange={(val) => {
+                  handleChange('meetingLink', val);
+                }}
+                disabled={false}
+                sx={{ '& .MuiInputBase-root': { height: fullScreen ? '100%' : 'auto' } }}
+              />
+            </Grid>
+          )}
 
           <Grid item xs={12} sm={6}>
             <FormControlLabel
