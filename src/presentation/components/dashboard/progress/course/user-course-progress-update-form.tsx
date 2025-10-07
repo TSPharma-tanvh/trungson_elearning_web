@@ -169,9 +169,9 @@ export function UpdateUserCourseProgressFormDialog({
               <CustomDateTimePicker
                 label={t('actualStartDate')}
                 value={formData.actualStartDate}
-                onChange={(value) => handleChange('actualStartDate', value)}
+                onChange={(value) => { handleChange('actualStartDate', value); }}
                 disabled={false}
-                allowClear={true}
+                allowClear
               />
             </Grid>
 
@@ -179,9 +179,9 @@ export function UpdateUserCourseProgressFormDialog({
               <CustomDateTimePicker
                 label={t('actualEndDate')}
                 value={formData.actualEndDate}
-                onChange={(value) => handleChange('actualEndDate', value)}
+                onChange={(value) => { handleChange('actualEndDate', value); }}
                 disabled={false}
-                allowClear={true}
+                allowClear
               />
             </Grid>
 

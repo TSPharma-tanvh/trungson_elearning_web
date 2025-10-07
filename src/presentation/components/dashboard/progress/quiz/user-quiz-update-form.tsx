@@ -176,7 +176,10 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('startTime')}
                 value={formData.startTime ? DateTimeUtils.formatISODateToString(formData.startTime) : undefined}
                 onChange={(value) => {
-                  handleChange('startTime', value != null ? DateTimeUtils.formatStringToDateTime(value) : undefined);
+                  handleChange(
+                    'startTime',
+                    value !== undefined ? DateTimeUtils.formatStringToDateTime(value) : undefined
+                  );
                 }}
                 disabled={false}
               />
@@ -186,7 +189,10 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('endTime')}
                 value={formData.endTime ? DateTimeUtils.formatISODateToString(formData.endTime) : undefined}
                 onChange={(value) => {
-                  handleChange('endTime', value != null ? DateTimeUtils.formatStringToDateTime(value) : undefined);
+                  handleChange(
+                    'endTime',
+                    value !== undefined ? DateTimeUtils.formatStringToDateTime(value) : undefined
+                  );
                 }}
                 disabled={false}
               />
@@ -197,10 +203,13 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('startedAt')}
                 value={formData.startedAt ? DateTimeUtils.formatISODateToString(formData.startedAt) : undefined}
                 onChange={(value) => {
-                  handleChange('startedAt', value != null ? DateTimeUtils.formatStringToDateTime(value) : undefined);
+                  handleChange(
+                    'startedAt',
+                    value !== undefined ? DateTimeUtils.formatStringToDateTime(value) : undefined
+                  );
                 }}
                 disabled={false}
-                allowClear={true}
+                allowClear
               />
             </Grid>
 
@@ -209,10 +218,13 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('completedAt')}
                 value={formData.completedAt ? DateTimeUtils.formatISODateToString(formData.completedAt) : undefined}
                 onChange={(value) => {
-                  handleChange('completedAt', value != null ? DateTimeUtils.formatStringToDateTime(value) : undefined);
+                  handleChange(
+                    'completedAt',
+                    value !== undefined ? DateTimeUtils.formatStringToDateTime(value) : undefined
+                  );
                 }}
                 disabled={false}
-                allowClear={true}
+                allowClear
               />
             </Grid>
 

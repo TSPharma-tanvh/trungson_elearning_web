@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { ApiResponse } from '@/domain/models/core/api-response';
 import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
@@ -23,7 +22,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
+import { Image as ImageIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -37,7 +36,7 @@ import { CustomTextField } from '../../../core/text-field/custom-textfield';
 
 interface CreateLessonFormProps {
   disabled?: boolean;
-  onSubmit: (data: CreateLessonRequest) => void;
+  onSubmit: (data: CreateLessonRequest) => Promise<void> | void;
   loading?: boolean;
   open: boolean;
   onClose: () => void;
@@ -58,7 +57,6 @@ export function CreateLessonDialog({
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(null);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
   const [videoSource, setVideoSource] = useState<'upload' | 'select'>('select');
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);

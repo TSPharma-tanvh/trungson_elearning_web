@@ -116,64 +116,10 @@ export function UpdateAttendanceRecordsFormDialog({
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
-                label={t('checkInTime')}
-                value={formData.checkInTime ? DateTimeUtils.formatISODateToString(formData.checkInTime) : undefined}
-                onChange={(value) => {
-                  handleChange('checkInTime', DateTimeUtils.formatStringToDateTime(value));
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<string>
-                label={t('statusCheckIn')}
-                value={formData.statusCheckIn ?? ''}
-                onChange={(val) => {
-                  handleChange('statusCheckIn', val ?? '');
-                }}
-                disabled={false}
-                options={[
-                  { value: CheckinTimeEnum[CheckinTimeEnum.Absent], label: 'absent' },
-                  { value: CheckinTimeEnum[CheckinTimeEnum.OnTime], label: 'onTime' },
-                  { value: CheckinTimeEnum[CheckinTimeEnum.Late], label: 'late' },
-                ]}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
-                label={t('checkOutTime')}
-                value={formData.checkOutTime ? DateTimeUtils.formatISODateToString(formData.checkOutTime) : undefined}
-                onChange={(value) => {
-                  handleChange('checkOutTime', DateTimeUtils.formatStringToDateTime(value));
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<string>
-                label={t('statusCheckOut')}
-                value={formData.statusCheckOut ?? ''}
-                onChange={(val) => {
-                  handleChange('statusCheckOut', val ?? '');
-                }}
-                disabled={false}
-                options={[
-                  { value: CheckOutTimeEnum[CheckOutTimeEnum.Soon], label: 'soon' },
-                  { value: CheckOutTimeEnum[CheckOutTimeEnum.OnTime], label: 'onTime' },
-                  { value: CheckOutTimeEnum[CheckOutTimeEnum.Late], label: 'late' },
-                ]}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomDateTimePicker
                 label={t('startAt')}
                 value={formData.startAt?.toISOString()}
                 onChange={(val) => {
-                  handleChange('startAt', new Date(val));
+                  handleChange('startAt', val !== undefined ? new Date(val) : undefined);
                 }}
                 disabled={false}
               />
@@ -184,7 +130,7 @@ export function UpdateAttendanceRecordsFormDialog({
                 label={t('endAt')}
                 value={formData.endAt?.toISOString()}
                 onChange={(val) => {
-                  handleChange('endAt', new Date(val));
+                  handleChange('endAt', val !== undefined ? new Date(val) : undefined);
                 }}
                 disabled={false}
               />
@@ -211,6 +157,68 @@ export function UpdateAttendanceRecordsFormDialog({
                   handleChange('minuteSoon', Number(val));
                 }}
                 disabled={false}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('checkInTime')}
+                value={formData.checkInTime ? DateTimeUtils.formatISODateToString(formData.checkInTime) : undefined}
+                onChange={(value) => {
+                  handleChange(
+                    'checkInTime',
+                    formData.checkInTime !== undefined ? DateTimeUtils.formatStringToDateTime(value ?? '') : undefined
+                  );
+                }}
+                disabled={isSubmitting}
+                allowClear
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<string>
+                label={t('statusCheckIn')}
+                value={formData.statusCheckIn ?? ''}
+                onChange={(val) => {
+                  handleChange('statusCheckIn', val ?? '');
+                }}
+                disabled={false}
+                options={[
+                  { value: CheckinTimeEnum[CheckinTimeEnum.Absent], label: 'absent' },
+                  { value: CheckinTimeEnum[CheckinTimeEnum.OnTime], label: 'onTime' },
+                  { value: CheckinTimeEnum[CheckinTimeEnum.Late], label: 'late' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('checkOutTime')}
+                value={formData.checkOutTime ? DateTimeUtils.formatISODateToString(formData.checkOutTime) : undefined}
+                onChange={(value) => {
+                  handleChange(
+                    'checkOutTime',
+                    formData.checkOutTime !== undefined ? DateTimeUtils.formatStringToDateTime(value ?? '') : undefined
+                  );
+                }}
+                disabled={isSubmitting}
+                allowClear
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<string>
+                label={t('statusCheckOut')}
+                value={formData.statusCheckOut ?? ''}
+                onChange={(val) => {
+                  handleChange('statusCheckOut', val ?? '');
+                }}
+                disabled={false}
+                options={[
+                  { value: CheckOutTimeEnum[CheckOutTimeEnum.Soon], label: 'soon' },
+                  { value: CheckOutTimeEnum[CheckOutTimeEnum.OnTime], label: 'onTime' },
+                  { value: CheckOutTimeEnum[CheckOutTimeEnum.Late], label: 'late' },
+                ]}
               />
             </Grid>
           </Grid>

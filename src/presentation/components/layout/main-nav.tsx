@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { CaretLeft as CollapseIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
 import { CaretRight as ExpandIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
 import { List as ListIcon } from '@phosphor-icons/react/dist/ssr/List';
+import { useTranslation } from 'react-i18next';
 
 import { logger } from '@/lib/default-logger';
 
@@ -26,6 +27,7 @@ interface MainNavProps {
 }
 
 export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.JSX.Element {
+  const { t } = useTranslation();
   const [openNav, setOpenNav] = React.useState<boolean>(false);
   const userPopover = usePopover<HTMLDivElement>();
   const [user, setUser] = React.useState<UserResponse>();
@@ -84,11 +86,11 @@ export function MainNav({ toggleSideNav, isSideNavOpen }: MainNavProps): React.J
             >
               <ListIcon />
             </IconButton>
-            <Tooltip title={isSideNavOpen ? 'Collapse Sidebar' : 'Expand Sidebar'}>
+            <Tooltip title={isSideNavOpen ? t('collapseSidebar') : t('expandSidebar')}>
               <IconButton
                 onClick={toggleSideNav}
                 sx={{ display: { xs: 'none', lg: 'inline-flex' } }}
-                aria-label={isSideNavOpen ? 'Collapse Sidebar' : 'Expand Sidebar'}
+                aria-label={isSideNavOpen ? t('collapseSidebar') : t('expandSidebar')}
               >
                 {isSideNavOpen ? <CollapseIcon /> : <ExpandIcon />}
               </IconButton>

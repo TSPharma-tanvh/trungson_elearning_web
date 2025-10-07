@@ -84,7 +84,6 @@ export default function ClassTable({
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('duration')}</TableCell>
-            <TableCell>{t('qrCodeUrl')}</TableCell>
             <TableCell>{t('attendanceRecordsCount')}</TableCell>
             <TableCell>{t('enrollmentCriteriaCount')}</TableCell>
             <TableCell>{t('teacher')}</TableCell>
@@ -109,23 +108,7 @@ export default function ClassTable({
               <Typography variant="body2">{row.classDetail}</Typography>
             </TableCell>
             <TableCell>{row.duration}</TableCell>
-            <TableCell>
-              {row.qrCode?.resourceUrl ? (
-                <Box
-                  onClick={() => {
-                    setPreviewUrl(row?.qrCode?.resourceUrl ?? '');
-                  }}
-                >
-                  <img
-                    src={row.qrCode.resourceUrl}
-                    alt="QR Code"
-                    style={{ width: 60, height: 60, objectFit: 'contain' }}
-                  />
-                </Box>
-              ) : (
-                ''
-              )}
-            </TableCell>
+
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 30, maxWidth: 80 }}>
               <Typography variant="body2">
                 {row.attendanceRecords !== undefined ? row.attendanceRecords.length : ''}

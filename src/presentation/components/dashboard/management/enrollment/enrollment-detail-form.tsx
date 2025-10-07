@@ -138,7 +138,6 @@ function EnrollmentCriteriaDetails({
             {renderField('classId', enrollment.class?.id)}
             {renderField('name', enrollment.class?.className)}
             {renderField('classDetail', enrollment.class?.classDetail)}
-            {renderField('qrCodeURL', enrollment.class?.qrCode?.resourceUrl)}
             {renderField(
               'startAt',
               enrollment.class?.startAt !== undefined

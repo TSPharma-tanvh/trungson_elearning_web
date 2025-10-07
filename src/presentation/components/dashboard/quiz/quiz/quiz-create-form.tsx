@@ -239,8 +239,8 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 pattern="^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$"
                 patternError="hh:mm:ss"
                 icon={<Clock {...iconStyle} />}
-                onValidationChange={(isValid) => {
-                  setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
+                onValidationChange={() => {
+                  setFieldValidations((prev) => ({ ...prev }));
                 }}
               />
             </Grid>
@@ -256,8 +256,8 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 disabled={isSubmitting}
                 inputMode="numeric"
                 icon={<NumberCircleNine {...iconStyle} />}
-                onValidationChange={(isValid) => {
-                  setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
+                onValidationChange={() => {
+                  setFieldValidations((prev) => ({ ...prev }));
                 }}
               />
             </Grid>
@@ -273,8 +273,8 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 disabled={isSubmitting}
                 inputMode="numeric"
                 icon={<NumberCircleFive {...iconStyle} />}
-                onValidationChange={(isValid) => {
-                  setFieldValidations((prev) => ({ ...prev, qrCodeURL: isValid }));
+                onValidationChange={() => {
+                  setFieldValidations((prev) => ({ ...prev }));
                 }}
               />
             </Grid>

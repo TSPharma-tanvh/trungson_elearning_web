@@ -112,7 +112,7 @@ export function CreateAttendanceRecordsDialog({
               label={t('startAt')}
               value={form.startAt?.toISOString()}
               onChange={(val) => {
-                handleChange('startAt', new Date(val));
+                handleChange('startAt', new Date(val ?? new Date()));
               }}
               disabled={disabled}
             />
@@ -123,7 +123,7 @@ export function CreateAttendanceRecordsDialog({
               label={t('endAt')}
               value={form.endAt?.toISOString()}
               onChange={(val) => {
-                handleChange('endAt', new Date(val));
+                handleChange('endAt', new Date(val ?? new Date()));
               }}
               disabled={disabled}
             />

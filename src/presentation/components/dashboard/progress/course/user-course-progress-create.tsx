@@ -192,7 +192,7 @@ export function CreateUserCourseProgressDialog({
                 label={t('startTime')}
                 value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
                 onChange={(value) => {
-                  handleChange('startDate', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('startDate', DateTimeUtils.formatStringToDateTime(value ?? ''));
                 }}
                 disabled={disabled}
               />
@@ -203,7 +203,7 @@ export function CreateUserCourseProgressDialog({
                 label={t('endTime')}
                 value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
                 onChange={(value) => {
-                  handleChange('endDate', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('endDate', DateTimeUtils.formatStringToDateTime(value ?? ''));
                 }}
                 disabled={disabled}
               />

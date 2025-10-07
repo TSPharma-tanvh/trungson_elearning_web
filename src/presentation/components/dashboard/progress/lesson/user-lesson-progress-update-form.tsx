@@ -164,9 +164,9 @@ export function UpdateUserLessonProgressFormDialog({
               <CustomDateTimePicker
                 label={t('actualStartDate')}
                 value={formData.actualStartDate}
-                onChange={(value) => handleChange('actualStartDate', value)}
+                onChange={(value) => { handleChange('actualStartDate', value); }}
                 disabled={false}
-                allowClear={true}
+                allowClear
               />
             </Grid>
 
@@ -174,9 +174,9 @@ export function UpdateUserLessonProgressFormDialog({
               <CustomDateTimePicker
                 label={t('actualEndDate')}
                 value={formData.actualEndDate}
-                onChange={(value) => handleChange('actualEndDate', value)}
+                onChange={(value) => { handleChange('actualEndDate', value); }}
                 disabled={false}
-                allowClear={true}
+                allowClear
               />
             </Grid>
 
@@ -192,7 +192,7 @@ export function UpdateUserLessonProgressFormDialog({
                 options={[
                   { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'notStarted' },
                   { value: UserProgressEnum[UserProgressEnum.Ongoing], label: 'ongoing' },
-                  { value: UserProgressEnum[UserProgressEnum.Done], label: 'done' },
+                { value: UserProgressEnum[UserProgressEnum.Done], label: 'done' },
                 ]}
               />
             </Grid>

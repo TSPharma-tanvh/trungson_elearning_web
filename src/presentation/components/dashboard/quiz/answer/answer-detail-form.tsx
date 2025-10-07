@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { type AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -14,7 +13,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -36,11 +34,6 @@ interface AnswerDetailsProps {
 function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailResponse; fullScreen: boolean }) {
   const { t } = useTranslation();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-
-  const toggleExpand = (id: string) => {
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -75,7 +68,7 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
         </CardContent>
       </Card>
 
-      {answer.question && (
+      {answer.question ? (
         <Card sx={{ mb: 2 }}>
           <CardHeader title={t('questionInformation')} />
           <CardContent>
@@ -101,7 +94,7 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
             </Grid>
           </CardContent>
         </Card>
-      )}
+      ) : null}
 
       {previewImage ? (
         <ImagePreviewDialog

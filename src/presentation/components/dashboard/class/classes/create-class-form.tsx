@@ -182,7 +182,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             />
           </Grid>
 
-          {form.classType === LearningModeEnum.Online && (
+          {(form.classType as LearningModeEnum) === LearningModeEnum.Online && (
             <Grid item xs={12}>
               <CustomTextField
                 label={t('meetingLink')}

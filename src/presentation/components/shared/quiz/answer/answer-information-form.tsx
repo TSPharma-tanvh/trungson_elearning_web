@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { type AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -14,7 +13,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -37,11 +35,6 @@ interface AnswerInformationFormProps {
 function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailResponse; fullScreen: boolean }) {
   const { t } = useTranslation();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-
-  const toggleExpand = (id: string) => {
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -75,50 +68,6 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
           </Grid>
         </CardContent>
       </Card>
-
-      {answer.userAnswerAnswersRelations.length > 0 && (
-        <Box sx={{ mb: 2 }}>
-          <CardHeader title={t('userAnswerRelations')} sx={{ pl: 1, pb: 1 }} />
-          {answer.userAnswerAnswersRelations.map((rel, index) => {
-            const relId = `${rel.answerID}-${rel.userAnswerID}`;
-            const isExpanded = expanded[relId] || false;
-
-            return (
-              <Card key={relId} sx={{ mb: 2 }}>
-                <CardHeader
-                  title={`${t('relation')} ${index + 1}`}
-                  action={
-                    <IconButton
-                      onClick={() => {
-                        toggleExpand(relId);
-                      }}
-                      sx={{
-                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.2s',
-                      }}
-                    >
-                      <ExpandMoreIcon />
-                    </IconButton>
-                  }
-                  sx={{ py: 1 }}
-                />
-                <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                  <CardContent>
-                    <Grid container spacing={2}>
-                      {renderField('answerId', rel.answerID)}
-                      {renderField('userAnswerId', rel.userAnswerID)}
-                      {renderField('userId', rel.userAnswer?.userID)}
-                      {renderField('quizId', rel.userAnswer?.quizID)}
-                      {renderField('questionId', rel.userAnswer?.questionID)}
-                      {renderField('userQuizProgressId', rel.userAnswer?.userQuizProgressID)}
-                    </Grid>
-                  </CardContent>
-                </Collapse>
-              </Card>
-            );
-          })}
-        </Box>
-      )}
 
       {previewImage ? (
         <ImagePreviewDialog

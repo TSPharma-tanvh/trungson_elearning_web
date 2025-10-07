@@ -781,5 +781,7 @@
   "datePickerToolbarTitle": "Chọn ngày",
   "timePickerToolbarTitle": "Chọn giờ",
   "dateTimePickerToolbarTitle": "Chọn ngày và giờ",
-  "dateRangePickerToolbarTitle": "Chọn khoảng ngày"
+  "dateRangePickerToolbarTitle": "Chọn khoảng ngày",
+  "collapseSidebar": "Thu gọn thanh bên",
+  "expandSidebar": "Mở rộng thanh bên"
 }

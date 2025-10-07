@@ -21,7 +21,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -172,9 +171,9 @@ export function UpdateUserPathProgressFormDialog({
               <CustomDateTimePicker
                 label={t('actualStartDate')}
                 value={formData.actualStartDate}
-                onChange={(value) => handleChange('actualStartDate', value)}
+                onChange={(value) => { handleChange('actualStartDate', value); }}
                 disabled={false}
-                allowClear={true}
+                allowClear
               />
             </Grid>
 
@@ -182,9 +181,9 @@ export function UpdateUserPathProgressFormDialog({
               <CustomDateTimePicker
                 label={t('actualEndDate')}
                 value={formData.actualEndDate}
-                onChange={(value) => handleChange('actualEndDate', value)}
+                onChange={(value) => { handleChange('actualEndDate', value); }}
                 disabled={false}
-                allowClear={true}
+                allowClear
               />
             </Grid>
 

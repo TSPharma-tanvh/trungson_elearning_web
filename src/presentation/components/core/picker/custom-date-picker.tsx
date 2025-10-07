@@ -89,22 +89,30 @@ export function CustomDateTimePicker({
         }}
         disabled={disabled}
         open={open}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
+        onOpen={() => {
+          setOpen(true);
+        }}
+        onClose={() => {
+          setOpen(false);
+        }}
         slots={{
           popper: StyledPopper,
         }}
         slotProps={{
           textField: {
             fullWidth: true,
-            onClick: () => !disabled && setOpen(true),
+            onClick: () => {
+              if (!disabled) setOpen(true);
+            },
             InputProps: {
               startAdornment: (
                 <InputAdornment position="start">
                   <IconButton
                     edge="start"
                     disabled={disabled}
-                    onClick={() => setOpen(true)}
+                    onClick={() => {
+                      setOpen(true);
+                    }}
                     aria-label={t('openCalendar')}
                   >
                     <CalendarBlank size={20} weight="fill" color={disabled ? '#9e9e9e' : '#616161'} />
@@ -113,7 +121,7 @@ export function CustomDateTimePicker({
               ),
               endAdornment: (
                 <InputAdornment position="end">
-                  {allowClear && value && !disabled && (
+                  {allowClear && value && !disabled ? (
                     <IconButton
                       onClick={(e) => {
                         e.stopPropagation();
@@ -125,7 +133,7 @@ export function CustomDateTimePicker({
                     >
                       <X size={20} color="#616161" />
                     </IconButton>
-                  )}
+                  ) : null}
                 </InputAdornment>
               ),
             },

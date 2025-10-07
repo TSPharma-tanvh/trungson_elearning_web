@@ -188,7 +188,7 @@ export function CreateUserQuizProgressDialog({
                 label={t('startTime')}
                 value={form.startTime ? DateTimeUtils.formatISODateToString(form.startTime) : undefined}
                 onChange={(value) => {
-                  handleChange('startTime', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('startTime', DateTimeUtils.formatStringToDateTime(value ?? ''));
                 }}
                 disabled={disabled}
               />
@@ -199,7 +199,7 @@ export function CreateUserQuizProgressDialog({
                 label={t('endTime')}
                 value={form.endTime ? DateTimeUtils.formatISODateToString(form.endTime) : undefined}
                 onChange={(value) => {
-                  handleChange('endTime', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('endTime', DateTimeUtils.formatStringToDateTime(value ?? ''));
                 }}
                 disabled={disabled}
               />

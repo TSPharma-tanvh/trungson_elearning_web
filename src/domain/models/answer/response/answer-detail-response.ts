@@ -1,7 +1,6 @@
 import { CategoryDetailResponse } from '../../category/response/category-detail-response';
 import { FileResourcesResponse } from '../../file/response/file-resources-response';
 import { QuestionResponse } from '../../question/response/question-response';
-import { UserAnswerAnswerRelationDetailResponse } from './user-answer-answer-delation-detail-response';
 
 export class AnswerDetailResponse {
   id?: string;

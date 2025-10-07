@@ -781,5 +781,7 @@
   "datePickerToolbarTitle": "Select date",
   "timePickerToolbarTitle": "Select time",
   "dateTimePickerToolbarTitle": "Select date and time",
-  "dateRangePickerToolbarTitle": "Select date range"
+  "dateRangePickerToolbarTitle": "Select date range",
+  "collapseSidebar": "Collapse Sidebar",
+  "expandSidebar": "Expand Sidebar"
 }
