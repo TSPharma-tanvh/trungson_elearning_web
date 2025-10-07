@@ -21,6 +21,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -60,6 +61,8 @@ export function UpdateUserPathProgressFormDialog({
         lastAccess: userPathProgress.lastAccess || undefined,
         status: userPathProgress.status || undefined,
         enrollmentID: userPathProgress.enrollmentID || undefined,
+        actualStartDate: userPathProgress.actualStartDate || undefined,
+        actualEndDate: userPathProgress.actualEndDate || undefined,
       });
       setFormData(newFormData);
     }
@@ -146,9 +149,10 @@ export function UpdateUserPathProgressFormDialog({
                 label={t('startTime')}
                 value={formData.startDate ? DateTimeUtils.formatISODateToString(formData.startDate) : undefined}
                 onChange={(value) => {
-                  handleChange('startDate', value);
+                  handleChange('startDate', value ?? '');
                 }}
                 disabled={false}
+                allowClear={false}
               />
             </Grid>
 
@@ -157,9 +161,30 @@ export function UpdateUserPathProgressFormDialog({
                 label={t('endTime')}
                 value={formData.endDate ? DateTimeUtils.formatISODateToString(formData.endDate) : undefined}
                 onChange={(value) => {
-                  handleChange('endDate', value);
+                  handleChange('endDate', value ?? '');
                 }}
                 disabled={false}
+                allowClear={false}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('actualStartDate')}
+                value={formData.actualStartDate}
+                onChange={(value) => handleChange('actualStartDate', value)}
+                disabled={false}
+                allowClear={true}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('actualEndDate')}
+                value={formData.actualEndDate}
+                onChange={(value) => handleChange('actualEndDate', value)}
+                disabled={false}
+                allowClear={true}
               />
             </Grid>
 

@@ -5,8 +5,11 @@ export class UpdateUserPathProgressRequest {
   progress?: number;
   startDate?: string;
   endDate?: string;
+  actualStartDate?: string;
+  actualEndDate?: string;
   lastAccess?: string;
-  status!: string; //UserProgressEnum
+  status!: string;
+  activeStatus?: string;
   enrollmentID?: string;
 
   constructor(init?: Partial<UpdateUserPathProgressRequest>) {

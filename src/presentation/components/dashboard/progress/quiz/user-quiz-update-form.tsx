@@ -176,7 +176,7 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('startTime')}
                 value={formData.startTime ? DateTimeUtils.formatISODateToString(formData.startTime) : undefined}
                 onChange={(value) => {
-                  handleChange('startTime', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('startTime', value != null ? DateTimeUtils.formatStringToDateTime(value) : undefined);
                 }}
                 disabled={false}
               />
@@ -186,7 +186,7 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('endTime')}
                 value={formData.endTime ? DateTimeUtils.formatISODateToString(formData.endTime) : undefined}
                 onChange={(value) => {
-                  handleChange('endTime', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('endTime', value != null ? DateTimeUtils.formatStringToDateTime(value) : undefined);
                 }}
                 disabled={false}
               />
@@ -197,9 +197,10 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('startedAt')}
                 value={formData.startedAt ? DateTimeUtils.formatISODateToString(formData.startedAt) : undefined}
                 onChange={(value) => {
-                  handleChange('startedAt', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('startedAt', value != null ? DateTimeUtils.formatStringToDateTime(value) : undefined);
                 }}
                 disabled={false}
+                allowClear={true}
               />
             </Grid>
 
@@ -208,9 +209,10 @@ export function UpdateUserQuizProgressFormDialog({
                 label={t('completedAt')}
                 value={formData.completedAt ? DateTimeUtils.formatISODateToString(formData.completedAt) : undefined}
                 onChange={(value) => {
-                  handleChange('completedAt', DateTimeUtils.formatStringToDateTime(value));
+                  handleChange('completedAt', value != null ? DateTimeUtils.formatStringToDateTime(value) : undefined);
                 }}
                 disabled={false}
+                allowClear={true}
               />
             </Grid>
 

@@ -60,6 +60,8 @@ export function UpdateUserCourseProgressFormDialog({
         lastAccess: userCourseProgress.lastAccess || undefined,
         status: userCourseProgress.status || undefined,
         enrollmentCriteriaID: userCourseProgress.enrollment?.enrollmentCriteriaID || undefined,
+        actualStartDate: userCourseProgress.actualStartDate || undefined,
+        actualEndDate: userCourseProgress.actualEndDate || undefined,
       });
       setFormData(newFormData);
     }
@@ -160,6 +162,26 @@ export function UpdateUserCourseProgressFormDialog({
                   handleChange('endDate', value);
                 }}
                 disabled={false}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('actualStartDate')}
+                value={formData.actualStartDate}
+                onChange={(value) => handleChange('actualStartDate', value)}
+                disabled={false}
+                allowClear={true}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomDateTimePicker
+                label={t('actualEndDate')}
+                value={formData.actualEndDate}
+                onChange={(value) => handleChange('actualEndDate', value)}
+                disabled={false}
+                allowClear={true}
               />
             </Grid>
 

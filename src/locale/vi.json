@@ -773,5 +773,13 @@
   "noAnswersAvailable": "Không có câu trả lời khả dụng",
   "quizDataNotAvailable": "Dữ liệu câu hỏi không khả dụng",
   "createRole": "Tạo vai trò",
-  "lessonUrl": "Đường dẫn bài học"
+  "lessonUrl": "Đường dẫn bài học",
+  "openCalendar": "Mở lịch",
+  "clearDate": "Xóa ngày",
+  "ok": "Đồng ý",
+  "dateTimePickerLabel": "Chọn ngày và giờ",
+  "datePickerToolbarTitle": "Chọn ngày",
+  "timePickerToolbarTitle": "Chọn giờ",
+  "dateTimePickerToolbarTitle": "Chọn ngày và giờ",
+  "dateRangePickerToolbarTitle": "Chọn khoảng ngày"
 }

@@ -4,6 +4,8 @@ export class UpdateUserCourseProgressRequest {
   progress?: number;
   startDate?: string;
   endDate?: string;
+  actualStartDate?: string;
+  actualEndDate?: string;
   lastAccess?: string;
   status!: string;
   enrollmentCriteriaID?: string;
