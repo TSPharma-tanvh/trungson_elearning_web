@@ -2,6 +2,7 @@ import * as React from 'react';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { type UserResponse } from '@/domain/models/user/response/user-response';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { useUser } from '@/presentation/hooks/use-user';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
@@ -30,6 +31,7 @@ export interface UserPopoverProps {
 export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
   const { t } = useTranslation();
   const { checkSession } = useUser();
+  const { signInUseCase } = useDI();
 
   const router = useRouter();
 
@@ -51,10 +53,16 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
 
   const handleSignOut = React.useCallback(async (): Promise<void> => {
     try {
-      const { error } = await authClient.signOut();
+      // const { error } = await authClient.signOut();
 
-      if (error) {
-        logger.error('Sign out error', error);
+      // if (error) {
+      //   logger.error('Sign out error', error);
+      //   return;
+      // }
+      const result = await signInUseCase.signOut();
+
+      if (result.isSuccessStatusCode === false) {
+        logger.error('Sign out error', result.message);
         return;
       }
 

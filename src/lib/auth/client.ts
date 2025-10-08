@@ -1,5 +1,6 @@
 'use client';
 
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import AppStrings from '@/utils/app-strings';
 
 import type { User } from '@/types/user';
@@ -91,7 +92,13 @@ class AuthClient {
   }
 
   async signOut(): Promise<{ error?: string }> {
-    localStorage.removeItem(AppStrings.ACCESS_TOKEN);
+    const { signInUseCase } = useDI();
+
+    const result = await signInUseCase.signOut();
+
+    if (!result.isSuccessStatusCode) {
+      return { error: result.message ?? 'Logout failed' };
+    }
 
     return {};
   }

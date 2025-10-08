@@ -7,6 +7,7 @@ interface IdentityEndpoints {
   signUp: StaticEndpoint;
   forgotPassword: StaticEndpoint;
   changePassword: StaticEndpoint;
+  signOut: StaticEndpoint;
 }
 
 interface TokenEndpoints {
@@ -205,6 +206,7 @@ const endpoints: EndpointDefinitions = {
     signUp: 'Identity/Register',
     forgotPassword: 'Auth/Forgot-password',
     changePassword: 'Identity/ChangePassword',
+    signOut: 'Identity/Logout',
   },
   token: {
     refreshToken: 'Identity/RefreshToken',

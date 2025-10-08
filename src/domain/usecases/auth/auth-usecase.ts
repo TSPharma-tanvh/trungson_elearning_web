@@ -1,5 +1,6 @@
 import { type LoginRequest } from '@/domain/models/auth/request/login-request';
 import { LoginResponse } from '@/domain/models/auth/response/login-response';
+import { ApiResponse } from '@/domain/models/core/api-response';
 import { type AuthRepository } from '@/domain/repositories/auth/auth-repository';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
@@ -11,7 +12,7 @@ export class SignInUseCase {
    * Sign in with username and password.
    * Performs domain-level validation and delegates to repository.
    */
-  async execute(request: LoginRequest): Promise<LoginResponse> {
+  async signIn(request: LoginRequest): Promise<LoginResponse> {
     if (!request.userName || !request.password) {
       throw new Error('Username and password are required.');
     }
@@ -29,5 +30,14 @@ export class SignInUseCase {
     // }
 
     return loginResponse;
+  }
+
+  async signOut(): Promise<ApiResponse> {
+    const result = await this.authRepo.logout();
+
+    localStorage.removeItem(AppStrings.ACCESS_TOKEN);
+    localStorage.removeItem(AppStrings.REFRESH_TOKEN);
+    localStorage.removeItem(AppStrings.USER_DATA);
+    return result;
   }
 }

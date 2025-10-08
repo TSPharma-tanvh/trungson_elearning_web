@@ -3,4 +3,5 @@ import { type ApiResponse } from '@/domain/models/core/api-response';
 
 export interface AuthRepository {
   login: (request: LoginRequest) => Promise<ApiResponse>;
+  logout: () => Promise<ApiResponse>;
 }

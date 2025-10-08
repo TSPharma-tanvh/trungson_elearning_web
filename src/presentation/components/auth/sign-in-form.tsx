@@ -56,7 +56,7 @@ export function SignInForm(): React.JSX.Element {
 
       try {
         const loginReq = new LoginRequest(values.email, values.password);
-        const result = await signInUseCase.execute(loginReq);
+        const result = await signInUseCase.signIn(loginReq);
 
         await checkSession?.();
 

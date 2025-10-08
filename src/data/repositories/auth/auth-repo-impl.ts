@@ -24,4 +24,16 @@ export class AuthRepositoryImpl implements AuthRepository {
 
     return apiResponse;
   }
+
+  async logout(): Promise<ApiResponse> {
+    const response = await customApiClient.post<ApiResponse>(apiEndpoints.identity.signOut);
+
+    const apiResponse = response.data;
+
+    if (!apiResponse?.isSuccessStatusCode) {
+      throw new Error(apiResponse?.message);
+    }
+
+    return apiResponse;
+  }
 }
