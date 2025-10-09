@@ -1,6 +1,6 @@
 'use client';
 
-import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { type SignInUseCase } from '@/domain/usecases/auth/auth-usecase';
 import AppStrings from '@/utils/app-strings';
 
 import type { User } from '@/types/user';
@@ -91,9 +91,7 @@ class AuthClient {
     return { data: user };
   }
 
-  async signOut(): Promise<{ error?: string }> {
-    const { signInUseCase } = useDI();
-
+  async signOut(signInUseCase: SignInUseCase): Promise<{ error?: string }> {
     const result = await signInUseCase.signOut();
 
     if (!result.isSuccessStatusCode) {

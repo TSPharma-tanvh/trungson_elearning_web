@@ -1,6 +1,6 @@
 import { type LoginRequest } from '@/domain/models/auth/request/login-request';
 import { LoginResponse } from '@/domain/models/auth/response/login-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type AuthRepository } from '@/domain/repositories/auth/auth-repository';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';

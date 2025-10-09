@@ -19,7 +19,6 @@ import { User as UserIcon } from '@phosphor-icons/react/dist/ssr/User';
 import { useTranslation } from 'react-i18next';
 
 import { paths } from '@/paths';
-import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
 
 export interface UserPopoverProps {
@@ -61,7 +60,7 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
       // }
       const result = await signInUseCase.signOut();
 
-      if (result.isSuccessStatusCode === false) {
+      if (!result.isSuccessStatusCode) {
         logger.error('Sign out error', result.message);
         return;
       }
