@@ -783,5 +783,9 @@
   "dateTimePickerToolbarTitle": "Select date and time",
   "dateRangePickerToolbarTitle": "Select date range",
   "collapseSidebar": "Collapse Sidebar",
-  "expandSidebar": "Expand Sidebar"
+  "expandSidebar": "Expand Sidebar",
+  "enrollType": "Enroll Type",
+  "allUsers": "All Users",
+  "selectedUsers": "Selected Users",
+  "fromFile": "From File"
 }

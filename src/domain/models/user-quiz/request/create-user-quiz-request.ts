@@ -1,9 +1,18 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { type ApproveStatusEnum, type StatusEnum, type UserProgressEnum } from '@/utils/enum/core-enum';
+import {
+  type ApproveStatusEnum,
+  type ProgressEnrollmentTypeEnum,
+  type StatusEnum,
+  type UserProgressEnum,
+} from '@/utils/enum/core-enum';
 
 export class CreateUserQuizRequest {
   quizID!: string;
-  userIDs!: string[];
+  userIDs?: string[];
+  enrollAllUsers?: boolean = false;
+  userFile?: File;
+  enrollType!: ProgressEnrollmentTypeEnum;
+
   startTime?: Date;
   endTime?: Date;
   progressStatus!: UserProgressEnum;
@@ -23,6 +32,8 @@ export class CreateUserQuizRequest {
     const dto = new CreateUserQuizRequest();
     dto.quizID = json.quizID;
     dto.userIDs = json.userIDs;
+    dto.enrollAllUsers = json.enrollAllUsers ?? false;
+    dto.enrollType = json.enrollType ?? 0;
     dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
     dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
     dto.progressStatus = json.progressStatus ?? 0;
@@ -40,6 +51,8 @@ export class CreateUserQuizRequest {
     return {
       quizID: this.quizID,
       userIDs: this.userIDs,
+      enrollAllUsers: this.enrollAllUsers,
+      enrollType: this.enrollType,
       startTime: DateTimeUtils.formatISODateToString(this.startTime),
       endTime: DateTimeUtils.formatISODateToString(this.endTime),
       progressStatus: this.progressStatus,
@@ -56,13 +69,18 @@ export class CreateUserQuizRequest {
   toFormData(): FormData {
     const form = new FormData();
     form.append('quizID', this.quizID);
-    this.userIDs.forEach((uid) => {
-      form.append('userIDs', uid);
-    });
+    if (this.userIDs) {
+      this.userIDs.forEach((uid) => form.append('userIDs', uid));
+    }
+    form.append('enrollAllUsers', String(this.enrollAllUsers ?? false));
+    form.append('enrollType', this.enrollType.toString());
+    if (this.userFile) form.append('userFile', this.userFile);
+
     const formattedStartTime = DateTimeUtils.formatISODateToString(this.startTime);
-    if (formattedStartTime !== undefined) form.append('startTime', formattedStartTime);
+    if (formattedStartTime) form.append('startTime', formattedStartTime);
     const formattedEndTime = DateTimeUtils.formatISODateToString(this.endTime);
-    if (formattedEndTime !== undefined) form.append('endTime', formattedEndTime);
+    if (formattedEndTime) form.append('endTime', formattedEndTime);
+
     form.append('progressStatus', this.progressStatus.toString());
     form.append('activeStatus', this.activeStatus.toString());
     if (this.enrollmentCriteriaID) form.append('enrollmentCriteriaID', this.enrollmentCriteriaID);

@@ -77,6 +77,12 @@ export enum ApproveStatusEnum {
   Reject = 1,
 }
 
+export enum ProgressEnrollmentTypeEnum {
+  AllUsers = 0,
+  SelectedUsers = 1,
+  FromFile = 2,
+}
+
 export const CoreEnumUtils = {
   getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
     if (!enumObj) return [];

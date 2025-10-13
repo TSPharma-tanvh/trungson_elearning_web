@@ -105,7 +105,9 @@ function UserQuizProgressDetails({
               {/* {renderField('Quiz Type', quiz.quizType)} */}
               {renderField('categoryId', quiz.categoryID)}
               {renderField('categoryName', quiz.category?.categoryName)}
-              {renderField('thumbnailId', quiz.thumbnailID)}
+              {renderField('thumbnailId', quiz.thumbnailID)}{' '}
+              {renderField('enrollmentId', userQuizProgress.enrollmentId)}
+              {renderField('enrollmentCriteriaId', userQuizProgress.enrollment?.enrollmentCriteriaID)}
             </Grid>
             {/* <Box mt={4}>
               {quiz?.video?.resourceUrl !== undefined && (
@@ -299,6 +301,7 @@ function UserQuizProgressDetails({
             {renderField('os', userQuizProgress.os)}
             {renderField('location', userQuizProgress.location)}
             {renderField('enrollmentId', userQuizProgress.enrollmentId)}
+            {renderField('enrollmentCriteriaId', userQuizProgress.enrollment?.enrollmentCriteriaID)}
             {renderField('quizTitle', userQuizProgress.quiz?.title)}
           </Grid>
         </CardContent>

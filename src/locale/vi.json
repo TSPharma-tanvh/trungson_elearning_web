@@ -783,5 +783,9 @@
   "dateTimePickerToolbarTitle": "Chọn ngày và giờ",
   "dateRangePickerToolbarTitle": "Chọn khoảng ngày",
   "collapseSidebar": "Thu gọn thanh bên",
-  "expandSidebar": "Mở rộng thanh bên"
+  "expandSidebar": "Mở rộng thanh bên",
+  "enrollType": "Loại đăng ký",
+  "allUsers": "Tất cả người dùng",
+  "selectedUsers": "Người dùng đã chọn",
+  "fromFile": "Từ tập tin"
 }

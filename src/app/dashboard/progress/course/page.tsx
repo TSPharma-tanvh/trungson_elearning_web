@@ -107,7 +107,7 @@ export default function Page(): React.JSX.Element {
             {t('userCourseProgress')}
           </Typography>
         </Stack>
-        <Button
+        {/* <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
           onClick={() => {
@@ -115,7 +115,7 @@ export default function Page(): React.JSX.Element {
           }}
         >
           {t('enrollUsers')}
-        </Button>
+        </Button> */}
       </Stack>
       <UserCourseProgressFilters onFilter={handleFilter} enrollUsecase={enrollUsecase} courseUsecase={courseUsecase} />
       <UserCourseProgressTable

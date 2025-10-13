@@ -4,7 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ApproveStatusEnum, CategoryEnum, StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import {
+  ApproveStatusEnum,
+  CategoryEnum,
+  ProgressEnrollmentTypeEnum,
+  StatusEnum,
+  UserProgressEnum,
+} from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -46,6 +52,7 @@ export function CreateUserQuizProgressDialog({
     new CreateUserQuizRequest({
       userID: '',
       quizID: '',
+      enrollType: ProgressEnrollmentTypeEnum.AllUsers,
       progressStatus: UserProgressEnum.NotStarted,
       activeStatus: StatusEnum.Enable,
       enrollStatus: ApproveStatusEnum.Approve,
@@ -161,17 +168,6 @@ export function CreateUserQuizProgressDialog({
             </Grid>
 
             <Grid item xs={12}>
-              <UserMultiSelectDialog
-                userUsecase={userUsecase}
-                value={form.userIDs ? form.userIDs : []}
-                onChange={(value: string[]) => {
-                  handleChange('userIDs', value);
-                }}
-                disabled={false}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
               <EnrollmentSingleSelect
                 enrollmentUsecase={enrollUsecase}
                 value={form.enrollmentCriteriaID ?? ''}
@@ -180,6 +176,33 @@ export function CreateUserQuizProgressDialog({
                 }}
                 disabled={false}
                 categoryEnum={CategoryEnum.Quiz}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
+                label={t('enrollType')}
+                value={form.enrollType ?? ''}
+                onChange={(val) => {
+                  handleChange('enrollType', val);
+                }}
+                disabled={disabled}
+                options={[
+                  { value: ProgressEnrollmentTypeEnum.AllUsers, label: 'allUsers' },
+                  { value: ProgressEnrollmentTypeEnum.SelectedUsers, label: 'selectedUsers' },
+                  { value: ProgressEnrollmentTypeEnum.FromFile, label: 'fromFile' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <UserMultiSelectDialog
+                userUsecase={userUsecase}
+                value={form.userIDs ? form.userIDs : []}
+                onChange={(value: string[]) => {
+                  handleChange('userIDs', value);
+                }}
+                disabled={false}
               />
             </Grid>
 
