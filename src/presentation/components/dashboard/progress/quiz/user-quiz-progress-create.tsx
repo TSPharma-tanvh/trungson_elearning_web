@@ -14,7 +14,9 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { ClearIcon } from '@mui/x-date-pickers';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
@@ -48,6 +50,8 @@ export function CreateUserQuizProgressDialog({
   const [_detailRows, setDetailRows] = useState(3);
   const [_isSubmitting, setIsSubmitting] = useState(false);
   const [fieldValidations, setFieldValidations] = useState<Record<string, boolean>>({});
+  const [fileError, setFileError] = useState<string | null>(null);
+
   const [form, setForm] = useState<CreateUserQuizRequest>(
     new CreateUserQuizRequest({
       userID: '',
@@ -64,6 +68,36 @@ export function CreateUserQuizProgressDialog({
 
   const handleChange = <K extends keyof CreateUserQuizRequest>(key: K, value: CreateUserQuizRequest[K]) => {
     setForm((prev) => new CreateUserQuizRequest({ ...prev, [key]: value }));
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      const allowedExtensions = ['.xlsx', '.xls'];
+      const maxFileSize = 5 * 1024 * 1024; // 5MB
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        setFileError(t('invalidFileFormat', { formats: '.xlsx, .xls' }));
+        handleChange('userFile', undefined);
+        return;
+      }
+      if (file.size > maxFileSize) {
+        setFileError(t('fileTooLarge', { maxSize: '5MB' }));
+        handleChange('userFile', undefined);
+        return;
+      }
+      setFileError(null);
+      handleChange('userFile', file);
+    } else {
+      setFileError(null);
+      handleChange('userFile', undefined);
+    }
+  };
+
+  const handleClearFile = () => {
+    setFileError(null);
+    handleChange('userFile', undefined);
   };
 
   useEffect(() => {
@@ -195,16 +229,63 @@ export function CreateUserQuizProgressDialog({
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <UserMultiSelectDialog
-                userUsecase={userUsecase}
-                value={form.userIDs ? form.userIDs : []}
-                onChange={(value: string[]) => {
-                  handleChange('userIDs', value);
-                }}
-                disabled={false}
-              />
-            </Grid>
+            {form.enrollType === ProgressEnrollmentTypeEnum.SelectedUsers ? (
+              <Grid item xs={12}>
+                <UserMultiSelectDialog
+                  userUsecase={userUsecase}
+                  value={form.userIDs ? form.userIDs : []}
+                  onChange={(value: string[]) => {
+                    handleChange('userIDs', value);
+                  }}
+                  disabled={disabled}
+                />
+              </Grid>
+            ) : form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
+              <Grid item xs={12}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  disabled={disabled}
+                  fullWidth
+                  sx={{
+                    textTransform: 'none',
+                    borderRadius: '8px',
+                    borderColor: fileError ? 'error.main' : 'primary.main',
+                    color: fileError ? 'error.main' : 'primary.main',
+                    padding: '12px 16px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    '&:hover': {
+                      borderColor: fileError ? 'error.dark' : 'primary.dark',
+                      backgroundColor: fileError ? 'error.light' : 'primary.light',
+                    },
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <UploadFileIcon sx={{ mr: 1 }} />
+                    <Typography variant="body1">{form.userFile ? form.userFile.name : t('uploadFile')}</Typography>
+                  </Box>
+                  {form.userFile && (
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleClearFile();
+                      }}
+                    >
+                      <ClearIcon />
+                    </IconButton>
+                  )}
+                  <input type="file" accept=".xlsx,.xls" hidden onChange={handleFileChange} />
+                </Button>
+                {fileError && (
+                  <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                    {fileError}
+                  </Typography>
+                )}
+              </Grid>
+            ) : null}
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker

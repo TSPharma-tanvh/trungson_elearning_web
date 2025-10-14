@@ -1,34 +1,49 @@
 import { QuizTypeEnum, StatusEnum, type CategoryEnum } from '@/utils/enum/core-enum';
 
 export class CreateQuizRequest {
-  lessonID?: string;
   levelID?: string;
+
   canStartOver = false;
   canShuffle = true;
   isRequired = false;
+
+  displayedQuestionCount!: number;
+
   type: QuizTypeEnum = QuizTypeEnum.LessonQuiz;
-  time!: string; // TimeSpan as string: "00:30:00"
-  maxAttempts?: number;
+  time!: string; // TimeSpan (C#) -> string: "00:30:00"
+
+  maxAttempts!: number;
+  scoreToPass!: number;
+
   title = '';
   description?: string;
-  questionIDs?: string;
+  questionIDs?: string; // comma-separated
+
   categoryID?: string;
   status?: StatusEnum = StatusEnum.Enable;
+
   enrollmentCriteriaIDs?: string;
+
   thumbnailID?: string;
-  resourceIDs?: string;
+  resourceIDs?: string; // comma-separated
+
   resources?: File[];
   resourceDocumentNo?: string;
   resourcePrefixName?: string;
+
   thumbnail?: File;
   thumbDocumentNo?: string;
   thumbPrefixName?: string;
+
   categoryEnum?: CategoryEnum;
   isDeleteOldThumbnail?: boolean;
+
   isAutoSubmitted?: boolean = true;
+
   enrollmentCriteriaType?: CategoryEnum;
   enrollmentStatus?: StatusEnum;
-  totalScore?: number;
+
+  maxCapacity?: number;
   enrollmentCourseIDs?: string;
 
   constructor(init?: Partial<CreateQuizRequest>) {
@@ -42,9 +57,7 @@ export class CreateQuizRequest {
   }
 
   toJson(): any {
-    return {
-      ...this,
-    };
+    return { ...this };
   }
 
   toFormData(): FormData {
@@ -58,9 +71,7 @@ export class CreateQuizRequest {
       } else if (value instanceof File) {
         formData.append(key, value);
       } else if (Array.isArray(value) && value[0] instanceof File) {
-        value.forEach((file: File) => {
-          formData.append('resources', file);
-        });
+        value.forEach((file: File) => formData.append('resources', file));
       } else {
         formData.append(key, String(value));
       }

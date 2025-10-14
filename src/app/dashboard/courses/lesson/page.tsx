@@ -69,7 +69,6 @@ export default function Page(): React.JSX.Element {
       await lessonUsecase.createLesson(request);
       setShowCreateDialog(false);
       await fetchLessons();
-      CustomSnackBar.showSnackbar(t('lessonCreated'), 'success');
     } catch (error) {
       CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to create lesson', 'error');
     }

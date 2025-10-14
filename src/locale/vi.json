@@ -787,5 +787,13 @@
   "enrollType": "Loại đăng ký",
   "allUsers": "Tất cả người dùng",
   "selectedUsers": "Người dùng đã chọn",
-  "fromFile": "Từ tập tin"
+  "fromFile": "Từ tập tin",
+  "selectedFile": "Tệp đã chọn",
+  "contentType": "Loại nội dung",
+  "pdf": "PDF",
+  "updateResources": "Cập nhật tài nguyên",
+  "resources": "Tài nguyên",
+  "resourceDocumentNo": "Số tài liệu tài nguyên",
+  "resourcePrefixName": "Tên tiền tố tài nguyên",
+  "uploadResources": "Tải tài nguyên lên"
 }

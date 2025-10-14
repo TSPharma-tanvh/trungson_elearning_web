@@ -4,11 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { EnrollUserListToPathRequest } from '@/domain/models/user-path/request/enroll-user-list-to-path-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ApproveStatusEnum, CategoryEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { ApproveStatusEnum, CategoryEnum, ProgressEnrollmentTypeEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import ClearIcon from '@mui/icons-material/Clear';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
@@ -38,6 +40,7 @@ export function CreateUserPathProgressDialog({
 
   const [fullScreen, setFullScreen] = useState(false);
   const [_detailRows, setDetailRows] = useState(3);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const [form, setForm] = useState<EnrollUserListToPathRequest>(
     new EnrollUserListToPathRequest({
@@ -46,6 +49,7 @@ export function CreateUserPathProgressDialog({
       progress: 0,
       startDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
       endDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
+      enrollType: ProgressEnrollmentTypeEnum.AllUsers,
       status: UserProgressEnum.NotStarted,
       enrollStatus: ApproveStatusEnum.Approve,
     })
@@ -53,6 +57,36 @@ export function CreateUserPathProgressDialog({
 
   const handleChange = <K extends keyof EnrollUserListToPathRequest>(key: K, value: EnrollUserListToPathRequest[K]) => {
     setForm((prev) => new EnrollUserListToPathRequest({ ...prev, [key]: value }));
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      const allowedExtensions = ['.xlsx', '.xls'];
+      const maxFileSize = 5 * 1024 * 1024; // 5MB
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        setFileError(t('invalidFileFormat', { formats: '.xlsx, .xls' }));
+        handleChange('userFile', undefined);
+        return;
+      }
+      if (file.size > maxFileSize) {
+        setFileError(t('fileTooLarge', { maxSize: '5MB' }));
+        handleChange('userFile', undefined);
+        return;
+      }
+      setFileError(null);
+      handleChange('userFile', file);
+    } else {
+      setFileError(null);
+      handleChange('userFile', undefined);
+    }
+  };
+
+  const handleClearFile = () => {
+    setFileError(null);
+    handleChange('userFile', undefined);
   };
 
   useEffect(() => {
@@ -127,15 +161,6 @@ export function CreateUserPathProgressDialog({
               flex: 1,
             }}
           >
-            {/* <Grid item xs={12}>
-              <CustomTextField
-                label="Tên khóa học"
-                value={form.name}
-                onChange={(val) => handleChange('name', val)}
-                disabled={disabled}
-              />
-            </Grid> */}
-
             <Grid item xs={12}>
               <PathSelectDialog
                 pathUsecase={pathUseCase}
@@ -143,20 +168,83 @@ export function CreateUserPathProgressDialog({
                 onChange={(value: string) => {
                   handleChange('pathID', value);
                 }}
-                disabled={false}
+                disabled={disabled}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <UserMultiSelectDialog
-                userUsecase={userUsecase}
-                value={form.userIDs ? form.userIDs : []}
-                onChange={(value: string[]) => {
-                  handleChange('userIDs', value);
+              <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
+                label={t('enrollType')}
+                value={form.enrollType ?? ''}
+                onChange={(val) => {
+                  handleChange('enrollType', val);
                 }}
-                disabled={false}
+                disabled={disabled}
+                options={[
+                  { value: ProgressEnrollmentTypeEnum.AllUsers, label: 'allUsers' },
+                  { value: ProgressEnrollmentTypeEnum.SelectedUsers, label: 'selectedUsers' },
+                  { value: ProgressEnrollmentTypeEnum.FromFile, label: 'fromFile' },
+                ]}
               />
             </Grid>
+
+            {form.enrollType === ProgressEnrollmentTypeEnum.SelectedUsers ? (
+              <Grid item xs={12}>
+                <UserMultiSelectDialog
+                  userUsecase={userUsecase}
+                  value={form.userIDs ? form.userIDs : []}
+                  onChange={(value: string[]) => {
+                    handleChange('userIDs', value);
+                  }}
+                  disabled={disabled}
+                />
+              </Grid>
+            ) : form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
+              <Grid item xs={12}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  disabled={disabled}
+                  fullWidth
+                  sx={{
+                    textTransform: 'none',
+                    borderRadius: '8px',
+                    borderColor: fileError ? 'error.main' : 'primary.main',
+                    color: fileError ? 'error.main' : 'primary.main',
+                    padding: '12px 16px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    '&:hover': {
+                      borderColor: fileError ? 'error.dark' : 'primary.dark',
+                      backgroundColor: fileError ? 'error.light' : 'primary.light',
+                    },
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <UploadFileIcon sx={{ mr: 1 }} />
+                    <Typography variant="body1">{form.userFile ? form.userFile.name : t('uploadFile')}</Typography>
+                  </Box>
+                  {form.userFile && (
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleClearFile();
+                      }}
+                    >
+                      <ClearIcon />
+                    </IconButton>
+                  )}
+                  <input type="file" accept=".xlsx,.xls" hidden onChange={handleFileChange} />
+                </Button>
+                {fileError && (
+                  <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                    {fileError}
+                  </Typography>
+                )}
+              </Grid>
+            ) : null}
 
             <Grid item xs={12}>
               <EnrollmentSingleSelect
@@ -165,22 +253,9 @@ export function CreateUserPathProgressDialog({
                 onChange={(value: string) => {
                   handleChange('enrollmentCriteriaID', value);
                 }}
-                disabled={false}
+                disabled={disabled}
                 categoryEnum={CategoryEnum.Path}
                 label="pathEnrollmentCriteria"
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <EnrollmentSingleSelect
-                enrollmentUsecase={enrollUsecase}
-                value={form.quizEnrollmentCriteriaID ?? ''}
-                onChange={(value: string) => {
-                  handleChange('quizEnrollmentCriteriaID', value);
-                }}
-                disabled={false}
-                categoryEnum={CategoryEnum.Quiz}
-                label="quizEnrollmentCriteria"
               />
             </Grid>
 
@@ -189,7 +264,7 @@ export function CreateUserPathProgressDialog({
                 label={t('startTime')}
                 value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
                 onChange={(value) => {
-                  handleChange('startDate', DateTimeUtils.formatStringToDateTime(value ?? ''));
+                  handleChange('startDate', DateTimeUtils.formatStringToDateTime(value ?? '') ?? new Date());
                 }}
                 disabled={disabled}
               />
@@ -200,7 +275,7 @@ export function CreateUserPathProgressDialog({
                 label={t('endTime')}
                 value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
                 onChange={(value) => {
-                  handleChange('endDate', DateTimeUtils.formatStringToDateTime(value ?? ''));
+                  handleChange('endDate', DateTimeUtils.formatStringToDateTime(value ?? '') ?? new Date());
                 }}
                 disabled={disabled}
               />
@@ -241,6 +316,10 @@ export function CreateUserPathProgressDialog({
               <CustomButton
                 label={t('create')}
                 onClick={() => {
+                  if (form.enrollType === ProgressEnrollmentTypeEnum.FromFile && !form.userFile) {
+                    setFileError(t('fileRequired'));
+                    return;
+                  }
                   onSubmit(form);
                 }}
                 loading={loading}

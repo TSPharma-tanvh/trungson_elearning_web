@@ -45,7 +45,16 @@ export class UserQuizProgressRepoImpl implements UserQuizProgressRepository {
 
   async createUserQuizProgress(request: CreateUserQuizRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.userQuizProgress.create, request.toJson());
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.userQuizProgress.create,
+        request.toFormData(),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 3600000,
+        }
+      );
 
       const apiResponse = response.data;
 

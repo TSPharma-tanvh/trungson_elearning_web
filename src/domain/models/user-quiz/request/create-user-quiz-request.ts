@@ -9,7 +9,6 @@ import {
 export class CreateUserQuizRequest {
   quizID!: string;
   userIDs?: string[];
-  enrollAllUsers?: boolean = false;
   userFile?: File;
   enrollType!: ProgressEnrollmentTypeEnum;
 
@@ -32,7 +31,6 @@ export class CreateUserQuizRequest {
     const dto = new CreateUserQuizRequest();
     dto.quizID = json.quizID;
     dto.userIDs = json.userIDs;
-    dto.enrollAllUsers = json.enrollAllUsers ?? false;
     dto.enrollType = json.enrollType ?? 0;
     dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
     dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
@@ -51,7 +49,6 @@ export class CreateUserQuizRequest {
     return {
       quizID: this.quizID,
       userIDs: this.userIDs,
-      enrollAllUsers: this.enrollAllUsers,
       enrollType: this.enrollType,
       startTime: DateTimeUtils.formatISODateToString(this.startTime),
       endTime: DateTimeUtils.formatISODateToString(this.endTime),
@@ -72,7 +69,6 @@ export class CreateUserQuizRequest {
     if (this.userIDs) {
       this.userIDs.forEach((uid) => form.append('userIDs', uid));
     }
-    form.append('enrollAllUsers', String(this.enrollAllUsers ?? false));
     form.append('enrollType', this.enrollType.toString());
     if (this.userFile) form.append('userFile', this.userFile);
 

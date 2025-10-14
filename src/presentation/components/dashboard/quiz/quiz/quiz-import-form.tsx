@@ -60,7 +60,7 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
   };
 
   //   const handleFileSourceChange = (event: React.MouseEvent<HTMLElement>) => {
-  //     if (file == null){
+  //     if (file ===null){
   //         CustomSnackBar.showSnackbar("File is required.", "error");
   //         return;
   //     }

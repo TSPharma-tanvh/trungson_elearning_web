@@ -95,7 +95,16 @@ export class UserPathProgressRepoImpl implements UserPathProgressRepository {
 
   async enrollUserListToPath(request: EnrollUserListToPathRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.userPathProgress.enroll, request.toJson());
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.userPathProgress.enroll,
+        request.toFormData(),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 3600000,
+        }
+      );
 
       const apiResponse = response.data;
 

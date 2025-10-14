@@ -83,6 +83,11 @@ export enum ProgressEnrollmentTypeEnum {
   FromFile = 2,
 }
 
+export enum LessonContentEnum {
+  PDF = 0,
+  Video = 1,
+}
+
 export const CoreEnumUtils = {
   getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
     if (!enumObj) return [];

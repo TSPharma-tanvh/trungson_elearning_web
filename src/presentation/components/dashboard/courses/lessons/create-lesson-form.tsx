@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
+import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 import { CustomButton } from '../../../core/button/custom-button';
@@ -53,20 +54,29 @@ export function CreateLessonDialog({
   const theme = useTheme();
 
   const { fileUsecase, categoryUsecase } = useDI();
+  const [detailRows, setDetailRows] = useState(3);
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  //video
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   const [videoSource, setVideoSource] = useState<'upload' | 'select'>('select');
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [totalChunks, setTotalChunks] = useState(0);
   const [_currentChunkIndex, setCurrentChunkIndex] = useState(0);
+
+  //thumbnail
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
+
+  //resource
+  const [resourceSource, setResourceSource] = useState<'upload' | 'select'>('select');
+  const [resourceFiles, setResourceFiles] = useState<File[]>([]);
+  const [selectedResourceIds, setSelectedResourceIds] = useState<string[]>([]);
 
   const [form, setForm] = useState<CreateLessonRequest>(
     new CreateLessonRequest({
@@ -77,6 +87,7 @@ export function CreateLessonDialog({
       status: StatusEnum.Enable,
       lessonType: LearningModeEnum.Online,
       categoryEnum: CategoryEnum.Lesson,
+      contentType: LessonContentEnum.PDF,
     })
   );
 
@@ -140,7 +151,7 @@ export function CreateLessonDialog({
       // Lưu lại videoID trước khi bỏ
       setSelectedVideoId(form.videoID ?? null);
 
-      // Khi chuyển sang upload, bỏ videoID khỏi formData
+      // Khi chuyển sang upload, bỏ videoID khỏi form
       setForm((prev) => new CreateLessonRequest({ ...prev, videoID: undefined }));
 
       if (videoFile) {
@@ -154,7 +165,6 @@ export function CreateLessonDialog({
         setUploadProgress(0);
       }
     } else {
-      // Khi quay lại select, restore lại videoID từ selectedVideoId
       setForm(
         (prev) => new CreateLessonRequest({ ...prev, videoChunk: undefined, videoID: selectedVideoId ?? undefined })
       );
@@ -248,7 +258,7 @@ export function CreateLessonDialog({
           : { ...form, thumbnail: undefined };
 
       // Handle video submission
-      if (videoSource === 'upload' && videoFile) {
+      if (videoSource === 'upload' && videoFile && form.contentType === LessonContentEnum.Video) {
         // Upload video by chunk
         const chunkSize = 5 * 1024 * 1024; // 5 MB
         const totalChunksCount = Math.ceil(videoFile.size / chunkSize);
@@ -410,6 +420,18 @@ export function CreateLessonDialog({
           </Grid>
 
           <Grid item xs={12}>
+            <CustomSelectDropDown<LessonContentEnum>
+              label={t('contentType')}
+              value={(form.contentType as LessonContentEnum) ?? ''}
+              onChange={(val) => handleChange('contentType', val)}
+              options={[
+                { value: LessonContentEnum.PDF, label: 'pdf' },
+                { value: LessonContentEnum.Video, label: 'video' },
+              ]}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
             <Typography variant="h6">{t('updateThumbnail')}</Typography>
           </Grid>
 
@@ -530,15 +552,15 @@ export function CreateLessonDialog({
           ) : null}
 
           <Grid item xs={12}>
-            <Typography variant="h6">{t('updateVideo')}</Typography>
+            <Typography variant="h6">{t('updateResources')}</Typography>
           </Grid>
-
           <Grid item xs={12}>
             <ToggleButtonGroup
-              value={videoSource}
+              value={resourceSource}
               exclusive
-              onChange={handleVideoSourceChange}
-              aria-label={t('videoSource')}
+              onChange={(_, newSource: 'upload' | 'select') => {
+                if (newSource) setResourceSource(newSource);
+              }}
               fullWidth
               disabled={isSubmitting}
               sx={{ mb: 2 }}
@@ -551,25 +573,27 @@ export function CreateLessonDialog({
               </ToggleButton>
             </ToggleButtonGroup>
           </Grid>
-          <Grid item xs={12} sm={12}>
-            {videoSource === 'select' ? (
-              <FileResourceSelect
+          <Grid item xs={12}>
+            {resourceSource === 'select' ? (
+              <FileResourceMultiSelect
                 fileUsecase={fileUsecase}
-                type={FileResourceEnum.Video}
+                type={FileResourceEnum.Document}
                 status={StatusEnum.Enable}
-                value={form.videoID}
-                onChange={handleVideoSelectChange}
-                label={t('video')}
+                value={selectedResourceIds}
+                onChange={(val) => {
+                  setSelectedResourceIds(val);
+                }}
+                label={t('resources')}
                 disabled={isSubmitting}
               />
             ) : (
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <CustomTextField
-                    label={t('videoDocumentNo')}
-                    value={form.videoDocumentNo}
+                    label={t('resourceDocumentNo')}
+                    value={form.resourceDocumentNo}
                     onChange={(value) => {
-                      handleChange('videoDocumentNo', value);
+                      handleChange('resourceDocumentNo', value);
                     }}
                     disabled={isSubmitting}
                     icon={<ImageIcon />}
@@ -577,15 +601,16 @@ export function CreateLessonDialog({
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <CustomTextField
-                    label={t('videoPrefixName')}
-                    value={form.videoPrefixName}
+                    label={t('resourcePrefixName')}
+                    value={form.resourcePrefixName}
                     onChange={(value) => {
-                      handleChange('videoPrefixName', value);
+                      handleChange('resourcePrefixName', value);
                     }}
                     disabled={isSubmitting}
                     icon={<ImageIcon />}
                   />
                 </Grid>
+
                 <Grid item xs={12}>
                   <Button
                     variant="outlined"
@@ -594,80 +619,168 @@ export function CreateLessonDialog({
                     disabled={isSubmitting}
                     startIcon={<ImageIcon />}
                   >
-                    {t('uploadVideo')}
+                    {t('uploadResources')}
                     <input
                       type="file"
                       hidden
-                      accept="video/*"
+                      multiple
+                      accept="*/*"
                       onChange={(e) => {
-                        handleVideoUpload(e.target.files?.[0] || null);
+                        const files = Array.from(e.target.files ?? []);
+                        setResourceFiles(files);
                       }}
                     />
                   </Button>
                 </Grid>
-                {totalChunks > 0 && (
-                  <Grid item xs={12}>
-                    <Box
-                      sx={{
-                        mt: 2,
-                        p: 2,
-
-                        textAlign: 'center',
-                      }}
-                    >
-                      <Box sx={{ position: 'relative', height: 24 }}>
-                        {/* Thanh progress */}
-                        <LinearProgress
-                          variant="determinate"
-                          value={uploadProgress}
-                          sx={{
-                            height: 24,
-                            borderRadius: 12,
-                            [`& .MuiLinearProgress-bar`]: {
-                              borderRadius: 12,
-                              backgroundColor:
-                                uploadProgress < 100 ? theme.palette.primary.main : theme.palette.secondary.main,
-                            },
-                            // backgroundColor: theme.palette.grey[300],
-                          }}
-                        />
-
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            position: 'absolute',
-                            inset: 0,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontWeight: 600,
-                            color: theme.palette.mode === 'dark' ? '#fff' : '#000',
-                          }}
-                        >
-                          {Math.round(uploadProgress)}%
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    {/* CSS keyframes cho gradient */}
-                    <style>
-                      {`
-        @keyframes moveGradient {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 100% 50%; }
-        }
-      `}
-                    </style>
-                  </Grid>
-                )}
               </Grid>
             )}
           </Grid>
-          {videoPreviewUrl ? (
-            <Grid item xs={12}>
-              <CustomVideoPlayer src={videoPreviewUrl ?? ''} fullscreen />
-            </Grid>
-          ) : null}
+
+          {form.contentType === LessonContentEnum.Video ? (
+            <>
+              {' '}
+              <Grid item xs={12}>
+                <Typography variant="h6">{t('updateVideo')}</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <ToggleButtonGroup
+                  value={videoSource}
+                  exclusive
+                  onChange={handleVideoSourceChange}
+                  aria-label={t('videoSource')}
+                  fullWidth
+                  disabled={isSubmitting}
+                  sx={{ mb: 2 }}
+                >
+                  <ToggleButton value="select" aria-label={t('selectFromResources')}>
+                    {t('selectFromResources')}
+                  </ToggleButton>
+                  <ToggleButton value="upload" aria-label={t('uploadFiles')}>
+                    {t('uploadFiles')}
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                {videoSource === 'select' ? (
+                  <FileResourceSelect
+                    fileUsecase={fileUsecase}
+                    type={FileResourceEnum.Video}
+                    status={StatusEnum.Enable}
+                    value={form.videoID}
+                    onChange={handleVideoSelectChange}
+                    label={t('video')}
+                    disabled={isSubmitting}
+                  />
+                ) : (
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <CustomTextField
+                        label={t('videoDocumentNo')}
+                        value={form.videoDocumentNo}
+                        onChange={(value) => {
+                          handleChange('videoDocumentNo', value);
+                        }}
+                        disabled={isSubmitting}
+                        icon={<ImageIcon />}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <CustomTextField
+                        label={t('videoPrefixName')}
+                        value={form.videoPrefixName}
+                        onChange={(value) => {
+                          handleChange('videoPrefixName', value);
+                        }}
+                        disabled={isSubmitting}
+                        icon={<ImageIcon />}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        variant="outlined"
+                        component="label"
+                        fullWidth
+                        disabled={isSubmitting}
+                        startIcon={<ImageIcon />}
+                      >
+                        {t('uploadVideo')}
+                        <input
+                          type="file"
+                          hidden
+                          accept="video/*"
+                          onChange={(e) => {
+                            handleVideoUpload(e.target.files?.[0] || null);
+                          }}
+                        />
+                      </Button>
+                    </Grid>
+                    {totalChunks > 0 && (
+                      <Grid item xs={12}>
+                        <Box
+                          sx={{
+                            mt: 2,
+                            p: 2,
+
+                            textAlign: 'center',
+                          }}
+                        >
+                          <Box sx={{ position: 'relative', height: 24 }}>
+                            {/* Thanh progress */}
+                            <LinearProgress
+                              variant="determinate"
+                              value={uploadProgress}
+                              sx={{
+                                height: 24,
+                                borderRadius: 12,
+                                [`& .MuiLinearProgress-bar`]: {
+                                  borderRadius: 12,
+                                  backgroundColor:
+                                    uploadProgress < 100 ? theme.palette.primary.main : theme.palette.secondary.main,
+                                },
+                                // backgroundColor: theme.palette.grey[300],
+                              }}
+                            />
+
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                position: 'absolute',
+                                inset: 0,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 600,
+                                color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+                              }}
+                            >
+                              {Math.round(uploadProgress)}%
+                            </Typography>
+                          </Box>
+                        </Box>
+
+                        {/* CSS keyframes cho gradient */}
+                        <style>
+                          {`
+                 @keyframes moveGradient {
+                   0% { background-position: 0% 50%; }
+                   100% { background-position: 100% 50%; }
+                 }
+               `}
+                        </style>
+                      </Grid>
+                    )}
+                  </Grid>
+                )}
+              </Grid>
+              {videoPreviewUrl ? (
+                <Grid item xs={12}>
+                  <CustomVideoPlayer src={videoPreviewUrl ?? ''} fullscreen />
+                </Grid>
+              ) : null}
+            </>
+          ) : (
+            <></>
+          )}
 
           <Grid item xs={12}>
             <CustomButton

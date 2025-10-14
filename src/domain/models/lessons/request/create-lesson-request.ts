@@ -1,14 +1,20 @@
-import { type LearningModeEnum, type StatusEnum, type CategoryEnum } from '@/utils/enum/core-enum';
+import {
+  type CategoryEnum,
+  type LearningModeEnum,
+  type LessonContentEnum,
+  type StatusEnum,
+} from '@/utils/enum/core-enum';
 
 export class CreateLessonRequest {
   courseID?: string;
-  name!: string; // Required
+  name!: string;
   detail?: string;
 
-  enablePlay!: boolean; // Required
-  status!: StatusEnum; // Required
-  lessonType!: LearningModeEnum; // Required
-  isRequired!: boolean; // Required
+  enablePlay!: boolean;
+  status!: StatusEnum;
+  lessonType!: LearningModeEnum;
+  contentType!: LessonContentEnum;
+  isRequired!: boolean;
 
   quizIDs?: string;
   categoryID?: string;
@@ -24,11 +30,17 @@ export class CreateLessonRequest {
   // Video chunk upload
   videoID?: string;
   uploadID?: string;
-  videoChunk!: File; // Required
+  videoChunk!: File;
   videoDocumentNo?: string;
   videoPrefixName?: string;
   chunkIndex = 0;
   totalChunks = 0;
+
+  // Resources
+  resourceIDs?: string;
+  resources?: File[];
+  resourceDocumentNo?: string;
+  resourcePrefixName?: string;
 
   constructor(init?: Partial<CreateLessonRequest>) {
     Object.assign(this, init);
@@ -42,6 +54,7 @@ export class CreateLessonRequest {
       enablePlay: json.enablePlay,
       status: json.status,
       lessonType: json.lessonType,
+      contentType: json.contentType,
       isRequired: json.isRequired,
       quizIDs: json.quizIDs,
       categoryID: json.categoryID,
@@ -56,6 +69,9 @@ export class CreateLessonRequest {
       videoPrefixName: json.videoPrefixName,
       chunkIndex: json.chunkIndex,
       totalChunks: json.totalChunks,
+      resourceIDs: json.resourceIDs,
+      resourceDocumentNo: json.resourceDocumentNo,
+      resourcePrefixName: json.resourcePrefixName,
     });
   }
 
@@ -67,6 +83,7 @@ export class CreateLessonRequest {
       enablePlay: this.enablePlay,
       status: this.status,
       lessonType: this.lessonType,
+      contentType: this.contentType,
       isRequired: this.isRequired,
       quizIDs: this.quizIDs,
       categoryID: this.categoryID,
@@ -81,6 +98,9 @@ export class CreateLessonRequest {
       videoPrefixName: this.videoPrefixName,
       chunkIndex: this.chunkIndex,
       totalChunks: this.totalChunks,
+      resourceIDs: this.resourceIDs,
+      resourceDocumentNo: this.resourceDocumentNo,
+      resourcePrefixName: this.resourcePrefixName,
     };
   }
 
@@ -91,11 +111,10 @@ export class CreateLessonRequest {
     if (this.name) form.append('Name', this.name);
     if (this.detail) form.append('Detail', this.detail);
 
-    // Required
     form.append('EnablePlay', this.enablePlay.toString());
     form.append('Status', this.status.toString());
     form.append('LessonType', this.lessonType.toString());
-
+    form.append('ContentType', this.contentType.toString());
     form.append('IsRequired', this.isRequired.toString());
 
     if (this.quizIDs) form.append('QuizIDs', this.quizIDs);
@@ -106,26 +125,27 @@ export class CreateLessonRequest {
     if (this.thumbnail) form.append('Thumbnail', this.thumbnail);
     if (this.thumbDocumentNo) form.append('ThumbDocumentNo', this.thumbDocumentNo);
     if (this.thumbPrefixName) form.append('ThumbPrefixName', this.thumbPrefixName);
-    if (this.isDeleteOldThumbnail !== undefined) {
+    if (this.isDeleteOldThumbnail !== undefined)
       form.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
-    }
-    if (this.categoryEnum !== undefined) {
-      form.append('CategoryEnum', this.categoryEnum.toString());
-    }
+    if (this.categoryEnum !== undefined) form.append('CategoryEnum', this.categoryEnum.toString());
 
-    // Video chunk upload (Required)
-    if (!this.videoChunk) {
-      throw new Error('VideoChunk is required but missing');
-    }
+    // Video (Required)
     form.append('VideoChunk', this.videoChunk);
 
     if (this.videoID) form.append('VideoID', this.videoID);
     if (this.uploadID) form.append('UploadID', this.uploadID);
     if (this.videoDocumentNo) form.append('VideoDocumentNo', this.videoDocumentNo);
     if (this.videoPrefixName) form.append('VideoPrefixName', this.videoPrefixName);
-
     form.append('ChunkIndex', this.chunkIndex.toString());
     form.append('TotalChunks', this.totalChunks.toString());
+
+    // Resources
+    if (this.resourceIDs) form.append('ResourceIDs', this.resourceIDs);
+    if (this.resources && this.resources.length > 0) {
+      this.resources.forEach((file) => form.append('Resources', file));
+    }
+    if (this.resourceDocumentNo) form.append('ResourceDocumentNo', this.resourceDocumentNo);
+    if (this.resourcePrefixName) form.append('ResourcePrefixName', this.resourcePrefixName);
 
     return form;
   }

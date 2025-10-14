@@ -246,12 +246,12 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomTextField
-                label={t('totalScore')}
+                label={t('scoreToPass')}
                 required
-                value={form.totalScore?.toString() ?? ''}
+                value={form.scoreToPass?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
-                  handleChange('totalScore', numericValue);
+                  handleChange('scoreToPass', numericValue ?? 0);
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"
@@ -268,7 +268,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 value={form.maxAttempts?.toString() ?? ''}
                 onChange={(value) => {
                   const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
-                  handleChange('maxAttempts', numericValue);
+                  handleChange('maxAttempts', numericValue ?? 1);
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"

@@ -787,5 +787,13 @@
   "enrollType": "Enroll Type",
   "allUsers": "All Users",
   "selectedUsers": "Selected Users",
-  "fromFile": "From File"
+  "fromFile": "From File",
+  "selectedFile": "Selected File",
+  "contentType": "Content Type",
+  "pdf": "PDF",
+  "updateResources": "Update Resources",
+  "resources": "Resources",
+  "resourceDocumentNo": "Resource Document Number",
+  "resourcePrefixName": "Resource Prefix Name",
+  "uploadResources": "Upload Resources"
 }
