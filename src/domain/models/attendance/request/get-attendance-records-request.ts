@@ -1,4 +1,4 @@
-import { type CheckinTimeEnum } from '@/utils/enum/core-enum';
+import { CheckOutTimeEnum, StatusEnum, type CheckinTimeEnum } from '@/utils/enum/core-enum';
 
 export class GetAttendanceRecordsRequest {
   userID?: string;
@@ -7,7 +7,9 @@ export class GetAttendanceRecordsRequest {
   enrollmentCriteriaId?: string;
   checkinTimeFrom?: Date;
   checkinTimeTo?: Date;
-  status?: CheckinTimeEnum;
+  statusCheckIn?: CheckinTimeEnum;
+  statusCheckOut?: CheckOutTimeEnum;
+  activeStatus?: StatusEnum;
   searchText?: string;
   pageNumber = 1;
   pageSize = 10;
@@ -24,7 +26,9 @@ export class GetAttendanceRecordsRequest {
     dto.enrollmentCriteriaId = json.enrollmentCriteriaId;
     dto.checkinTimeFrom = json.checkinTimeFrom ? new Date(json.checkinTimeFrom) : undefined;
     dto.checkinTimeTo = json.checkinTimeTo ? new Date(json.checkinTimeTo) : undefined;
-    dto.status = json.status;
+    dto.statusCheckIn = json.statusCheckIn;
+    dto.statusCheckOut = json.statusCheckOut;
+    dto.activeStatus = json.activeStatus;
     dto.searchText = json.searchText;
     dto.pageNumber = json.pageNumber ?? 1;
     dto.pageSize = json.pageSize ?? 10;
@@ -39,7 +43,9 @@ export class GetAttendanceRecordsRequest {
       enrollmentCriteriaId: this.enrollmentCriteriaId,
       checkinTimeFrom: this.checkinTimeFrom?.toISOString(),
       checkinTimeTo: this.checkinTimeTo?.toISOString(),
-      status: this.status,
+      statusCheckIn: this.statusCheckIn,
+      statusCheckOut: this.statusCheckOut,
+      activeStatus: this.activeStatus,
       searchText: this.searchText,
       pageNumber: this.pageNumber,
       pageSize: this.pageSize,

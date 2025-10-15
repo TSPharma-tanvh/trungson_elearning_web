@@ -40,7 +40,7 @@ function AttendanceRecordDetails({
   const { t } = useTranslation();
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
-    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+    <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
         {t(label)}
       </Typography>
@@ -173,6 +173,12 @@ function AttendanceRecordDetails({
               'checkOutTime',
               attendanceRecord.checkOutTime !== undefined
                 ? DateTimeUtils.formatDateTimeToDateString(attendanceRecord.checkOutTime)
+                : ''
+            )}
+            {renderField(
+              'activeStatus',
+              attendanceRecord.activeStatus
+                ? t(attendanceRecord.activeStatus.charAt(0).toLowerCase() + t(attendanceRecord.activeStatus).slice(1))
                 : ''
             )}
           </Grid>

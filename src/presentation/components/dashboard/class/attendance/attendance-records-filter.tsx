@@ -4,7 +4,7 @@ import * as React from 'react';
 import { GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/get-attendance-records-request';
 import { type ClassUsecase } from '@/domain/usecases/class/class-usecase';
 import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
-import { CategoryEnum, CheckinTimeEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
+import { CategoryEnum, CheckinTimeEnum, CheckOutTimeEnum, CoreEnumUtils, StatusEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -28,13 +28,17 @@ export function AttendanceRecordsFilters({
 }): React.JSX.Element {
   const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
-  const [status, setStatus] = React.useState<CheckinTimeEnum | undefined>(undefined);
+  const [statusCheckIn, setStatusCheckIn] = React.useState<CheckinTimeEnum | undefined>(undefined);
+  const [statusCheckOut, setStatusCheckOut] = React.useState<CheckOutTimeEnum | undefined>(undefined);
+  const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetAttendanceRecordsRequest({
       ...form,
       searchText: searchText || undefined,
-      status,
+      statusCheckIn: statusCheckIn,
+      statusCheckOut: statusCheckOut,
+      activeStatus: status,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -44,6 +48,8 @@ export function AttendanceRecordsFilters({
 
   const handleClear = () => {
     setSearchText('');
+    setStatusCheckIn(undefined);
+    setStatusCheckOut(undefined);
     setStatus(undefined);
     onFilter(new GetAttendanceRecordsRequest({ pageNumber: 1, pageSize: 10 }));
   };
@@ -63,12 +69,30 @@ export function AttendanceRecordsFilters({
 
         {/* Status */}
         <CustomSelectFilter<CheckinTimeEnum>
+          label={t('statusCheckIn')}
+          value={statusCheckIn}
+          onChange={(val) => {
+            setStatusCheckIn(val);
+          }}
+          options={CoreEnumUtils.getEnumOptions(CheckinTimeEnum)}
+        />
+
+        <CustomSelectFilter<CheckOutTimeEnum>
+          label={t('statusCheckOut')}
+          value={statusCheckOut}
+          onChange={(val) => {
+            setStatusCheckOut(val);
+          }}
+          options={CoreEnumUtils.getEnumOptions(CheckOutTimeEnum)}
+        />
+
+        <CustomSelectFilter<StatusEnum>
           label={t('status')}
           value={status}
           onChange={(val) => {
             setStatus(val);
           }}
-          options={CoreEnumUtils.getEnumOptions(CheckinTimeEnum)}
+          options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
         {/* Class */}

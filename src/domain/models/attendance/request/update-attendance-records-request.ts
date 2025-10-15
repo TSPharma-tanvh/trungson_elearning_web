@@ -15,6 +15,7 @@ export class UpdateAttendanceRecordsRequest {
   checkOutTime?: Date;
   statusCheckIn?: string;
   statusCheckOut?: string;
+  activeStatus?: string;
 
   constructor(init?: Partial<UpdateAttendanceRecordsRequest>) {
     Object.assign(this, init);
@@ -36,6 +37,7 @@ export class UpdateAttendanceRecordsRequest {
     dto.checkOutTime = json.checkOutTime ? new Date(json.checkOutTime) : undefined;
     dto.statusCheckIn = json.statusCheckIn;
     dto.statusCheckOut = json.statusCheckOut;
+    dto.activeStatus = json.activeStatus;
 
     return dto;
   }
@@ -56,6 +58,7 @@ export class UpdateAttendanceRecordsRequest {
       checkOutTime: this.checkOutTime ? DateTimeUtils.formatISODateToString(this.checkOutTime) : undefined,
       statusCheckIn: this.statusCheckIn,
       statusCheckOut: this.statusCheckOut,
+      activeStatus: this.activeStatus,
     };
   }
 }

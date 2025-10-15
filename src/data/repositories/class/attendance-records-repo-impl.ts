@@ -95,7 +95,16 @@ export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
 
   async enrollUserListToClass(request: EnrollUserListToClassRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.attendanceRecords.enroll, request.toJson());
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.attendanceRecords.enroll,
+        request.toFormData(),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 3600000,
+        }
+      );
 
       const apiResponse = response.data;
 

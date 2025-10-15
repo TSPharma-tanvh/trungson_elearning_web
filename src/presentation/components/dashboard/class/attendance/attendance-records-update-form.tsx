@@ -3,7 +3,7 @@ import { UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/reque
 import { type AttendanceRecordDetailResponse } from '@/domain/models/attendance/response/attendance-record-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { CheckinTimeEnum, CheckOutTimeEnum } from '@/utils/enum/core-enum';
+import { CheckinTimeEnum, CheckOutTimeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -61,6 +61,7 @@ export function UpdateAttendanceRecordsFormDialog({
         endAt: attendanceRecord.endAt || undefined,
         minuteLate: attendanceRecord.minuteLate || undefined,
         minuteSoon: attendanceRecord.minuteSoon || undefined,
+        activeStatus: attendanceRecord.activeStatus || undefined,
       });
       setFormData(newFormData);
     }
@@ -218,6 +219,22 @@ export function UpdateAttendanceRecordsFormDialog({
                   { value: CheckOutTimeEnum[CheckOutTimeEnum.Soon], label: 'soon' },
                   { value: CheckOutTimeEnum[CheckOutTimeEnum.OnTime], label: 'onTime' },
                   { value: CheckOutTimeEnum[CheckOutTimeEnum.Late], label: 'late' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<string>
+                label={t('activeStatus')}
+                value={formData.activeStatus ?? ''}
+                onChange={(val) => {
+                  handleChange('activeStatus', val ?? '');
+                }}
+                disabled={false}
+                options={[
+                  { value: StatusEnum[StatusEnum.Enable], label: 'enable' },
+                  { value: StatusEnum[StatusEnum.Disable], label: 'disable' },
+                  { value: StatusEnum[StatusEnum.Deleted], label: 'deleted' },
                 ]}
               />
             </Grid>

@@ -136,7 +136,7 @@ export function CreateUserQuizProgressDialog({
         return;
       }
 
-      onSubmit(form);
+      await onSubmit(form);
       onClose();
     } catch (error) {
       return undefined;

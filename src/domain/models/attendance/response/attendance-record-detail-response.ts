@@ -19,6 +19,7 @@ export class AttendanceRecordDetailResponse {
 
   statusCheckIn?: string;
   statusCheckOut?: string;
+  activeStatus?: string;
 
   class?: ClassResponse;
   user?: UserResponse;
@@ -43,6 +44,7 @@ export class AttendanceRecordDetailResponse {
       minuteSoon: json.minuteSoon,
       statusCheckIn: json.statusCheckIn,
       statusCheckOut: json.statusCheckOut,
+      activeStatus: json.activeStatus,
       class: json.class ? ClassResponse.fromJson(json.class) : undefined,
       user: json.user ? UserResponse.fromJson(json.user) : undefined,
       enrollment: json.enrollment ? EnrollmentResponse.fromJson(json.enrollment) : undefined,
@@ -64,6 +66,7 @@ export class AttendanceRecordDetailResponse {
       minuteSoon: this.minuteSoon,
       statusCheckIn: this.statusCheckIn,
       statusCheckOut: this.statusCheckOut,
+      activeStatus: this.activeStatus,
       class: this.class?.toJson(),
       user: this.user?.toJson(),
       enrollment: this.enrollment?.toJson(),

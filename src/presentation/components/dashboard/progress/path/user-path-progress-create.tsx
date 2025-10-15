@@ -173,6 +173,19 @@ export function CreateUserPathProgressDialog({
             </Grid>
 
             <Grid item xs={12}>
+              <EnrollmentSingleSelect
+                enrollmentUsecase={enrollUsecase}
+                value={form.enrollmentCriteriaID ?? ''}
+                onChange={(value: string) => {
+                  handleChange('enrollmentCriteriaID', value);
+                }}
+                disabled={disabled}
+                categoryEnum={CategoryEnum.Path}
+                label="pathEnrollmentCriteria"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
                 label={t('enrollType')}
                 value={form.enrollType ?? ''}
@@ -245,19 +258,6 @@ export function CreateUserPathProgressDialog({
                 )}
               </Grid>
             ) : null}
-
-            <Grid item xs={12}>
-              <EnrollmentSingleSelect
-                enrollmentUsecase={enrollUsecase}
-                value={form.enrollmentCriteriaID ?? ''}
-                onChange={(value: string) => {
-                  handleChange('enrollmentCriteriaID', value);
-                }}
-                disabled={disabled}
-                categoryEnum={CategoryEnum.Path}
-                label="pathEnrollmentCriteria"
-              />
-            </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker

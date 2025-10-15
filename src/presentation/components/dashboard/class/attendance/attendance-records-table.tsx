@@ -111,6 +111,7 @@ export default function AttendanceRecordsTable({
             <TableCell>{t('statusCheckOut')}</TableCell>
             <TableCell>{t('enrollmentDate')}</TableCell>
             <TableCell>{t('approvedAt')}</TableCell>
+            <TableCell>{t('activeStatus')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -154,6 +155,10 @@ export default function AttendanceRecordsTable({
             </TableCell>
             <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.enrollment?.enrollmentDate)}</TableCell>
             <TableCell>{DateTimeUtils.formatDateTimeToDateString(row.enrollment?.approvedAt)}</TableCell>
+            <TableCell>
+              {row.activeStatus ? t(row.activeStatus.charAt(0).toLowerCase() + t(row.activeStatus).slice(1)) : ''}
+            </TableCell>
+
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

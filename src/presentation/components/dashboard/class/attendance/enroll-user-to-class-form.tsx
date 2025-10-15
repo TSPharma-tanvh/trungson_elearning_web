@@ -3,11 +3,19 @@
 import React, { useState } from 'react';
 import { EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { ApproveStatusEnum, CategoryEnum, CheckinTimeEnum } from '@/utils/enum/core-enum';
+import {
+  ApproveStatusEnum,
+  CategoryEnum,
+  CheckinTimeEnum,
+  ProgressEnrollmentTypeEnum,
+  StatusEnum,
+} from '@/utils/enum/core-enum';
+import { UploadFile } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { ClearIcon } from '@mui/x-date-pickers';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
@@ -36,6 +44,8 @@ export function CreateAttendanceRecordsDialog({
   const { t } = useTranslation();
   const { userUsecase, enrollUsecase, classUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
+
   const [form, setForm] = useState<EnrollUserListToClassRequest>(
     new EnrollUserListToClassRequest({
       startAt: new Date(),
@@ -44,6 +54,8 @@ export function CreateAttendanceRecordsDialog({
       minuteSoon: 5,
       statusCheckIn: CheckinTimeEnum[CheckinTimeEnum.Absent],
       enrollStatus: ApproveStatusEnum.Approve,
+      activeStatus: StatusEnum.Enable,
+      enrollType: ProgressEnrollmentTypeEnum.AllUsers,
     })
   );
 
@@ -52,6 +64,36 @@ export function CreateAttendanceRecordsDialog({
     value: EnrollUserListToClassRequest[K]
   ) => {
     setForm((prev) => new EnrollUserListToClassRequest({ ...prev, [key]: value }));
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      const allowedExtensions = ['.xlsx', '.xls'];
+      const maxFileSize = 5 * 1024 * 1024; // 5MB
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        setFileError(t('invalidFileFormat', { formats: '.xlsx, .xls' }));
+        handleChange('userFile', undefined);
+        return;
+      }
+      if (file.size > maxFileSize) {
+        setFileError(t('fileTooLarge', { maxSize: '5MB' }));
+        handleChange('userFile', undefined);
+        return;
+      }
+      setFileError(null);
+      handleChange('userFile', file);
+    } else {
+      setFileError(null);
+      handleChange('userFile', undefined);
+    }
+  };
+
+  const handleClearFile = () => {
+    setFileError(null);
+    handleChange('userFile', undefined);
   };
 
   return (
@@ -73,12 +115,12 @@ export function CreateAttendanceRecordsDialog({
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', height: fullScreen ? '100%' : 'auto', p: 2 }}>
         <Grid container spacing={fullScreen ? (window.innerWidth < 600 ? 0.8 : 2.6) : 4}>
-          <Grid item xs={12} sm={12} mt={1}>
-            <UserMultiSelectDialog
-              userUsecase={userUsecase}
-              value={form.userIDs ? form.userIDs : []}
-              onChange={(value: string[]) => {
-                handleChange('userIDs', value);
+          <Grid item xs={12} marginTop={1}>
+            <ClassSelectDialog
+              classUsecase={classUsecase}
+              value={form.classID ?? ''}
+              onChange={(value: string) => {
+                handleChange('classID', value);
               }}
               disabled={false}
             />
@@ -97,15 +139,78 @@ export function CreateAttendanceRecordsDialog({
           </Grid>
 
           <Grid item xs={12}>
-            <ClassSelectDialog
-              classUsecase={classUsecase}
-              value={form.classID ?? ''}
-              onChange={(value: string) => {
-                handleChange('classID', value);
+            <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
+              label={t('enrollType')}
+              value={form.enrollType ?? ''}
+              onChange={(val) => {
+                handleChange('enrollType', val);
               }}
-              disabled={false}
+              disabled={disabled}
+              options={[
+                { value: ProgressEnrollmentTypeEnum.AllUsers, label: 'allUsers' },
+                { value: ProgressEnrollmentTypeEnum.SelectedUsers, label: 'selectedUsers' },
+                { value: ProgressEnrollmentTypeEnum.FromFile, label: 'fromFile' },
+              ]}
             />
           </Grid>
+
+          {form.enrollType === ProgressEnrollmentTypeEnum.SelectedUsers ? (
+            <Grid item xs={12}>
+              <UserMultiSelectDialog
+                userUsecase={userUsecase}
+                value={form.userIDs ? form.userIDs : []}
+                onChange={(value: string[]) => {
+                  handleChange('userIDs', value);
+                }}
+                disabled={disabled}
+              />
+            </Grid>
+          ) : form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
+            <Grid item xs={12}>
+              <Button
+                variant="outlined"
+                component="label"
+                disabled={disabled}
+                fullWidth
+                sx={{
+                  textTransform: 'none',
+                  borderRadius: '8px',
+                  borderColor: fileError ? 'error.main' : 'primary.main',
+                  color: fileError ? 'error.main' : 'primary.main',
+                  padding: '12px 16px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  '&:hover': {
+                    borderColor: fileError ? 'error.dark' : 'primary.dark',
+                    backgroundColor: fileError ? 'error.light' : 'primary.light',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <UploadFile sx={{ mr: 1 }} />
+                  <Typography variant="body1">{form.userFile ? form.userFile.name : t('uploadFile')}</Typography>
+                </Box>
+                {form.userFile && (
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClearFile();
+                    }}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                )}
+                <input type="file" accept=".xlsx,.xls" hidden onChange={handleFileChange} />
+              </Button>
+              {fileError && (
+                <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                  {fileError}
+                </Typography>
+              )}
+            </Grid>
+          ) : null}
 
           <Grid item xs={12} sm={6}>
             <CustomDateTimePicker
@@ -180,6 +285,22 @@ export function CreateAttendanceRecordsDialog({
               options={[
                 { value: ApproveStatusEnum.Approve, label: 'approve' },
                 { value: ApproveStatusEnum.Reject, label: 'reject' },
+              ]}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDown<StatusEnum>
+              label={t('activeStatus')}
+              value={form.activeStatus!}
+              onChange={(val) => {
+                handleChange('activeStatus', val);
+              }}
+              disabled={disabled}
+              options={[
+                { value: StatusEnum.Enable, label: 'enable' },
+                { value: StatusEnum.Disable, label: 'disable' },
+                { value: StatusEnum.Deleted, label: 'deleted' },
               ]}
             />
           </Grid>
