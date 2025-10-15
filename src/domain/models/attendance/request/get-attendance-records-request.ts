@@ -1,4 +1,4 @@
-import { CheckOutTimeEnum, StatusEnum, type CheckinTimeEnum } from '@/utils/enum/core-enum';
+import { type CheckOutTimeEnum, type StatusEnum, type CheckinTimeEnum } from '@/utils/enum/core-enum';
 
 export class GetAttendanceRecordsRequest {
   userID?: string;

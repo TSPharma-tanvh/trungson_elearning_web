@@ -110,6 +110,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
           isDeleteOldThumbnail: false,
           videoID: lesson.videoID,
           videoChunk: videoFile ?? undefined,
+          resources: resourceFiles ?? undefined,
           uploadID: lesson.id,
         });
 
@@ -511,7 +512,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               <CustomSelectDropDown<LessonContentEnum>
                 label={t('contentType')}
                 value={(formData.contentType as LessonContentEnum) ?? ''}
-                onChange={(val) => handleChange('contentType', val)}
+                onChange={(val) => {
+                  handleChange('contentType', val);
+                }}
                 options={[
                   { value: LessonContentEnum.PDF, label: 'pdf' },
                   { value: LessonContentEnum.Video, label: 'video' },

@@ -6,8 +6,7 @@ import { GetUserCourseProgressRequest } from '@/domain/models/user-course/reques
 import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
 import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CreateUserCourseProgressDialog } from '@/presentation/components/dashboard/progress/course/user-course-progress-create';

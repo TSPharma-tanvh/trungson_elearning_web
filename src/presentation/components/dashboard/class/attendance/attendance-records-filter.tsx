@@ -36,8 +36,8 @@ export function AttendanceRecordsFilters({
     const request = new GetAttendanceRecordsRequest({
       ...form,
       searchText: searchText || undefined,
-      statusCheckIn: statusCheckIn,
-      statusCheckOut: statusCheckOut,
+      statusCheckIn,
+      statusCheckOut,
       activeStatus: status,
       pageNumber: 1,
       pageSize: 10,

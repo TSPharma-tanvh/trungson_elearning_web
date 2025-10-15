@@ -71,7 +71,7 @@ export class CreateQuizRequest {
       } else if (value instanceof File) {
         formData.append(key, value);
       } else if (Array.isArray(value) && value[0] instanceof File) {
-        value.forEach((file: File) => formData.append('resources', file));
+        value.forEach((file: File) => { formData.append('resources', file); });
       } else {
         formData.append(key, String(value));
       }

@@ -191,8 +191,7 @@ export function CreateAttendanceRecordsDialog({
                   <UploadFile sx={{ mr: 1 }} />
                   <Typography variant="body1">{form.userFile ? form.userFile.name : t('uploadFile')}</Typography>
                 </Box>
-                {form.userFile && (
-                  <IconButton
+                {form.userFile ? <IconButton
                     size="small"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -200,15 +199,12 @@ export function CreateAttendanceRecordsDialog({
                     }}
                   >
                     <ClearIcon />
-                  </IconButton>
-                )}
+                  </IconButton> : null}
                 <input type="file" accept=".xlsx,.xls" hidden onChange={handleFileChange} />
               </Button>
-              {fileError && (
-                <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+              {fileError ? <Typography variant="caption" color="error" sx={{ mt: 1 }}>
                   {fileError}
-                </Typography>
-              )}
+                </Typography> : null}
             </Grid>
           ) : null}
 
@@ -292,7 +288,7 @@ export function CreateAttendanceRecordsDialog({
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<StatusEnum>
               label={t('activeStatus')}
-              value={form.activeStatus!}
+              value={form.activeStatus}
               onChange={(val) => {
                 handleChange('activeStatus', val);
               }}

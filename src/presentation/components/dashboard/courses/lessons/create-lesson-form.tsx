@@ -88,6 +88,7 @@ export function CreateLessonDialog({
       lessonType: LearningModeEnum.Online,
       categoryEnum: CategoryEnum.Lesson,
       contentType: LessonContentEnum.PDF,
+      resources: resourceFiles ?? undefined,
     })
   );
 
@@ -422,8 +423,10 @@ export function CreateLessonDialog({
           <Grid item xs={12}>
             <CustomSelectDropDown<LessonContentEnum>
               label={t('contentType')}
-              value={(form.contentType as LessonContentEnum) ?? ''}
-              onChange={(val) => handleChange('contentType', val)}
+              value={form.contentType ?? ''}
+              onChange={(val) => {
+                handleChange('contentType', val);
+              }}
               options={[
                 { value: LessonContentEnum.PDF, label: 'pdf' },
                 { value: LessonContentEnum.Video, label: 'video' },

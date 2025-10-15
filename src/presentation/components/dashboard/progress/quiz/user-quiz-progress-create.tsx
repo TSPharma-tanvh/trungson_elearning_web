@@ -30,7 +30,7 @@ import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi
 
 interface CreateQuizUserProressProps {
   disabled?: boolean;
-  onSubmit: (data: CreateUserQuizRequest) => void;
+  onSubmit: (data: CreateUserQuizRequest) => Promise<void>;
   loading?: boolean;
   open: boolean;
   onClose: () => void;
@@ -266,7 +266,7 @@ export function CreateUserQuizProgressDialog({
                     <UploadFileIcon sx={{ mr: 1 }} />
                     <Typography variant="body1">{form.userFile ? form.userFile.name : t('uploadFile')}</Typography>
                   </Box>
-                  {form.userFile && (
+                  {form.userFile ? (
                     <IconButton
                       size="small"
                       onClick={(e) => {
@@ -276,14 +276,14 @@ export function CreateUserQuizProgressDialog({
                     >
                       <ClearIcon />
                     </IconButton>
-                  )}
+                  ) : null}
                   <input type="file" accept=".xlsx,.xls" hidden onChange={handleFileChange} />
                 </Button>
-                {fileError && (
+                {fileError ? (
                   <Typography variant="caption" color="error" sx={{ mt: 1 }}>
                     {fileError}
                   </Typography>
-                )}
+                ) : null}
               </Grid>
             ) : null}
 

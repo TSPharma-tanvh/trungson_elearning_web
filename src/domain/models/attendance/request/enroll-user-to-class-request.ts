@@ -1,5 +1,5 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { StatusEnum, type ApproveStatusEnum, type ProgressEnrollmentTypeEnum } from '@/utils/enum/core-enum';
+import { type StatusEnum, type ApproveStatusEnum, type ProgressEnrollmentTypeEnum } from '@/utils/enum/core-enum';
 
 export class EnrollUserListToClassRequest {
   userIDs: string[] = [];
@@ -81,7 +81,7 @@ export class EnrollUserListToClassRequest {
     const formData = new FormData();
 
     if (this.userIDs?.length) {
-      this.userIDs.forEach((id) => formData.append('UserIDs', id));
+      this.userIDs.forEach((id) => { formData.append('UserIDs', id); });
     }
 
     if (this.userFile) {

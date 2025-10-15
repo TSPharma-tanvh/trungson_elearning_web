@@ -142,7 +142,7 @@ export class CreateLessonRequest {
     // Resources
     if (this.resourceIDs) form.append('ResourceIDs', this.resourceIDs);
     if (this.resources && this.resources.length > 0) {
-      this.resources.forEach((file) => form.append('Resources', file));
+      this.resources.forEach((file) => { form.append('Resources', file); });
     }
     if (this.resourceDocumentNo) form.append('ResourceDocumentNo', this.resourceDocumentNo);
     if (this.resourcePrefixName) form.append('ResourcePrefixName', this.resourcePrefixName);
