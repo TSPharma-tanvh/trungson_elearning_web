@@ -796,5 +796,6 @@
   "resourceDocumentNo": "Số tài liệu tài nguyên",
   "resourcePrefixName": "Tên tiền tố tài nguyên",
   "uploadResources": "Tải tài nguyên lên",
-  "syncing": "Đang đồng bộ hóa"
+  "syncing": "Đang đồng bộ hóa",
+  "contentCount": "Số lượng nội dung"
 }

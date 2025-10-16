@@ -11,6 +11,7 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -43,6 +44,8 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
   // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
   const [imageFullscreen, setImageFullscreen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewFullScreen, setPreviewFullScreen] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -273,6 +276,126 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
     );
   };
 
+  const renderFiles = () => {
+    if (!lesson.fileLessonRelation?.length) return null;
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title={t('attachedFiles')} />
+        <CardContent>
+          <Grid container spacing={2}>
+            {lesson.fileLessonRelation.map((r) => {
+              const res = r.fileResources;
+              if (!res) return null;
+
+              const isImage = res.type?.startsWith('image');
+              const isVideo = res.type?.startsWith('video');
+              const isOther = !isImage && !isVideo;
+
+              return (
+                <Grid item xs={12} sm={fullScreen ? 4 : 6} key={res.id}>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      paddingTop: '56.25%',
+                      borderRadius: 1,
+                      overflow: 'hidden',
+                      mb: 1,
+                    }}
+                  >
+                    {isImage ? (
+                      <Box
+                        component="img"
+                        src={res.resourceUrl}
+                        alt={res.name}
+                        onClick={() => {
+                          setPreviewUrl(res.resourceUrl ?? '');
+                        }}
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          cursor: 'pointer',
+                        }}
+                      />
+                    ) : null}
+
+                    {isVideo ? (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                        }}
+                      >
+                        <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
+                      </Box>
+                    ) : null}
+
+                    {isOther ? (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          backgroundColor: '#f5f5f5',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          href={res.resourceUrl ?? '#'}
+                          download={res.name}
+                          sx={{
+                            textTransform: 'none',
+                            fontWeight: 500,
+                          }}
+                        >
+                          {t('download')} {res.name}
+                        </Button>
+                      </Box>
+                    ) : null}
+                  </Box>
+
+                  <Typography variant="body2" noWrap>
+                    {res.name}
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
+
+          {/* Preview image modal */}
+          {previewUrl ? (
+            <ImagePreviewDialog
+              open={Boolean(previewUrl)}
+              onClose={() => {
+                setPreviewUrl(null);
+              }}
+              imageUrl={previewUrl}
+              title={t('imagePreview')}
+              fullscreen={previewFullScreen}
+              onToggleFullscreen={() => {
+                setPreviewFullScreen((prev) => !prev);
+              }}
+            />
+          ) : null}
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <>
       <Box sx={{ p: window.innerWidth < 600 ? 1 : 2 }}>
@@ -312,10 +435,10 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
         </Card>{' '}
         {renderCourse()}
         {renderVideoPreview()}
+        {renderFiles()}
         {renderCategory()}
         {renderQuizzes()}
         {renderEnrollmentCriteria()}
-        {renderUserProgress()}
       </Box>
       <ImagePreviewDialog
         open={imagePreviewOpen}

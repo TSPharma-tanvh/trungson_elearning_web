@@ -39,7 +39,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
       isRequired: false,
       disableStatus: StatusEnum.Enable,
       displayType: DisplayTypeEnum.Public,
-      categoryEnum: CategoryEnum.Path,
+      categoryEnum: CategoryEnum.Course,
       courseType: LearningModeEnum.Offline,
     })
   );

@@ -796,5 +796,6 @@
   "resourceDocumentNo": "Resource Document Number",
   "resourcePrefixName": "Resource Prefix Name",
   "uploadResources": "Upload Resources",
-  "syncing": "Syncing"
+  "syncing": "Syncing",
+  "contentCount": "Content Count"
 }

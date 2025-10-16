@@ -91,6 +91,10 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
           }
         }
 
+        const resourceIds =
+          lesson.fileLessonRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ??
+          [];
+
         const newFormData = new UpdateLessonRequest({
           id: lesson.id || '',
           name: lesson.name || '',
@@ -102,15 +106,23 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             lesson.lessonType !== undefined
               ? LearningModeEnum[lesson.lessonType as keyof typeof LearningModeEnum]
               : undefined,
+          contentType:
+            lesson.contentType !== undefined
+              ? LessonContentEnum[lesson.contentType as keyof typeof LessonContentEnum]
+              : undefined,
           quizIDs: lesson?.quizzes !== undefined ? lesson?.quizzes?.map((quiz) => quiz.id).join(',') : undefined,
           categoryID: lesson.categoryID,
           thumbnailID: lesson.thumbnailID,
           categoryEnum: CategoryEnum.Lesson,
-          contentType: LessonContentEnum.PDF,
           isDeleteOldThumbnail: false,
           videoID: lesson.videoID,
           videoChunk: videoFile ?? undefined,
           resources: resourceFiles ?? undefined,
+          resourceIDs:
+            lesson.fileLessonRelation
+              ?.map((item) => item.fileResources?.id)
+              .filter((id): id is string => Boolean(id))
+              .join(',') || undefined,
           uploadID: lesson.id,
         });
 
@@ -121,6 +133,10 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         setUploadProgress(0);
         setTotalChunks(0);
         setCurrentChunkIndex(0);
+        setSelectedResourceIds(
+          lesson.fileLessonRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ??
+            []
+        );
       }
     }
     void setupFormData();
@@ -282,10 +298,19 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       let lastResponse: ApiResponse | null = null;
 
       // thumbnail
-      const thumbnailPayload =
-        thumbnailSource === 'upload'
-          ? { ...formData, thumbnailID: undefined, thumbnail: thumbnailFile ?? undefined }
-          : { ...formData, thumbnail: undefined };
+      if (thumbnailSource === 'upload') {
+        formData.thumbnailID = undefined;
+      } else {
+        formData.thumbnail = undefined;
+      }
+
+      if (resourceSource === 'upload') {
+        formData.resourceIDs = undefined;
+        formData.resources = resourceFiles;
+      } else {
+        formData.resources = undefined;
+        formData.resourceIDs = selectedResourceIds.join(',');
+      }
 
       // video
       if (videoSource === 'upload' && videoFile && formData.contentType === LessonContentEnum.Video) {
@@ -300,7 +325,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
           const chunkFile = new File([chunk], videoFile.name, { type: videoFile.type });
 
           const chunkRequest = new UpdateLessonRequest({
-            ...thumbnailPayload,
+            ...formData,
             videoChunk: chunkFile,
             chunkIndex,
             totalChunks: totalChunksCount,
@@ -323,13 +348,16 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         }
       } else {
         // select video
-        const request = new UpdateLessonRequest({
-          ...thumbnailPayload,
-          videoChunk: undefined,
-          videoID: videoSource === 'select' ? formData.videoID : undefined,
-        });
+        // const request = new UpdateLessonRequest({
+        //   ...thumbnailPayload,
+        //   videoChunk: undefined,
+        //   videoID: videoSource === 'select' ? formData.videoID : undefined,
+        // });
 
-        const response = await onSubmit(request, { suppressSuccessMessage: false });
+        formData.videoChunk = undefined;
+        formData.videoID = videoSource === 'select' ? formData.videoID : undefined;
+
+        const response = await onSubmit(formData, { suppressSuccessMessage: false });
         lastResponse = response;
 
         if (lastResponse) {
@@ -371,6 +399,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       setCurrentChunkIndex(0);
       setThumbnailSource('select');
       setVideoSource('select');
+      setSelectedResourceIds([]);
     }
   }, [open]);
 
@@ -671,6 +700,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   status={StatusEnum.Enable}
                   value={selectedResourceIds}
                   onChange={(val) => {
+                    console.log('Selected Resource IDs:', val);
                     setSelectedResourceIds(val);
                   }}
                   label={t('resources')}

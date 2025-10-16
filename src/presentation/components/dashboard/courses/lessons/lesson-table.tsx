@@ -22,10 +22,7 @@ interface LessonTableProps {
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteLessonPaths: (ids: string[]) => Promise<void>;
-  onEditLesson: (
-    data: UpdateLessonRequest,
-    options?: { suppressSuccessMessage?: boolean }
-  ) => Promise<ApiResponse>;
+  onEditLesson: (data: UpdateLessonRequest, options?: { suppressSuccessMessage?: boolean }) => Promise<ApiResponse>;
   onEditSuccess: () => void;
 }
 
@@ -122,6 +119,8 @@ export default function LessonTable({
             <TableCell>{t('status')}</TableCell>
             <TableCell>{t('lessonType')}</TableCell>
             <TableCell>{t('category')}</TableCell>
+            <TableCell>{t('contentType')}</TableCell>
+            <TableCell>{t('contentCount')}</TableCell>
             <TableCell>{t('video')}</TableCell>
             <TableCell>{t('quiz')}</TableCell>
           </>
@@ -172,7 +171,8 @@ export default function LessonTable({
             </TableCell>
 
             <TableCell>{row.category?.categoryName}</TableCell>
-
+            <TableCell>{row.contentType}</TableCell>
+            <TableCell>{row.fileLessonRelation?.length}</TableCell>
             <TableCell>
               {row.video?.resourceUrl ? (
                 <IconButton

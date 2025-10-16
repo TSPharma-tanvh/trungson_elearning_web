@@ -1,5 +1,6 @@
 import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { EnrollmentCriteriaResponse } from '@/domain/models/enrollment/response/enrollment-criteria-response';
+import { FileLessonRelationResponse } from '@/domain/models/file/response/file-lesson-relation-response';
 import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
 import { QuizLessonResponse } from '@/domain/models/quiz/response/quiz-lesson-response';
 import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-lesson-response';
@@ -14,6 +15,7 @@ export class LessonDetailResponse {
   enablePlay = false;
   status = '';
   lessonType = '';
+  contentType?: string;
   enrollmentCriteriaID?: string;
   categoryID?: string;
   thumbnailID?: string;
@@ -26,6 +28,7 @@ export class LessonDetailResponse {
   video?: FileResourcesResponse;
   isRequired?: boolean;
   course?: CourseDetailResponse;
+  fileLessonRelation?: FileLessonRelationResponse[];
 
   constructor(init?: Partial<LessonDetailResponse>) {
     Object.assign(this, init);
@@ -40,6 +43,7 @@ export class LessonDetailResponse {
       enablePlay: json.enablePlay ?? false,
       status: json.status ?? '',
       lessonType: json.lessonType ?? '',
+      contentType: json.contentType,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
@@ -54,6 +58,7 @@ export class LessonDetailResponse {
       video: json.video ? FileResourcesResponse.fromJson(json.video) : undefined,
       isRequired: json.isRequired,
       course: json.course ? CourseDetailResponse.fromJson(json.course) : undefined,
+      fileLessonRelation: json.fileLessonRelation?.map((f: any) => FileLessonRelationResponse.fromJson(f)), // 🔹 map field mới
     });
   }
 
@@ -66,6 +71,7 @@ export class LessonDetailResponse {
       enablePlay: this.enablePlay,
       status: this.status,
       lessonType: this.lessonType,
+      contentType: this.contentType,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
@@ -78,6 +84,7 @@ export class LessonDetailResponse {
       video: this.video?.toJson(),
       isRequired: this.isRequired,
       course: this.course?.toJson(),
+      fileLessonRelation: this.fileLessonRelation?.map((f) => f.toJson()), // 🔹 serialize
     };
   }
 }
