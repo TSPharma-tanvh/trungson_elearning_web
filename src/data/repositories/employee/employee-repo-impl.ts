@@ -62,8 +62,8 @@ export class EmployeeRepoImpl implements EmployeeRepository {
 
   async syncEmployeeFromHrm(request: SyncEmployeeFromHrmRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.employee.syncHrm, {
-        params: request.toJson(),
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.employee.syncHrm, request.toJson(), {
+        timeout: 3600000,
       });
 
       const apiResponse = response.data;

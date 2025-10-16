@@ -5,7 +5,7 @@ import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employe
 import { SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
 import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { ArrowsClockwise } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,6 +23,7 @@ export default function Page(): React.JSX.Element {
   const [employee, setEmployee] = React.useState<EmployeeResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
+  const [syncLoading, setSyncLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -63,12 +64,15 @@ export default function Page(): React.JSX.Element {
   };
 
   const syncFromHrm = async (request: SyncEmployeeFromHrmRequest) => {
+    setSyncLoading(true); // 🔹 bật loading
     try {
       await employeeUsecase.syncEmployeeFromHrm(request);
       setShowCreateDialog(false);
       await fetchCategories();
     } catch (error) {
-      return undefined;
+      console.error(error);
+    } finally {
+      setSyncLoading(false); // 🔹 tắt loading
     }
   };
 
@@ -107,8 +111,15 @@ export default function Page(): React.JSX.Element {
           </Typography>
         </Stack>
         <Button
-          startIcon={<ArrowsClockwise fontSize="var(--icon-fontSize-md)" />}
+          startIcon={
+            syncLoading ? (
+              <CircularProgress size={18} color="inherit" />
+            ) : (
+              <ArrowsClockwise fontSize="var(--icon-fontSize-md)" />
+            )
+          }
           variant="contained"
+          disabled={syncLoading}
           onClick={() => {
             const request = new SyncEmployeeFromHrmRequest({
               username: '',
@@ -117,7 +128,7 @@ export default function Page(): React.JSX.Element {
             void syncFromHrm(request);
           }}
         >
-          {t('syncFromHRM')}
+          {syncLoading ? t('syncing') : t('syncFromHRM')}
         </Button>
       </Stack>
       <EmployeeFilters onFilter={handleFilter} />
