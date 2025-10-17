@@ -34,6 +34,8 @@ import { CategorySelect } from '@/presentation/components/shared/category/catego
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
+import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 import { QuizMultiSelect } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select';
 
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
@@ -76,6 +78,12 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   const [resourceSource, setResourceSource] = useState<'upload' | 'select'>('select');
   const [resourceFiles, setResourceFiles] = useState<File[]>([]);
   const [selectedResourceIds, setSelectedResourceIds] = useState<string[]>([]);
+  const [filePreviewOpen, setFilePreviewOpen] = useState(false);
+  const [filePreviewData, setFilePreviewData] = useState<{
+    url: string;
+    title?: string;
+    type?: string;
+  } | null>(null);
 
   useEffect(() => {
     async function setupFormData() {
@@ -120,7 +128,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
           resources: resourceFiles ?? undefined,
           resourceIDs:
             lesson.fileLessonRelation
-              ?.map((item) => item.fileResources?.id)
+              ?.map((item) => item.fileResourceId)
               .filter((id): id is string => Boolean(id))
               .join(',') || undefined,
           uploadID: lesson.id,
@@ -134,8 +142,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         setTotalChunks(0);
         setCurrentChunkIndex(0);
         setSelectedResourceIds(
-          lesson.fileLessonRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ??
-            []
+          lesson.fileLessonRelation?.map((item) => item.fileResourceId).filter((id): id is string => Boolean(id)) ?? []
         );
       }
     }
@@ -286,6 +293,11 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
     }
   };
 
+  const handleFilePreview = (url: string, title?: string, type?: string) => {
+    setFilePreviewData({ url, title, type });
+    setFilePreviewOpen(true);
+  };
+
   const handleSave = async () => {
     if (!formData?.id || !formData.name) {
       CustomSnackBar.showSnackbar(!formData ? t('formDataMissing') : t('requiredFieldsMissing'), 'error');
@@ -400,6 +412,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       setThumbnailSource('select');
       setVideoSource('select');
       setSelectedResourceIds([]);
+      setFilePreviewOpen(false);
+      setFilePreviewData(null);
     }
   }, [open]);
 
@@ -756,6 +770,36 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               )}
             </Grid>
 
+            {resourceFiles.length > 0 && resourceSource === 'upload' && (
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" mb={1}>
+                  {t('uploadedFiles')}
+                </Typography>
+                <Grid container spacing={1} direction="column">
+                  {resourceFiles.map((file, index) => (
+                    <Grid item key={index}>
+                      <Button
+                        variant="text"
+                        fullWidth
+                        onClick={() => {
+                          handleFilePreview(URL.createObjectURL(file), file.name, file.type);
+                        }}
+                        sx={{
+                          justifyContent: 'flex-start',
+                          textAlign: 'left',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {file.name}
+                      </Button>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            )}
+
             {formData.contentType === LessonContentEnum.Video ? (
               <>
                 {' '}
@@ -935,6 +979,38 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
           </Button>
         </Box>
       </DialogActions>
+
+      {filePreviewData?.url ? (
+        <>
+          {filePreviewData.type?.includes('image') ? (
+            <ImagePreviewDialog
+              open={filePreviewOpen}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
+              imageUrl={filePreviewData.url}
+              title={filePreviewData.title}
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
+            />
+          ) : filePreviewData.type?.includes('video') ? (
+            <VideoPreviewDialog
+              open={filePreviewOpen}
+              onClose={() => {
+                setFilePreviewOpen(false);
+              }}
+              videoUrl={filePreviewData.url}
+              title={filePreviewData.title}
+              fullscreen={fullScreen}
+              onToggleFullscreen={() => {
+                setFullScreen((prev) => !prev);
+              }}
+            />
+          ) : null}
+        </>
+      ) : null}
     </Dialog>
   );
 }

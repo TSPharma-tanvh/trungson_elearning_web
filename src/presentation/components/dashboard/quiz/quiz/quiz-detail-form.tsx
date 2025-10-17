@@ -13,6 +13,7 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -269,7 +270,18 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
                           alignItems: 'center',
                         }}
                       >
-                        <Typography variant="body2">{t('noPreview')}</Typography>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          href={res.resourceUrl ?? '#'}
+                          download={res.name}
+                          sx={{
+                            textTransform: 'none',
+                            fontWeight: 500,
+                          }}
+                        >
+                          {t('download')} {res.name}
+                        </Button>
                       </Box>
                     ) : null}
                   </Box>
