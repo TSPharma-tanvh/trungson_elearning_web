@@ -70,7 +70,6 @@ export default function Page(): React.JSX.Element {
       setShowCreateDialog(false);
       await fetchCategories();
     } catch (error) {
-      console.error(error);
     } finally {
       setSyncLoading(false); // 🔹 tắt loading
     }

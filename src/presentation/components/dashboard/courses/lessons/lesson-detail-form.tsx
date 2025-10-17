@@ -40,7 +40,7 @@ interface LessonDetailFormProps {
 function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; fullScreen: boolean }) {
   const { t } = useTranslation();
   const [quizExpandedLessons, setQuizExpandedLessons] = useState<Record<string, boolean>>({});
-  const [progressExpandedLessons, setProgressExpandedLessons] = useState<Record<string, boolean>>({});
+  // const [progressExpandedLessons, setProgressExpandedLessons] = useState<Record<string, boolean>>({});
   // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
   const [imageFullscreen, setImageFullscreen] = useState(false);
@@ -142,70 +142,70 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
     );
   };
 
-  const renderUserProgress = () => {
-    if (!lesson.userLessonProgress || lesson.userLessonProgress.length === 0) return null;
+  // const renderUserProgress = () => {
+  //   if (!lesson.userLessonProgress || lesson.userLessonProgress.length === 0) return null;
 
-    const toggleExpanded = (lessonId: string) => {
-      setProgressExpandedLessons((prev) => ({
-        ...prev,
-        [lessonId]: !prev[lessonId],
-      }));
-    };
+  //   const toggleExpanded = (lessonId: string) => {
+  //     setProgressExpandedLessons((prev) => ({
+  //       ...prev,
+  //       [lessonId]: !prev[lessonId],
+  //     }));
+  //   };
 
-    return (
-      <Box sx={{ mb: 2 }}>
-        <CardHeader title={t('userProgress')} sx={{ pl: 2, pb: 1, mb: 2 }} />
-        {lesson.userLessonProgress.map((progress, index) => {
-          const lessonId = progress.id ?? `${index}`;
-          const isExpanded = progressExpandedLessons[lessonId] || false;
+  //   return (
+  //     <Box sx={{ mb: 2 }}>
+  //       <CardHeader title={t('userProgress')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+  //       {lesson.userLessonProgress.map((progress, index) => {
+  //         const lessonId = progress.id ?? `${index}`;
+  //         const isExpanded = progressExpandedLessons[lessonId] || false;
 
-          return (
-            <Card
-              key={lessonId}
-              sx={{
-                mb: 3,
-                mx: window.innerWidth < 600 ? 1 : 2,
-              }}
-            >
-              <CardHeader
-                title={progress.id ?? `Quiz ${index + 1}`}
-                action={
-                  <IconButton
-                    onClick={() => {
-                      toggleExpanded(lessonId);
-                    }}
-                    sx={{
-                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.2s',
-                    }}
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
-                }
-                sx={{ py: 1 }}
-              />
-              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                  <Grid container spacing={2}>
-                    {renderField('progressId', progress.id)}
-                    {renderField('progressUserID', progress.userID)}
-                    {renderField('progressLessonID', progress.lessonID)}
-                    {renderField(
-                      'progressStartTime',
-                      DateTimeUtils.formatISODateStringToString(progress.startDate ?? '')
-                    )}
-                    {renderField('progressEndTime', DateTimeUtils.formatISODateStringToString(progress.endDate ?? ''))}
-                    {renderField('progressLastAccess', progress.lastAccess)}
-                    {renderField('progressStatus', progress.status)}
-                  </Grid>
-                </CardContent>
-              </Collapse>
-            </Card>
-          );
-        })}
-      </Box>
-    );
-  };
+  //         return (
+  //           <Card
+  //             key={lessonId}
+  //             sx={{
+  //               mb: 3,
+  //               mx: window.innerWidth < 600 ? 1 : 2,
+  //             }}
+  //           >
+  //             <CardHeader
+  //               title={progress.id ?? `Quiz ${index + 1}`}
+  //               action={
+  //                 <IconButton
+  //                   onClick={() => {
+  //                     toggleExpanded(lessonId);
+  //                   }}
+  //                   sx={{
+  //                     transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+  //                     transition: 'transform 0.2s',
+  //                   }}
+  //                 >
+  //                   <ExpandMoreIcon />
+  //                 </IconButton>
+  //               }
+  //               sx={{ py: 1 }}
+  //             />
+  //             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+  //               <CardContent>
+  //                 <Grid container spacing={2}>
+  //                   {renderField('progressId', progress.id)}
+  //                   {renderField('progressUserID', progress.userID)}
+  //                   {renderField('progressLessonID', progress.lessonID)}
+  //                   {renderField(
+  //                     'progressStartTime',
+  //                     DateTimeUtils.formatISODateStringToString(progress.startDate ?? '')
+  //                   )}
+  //                   {renderField('progressEndTime', DateTimeUtils.formatISODateStringToString(progress.endDate ?? ''))}
+  //                   {renderField('progressLastAccess', progress.lastAccess)}
+  //                   {renderField('progressStatus', progress.status)}
+  //                 </Grid>
+  //               </CardContent>
+  //             </Collapse>
+  //           </Card>
+  //         );
+  //       })}
+  //     </Box>
+  //   );
+  // };
 
   const renderVideoPreview = () => {
     if (!lesson.video?.resourceUrl) return null;

@@ -99,10 +99,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
           }
         }
 
-        const resourceIds =
-          lesson.fileLessonRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ??
-          [];
-
         const newFormData = new UpdateLessonRequest({
           id: lesson.id || '',
           name: lesson.name || '',
@@ -714,7 +710,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   status={StatusEnum.Enable}
                   value={selectedResourceIds}
                   onChange={(val) => {
-                    console.log('Selected Resource IDs:', val);
                     setSelectedResourceIds(val);
                   }}
                   label={t('resources')}
