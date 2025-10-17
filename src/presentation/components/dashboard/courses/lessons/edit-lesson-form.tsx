@@ -547,7 +547,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<LessonContentEnum>
                 label={t('contentType')}
                 value={(formData.contentType as LessonContentEnum) ?? ''}

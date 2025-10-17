@@ -354,7 +354,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               />
             </Grid>
 
-            {course.pathId === undefined ? (
+            {/* {course.pathId === undefined ? (
               <Grid item xs={12}>
                 <EnrollmentMultiSelect
                   enrollmentUsecase={enrollUsecase}
@@ -368,7 +368,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                   disabled={isSubmitting}
                 />
               </Grid>
-            ) : null}
+            ) : null} */}
 
             <Grid item xs={12}>
               <CategorySelect
