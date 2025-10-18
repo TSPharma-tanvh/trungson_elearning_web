@@ -6,12 +6,8 @@ export class GetQuizRequest {
   canStartOver?: boolean;
   isRequired?: boolean;
   type?: QuizTypeEnum;
-  minTime?: string;
+  minTime?: string; // ISO time string or "HH:mm:ss"
   maxTime?: string;
-  startDateFrom?: Date;
-  startDateTo?: Date;
-  endTimeFrom?: Date;
-  endTimeTo?: Date;
   title?: string;
   description?: string;
   hasImage?: boolean;
@@ -28,20 +24,12 @@ export class GetQuizRequest {
   static fromJson(json: any): GetQuizRequest {
     const dto = new GetQuizRequest();
     Object.assign(dto, json);
-    dto.startDateFrom = json.startDateFrom ? new Date(json.startDateFrom) : undefined;
-    dto.startDateTo = json.startDateTo ? new Date(json.startDateTo) : undefined;
-    dto.endTimeFrom = json.endTimeFrom ? new Date(json.endTimeFrom) : undefined;
-    dto.endTimeTo = json.endTimeTo ? new Date(json.endTimeTo) : undefined;
     return dto;
   }
 
   toJson(): any {
     return {
       ...this,
-      startDateFrom: this.startDateFrom?.toISOString(),
-      startDateTo: this.startDateTo?.toISOString(),
-      endTimeFrom: this.endTimeFrom?.toISOString(),
-      endTimeTo: this.endTimeTo?.toISOString(),
     };
   }
 }

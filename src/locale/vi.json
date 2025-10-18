@@ -797,5 +797,10 @@
   "resourcePrefixName": "Tên tiền tố tài nguyên",
   "uploadResources": "Tải tài nguyên lên",
   "syncing": "Đang đồng bộ hóa",
-  "contentCount": "Số lượng nội dung"
+  "contentCount": "Số lượng nội dung",
+  "enrollmentType": "Loại ghi danh",
+  "hasLesson": "Có bài học",
+  "hasVideo": "Có Video",
+  "hasFileResource": "Có tài nguyên tệp",
+  "pDF": "PDF"
 }

@@ -797,5 +797,10 @@
   "resourcePrefixName": "Resource Prefix Name",
   "uploadResources": "Upload Resources",
   "syncing": "Syncing",
-  "contentCount": "Content Count"
+  "contentCount": "Content Count",
+  "enrollmentType": "Enrollment Type",
+  "hasLesson": "Has Lesson",
+  "hasVideo": "Has Video",
+  "hasFileResource": "Has File Resource",
+  "pDF": "PDF"
 }

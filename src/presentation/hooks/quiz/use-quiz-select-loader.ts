@@ -1,18 +1,26 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type Dispatch, type RefObject, type SetStateAction } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import type { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import type { QuizListResult } from '@/domain/models/quiz/response/quiz-result';
 import type { QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
+import { type QuizTypeEnum } from '@/utils/enum/core-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
+
+interface QuizFilters {
+  canStartOver?: boolean;
+  isRequired?: boolean;
+  hasLesson?: boolean;
+  type?: QuizTypeEnum;
+}
 
 interface UseQuizSelectLoaderProps {
   quizUsecase: QuizUsecase | null;
   isOpen: boolean;
-
   searchText?: string;
+  filters?: QuizFilters;
 }
 
 interface QuizSelectLoaderState {
@@ -22,9 +30,9 @@ interface QuizSelectLoaderState {
   isSelectOpen: boolean;
   pageNumber: number;
   totalPages: number;
-  listRef: RefObject<HTMLUListElement>;
-  setIsSelectOpen: Dispatch<SetStateAction<boolean>>;
-  setSearchText: Dispatch<SetStateAction<string>>;
+  listRef: React.RefObject<HTMLUListElement>;
+  setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSearchText: React.Dispatch<React.SetStateAction<string>>;
   searchText: string;
   loadQuizzes: (page: number, reset?: boolean) => Promise<void>;
 }
@@ -32,8 +40,8 @@ interface QuizSelectLoaderState {
 export function useQuizSelectLoader({
   quizUsecase,
   isOpen,
-
   searchText: initialSearchText = '',
+  filters = {},
 }: UseQuizSelectLoaderProps): QuizSelectLoaderState {
   const [quizzes, setQuizzes] = useState<QuizResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -57,13 +65,17 @@ export function useQuizSelectLoader({
           searchText: searchText || undefined,
           pageNumber: page,
           pageSize: 10,
+          ...filters,
         });
 
         const result: QuizListResult = await quizUsecase.getQuizListInfo(request);
 
         if (isOpen) {
-          setQuizzes((prev) => (reset || page === 1 ? result.quizzes : [...prev, ...result.quizzes]));
-          setHasMore(result.quizzes.length > 0 && result.totalRecords > quizzes.length + result.quizzes.length);
+          setQuizzes((prev: QuizResponse[]) => {
+            const newQuizzes = reset || page === 1 ? result.quizzes : [...prev, ...result.quizzes];
+            setHasMore(result.quizzes.length > 0 && result.totalRecords > newQuizzes.length);
+            return newQuizzes;
+          });
           setTotalPages(Math.ceil(result.totalRecords / 10));
           setPageNumber(page);
         }
@@ -74,10 +86,11 @@ export function useQuizSelectLoader({
         if (isOpen) setLoadingQuizzes(false);
       }
     },
-    [quizUsecase, loadingQuizzes, isOpen, searchText, quizzes.length]
+    [quizUsecase, isOpen, searchText, filters] // Removed loadingQuizzes
   );
 
   useEffect(() => {
+    console.log('useEffect triggered with:', { isOpen, filters });
     if (isOpen) {
       setQuizzes([]);
       setPageNumber(1);
@@ -96,7 +109,7 @@ export function useQuizSelectLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen]);
+  }, [isOpen, filters, loadQuizzes]);
 
   return {
     quizzes,

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
@@ -10,6 +10,7 @@ import {
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
+  LessonContentEnum,
   ScheduleStatusEnum,
   StatusDisplayNames,
   StatusEnum,
@@ -27,6 +28,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   ListItemText,
@@ -40,6 +42,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { camelCase } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -56,10 +59,12 @@ interface LessonSingleSelectDialogProps extends Omit<SelectProps<string>, 'value
 }
 
 const filterOptions = {
-  LessonType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
+  lessonType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
+  contentType: [LessonContentEnum.PDF, LessonContentEnum.Video, undefined],
+  status: [StatusEnum.Enable, StatusEnum.Disable, undefined],
 };
 
 export function LessonSingleSelectDialog({
@@ -79,31 +84,53 @@ export function LessonSingleSelectDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useLessonSelectDebounce(localSearchText, 300);
   const [selectedLessonMap, setSelectedLessonMap] = useState<Record<string, LessonDetailResponse>>({});
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [selectedLesson, setSelectedLesson] = React.useState<LessonDetailResponse | null>(null);
-  
-  const {
-    lessons,
-    loadingLessons,
-    pageNumber,
-    totalPages,
-    listRef,
-    setSearchText,
-    setLessonType,
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
+  const [lessonType, setLessonType] = useState<LearningModeEnum | undefined>(undefined);
+  const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(undefined);
+  const [contentType, setContentType] = useState<LessonContentEnum | undefined>(undefined);
+  const [status, setStatus] = useState<StatusEnum | undefined>(undefined);
+  const [hasVideo, setHasVideo] = useState<boolean | undefined>(undefined);
+  const [hasFileResource, setHasFileResource] = useState<boolean | undefined>(undefined);
 
-    setDisableStatus,
-    lessonType,
-    disableStatus,
-    loadLessons,
-  } = useLessonSelectLoader({
-    lessonUsecase,
-    isOpen: dialogOpen,
-    searchText: debouncedSearchText,
-  });
+  const filters = useMemo(
+    () => ({
+      lessonType,
+      disableStatus,
+      contentType,
+      status,
+      hasVideo,
+      hasFileResource,
+    }),
+    [lessonType, disableStatus, contentType, status, hasVideo, hasFileResource]
+  );
+
+  const { lessons, loadingLessons, pageNumber, totalPages, listRef, setSearchText, loadLessons } =
+    useLessonSelectLoader({
+      lessonUsecase,
+      isOpen: dialogOpen,
+      searchText: debouncedSearchText,
+      filters,
+    });
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Handlers
+  const fetchSelectedLessons = useCallback(async () => {
+    if (!value) return;
+    const idsToFetch = [value].filter((id) => !selectedLessonMap[id]);
+    await Promise.all(
+      idsToFetch.map(async (id) => {
+        try {
+          const lesson = await lessonUsecase.getLessonById(id);
+          setSelectedLessonMap((prev) => ({ ...prev, [id]: lesson }));
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
+        }
+      })
+    );
+  }, [value, lessonUsecase, selectedLessonMap]);
+
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
   };
@@ -121,54 +148,25 @@ export function LessonSingleSelectDialog({
   const handleClearFilters = () => {
     setLocalSearchText('');
     setLessonType(undefined);
-
     setDisableStatus(undefined);
+    setContentType(undefined);
+    setStatus(undefined);
+    setHasVideo(undefined);
+    setHasFileResource(undefined);
   };
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (LessonUsecase && !loadingLessons) {
-      void loadLessons(newPage, true);
-      if (listRef.current) {
-        listRef.current.scrollTop = 0;
-      }
-    }
+  const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
+    void loadLessons(newPage, true);
+    listRef.current?.scrollTo(0, 0);
   };
-
-  // Effects
-  useEffect(() => {
-    setSearchText(debouncedSearchText);
-  }, [debouncedSearchText, setSearchText]);
 
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
 
   useEffect(() => {
-    if (lessonUsecase && value.length > 0) {
-      const fetchSelectedLessons = async () => {
-        try {
-          const request = new GetLessonRequest({});
-          const result = await lessonUsecase.getLessonListInfo(request);
-          const newMap = { ...selectedLessonMap };
-          let updated = false;
-          for (const lesson of result.Lessons) {
-            if (lesson.id && !newMap[lesson.id]) {
-              newMap[lesson.id] = lesson;
-              updated = true;
-            }
-          }
-
-          if (updated) {
-            setSelectedLessonMap(newMap);
-          }
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
-        }
-      };
-      void fetchSelectedLessons();
-    }
-  }, [lessonUsecase, value, selectedLessonMap]);
+    void fetchSelectedLessons();
+  }, [fetchSelectedLessons]);
 
   useEffect(() => {
     if (dialogOpen) {
@@ -189,16 +187,15 @@ export function LessonSingleSelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="Lesson-select-label">{t(label)}</InputLabel>
+        <InputLabel id="lesson-select-label">{t(label)}</InputLabel>
         <Select
-          labelId="Lesson-select-label"
-          multiple
+          labelId="lesson-select-label"
           value={value}
           input={
             <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedLessonMap[selected]?.name || 'No Course Selected'}
+          renderValue={(selected) => selectedLessonMap[selected]?.name || 'No Lesson Selected'}
           open={false}
           {...selectProps}
         />
@@ -209,12 +206,7 @@ export function LessonSingleSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectLessons')}</Typography>
             <Box>
-              <IconButton
-                onClick={() => {
-                  setIsFullscreen((prev) => !prev);
-                }}
-                size="small"
-              >
+              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -222,72 +214,94 @@ export function LessonSingleSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder="Search Lessons..." />
+          <CustomSearchInput
+            value={localSearchText}
+            onChange={(val) => {
+              setLocalSearchText(val);
+              setSearchText(val);
+            }}
+            placeholder={t('searchLessons')}
+          />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('lessonType')}</InputLabel>
               <Select
                 value={lessonType !== undefined ? String(lessonType) : ''}
-                onChange={(e: SelectChangeEvent) => {
-                  setLessonType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
-                }}
+                onChange={(e: SelectChangeEvent) =>
+                  setLessonType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
+                }
                 label={t('lessonType')}
               >
-                {filterOptions.LessonType.map((opt) => (
+                {filterOptions.lessonType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : t('all')}
+                    {t(opt !== undefined ? LearningModeDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Display Type</InputLabel>
-              <Select
-                value={displayType !== undefined ? String(displayType) : ''}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined)
-                }
-                label="Display Type"
-              >
-                {filterOptions.displayType.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? DisplayTypeDisplayNames[opt] : 'All'}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
-            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Schedule Status</InputLabel>
-              <Select
-                value={scheduleStatus ?? ''}
-                onChange={(e) =>
-                  setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined)
-                }
-                label="Schedule Status"
-              >
-                {filterOptions.scheduleStatus.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'All'}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
+
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus ?? ''}
-                onChange={(e) => {
-                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
-                }}
+                onChange={(e) => setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
                 label={t('disableStatus')}
               >
                 {filterOptions.disableStatus.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? StatusDisplayNames[opt] : t('all')}
+                    {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('contentType')}</InputLabel>
+              <Select
+                value={contentType !== undefined ? String(contentType) : ''}
+                onChange={(e) =>
+                  setContentType(e.target.value !== '' ? (Number(e.target.value) as LessonContentEnum) : undefined)
+                }
+                label={t('contentType')}
+              >
+                {filterOptions.contentType.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {t(opt !== undefined ? camelCase(LessonContentEnum[opt]) : 'all')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('status')}</InputLabel>
+              <Select
+                value={status ?? ''}
+                onChange={(e) => setStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
+                label={t('status')}
+              >
+                {filterOptions.status.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={hasVideo ?? false}
+                  onChange={(e) => setHasVideo(e.target.checked ? true : undefined)}
+                />
+              }
+              label={t('hasVideo')}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={hasFileResource ?? false}
+                  onChange={(e) => setHasFileResource(e.target.checked ? true : undefined)}
+                />
+              }
+              label={t('hasFileResource')}
+            />
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>
@@ -304,9 +318,8 @@ export function LessonSingleSelectDialog({
                   setLocalValue(lesson.id ?? '');
                 }}
               >
-                <Checkbox checked={localValue.includes(lesson.id)} />
+                <Checkbox checked={localValue === lesson.id} />
                 <ListItemText primary={lesson.name} />
-
                 <IconButton
                   size="small"
                   onClick={(e) => {

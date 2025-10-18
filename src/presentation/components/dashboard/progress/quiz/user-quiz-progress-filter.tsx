@@ -24,12 +24,16 @@ export function UserQuizProgressFilters({
 }): React.JSX.Element {
   const { t } = useTranslation();
 
+  // Form state
   const [form, setForm] = React.useState<Partial<GetUserQuizProgressRequest>>({
     searchText: '',
     progressStatus: undefined,
     quizId: undefined,
     enrollmentCriteriaId: undefined,
   });
+
+  // Loại Enrollment: Path (mặc định) hoặc Quiz
+  const [selectedCategory, setSelectedCategory] = React.useState<CategoryEnum>(CategoryEnum.Path);
 
   const handleChange = <K extends keyof GetUserQuizProgressRequest>(key: K, value: GetUserQuizProgressRequest[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -51,6 +55,7 @@ export function UserQuizProgressFilters({
       quizId: undefined,
       enrollmentCriteriaId: undefined,
     });
+    setSelectedCategory(CategoryEnum.Path);
     onFilter(new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10 }));
   };
 
@@ -67,9 +72,7 @@ export function UserQuizProgressFilters({
         {/* Search */}
         <CustomSearchFilter
           value={form.searchText ?? ''}
-          onChange={(val) => {
-            handleChange('searchText', val);
-          }}
+          onChange={(val) => handleChange('searchText', val)}
           placeholder={t('searchProgress')}
         />
 
@@ -77,9 +80,7 @@ export function UserQuizProgressFilters({
         <CustomSelectFilter<UserQuizProgressEnum>
           label={t('status')}
           value={form.progressStatus}
-          onChange={(val) => {
-            handleChange('progressStatus', val);
-          }}
+          onChange={(val) => handleChange('progressStatus', val)}
           options={CoreEnumUtils.getEnumOptions(UserQuizProgressEnum)}
         />
 
@@ -87,23 +88,36 @@ export function UserQuizProgressFilters({
         <QuizSingleFilter
           quizUsecase={quizUsecase}
           value={form.quizId ?? ''}
-          onChange={(value) => {
-            handleChange('quizId', value);
-          }}
+          onChange={(value) => handleChange('quizId', value)}
           disabled={false}
         />
 
-        {/* Enrollment Criteria */}
+        {/* Enrollment */}
+        <CustomSelectFilter<CategoryEnum>
+          label={t('enrollmentType')}
+          value={selectedCategory}
+          onChange={(val) => {
+            if (val !== undefined) {
+              setSelectedCategory(val);
+              handleChange('enrollmentCriteriaId', undefined);
+            }
+          }}
+          options={[
+            { label: 'Path', value: CategoryEnum.Path },
+            { label: 'Quiz', value: CategoryEnum.Quiz },
+          ]}
+          withAllOption={false}
+        />
+
         <EnrollmentSingleFilter
           enrollmentUsecase={enrollUsecase}
           value={form.enrollmentCriteriaId ?? ''}
-          onChange={(value: string) => {
-            handleChange('enrollmentCriteriaId', value);
-          }}
+          onChange={(value: string) => handleChange('enrollmentCriteriaId', value)}
           disabled={false}
-          categoryEnum={CategoryEnum.Quiz}
+          categoryEnum={selectedCategory}
         />
 
+        {/* Buttons */}
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
           {t('filter')}
         </Button>

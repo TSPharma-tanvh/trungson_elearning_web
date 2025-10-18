@@ -4,16 +4,24 @@ import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-req
 import type { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import type { LessonDetailListResult } from '@/domain/models/lessons/response/lesson-detail-result';
 import type { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
-import type { LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import type { LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
+
+interface LessonFilters {
+  lessonType?: LearningModeEnum;
+  disableStatus?: StatusEnum;
+  contentType?: LessonContentEnum;
+  status?: StatusEnum;
+  hasVideo?: boolean;
+  hasFileResource?: boolean;
+}
 
 interface UseLessonSelectLoaderProps {
   lessonUsecase: LessonUsecase | null;
   isOpen: boolean;
-  disableStatus?: StatusEnum;
-  lessonType?: LearningModeEnum;
   searchText?: string;
+  filters?: LessonFilters;
 }
 
 interface LessonSelectLoaderState {
@@ -26,20 +34,15 @@ interface LessonSelectLoaderState {
   listRef: React.RefObject<HTMLUListElement>;
   setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
-  setLessonType: React.Dispatch<React.SetStateAction<LearningModeEnum | undefined>>;
-  setDisableStatus: React.Dispatch<React.SetStateAction<StatusEnum | undefined>>;
   searchText: string;
-  lessonType: LearningModeEnum | undefined;
-  disableStatus: StatusEnum | undefined;
   loadLessons: (page: number, reset?: boolean) => Promise<void>;
 }
 
 export function useLessonSelectLoader({
   lessonUsecase,
   isOpen,
-  disableStatus: initialDisableStatus,
-  lessonType: initialLessonType,
   searchText: initialSearchText = '',
+  filters = {},
 }: UseLessonSelectLoaderProps): LessonSelectLoaderState {
   const [lessons, setLessons] = useState<LessonDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -47,11 +50,7 @@ export function useLessonSelectLoader({
   const [hasMore, setHasMore] = useState(true);
   const [loadingLessons, setLoadingLessons] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
-
   const [searchText, setSearchText] = useState(initialSearchText);
-  const [lessonType, setLessonType] = useState<LearningModeEnum | undefined>(initialLessonType);
-  const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(initialDisableStatus);
-
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -64,17 +63,24 @@ export function useLessonSelectLoader({
 
       try {
         const request = new GetLessonRequest({
-          name: searchText || undefined,
-          status: disableStatus,
-          lessonType,
+          searchText: searchText || undefined,
+          status: filters.status,
+          lessonType: filters.lessonType,
+          contentType: filters.contentType,
+          hasVideo: filters.hasVideo,
+          hasFileResource: filters.hasFileResource,
+
           pageNumber: page,
           pageSize: 10,
         });
 
         const result: LessonDetailListResult = await lessonUsecase.getLessonListInfo(request);
         if (isOpen) {
-          setLessons((prev) => (reset || page === 1 ? result.Lessons : [...prev, ...result.Lessons]));
-          setHasMore(result.Lessons.length > 0 && result.totalRecords > lessons.length + result.Lessons.length);
+          setLessons((prev: LessonDetailResponse[]) => {
+            const newLessons = reset || page === 1 ? result.Lessons : [...prev, ...result.Lessons];
+            setHasMore(result.Lessons.length > 0 && result.totalRecords > newLessons.length);
+            return newLessons;
+          });
           setTotalPages(Math.ceil(result.totalRecords / 10));
           setPageNumber(page);
         }
@@ -85,10 +91,11 @@ export function useLessonSelectLoader({
         if (isOpen) setLoadingLessons(false);
       }
     },
-    [lessonUsecase, loadingLessons, isOpen, searchText, disableStatus, lessonType, lessons.length]
+    [lessonUsecase, isOpen, searchText, filters]
   );
 
   useEffect(() => {
+    console.log('useEffect triggered with:', { isOpen, filters, searchText });
     if (isOpen) {
       setLessons([]);
       setPageNumber(1);
@@ -107,7 +114,7 @@ export function useLessonSelectLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen]);
+  }, [isOpen, filters, searchText, loadLessons]);
 
   return {
     lessons,
@@ -119,11 +126,7 @@ export function useLessonSelectLoader({
     listRef,
     setIsSelectOpen,
     setSearchText,
-    setLessonType,
-    setDisableStatus,
     searchText,
-    lessonType,
-    disableStatus,
     loadLessons,
   };
 }

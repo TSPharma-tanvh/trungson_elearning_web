@@ -67,7 +67,9 @@ export class CreateUserQuizRequest {
     const form = new FormData();
     form.append('quizID', this.quizID);
     if (this.userIDs) {
-      this.userIDs.forEach((uid) => { form.append('userIDs', uid); });
+      this.userIDs.forEach((uid) => {
+        form.append('userIDs', uid);
+      });
     }
     form.append('enrollType', this.enrollType.toString());
     if (this.userFile) form.append('userFile', this.userFile);

@@ -2,9 +2,16 @@
 
 import * as React from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import { CoreEnumUtils, LearningModeEnum } from '@/utils/enum/core-enum';
-import { StatusEnum } from '@/utils/enum/path-enum';
-import { Button, Card, Stack } from '@mui/material';
+import {
+  CoreEnumUtils,
+  DisplayTypeEnum,
+  LearningModeEnum,
+  LessonContentEnum,
+  ScheduleStatusEnum,
+  StatusEnum,
+} from '@/utils/enum/core-enum';
+import { Button, Card, Checkbox, FormControlLabel, Stack } from '@mui/material';
+import { camelCase } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
@@ -15,13 +22,21 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
 
   const [searchText, setSearchText] = React.useState('');
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
-  const [lessonsType, setLessonsType] = React.useState<LearningModeEnum | undefined>(undefined);
+  const [lessonType, setLessonType] = React.useState<LearningModeEnum | undefined>(undefined);
+  const [contentType, setContentType] = React.useState<LessonContentEnum | undefined>(undefined);
+  const [disableStatus, setDisableStatus] = React.useState<StatusEnum | undefined>(undefined);
+  const [hasVideo, setHasVideo] = React.useState<boolean | undefined>(undefined);
+  const [hasFileResource, setHasFileResource] = React.useState<boolean | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetLessonRequest({
       searchText: searchText || undefined,
       status,
-      lessonType: lessonsType,
+      lessonType,
+      contentType,
+      hasVideo,
+      hasFileResource,
+
       pageNumber: 1,
       pageSize: 10,
     });
@@ -32,7 +47,11 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
   const handleClear = () => {
     setSearchText('');
     setStatus(undefined);
-    setLessonsType(undefined);
+    setLessonType(undefined);
+    setContentType(undefined);
+    setDisableStatus(undefined);
+    setHasVideo(undefined);
+    setHasFileResource(undefined);
     onFilter(new GetLessonRequest({ pageNumber: 1, pageSize: 10 }));
   };
 
@@ -53,17 +72,60 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
         />
 
         <CustomSelectFilter<LearningModeEnum>
-          label={t('type')}
-          value={lessonsType}
-          onChange={setLessonsType}
-          options={CoreEnumUtils.getEnumOptions(LearningModeEnum)}
+          label={t('lessonType')}
+          value={lessonType}
+          onChange={setLessonType}
+          options={CoreEnumUtils.getEnumOptions(LearningModeEnum).map((opt) => ({
+            value: opt.value,
+            label: t(opt.label),
+          }))}
         />
 
         <CustomSelectFilter<StatusEnum>
           label={t('status')}
           value={status}
           onChange={setStatus}
-          options={CoreEnumUtils.getEnumOptions(StatusEnum)}
+          options={CoreEnumUtils.getEnumOptions(StatusEnum).map((opt) => ({
+            value: opt.value,
+            label: t(opt.label),
+          }))}
+        />
+
+        <CustomSelectFilter<LessonContentEnum>
+          label={t('contentType')}
+          value={contentType}
+          onChange={setContentType}
+          options={CoreEnumUtils.getEnumOptions(LessonContentEnum).map((opt) => ({
+            value: opt.value,
+            label: t(opt.label.toLowerCase()),
+          }))}
+        />
+
+        <CustomSelectFilter<StatusEnum>
+          label={t('disableStatus')}
+          value={disableStatus}
+          onChange={setDisableStatus}
+          options={CoreEnumUtils.getEnumOptions(StatusEnum).map((opt) => ({
+            value: opt.value,
+            label: t(opt.label),
+          }))}
+        />
+
+        <FormControlLabel
+          control={
+            <Checkbox checked={hasVideo ?? false} onChange={(e) => setHasVideo(e.target.checked ? true : undefined)} />
+          }
+          label={t('hasVideo')}
+        />
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={hasFileResource ?? false}
+              onChange={(e) => setHasFileResource(e.target.checked ? true : undefined)}
+            />
+          }
+          label={t('hasFileResource')}
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
+import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import { InfoOutlined, Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -17,6 +18,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   ListItemText,
@@ -26,7 +28,6 @@ import {
   Select,
   Typography,
   useMediaQuery,
-  type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -34,8 +35,9 @@ import { useTranslation } from 'react-i18next';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import QuizDetailForm from '@/presentation/components/dashboard/quiz/quiz/quiz-detail-form';
+import { camelCase } from 'lodash';
 
-interface QuizSingleFilterProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
+interface QuizSingleFilterProps {
   quizUsecase: QuizUsecase;
   value: string;
   onChange: (value: string) => void;
@@ -51,12 +53,11 @@ export function QuizSingleFilter({
   label = 'quiz',
   disabled = false,
   maxWidth = 200,
-
-  ...selectProps
 }: QuizSingleFilterProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string>(value);
@@ -65,19 +66,27 @@ export function QuizSingleFilter({
   const [viewOpen, setViewOpen] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<QuizResponse | null>(null);
 
+  const [canStartOver, setCanStartOver] = useState<boolean | undefined>(undefined);
+  const [isRequired, setIsRequired] = useState<boolean | undefined>(undefined);
+  const [hasLesson, setHasLesson] = useState<boolean | undefined>(undefined);
+  const [quizType, setQuizType] = useState<QuizTypeEnum | undefined>(undefined);
+
+  const filters = useMemo(
+    () => ({
+      canStartOver,
+      isRequired,
+      hasLesson,
+      type: quizType,
+    }),
+    [canStartOver, isRequired, hasLesson, quizType]
+  );
+
   const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, searchText, listRef, loadQuizzes } =
     useQuizSelectLoader({
       quizUsecase,
       isOpen: dialogOpen,
+      filters,
     });
-
-  const isFull = isSmallScreen || isFullscreen;
-
-  useEffect(() => {
-    if (localSearchText !== searchText) {
-      setSearchText(localSearchText);
-    }
-  }, [localSearchText, searchText, setSearchText]);
 
   useEffect(() => {
     setLocalValue(value);
@@ -93,11 +102,11 @@ export function QuizSingleFilter({
         CustomSnackBar.showSnackbar(message, 'error');
       }
     }
-  }, [value, quizUsecase, selectedQuizMap]);
+  }, [value, quizUsecase]);
 
   useEffect(() => {
     void fetchQuizDetails();
-  }, [fetchQuizDetails]);
+  }, [value]);
 
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
@@ -120,7 +129,10 @@ export function QuizSingleFilter({
 
   const handleClearFilters = () => {
     setLocalSearchText('');
-    // setDisableStatus(undefined);
+    setCanStartOver(undefined);
+    setIsRequired(undefined);
+    setHasLesson(undefined);
+    setQuizType(undefined);
   };
 
   return (
@@ -170,7 +182,6 @@ export function QuizSingleFilter({
               borderColor: 'var(--mui-palette-secondary-main)',
             },
           }}
-          {...selectProps}
         >
           <MenuItem value="" disabled>
             {t('selectQuiz')}
@@ -178,17 +189,19 @@ export function QuizSingleFilter({
         </Select>
       </FormControl>
 
-      <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
+      <Dialog
+        open={dialogOpen}
+        onClose={handleClose}
+        fullWidth
+        fullScreen={isSmallScreen || isFullscreen}
+        maxWidth="sm"
+        scroll="paper"
+      >
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectQuiz')}</Typography>
             <Box>
-              <IconButton
-                onClick={() => {
-                  setIsFullscreen(!isFullscreen);
-                }}
-                size="small"
-              >
+              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
                 {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -201,11 +214,59 @@ export function QuizSingleFilter({
             value={localSearchText}
             onChange={(val) => {
               setLocalSearchText(val);
+              setSearchText(val);
             }}
             placeholder={t('searchQuizzes')}
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={canStartOver ?? false}
+                  onChange={(e) => setCanStartOver(e.target.checked ? true : undefined)}
+                />
+              }
+              label={t('canStartOver')}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isRequired ?? false}
+                  onChange={(e) => setIsRequired(e.target.checked ? true : undefined)}
+                />
+              }
+              label={t('isRequired')}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={hasLesson ?? false}
+                  onChange={(e) => setHasLesson(e.target.checked ? true : undefined)}
+                />
+              }
+              label={t('hasLesson')}
+            />
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <InputLabel>{t('quizType')}</InputLabel>
+              <Select
+                value={quizType ?? ''}
+                onChange={(e) => setQuizType(e.target.value === '' ? undefined : (e.target.value as QuizTypeEnum))}
+                input={<OutlinedInput label={t('quizType')} />}
+              >
+                <MenuItem value="">{t('all')}</MenuItem>
+                {Object.keys(QuizTypeEnum)
+                  .filter((key) => isNaN(Number(key)))
+                  .map((key) => {
+                    const camelKey = camelCase(key);
+                    return (
+                      <MenuItem key={key} value={QuizTypeEnum[key as keyof typeof QuizTypeEnum]}>
+                        {t(camelKey)}
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>
@@ -219,9 +280,7 @@ export function QuizSingleFilter({
                 key={item.id}
                 value={item.id}
                 selected={localValue === item.id}
-                onClick={() => {
-                  setLocalValue(item.id ?? '');
-                }}
+                onClick={() => setLocalValue(item.id ?? '')}
               >
                 <Checkbox checked={localValue === item.id} />
                 <ListItemText primary={item.title} />
@@ -238,7 +297,6 @@ export function QuizSingleFilter({
                 </IconButton>
               </MenuItem>
             ))}
-
             {loadingQuizzes ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('loading')}
@@ -246,7 +304,7 @@ export function QuizSingleFilter({
             ) : null}
             {!loadingQuizzes && quizzes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
-                {t('empty')}{' '}
+                {t('empty')}
               </Typography>
             )}
           </Box>
@@ -274,13 +332,7 @@ export function QuizSingleFilter({
       </Dialog>
 
       {selectedQuiz ? (
-        <QuizDetailForm
-          open={viewOpen}
-          quizId={selectedQuiz.id ?? null}
-          onClose={() => {
-            setViewOpen(false);
-          }}
-        />
+        <QuizDetailForm open={viewOpen} quizId={selectedQuiz.id ?? null} onClose={() => setViewOpen(false)} />
       ) : null}
     </>
   );
