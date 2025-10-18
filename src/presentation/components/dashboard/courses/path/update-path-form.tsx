@@ -286,7 +286,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                   handleChange('enrollmentCourseIDs', value.join(','));
                 }}
                 disabled={isSubmitting}
-                pathID={courseFormData.id}
+                // pathID={courseFormData.id}
               />
             </Grid>
             <Grid item xs={12} sm={6}>

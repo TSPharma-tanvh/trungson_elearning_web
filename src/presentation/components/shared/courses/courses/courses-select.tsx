@@ -7,10 +7,13 @@ import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
 import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
 import {
+  DisplayTypeDisplayNames,
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
+  ScheduleStatusDisplayNames,
   ScheduleStatusEnum,
+  StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
@@ -59,6 +62,7 @@ const filterOptions = {
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
+  hasPath: [undefined, true, false],
 };
 
 export function CourseSelectDialog({
@@ -95,6 +99,9 @@ export function CourseSelectDialog({
     setDisableStatus,
     listRef,
     loadCourses,
+    scheduleStatus,
+    disableStatus,
+    displayType,
   } = useCourseSelectLoader({
     courseUsecase,
     isOpen: dialogOpen,
@@ -209,12 +216,7 @@ export function CourseSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectCourses')}</Typography>
             <Box>
-              <IconButton
-                onClick={() => {
-                  setIsFullscreen((prev) => !prev);
-                }}
-                size="small"
-              >
+              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -222,8 +224,11 @@ export function CourseSelectDialog({
               </IconButton>
             </Box>
           </Box>
+
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchCourses')} />
+
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {/* Course Type */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('courseType')}</InputLabel>
               <Select
@@ -234,12 +239,66 @@ export function CourseSelectDialog({
                 label={t('courseType')}
               >
                 {filterOptions.courseType.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                  <MenuItem key={String(opt ?? 'none')} value={opt !== undefined ? String(opt) : ''}>
                     {opt !== undefined ? t(LearningModeDisplayNames[opt]) : t('all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+
+            {/* Display Type */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('displayType')}</InputLabel>
+              <Select
+                value={displayType !== undefined ? String(displayType) : ''}
+                onChange={(e: SelectChangeEvent) =>
+                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined)
+                }
+                label={t('displayType')}
+              >
+                {filterOptions.displayType.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {t(opt !== undefined ? DisplayTypeDisplayNames[opt] : 'all')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Schedule Status */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('scheduleStatus')}</InputLabel>
+              <Select
+                value={scheduleStatus ?? ''}
+                onChange={(e) =>
+                  setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined)
+                }
+                label={t('scheduleStatus')}
+              >
+                {filterOptions.scheduleStatus.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {t(opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'all')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Disable Status */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('disableStatus')}</InputLabel>
+              <Select
+                value={disableStatus ?? ''}
+                onChange={(e) => setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
+                label={t('disableStatus')}
+              >
+                {filterOptions.disableStatus.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Clear Filters */}
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>
@@ -253,9 +312,7 @@ export function CourseSelectDialog({
                 key={course.id}
                 value={course.id}
                 selected={localValue === course.id}
-                onClick={() => {
-                  setLocalValue(course.id);
-                }}
+                onClick={() => setLocalValue(course.id)}
               >
                 <Checkbox checked={localValue === course.id} />
                 <ListItemText primary={course.name} />
@@ -272,11 +329,11 @@ export function CourseSelectDialog({
                 </IconButton>
               </MenuItem>
             ))}
-            {loadingCourses ? (
+            {loadingCourses && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('loading')}
               </Typography>
-            ) : null}
+            )}
             {!loadingCourses && courses.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('empty')}
@@ -306,15 +363,9 @@ export function CourseSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedCourse ? (
-        <CourseDetailForm
-          open={viewOpen}
-          courseId={selectedCourse.id ?? null}
-          onClose={() => {
-            setViewOpen(false);
-          }}
-        />
-      ) : null}
+      {selectedCourse && (
+        <CourseDetailForm open={viewOpen} courseId={selectedCourse.id ?? null} onClose={() => setViewOpen(false)} />
+      )}
     </>
   );
 }

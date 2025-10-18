@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
@@ -61,6 +61,7 @@ const filterOptions = {
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
+  hasPath: [undefined, true, false],
 };
 
 export function CourseMultiSelectDialog({
@@ -69,6 +70,7 @@ export function CourseMultiSelectDialog({
   onChange,
   label = 'courses',
   disabled = false,
+  pathID,
   ...selectProps
 }: CourseMultiSelectDialogProps) {
   const theme = useTheme();
@@ -80,8 +82,8 @@ export function CourseMultiSelectDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useCourseSelectDebounce(localSearchText, 300);
   const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [selectedCourse, setSelectedCourse] = React.useState<CourseDetailResponse | null>(null);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<CourseDetailResponse | null>(null);
   const {
     courses,
     loadingCourses,
@@ -92,22 +94,39 @@ export function CourseMultiSelectDialog({
     displayType,
     scheduleStatus,
     disableStatus,
+    hasPath,
     setCourseType,
     setDisplayType,
     setScheduleStatus,
     setDisableStatus,
+    setHasPath,
     listRef,
     loadCourses,
   } = useCourseSelectLoader({
     courseUsecase,
     isOpen: dialogOpen,
-    pathID: '',
+    pathID,
     searchText: debouncedSearchText,
   });
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Handlers
+  const fetchSelectedCourses = useCallback(async () => {
+    if (!courseUsecase || value.length === 0) return;
+    const idsToFetch = value.filter((id) => !selectedCourseMap[id]);
+    await Promise.all(
+      idsToFetch.map(async (id) => {
+        try {
+          const course = await courseUsecase.getCourseById(id);
+          setSelectedCourseMap((prev) => ({ ...prev, [id]: course }));
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'An error has occurred.';
+          CustomSnackBar.showSnackbar(message, 'error');
+        }
+      })
+    );
+  }, [courseUsecase, value, selectedCourseMap]);
+
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
   };
@@ -128,71 +147,25 @@ export function CourseMultiSelectDialog({
     setDisplayType(undefined);
     setScheduleStatus(undefined);
     setDisableStatus(undefined);
+    setHasPath(undefined);
   };
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (courseUsecase && !loadingCourses) {
-      void loadCourses(newPage, true);
-      if (listRef.current) {
-        listRef.current.scrollTop = 0;
-      }
-    }
+  const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
+    void loadCourses(newPage, true);
+    listRef.current?.scrollTo(0, 0);
   };
-
-  useEffect(() => {
-    setSearchText(debouncedSearchText);
-  }, [debouncedSearchText, setSearchText]);
 
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
 
   useEffect(() => {
-    if (courseUsecase && value.length > 0) {
-      const fetchSelectedCourses = async () => {
-        try {
-          const newMap = { ...selectedCourseMap };
-          let updated = false;
-
-          for (const id of value) {
-            if (!newMap[id]) {
-              const response = await courseUsecase.getCourseById(id);
-              const course = response;
-              if (course?.id) {
-                newMap[course.id] = course;
-                updated = true;
-              }
-            }
-          }
-
-          if (updated) {
-            setSelectedCourseMap(newMap);
-          }
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
-        }
-      };
-
-      void fetchSelectedCourses();
-    }
-  }, [courseUsecase, value]);
+    void fetchSelectedCourses();
+  }, [fetchSelectedCourses]);
 
   useEffect(() => {
-    if (dialogOpen) {
-      const newMap = { ...selectedCourseMap };
-      let updated = false;
-      for (const course of courses) {
-        if (course.id && !newMap[course.id]) {
-          newMap[course.id] = course;
-          updated = true;
-        }
-      }
-      if (updated) {
-        setSelectedCourseMap(newMap);
-      }
-    }
-  }, [courses, dialogOpen, selectedCourseMap]);
+    setSearchText(debouncedSearchText);
+  }, [debouncedSearchText, setSearchText]);
 
   return (
     <>
@@ -207,7 +180,7 @@ export function CourseMultiSelectDialog({
           }
           onClick={handleOpen}
           renderValue={(selected) =>
-            selected.map((id: string) => selectedCourseMap[id]?.name || id).join(', ') || 'No Courses Selected'
+            selected.map((id) => selectedCourseMap[id]?.name || id).join(', ') || 'No Courses Selected'
           }
           open={false}
           {...selectProps}
@@ -219,12 +192,7 @@ export function CourseMultiSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectCourses')}</Typography>
             <Box>
-              <IconButton
-                onClick={() => {
-                  setIsFullscreen((prev) => !prev);
-                }}
-                size="small"
-              >
+              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -232,20 +200,27 @@ export function CourseMultiSelectDialog({
               </IconButton>
             </Box>
           </Box>
-          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchCourses')} />
+          <CustomSearchInput
+            value={localSearchText}
+            onChange={(val) => {
+              setLocalSearchText(val);
+              setSearchText(val);
+            }}
+            placeholder={t('searchCourses')}
+          />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('courseType')}</InputLabel>
               <Select
                 value={courseType !== undefined ? String(courseType) : ''}
-                onChange={(e: SelectChangeEvent) => {
-                  setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
-                }}
+                onChange={(e: SelectChangeEvent) =>
+                  setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
+                }
                 label={t('courseType')}
               >
                 {filterOptions.courseType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {t(opt !== undefined ? t(LearningModeDisplayNames[opt]) : t('all'))}
+                    {t(opt !== undefined ? LearningModeDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
@@ -254,9 +229,9 @@ export function CourseMultiSelectDialog({
               <InputLabel>{t('displayType')}</InputLabel>
               <Select
                 value={displayType !== undefined ? String(displayType) : ''}
-                onChange={(e: SelectChangeEvent) => {
-                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined);
-                }}
+                onChange={(e: SelectChangeEvent) =>
+                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined)
+                }
                 label={t('displayType')}
               >
                 {filterOptions.displayType.map((opt) => (
@@ -270,14 +245,14 @@ export function CourseMultiSelectDialog({
               <InputLabel>{t('scheduleStatus')}</InputLabel>
               <Select
                 value={scheduleStatus ?? ''}
-                onChange={(e) => {
-                  setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined);
-                }}
+                onChange={(e) =>
+                  setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined)
+                }
                 label={t('scheduleStatus')}
               >
                 {filterOptions.scheduleStatus.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {t(opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'All')}
+                    {t(opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
@@ -286,9 +261,7 @@ export function CourseMultiSelectDialog({
               <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus ?? ''}
-                onChange={(e) => {
-                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
-                }}
+                onChange={(e) => setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
                 label={t('disableStatus')}
               >
                 {filterOptions.disableStatus.map((opt) => (
@@ -296,6 +269,26 @@ export function CourseMultiSelectDialog({
                     {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('hasPath')}</InputLabel>
+              <Select
+                value={hasPath !== undefined ? String(hasPath) : ''}
+                onChange={(e: SelectChangeEvent) =>
+                  setHasPath(e.target.value === '' ? undefined : e.target.value === 'true')
+                }
+                label={t('hasPath')}
+              >
+                {filterOptions.hasPath.map((opt) => {
+                  const key = opt === undefined ? 'none' : String(opt);
+                  const labelKey = opt === undefined ? 'all' : opt ? 'hasPath' : 'no';
+                  return (
+                    <MenuItem key={key} value={opt !== undefined ? String(opt) : ''}>
+                      {t(labelKey)}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
             <Button size="small" onClick={handleClearFilters} variant="outlined">
