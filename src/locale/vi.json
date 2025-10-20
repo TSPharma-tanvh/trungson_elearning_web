@@ -805,5 +805,7 @@
   "pDF": "PDF",
   "exportToExcel": "Xuất sang Excel",
   "notstarted": "Chưa bắt đầu",
-  "inprogress": "Đang tiến hành"
+  "inprogress": "Đang tiến hành",
+  "lessonquiz": "Bài kiểm tra bài học",
+  "examquiz": "Bài kiểm tra bài tập"
 }

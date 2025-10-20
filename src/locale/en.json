@@ -805,5 +805,7 @@
   "pDF": "PDF",
   "exportToExcel": "Export To Excel",
   "notstarted": "Not Started",
-  "inprogress": "In Progress"
+  "inprogress": "In Progress",
+  "lessonquiz": "Lesson Quiz",
+  "examquiz": "Exam Quiz"
 }
