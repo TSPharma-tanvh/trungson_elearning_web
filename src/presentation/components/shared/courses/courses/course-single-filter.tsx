@@ -7,10 +7,12 @@ import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
 import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
 import {
+  DisplayTypeDisplayNames,
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
   ScheduleStatusEnum,
+  StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
@@ -60,6 +62,7 @@ const filterOptions = {
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
+  hasPath: [undefined, true, false],
 };
 
 export function CourseSingleFilter({
@@ -84,6 +87,7 @@ export function CourseSingleFilter({
   const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
   const [viewOpen, setViewOpen] = React.useState(false);
   const [selectedCourse, setSelectedCourse] = React.useState<CourseDetailResponse | null>(null);
+
   const {
     courses,
     loadingCourses,
@@ -92,9 +96,13 @@ export function CourseSingleFilter({
     setSearchText,
     courseType,
     setCourseType,
+    displayType,
     setDisplayType,
-    setScheduleStatus,
+
+    disableStatus,
     setDisableStatus,
+    hasPath,
+    setHasPath,
     listRef,
     loadCourses,
   } = useCourseSelectLoader({
@@ -125,16 +133,14 @@ export function CourseSingleFilter({
     setLocalSearchText('');
     setCourseType(undefined);
     setDisplayType(undefined);
-    setScheduleStatus(undefined);
     setDisableStatus(undefined);
+    setHasPath(undefined);
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     if (courseUsecase && !loadingCourses) {
       void loadCourses(newPage, true);
-      if (listRef.current) {
-        listRef.current.scrollTop = 0;
-      }
+      listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -142,7 +148,6 @@ export function CourseSingleFilter({
   useEffect(() => {
     setSearchText(debouncedSearchText);
   }, [debouncedSearchText, setSearchText]);
-
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
@@ -161,9 +166,7 @@ export function CourseSingleFilter({
               updated = true;
             }
           }
-          if (updated) {
-            setSelectedCourseMap(newMap);
-          }
+          if (updated) setSelectedCourseMap(newMap);
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : 'An error has occurred.';
           CustomSnackBar.showSnackbar(message, 'error');
@@ -183,14 +186,13 @@ export function CourseSingleFilter({
           updated = true;
         }
       }
-      if (updated) {
-        setSelectedCourseMap(newMap);
-      }
+      if (updated) setSelectedCourseMap(newMap);
     }
   }, [courses, dialogOpen, selectedCourseMap]);
 
   return (
     <>
+      {/* Main Selector */}
       <FormControl
         disabled={disabled}
         size="small"
@@ -222,7 +224,7 @@ export function CourseSingleFilter({
             />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedCourseMap[selected]?.name || 'No Course Selected'}
+          renderValue={(selected) => selectedCourseMap[selected]?.name || t('noCourseSelected')}
           open={false}
           sx={{
             '& .MuiSelect-select': {
@@ -240,6 +242,7 @@ export function CourseSingleFilter({
         />
       </FormControl>
 
+      {/* Dialog */}
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -247,7 +250,7 @@ export function CourseSingleFilter({
             <Box>
               <IconButton
                 onClick={() => {
-                  setIsFullscreen((prev) => !prev);
+                  setIsFullscreen((p) => !p);
                 }}
                 size="small"
               >
@@ -258,8 +261,12 @@ export function CourseSingleFilter({
               </IconButton>
             </Box>
           </Box>
+
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchCourses')} />
+
+          {/* Filters */}
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {/* Course Type */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('courseType')}</InputLabel>
               <Select
@@ -267,21 +274,79 @@ export function CourseSingleFilter({
                 onChange={(e: SelectChangeEvent) => {
                   setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
                 }}
-                label="Course Type"
+                label={t('courseType')}
               >
                 {filterOptions.courseType.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
+                  <MenuItem key={String(opt ?? 'none')} value={opt !== undefined ? String(opt) : ''}>
+                    {t(opt !== undefined ? LearningModeDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+
+            {/* Display Type */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('displayType')}</InputLabel>
+              <Select
+                value={displayType !== undefined ? String(displayType) : ''}
+                onChange={(e: SelectChangeEvent) => {
+                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined);
+                }}
+                label={t('displayType')}
+              >
+                {filterOptions.displayType.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {t(opt !== undefined ? DisplayTypeDisplayNames[opt] : 'all')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Disable Status */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('disableStatus')}</InputLabel>
+              <Select
+                value={disableStatus ?? ''}
+                onChange={(e) => {
+                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
+                }}
+                label={t('disableStatus')}
+              >
+                {filterOptions.disableStatus.map((opt) => (
+                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
+                    {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Has Path */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('hasPath')}</InputLabel>
+              <Select
+                value={hasPath === undefined ? '' : String(hasPath)}
+                onChange={(e: SelectChangeEvent) => {
+                  const val = e.target.value;
+                  setHasPath(val === '' ? undefined : val === 'true');
+                }}
+                label={t('hasPath')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Clear Filters */}
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>
           </Box>
         </DialogTitle>
 
+        {/* Course List */}
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
             {courses.map((course) => (
@@ -321,6 +386,7 @@ export function CourseSingleFilter({
           </Box>
         </DialogContent>
 
+        {/* Pagination + Actions */}
         <DialogActions sx={{ flexDirection: 'column', gap: 2 }}>
           {totalPages > 1 && (
             <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>

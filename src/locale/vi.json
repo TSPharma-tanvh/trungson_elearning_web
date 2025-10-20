@@ -802,5 +802,8 @@
   "hasLesson": "Có bài học",
   "hasVideo": "Có Video",
   "hasFileResource": "Có tài nguyên tệp",
-  "pDF": "PDF"
+  "pDF": "PDF",
+  "exportToExcel": "Xuất sang Excel",
+  "notstarted": "Chưa bắt đầu",
+  "inprogress": "Đang tiến hành"
 }

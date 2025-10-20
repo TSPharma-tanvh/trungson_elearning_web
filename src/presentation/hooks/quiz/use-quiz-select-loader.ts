@@ -1,5 +1,6 @@
 'use client';
 
+import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import type { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
@@ -86,11 +87,10 @@ export function useQuizSelectLoader({
         if (isOpen) setLoadingQuizzes(false);
       }
     },
-    [quizUsecase, isOpen, searchText, filters] // Removed loadingQuizzes
+    [quizUsecase, isOpen, searchText, filters]
   );
 
   useEffect(() => {
-    console.log('useEffect triggered with:', { isOpen, filters });
     if (isOpen) {
       setQuizzes([]);
       setPageNumber(1);

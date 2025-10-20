@@ -4,12 +4,7 @@ import { GetCourseRequest } from '@/domain/models/courses/request/get-course-req
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { type CourseDetailListResult } from '@/domain/models/courses/response/course-detail-result';
 import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
-import {
-  type DisplayTypeEnum,
-  type LearningModeEnum,
-  type ScheduleStatusEnum,
-  type StatusEnum,
-} from '@/utils/enum/core-enum';
+import { type DisplayTypeEnum, type LearningModeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
@@ -20,7 +15,6 @@ interface UseCourseSelectLoaderProps {
   disableStatus?: StatusEnum;
   courseType?: LearningModeEnum;
   displayType?: DisplayTypeEnum;
-  scheduleStatus?: ScheduleStatusEnum;
   hasPath?: boolean;
   searchText?: string;
 }
@@ -37,13 +31,11 @@ interface CourseSelectLoaderState {
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setCourseType: React.Dispatch<React.SetStateAction<LearningModeEnum | undefined>>;
   setDisplayType: React.Dispatch<React.SetStateAction<DisplayTypeEnum | undefined>>;
-  setScheduleStatus: React.Dispatch<React.SetStateAction<ScheduleStatusEnum | undefined>>;
   setDisableStatus: React.Dispatch<React.SetStateAction<StatusEnum | undefined>>;
   setHasPath: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   searchText: string;
   courseType: LearningModeEnum | undefined;
   displayType: DisplayTypeEnum | undefined;
-  scheduleStatus: ScheduleStatusEnum | undefined;
   disableStatus: StatusEnum | undefined;
   hasPath: boolean | undefined;
   loadCourses: (page: number, reset?: boolean) => Promise<void>;
@@ -56,7 +48,6 @@ export function useCourseSelectLoader({
   disableStatus: initialDisableStatus,
   courseType: initialCourseType,
   displayType: initialDisplayType,
-  scheduleStatus: initialScheduleStatus,
   hasPath: initialHasPath,
   searchText: initialSearchText = '',
 }: UseCourseSelectLoaderProps): CourseSelectLoaderState {
@@ -69,7 +60,6 @@ export function useCourseSelectLoader({
   const [searchText, setSearchText] = useState(initialSearchText);
   const [courseType, setCourseType] = useState<LearningModeEnum | undefined>(initialCourseType);
   const [displayType, setDisplayType] = useState<DisplayTypeEnum | undefined>(initialDisplayType);
-  const [scheduleStatus, setScheduleStatus] = useState<ScheduleStatusEnum | undefined>(initialScheduleStatus);
   const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(initialDisableStatus);
   const [hasPath, setHasPath] = useState<boolean | undefined>(initialHasPath);
   const listRef = useRef<HTMLUListElement | null>(null);
@@ -88,7 +78,6 @@ export function useCourseSelectLoader({
         disableStatus,
         courseType,
         displayType,
-        scheduleStatus,
         hasPath,
         pageNumber: page,
         pageSize: 10,
@@ -127,7 +116,7 @@ export function useCourseSelectLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen, pathID, searchText, disableStatus, courseType, displayType, scheduleStatus, hasPath]);
+  }, [isOpen, pathID, searchText, disableStatus, courseType, displayType, hasPath]);
 
   return {
     courses,
@@ -141,13 +130,11 @@ export function useCourseSelectLoader({
     setSearchText,
     setCourseType,
     setDisplayType,
-    setScheduleStatus,
     setDisableStatus,
     setHasPath,
     searchText,
     courseType,
     displayType,
-    scheduleStatus,
     disableStatus,
     hasPath,
     loadCourses,

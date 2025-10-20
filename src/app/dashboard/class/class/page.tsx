@@ -6,12 +6,15 @@ import { GetClassRequest } from '@/domain/models/class/request/get-class-request
 import { type UpdateClassRequest } from '@/domain/models/class/request/update-class-request';
 import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/system';
+import { FileXls } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
 import ClassTable from '@/presentation/components/dashboard/class/classes/class-table';
@@ -102,23 +105,56 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleExportToExcel = () => {
+    const exportData = classes.map((row) => ({
+      [t('id')]: row.id ?? '',
+      [t('name')]: row.className ?? '',
+      [t('detail')]: row.classDetail ?? '',
+      [t('duration')]: row.duration ?? '',
+      [t('attendanceRecordsCount')]: row.attendanceRecords?.length ?? '',
+      [t('enrollmentCriteriaCount')]: row.enrollmentCriteria?.length ?? '',
+      [t('teacher')]: row.classTeacher?.user?.employee?.name ?? '',
+      [t('classType')]: row.classType ? t(row.classType.toLowerCase()) : '',
+      [t('scheduleStatus')]: row.scheduleStatus ? t(row.scheduleStatus.toLowerCase()) : '',
+      [t('category')]: row.category?.categoryName ?? '',
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Classes');
+
+    const dateTimeString = DateTimeUtils.getTodayAsString();
+    XLSX.writeFile(wb, `Classes_${dateTimeString}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            {t("class")}
+            {t('class')}
           </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => { handleExportToExcel(); }}
+            >
+              {t('exportToExcel')}
+            </Button>
+          </Stack>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t("add")}
-        </Button>
+        <div>
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
+            {t('add')}
+          </Button>
+        </div>
       </Stack>
       <ClassFilters onFilter={handleFilter} />
       <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>

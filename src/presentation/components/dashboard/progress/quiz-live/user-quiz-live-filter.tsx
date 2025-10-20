@@ -4,7 +4,7 @@ import * as React from 'react';
 import { GetUserQuizLiveStatusRequest } from '@/domain/models/user-quiz/request/get-user-quiz-live-status-request';
 import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
-import { CategoryEnum, CoreEnumUtils, StatusEnum } from '@/utils/enum/core-enum';
+import { CategoryEnum, CoreEnumUtils, StatusEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +29,10 @@ export function UserQuizLiveFilters({
 }): React.JSX.Element {
   const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
+  const [progressStatus, setProgressStatus] = React.useState<UserQuizProgressEnum | undefined>(undefined);
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
+  const [selectedCategory, setSelectedCategory] = React.useState<CategoryEnum>(CategoryEnum.Path);
+
   const [intervalSeconds, setIntervalSeconds] = React.useState<number | undefined>(15);
   const [pageSize, setPageSize] = React.useState(50);
 
@@ -42,6 +45,7 @@ export function UserQuizLiveFilters({
     const request = new GetUserQuizLiveStatusRequest({
       ...form,
       searchText: searchText || undefined,
+      progressStatus: progressStatus !== undefined ? progressStatus : undefined,
       activeStatus: status !== undefined ? status : undefined,
       pageNumber: 1,
       pageSize,
@@ -81,6 +85,16 @@ export function UserQuizLiveFilters({
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
+        {/* Status */}
+        <CustomSelectFilter<UserQuizProgressEnum>
+          label={t('progressStatus')}
+          value={progressStatus}
+          onChange={(val) => {
+            setProgressStatus(val);
+          }}
+          options={CoreEnumUtils.getEnumOptions(UserQuizProgressEnum)}
+        />
+
         {/* Quiz */}
         <QuizSingleFilter
           quizUsecase={quizUsecase}
@@ -92,6 +106,23 @@ export function UserQuizLiveFilters({
           maxWidth={160}
         />
 
+        {/* Enrollment */}
+        <CustomSelectFilter<CategoryEnum>
+          label={t('enrollmentType')}
+          value={selectedCategory}
+          onChange={(val) => {
+            if (val !== undefined) {
+              setSelectedCategory(val);
+              handleChange('enrollmentCriteriaId', '');
+            }
+          }}
+          options={[
+            { label: 'Path', value: CategoryEnum.Path },
+            { label: 'Quiz', value: CategoryEnum.Quiz },
+          ]}
+          withAllOption={false}
+        />
+
         {/* Enrollment Criteria */}
         <EnrollmentSingleFilter
           enrollmentUsecase={enrollUsecase}
@@ -100,7 +131,7 @@ export function UserQuizLiveFilters({
             handleChange('enrollmentCriteriaId', value);
           }}
           disabled={false}
-          categoryEnum={CategoryEnum.Quiz}
+          categoryEnum={selectedCategory}
           maxWidth={160}
         />
 

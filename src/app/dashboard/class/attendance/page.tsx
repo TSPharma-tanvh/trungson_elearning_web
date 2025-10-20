@@ -6,12 +6,15 @@ import { GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/
 import { type UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';
 import { type AttendanceRecordDetailResponse } from '@/domain/models/attendance/response/attendance-record-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/system';
+import { FileXls } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import { AttendanceRecordsFilters } from '@/presentation/components/dashboard/class/attendance/attendance-records-filter';
 import AttendanceRecordsTable from '@/presentation/components/dashboard/class/attendance/attendance-records-table';
@@ -105,6 +108,38 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleExportToExcel = () => {
+    const exportData = attendanceRecordses.map((row) => ({
+      [t('id')]: row.id ?? '',
+      [t('userName')]: row.user?.employee?.name ?? '',
+      [t('classId')]: row.classID ?? '',
+      [t('enrollmentId')]: row.enrollment?.id ?? '',
+      [t('enrollmentCriteriaName')]: row.enrollment?.enrollmentCriteria?.name ?? '',
+      [t('className')]: row.class?.className ?? '',
+      [t('startAt')]: row.startAt ? DateTimeUtils.formatDateTimeToDateString(row.startAt) : '',
+      [t('endAt')]: row.endAt ? DateTimeUtils.formatDateTimeToDateString(row.endAt) : '',
+      [t('checkInTime')]: row.checkInTime ? DateTimeUtils.formatDateTimeToDateString(row.checkInTime) : '',
+      [t('statusCheckIn')]: row.statusCheckIn ? t(row.statusCheckIn.toLowerCase()) : '',
+      [t('checkOutTime')]: row.checkOutTime ? DateTimeUtils.formatDateTimeToDateString(row.checkOutTime) : '',
+      [t('statusCheckOut')]: row.statusCheckOut ? t(row.statusCheckOut.toLowerCase()) : '',
+      [t('enrollmentDate')]: row.enrollment?.enrollmentDate
+        ? DateTimeUtils.formatDateTimeToDateString(row.enrollment.enrollmentDate)
+        : '',
+      [t('approvedAt')]: row.enrollment?.approvedAt
+        ? DateTimeUtils.formatDateTimeToDateString(row.enrollment.approvedAt)
+        : '',
+      [t('activeStatus')]: row.activeStatus ? t(row.activeStatus.toLowerCase()) : '',
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'AttendanceRecords');
+
+    const today = DateTimeUtils.getTodayAsString();
+
+    XLSX.writeFile(wb, `AttendanceRecords_${today}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -112,16 +147,28 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('attendance')}
           </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => { handleExportToExcel(); }}
+            >
+              {t('exportToExcel')}
+            </Button>
+          </Stack>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t('enrollUser')}
-        </Button>
+        <div>
+          {' '}
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
+            {t('enrollUser')}
+          </Button>
+        </div>
       </Stack>
       <AttendanceRecordsFilters
         onFilter={handleFilter}

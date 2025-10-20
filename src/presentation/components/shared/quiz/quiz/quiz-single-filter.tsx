@@ -30,12 +30,12 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import QuizDetailForm from '@/presentation/components/dashboard/quiz/quiz/quiz-detail-form';
-import { camelCase } from 'lodash';
 
 interface QuizSingleFilterProps {
   quizUsecase: QuizUsecase;
@@ -81,12 +81,11 @@ export function QuizSingleFilter({
     [canStartOver, isRequired, hasLesson, quizType]
   );
 
-  const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, searchText, listRef, loadQuizzes } =
-    useQuizSelectLoader({
-      quizUsecase,
-      isOpen: dialogOpen,
-      filters,
-    });
+  const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, listRef, loadQuizzes } = useQuizSelectLoader({
+    quizUsecase,
+    isOpen: dialogOpen,
+    filters,
+  });
 
   useEffect(() => {
     setLocalValue(value);
@@ -201,7 +200,12 @@ export function QuizSingleFilter({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectQuiz')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen(!isFullscreen);
+                }}
+                size="small"
+              >
                 {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -224,7 +228,9 @@ export function QuizSingleFilter({
               control={
                 <Checkbox
                   checked={canStartOver ?? false}
-                  onChange={(e) => setCanStartOver(e.target.checked ? true : undefined)}
+                  onChange={(e) => {
+                    setCanStartOver(e.target.checked ? true : undefined);
+                  }}
                 />
               }
               label={t('canStartOver')}
@@ -233,7 +239,9 @@ export function QuizSingleFilter({
               control={
                 <Checkbox
                   checked={isRequired ?? false}
-                  onChange={(e) => setIsRequired(e.target.checked ? true : undefined)}
+                  onChange={(e) => {
+                    setIsRequired(e.target.checked ? true : undefined);
+                  }}
                 />
               }
               label={t('isRequired')}
@@ -242,7 +250,9 @@ export function QuizSingleFilter({
               control={
                 <Checkbox
                   checked={hasLesson ?? false}
-                  onChange={(e) => setHasLesson(e.target.checked ? true : undefined)}
+                  onChange={(e) => {
+                    setHasLesson(e.target.checked ? true : undefined);
+                  }}
                 />
               }
               label={t('hasLesson')}
@@ -251,7 +261,9 @@ export function QuizSingleFilter({
               <InputLabel>{t('quizType')}</InputLabel>
               <Select
                 value={quizType ?? ''}
-                onChange={(e) => setQuizType(e.target.value === '' ? undefined : (e.target.value as QuizTypeEnum))}
+                onChange={(e) => {
+                  setQuizType(e.target.value === '' ? undefined : (e.target.value as QuizTypeEnum));
+                }}
                 input={<OutlinedInput label={t('quizType')} />}
               >
                 <MenuItem value="">{t('all')}</MenuItem>
@@ -280,7 +292,9 @@ export function QuizSingleFilter({
                 key={item.id}
                 value={item.id}
                 selected={localValue === item.id}
-                onClick={() => setLocalValue(item.id ?? '')}
+                onClick={() => {
+                  setLocalValue(item.id ?? '');
+                }}
               >
                 <Checkbox checked={localValue === item.id} />
                 <ListItemText primary={item.title} />
@@ -332,7 +346,13 @@ export function QuizSingleFilter({
       </Dialog>
 
       {selectedQuiz ? (
-        <QuizDetailForm open={viewOpen} quizId={selectedQuiz.id ?? null} onClose={() => setViewOpen(false)} />
+        <QuizDetailForm
+          open={viewOpen}
+          quizId={selectedQuiz.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
       ) : null}
     </>
   );

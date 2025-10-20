@@ -6,11 +6,14 @@ import { GetClassTeacherRequest } from '@/domain/models/teacher/request/get-clas
 import { type UpdateClassTeacherRequest } from '@/domain/models/teacher/request/update-class-teacher-request';
 import { type ClassTeacherResponse } from '@/domain/models/teacher/response/class-teacher-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { FileXls } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import { ClassTeacherFilters } from '@/presentation/components/dashboard/class/teacher/class-teacher-filter';
 import TeacherTable from '@/presentation/components/dashboard/class/teacher/class-teacher-table';
@@ -102,6 +105,27 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleExportToExcel = () => {
+    const exportData = teachers.map((row) => ({
+      [t('id')]: row.id ?? '',
+      [t('name')]: row.user?.employee?.name ?? '',
+      [t('username')]: row.user?.userName ?? '',
+      [t('description')]: row.description ?? '',
+      [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
+      [t('courses')]: row.courses?.length ?? '',
+      [t('class')]: row.classes?.length ?? '',
+      [t('createdTime')]: row.createdDateTime ? DateTimeUtils.formatISODateStringToString(row.createdDateTime) : '',
+      [t('updatedTime')]: row.updatedDateTime ? DateTimeUtils.formatISODateStringToString(row.updatedDateTime) : '',
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'ClassTeachers');
+
+    const dateTimeString = DateTimeUtils.getTodayAsString();
+    XLSX.writeFile(wb, `ClassTeachers_${dateTimeString}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -109,16 +133,28 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('teacher')}
           </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => { handleExportToExcel(); }}
+            >
+              {t('exportToExcel')}
+            </Button>
+          </Stack>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t('add')}
-        </Button>
+        <div>
+          {' '}
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
+            {t('add')}
+          </Button>
+        </div>
       </Stack>
       <ClassTeacherFilters onFilter={handleFilter} />
       <TeacherTable

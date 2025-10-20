@@ -7,10 +7,12 @@ import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-req
 import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
-import { Plus } from '@phosphor-icons/react';
+import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateLessonDialog } from '@/presentation/components/dashboard/courses/lessons/create-lesson-form';
@@ -88,6 +90,31 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleExportToExcel = () => {
+    const exportData = lessons.map((row) => ({
+      [t('id')]: row.id ?? '',
+      [t('name')]: row.name ?? '',
+      [t('detail')]: row.detail ?? '',
+      [t('enableAutoPlay')]: row.enablePlay ? t('yes') : t('no'),
+      [t('required')]: row.isRequired ? t('yes') : t('no'),
+      [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
+      [t('lessonType')]: row.lessonType ? t(row.lessonType.toLowerCase()) : '',
+      [t('category')]: row.category?.categoryName ?? '',
+      [t('contentType')]: row.contentType ?? '',
+      [t('contentCount')]: row.fileLessonRelation?.length ?? 0,
+      [t('video')]: row.video?.resourceUrl ?? '',
+      [t('quiz')]: row.quizzes?.length ?? 0,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Lessons');
+
+    const today = DateTimeUtils.getTodayAsString();
+
+    XLSX.writeFile(wb, `Lessons_${today}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -95,16 +122,28 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('lessons')}
           </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => { handleExportToExcel(); }}
+            >
+              {t('exportToExcel')}
+            </Button>
+          </Stack>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t('add')}
-        </Button>
+        <div>
+          {' '}
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
+            {t('add')}
+          </Button>
+        </div>
       </Stack>
       <LessonsFilters onFilter={handleFilter} />
       <LessonTable

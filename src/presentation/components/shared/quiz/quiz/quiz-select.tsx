@@ -31,7 +31,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -70,7 +70,6 @@ export function QuizSingleSelect({
   const [quizType, setQuizType] = useState<QuizTypeEnum | undefined>(undefined);
 
   const filters = useMemo(() => {
-    console.log('Creating new filters object:', { canStartOver, isRequired, hasLesson, type: quizType });
     return {
       canStartOver,
       isRequired,
@@ -79,13 +78,12 @@ export function QuizSingleSelect({
     };
   }, [canStartOver, isRequired, hasLesson, quizType]);
 
-  const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, searchText, listRef, loadQuizzes } =
-    useQuizSelectLoader({
-      quizUsecase,
-      isOpen: dialogOpen,
-      searchText: localSearchText,
-      filters,
-    });
+  const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, listRef, loadQuizzes } = useQuizSelectLoader({
+    quizUsecase,
+    isOpen: dialogOpen,
+    searchText: localSearchText,
+    filters,
+  });
 
   useEffect(() => {
     setLocalValue(value);
@@ -195,7 +193,9 @@ export function QuizSingleSelect({
               control={
                 <Checkbox
                   checked={canStartOver ?? false}
-                  onChange={(e) => setCanStartOver(e.target.checked ? true : undefined)}
+                  onChange={(e) => {
+                    setCanStartOver(e.target.checked ? true : undefined);
+                  }}
                 />
               }
               label={t('canStartOver')}
@@ -204,7 +204,9 @@ export function QuizSingleSelect({
               control={
                 <Checkbox
                   checked={isRequired ?? false}
-                  onChange={(e) => setIsRequired(e.target.checked ? true : undefined)}
+                  onChange={(e) => {
+                    setIsRequired(e.target.checked ? true : undefined);
+                  }}
                 />
               }
               label={t('isRequired')}
@@ -213,7 +215,9 @@ export function QuizSingleSelect({
               control={
                 <Checkbox
                   checked={hasLesson ?? false}
-                  onChange={(e) => setHasLesson(e.target.checked ? true : undefined)}
+                  onChange={(e) => {
+                    setHasLesson(e.target.checked ? true : undefined);
+                  }}
                 />
               }
               label={t('hasLesson')}
@@ -222,7 +226,9 @@ export function QuizSingleSelect({
               <InputLabel>{t('quizType')}</InputLabel>
               <Select
                 value={quizType ?? ''}
-                onChange={(e) => setQuizType(e.target.value === '' ? undefined : (e.target.value as QuizTypeEnum))}
+                onChange={(e) => {
+                  setQuizType(e.target.value === '' ? undefined : (e.target.value as QuizTypeEnum));
+                }}
                 input={<OutlinedInput label={t('quizType')} />}
               >
                 <MenuItem value="">{t('all')}</MenuItem>

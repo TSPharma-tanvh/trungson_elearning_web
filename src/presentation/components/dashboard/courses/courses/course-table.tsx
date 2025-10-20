@@ -126,18 +126,18 @@ export default function CourseTable({
               ) : (
                 <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
               )}
-            </TableCell>{' '}
-            <TableCell>
-              {row.disableStatus ? t(row.disableStatus.charAt(0).toLowerCase() + t(row.disableStatus).slice(1)) : ''}
             </TableCell>
             <TableCell>
-              {row.courseType ? t(row.courseType.charAt(0).toLowerCase() + t(row.courseType).slice(1)) : ''}
+              {row.disableStatus ? t(row.disableStatus.charAt(0).toLowerCase() + row.disableStatus.slice(1)) : ''}
             </TableCell>
             <TableCell>
-              {row.scheduleStatus ? t(row.scheduleStatus.charAt(0).toLowerCase() + t(row.scheduleStatus).slice(1)) : ''}
+              {row.courseType ? t(row.courseType.charAt(0).toLowerCase() + row.courseType.slice(1)) : ''}
             </TableCell>
             <TableCell>
-              {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + t(row.displayType).slice(1)) : ''}
+              {row.scheduleStatus ? t(row.scheduleStatus.charAt(0).toLowerCase() + row.scheduleStatus.slice(1)) : ''}
+            </TableCell>
+            <TableCell>
+              {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + row.displayType.slice(1)) : ''}
             </TableCell>
             <TableCell>{row.lessons?.length}</TableCell>
             <TableCell align="right">

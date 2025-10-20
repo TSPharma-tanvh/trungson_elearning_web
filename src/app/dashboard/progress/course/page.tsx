@@ -6,8 +6,11 @@ import { GetUserCourseProgressRequest } from '@/domain/models/user-course/reques
 import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
 import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Stack, Typography } from '@mui/material';
+import { DateTimeUtils } from '@/utils/date-time-utils';
+import { Button, Stack, Typography } from '@mui/material';
+import { FileXls } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import { CreateUserCourseProgressDialog } from '@/presentation/components/dashboard/progress/course/user-course-progress-create';
 import { UserCourseProgressFilters } from '@/presentation/components/dashboard/progress/course/user-course-progress-filter';
@@ -98,6 +101,36 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleExportToExcel = () => {
+    const exportData = userCourseProgress.map((row) => ({
+      [t('id')]: row.id ?? '',
+      [t('courseName')]: row.courses?.name ?? '',
+      [t('pathId')]: row.courses?.coursePath?.name ?? '',
+      [t('userName')]: row.user?.userName ?? '',
+      [t('fullName')]: row.user?.employee?.name ?? '',
+      [t('gender')]: row.user?.employee?.gender ?? '',
+      [t('progress')]: row.progress ?? '',
+      [t('startDate')]: row.startDate ? DateTimeUtils.formatISODateStringToString(row.startDate) : '',
+      [t('endDate')]: row.endDate ? DateTimeUtils.formatISODateStringToString(row.endDate) : '',
+      [t('actualStartDate')]: row.actualStartDate ? DateTimeUtils.formatISODateStringToString(row.actualStartDate) : '',
+      [t('actualEndDate')]: row.actualEndDate ? DateTimeUtils.formatISODateStringToString(row.actualEndDate) : '',
+      [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatISODateStringToString(row.lastAccess) : '',
+      [t('progressStatus')]: row.status ? t(row.status.toLowerCase()) : '',
+      [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
+      [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
+      [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
+      [t('cityName')]: row.user?.employee?.cityName ?? '',
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'UserCourseProgress');
+
+    // Use DateTimeUtils to get the date and time string in YYYYMMDD_hhmmss format
+    const dateTimeString = DateTimeUtils.getTodayAsString();
+    XLSX.writeFile(wb, `UserCourseProgress_${dateTimeString}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -105,6 +138,15 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('userCourseProgress')}
           </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => { handleExportToExcel(); }}
+            >
+              {t('exportToExcel')}
+            </Button>
+          </Stack>
         </Stack>
         {/* <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}

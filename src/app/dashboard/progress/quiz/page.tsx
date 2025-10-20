@@ -6,9 +6,11 @@ import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/ge
 import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import { CreateUserQuizProgressDialog } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-create';
 import { UserQuizProgressFilters } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-filter';
@@ -100,6 +102,40 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleExportToExcel = () => {
+    const exportData = userQuizProgress.map((row) => ({
+      [t('id')]: row.id ?? '',
+      [t('quizId')]: row.quizId ?? '',
+      [t('quizName')]: row.quiz?.title ?? '',
+      [t('fullName')]: row.user?.employee?.name || row.user?.userName || '',
+      [t('userName')]: row.user?.userName ?? '',
+      [t('gender')]: row.user?.employee?.gender ?? '',
+      [t('progressStatus')]: row.progressStatus ? t(row.progressStatus.toLowerCase()) : '',
+      [t('score')]: row.score ?? '',
+      [t('totalScore')]: row.quiz?.totalScore ?? '',
+      [t('scoreToPass')]: row.quiz?.scoreToPass ?? '',
+      [t('totalQuestion')]: row.quiz?.totalQuestion ?? '',
+      [t('attempts')]: row.attempts ?? '',
+      [t('maxAttempts')]: row.quiz?.maxAttempts ?? '',
+      [t('startDate')]: row.startTime ? DateTimeUtils.formatDateTimeToDateString(row.startTime) : '',
+      [t('endDate')]: row.endTime ? DateTimeUtils.formatDateTimeToDateString(row.endTime) : '',
+      [t('startedAt')]: row.startedAt ? DateTimeUtils.formatDateTimeToDateString(row.startedAt) : '',
+      [t('completedAt')]: row.completedAt ? DateTimeUtils.formatDateTimeToDateString(row.completedAt) : '',
+      [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatDateTimeToDateString(row.lastAccess) : '',
+      [t('activeStatus')]: row.activeStatus ? t(row.activeStatus.toLowerCase()) : '',
+      [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
+      [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
+      [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
+      [t('cityName')]: row.user?.employee?.cityName ?? '',
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'UserQuizProgress');
+    const dateTimeString = DateTimeUtils.getTodayAsString();
+    XLSX.writeFile(wb, `UserQuizProgress_${dateTimeString}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -107,16 +143,27 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('userQuizProgress')}
           </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => { handleExportToExcel(); }}
+            >
+              {t('exportToExcel')}
+            </Button>
+          </Stack>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t('enrollUsers')}
-        </Button>
+        <div>
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
+            {t('enrollUsers')}
+          </Button>
+        </div>
       </Stack>
       <UserQuizProgressFilters onFilter={handleFilter} enrollUsecase={enrollUsecase} quizUsecase={quizUsecase} />
       <UserQuizProgressTable

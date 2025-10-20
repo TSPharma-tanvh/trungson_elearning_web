@@ -6,9 +6,11 @@ import { GetPathRequest } from '@/domain/models/path/request/get-path-request';
 import { type UpdateCoursePathRequest } from '@/domain/models/path/request/update-path-request';
 import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import CoursePathDetailForm from '@/presentation/components/dashboard/courses/path/course-path-detail-form';
 import { CreateCoursePathDialog } from '@/presentation/components/dashboard/courses/path/create-path-form';
@@ -96,6 +98,27 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleExportToExcel = () => {
+    const exportData = paths.map((row) => ({
+      [t('id')]: row.id ?? '',
+      [t('name')]: row.name ?? '',
+      [t('detail')]: row.detail ?? '',
+      [t('required')]: row.isRequired ? t('yes') : t('no'),
+      [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
+      [t('displayType')]: row.displayType ? t(row.displayType.toLowerCase()) : '',
+      [t('category')]: row.category?.categoryName ?? '',
+      [t('courses')]: row.courses.length ?? 0,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'CoursePaths');
+
+    const today = DateTimeUtils.getTodayAsString();
+
+    XLSX.writeFile(wb, `CoursePaths_${today}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -103,16 +126,27 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('path')}
           </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={handleExportToExcel}
+            >
+              {t('exportToExcel')}
+            </Button>
+          </Stack>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t('add')}
-        </Button>
+        <div>
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
+            {t('add')}
+          </Button>
+        </div>
       </Stack>
       <PathFilters onFilter={handleFilter} />
       <CoursePathTable

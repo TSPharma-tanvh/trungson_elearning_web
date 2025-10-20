@@ -11,8 +11,6 @@ import {
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
-  ScheduleStatusDisplayNames,
-  ScheduleStatusEnum,
   StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
@@ -60,7 +58,6 @@ interface CourseSelectDialogProps extends Omit<SelectProps<string>, 'value' | 'o
 const filterOptions = {
   courseType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
-  scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
   hasPath: [undefined, true, false],
 };
@@ -95,11 +92,9 @@ export function CourseSelectDialog({
     courseType,
     setCourseType,
     setDisplayType,
-    setScheduleStatus,
     setDisableStatus,
     listRef,
     loadCourses,
-    scheduleStatus,
     disableStatus,
     displayType,
   } = useCourseSelectLoader({
@@ -130,7 +125,6 @@ export function CourseSelectDialog({
     setLocalSearchText('');
     setCourseType(undefined);
     setDisplayType(undefined);
-    setScheduleStatus(undefined);
     setDisableStatus(undefined);
   };
 
@@ -216,7 +210,12 @@ export function CourseSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectCourses')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -251,9 +250,9 @@ export function CourseSelectDialog({
               <InputLabel>{t('displayType')}</InputLabel>
               <Select
                 value={displayType !== undefined ? String(displayType) : ''}
-                onChange={(e: SelectChangeEvent) =>
-                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined);
+                }}
                 label={t('displayType')}
               >
                 {filterOptions.displayType.map((opt) => (
@@ -264,30 +263,14 @@ export function CourseSelectDialog({
               </Select>
             </FormControl>
 
-            {/* Schedule Status */}
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>{t('scheduleStatus')}</InputLabel>
-              <Select
-                value={scheduleStatus ?? ''}
-                onChange={(e) =>
-                  setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined)
-                }
-                label={t('scheduleStatus')}
-              >
-                {filterOptions.scheduleStatus.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {t(opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'all')}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
             {/* Disable Status */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus ?? ''}
-                onChange={(e) => setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
+                onChange={(e) => {
+                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
+                }}
                 label={t('disableStatus')}
               >
                 {filterOptions.disableStatus.map((opt) => (
@@ -312,7 +295,9 @@ export function CourseSelectDialog({
                 key={course.id}
                 value={course.id}
                 selected={localValue === course.id}
-                onClick={() => setLocalValue(course.id)}
+                onClick={() => {
+                  setLocalValue(course.id);
+                }}
               >
                 <Checkbox checked={localValue === course.id} />
                 <ListItemText primary={course.name} />
@@ -329,11 +314,11 @@ export function CourseSelectDialog({
                 </IconButton>
               </MenuItem>
             ))}
-            {loadingCourses && (
+            {loadingCourses ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('loading')}
               </Typography>
-            )}
+            ) : null}
             {!loadingCourses && courses.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('empty')}
@@ -363,9 +348,15 @@ export function CourseSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedCourse && (
-        <CourseDetailForm open={viewOpen} courseId={selectedCourse.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedCourse ? (
+        <CourseDetailForm
+          open={viewOpen}
+          courseId={selectedCourse.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

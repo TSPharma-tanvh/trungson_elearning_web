@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
-import { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
+import { type LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
 import {
@@ -40,7 +39,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'react-i18next';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
@@ -189,7 +188,12 @@ export function LessonMultiSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectLessons')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen(!isFullscreen);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -210,9 +214,9 @@ export function LessonMultiSelectDialog({
               <InputLabel>{t('lessonType')}</InputLabel>
               <Select
                 value={lessonType !== undefined ? String(lessonType) : ''}
-                onChange={(e: SelectChangeEvent) =>
-                  setLessonType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setLessonType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                }}
                 label={t('lessonType')}
               >
                 {filterOptions.lessonType.map((opt) => (
@@ -226,7 +230,9 @@ export function LessonMultiSelectDialog({
               <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus ?? ''}
-                onChange={(e) => setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
+                onChange={(e) => {
+                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
+                }}
                 label={t('disableStatus')}
               >
                 {filterOptions.disableStatus.map((opt) => (
@@ -240,9 +246,9 @@ export function LessonMultiSelectDialog({
               <InputLabel>{t('contentType')}</InputLabel>
               <Select
                 value={contentType !== undefined ? String(contentType) : ''}
-                onChange={(e) =>
-                  setContentType(e.target.value !== '' ? (Number(e.target.value) as LessonContentEnum) : undefined)
-                }
+                onChange={(e) => {
+                  setContentType(e.target.value !== '' ? (Number(e.target.value) as LessonContentEnum) : undefined);
+                }}
                 label={t('contentType')}
               >
                 {filterOptions.contentType.map((opt) => (
@@ -256,7 +262,9 @@ export function LessonMultiSelectDialog({
               <InputLabel>{t('status')}</InputLabel>
               <Select
                 value={status ?? ''}
-                onChange={(e) => setStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
+                onChange={(e) => {
+                  setStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
+                }}
                 label={t('status')}
               >
                 {filterOptions.status.map((opt) => (
@@ -270,7 +278,9 @@ export function LessonMultiSelectDialog({
               control={
                 <Checkbox
                   checked={hasVideo ?? false}
-                  onChange={(e) => setHasVideo(e.target.checked ? true : undefined)}
+                  onChange={(e) => {
+                    setHasVideo(e.target.checked ? true : undefined);
+                  }}
                 />
               }
               label={t('hasVideo')}
@@ -279,7 +289,9 @@ export function LessonMultiSelectDialog({
               control={
                 <Checkbox
                   checked={hasFileResource ?? false}
-                  onChange={(e) => setHasFileResource(e.target.checked ? true : undefined)}
+                  onChange={(e) => {
+                    setHasFileResource(e.target.checked ? true : undefined);
+                  }}
                 />
               }
               label={t('hasFileResource')}

@@ -6,9 +6,11 @@ import { GetCourseRequest } from '@/domain/models/courses/request/get-course-req
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import { CourseFilters } from '@/presentation/components/dashboard/courses/courses/course-filters';
 import CourseTable from '@/presentation/components/dashboard/courses/courses/course-table';
@@ -97,24 +99,66 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  //export table data to Excel
+  const handleExportToExcel = () => {
+    const exportData = courses.map((row) => ({
+      [t('id')]: row.id ?? '',
+      [t('name')]: row.name ?? '',
+      [t('detail')]: row.detail ?? '',
+      [t('pathName')]: row.coursePath?.name ?? '',
+      [t('required')]: row.isRequired ? t('yes') : t('no'),
+      [t('disableStatus')]: row.disableStatus ? t(row.disableStatus.toLowerCase()) : '',
+      [t('courseType')]: row.courseType ? t(row.courseType.toLowerCase()) : '',
+      [t('scheduleStatus')]: row.scheduleStatus ? t(row.scheduleStatus.toLowerCase()) : '',
+      [t('displayType')]: row.displayType ? t(row.displayType.toLowerCase()) : '',
+      [t('lessons')]: row.lessons?.length ?? 0,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Courses');
+
+    const today = DateTimeUtils.getTodayAsString();
+
+    XLSX.writeFile(wb, `Courses_${today}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
-        <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
+        <Stack spacing={1} sx={{ display: 'flex', flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('courses')}
           </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => { handleExportToExcel(); }}
+            >
+              {t('exportToExcel')}
+            </Button>
+          </Stack>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t('add')}
-        </Button>
+
+        <div>
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+            sx={{
+              backgroundColor: 'var(--mui-palette-primary-main)',
+              color: 'var(--mui-palette-common-white)',
+              '&:hover': { backgroundColor: 'var(--mui-palette-primary-dark)' },
+            }}
+          >
+            {t('add')}
+          </Button>
+        </div>
       </Stack>
+
       <CourseFilters onFilter={handleFilter} />
       <CourseTable
         rows={courses}

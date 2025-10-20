@@ -2,16 +2,8 @@
 
 import * as React from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
-import {
-  CoreEnumUtils,
-  DisplayTypeEnum,
-  LearningModeEnum,
-  LessonContentEnum,
-  ScheduleStatusEnum,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
+import { CoreEnumUtils, LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Checkbox, FormControlLabel, Stack } from '@mui/material';
-import { camelCase } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
@@ -113,7 +105,12 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
 
         <FormControlLabel
           control={
-            <Checkbox checked={hasVideo ?? false} onChange={(e) => setHasVideo(e.target.checked ? true : undefined)} />
+            <Checkbox
+              checked={hasVideo ?? false}
+              onChange={(e) => {
+                setHasVideo(e.target.checked ? true : undefined);
+              }}
+            />
           }
           label={t('hasVideo')}
         />
@@ -122,7 +119,9 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
           control={
             <Checkbox
               checked={hasFileResource ?? false}
-              onChange={(e) => setHasFileResource(e.target.checked ? true : undefined)}
+              onChange={(e) => {
+                setHasFileResource(e.target.checked ? true : undefined);
+              }}
             />
           }
           label={t('hasFileResource')}

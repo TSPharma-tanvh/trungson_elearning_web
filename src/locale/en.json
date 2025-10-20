@@ -802,5 +802,8 @@
   "hasLesson": "Has Lesson",
   "hasVideo": "Has Video",
   "hasFileResource": "Has File Resource",
-  "pDF": "PDF"
+  "pDF": "PDF",
+  "exportToExcel": "Export To Excel",
+  "notstarted": "Not Started",
+  "inprogress": "In Progress"
 }

@@ -10,7 +10,6 @@ import {
   DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
-  ScheduleStatusDisplayNames,
   ScheduleStatusEnum,
   StatusDisplayNames,
   StatusEnum,
@@ -92,12 +91,10 @@ export function CourseMultiSelectDialog({
     setSearchText,
     courseType,
     displayType,
-    scheduleStatus,
     disableStatus,
     hasPath,
     setCourseType,
     setDisplayType,
-    setScheduleStatus,
     setDisableStatus,
     setHasPath,
     listRef,
@@ -145,7 +142,6 @@ export function CourseMultiSelectDialog({
     setLocalSearchText('');
     setCourseType(undefined);
     setDisplayType(undefined);
-    setScheduleStatus(undefined);
     setDisableStatus(undefined);
     setHasPath(undefined);
   };
@@ -192,7 +188,12 @@ export function CourseMultiSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectCourses')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen(!isFullscreen);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -213,9 +214,9 @@ export function CourseMultiSelectDialog({
               <InputLabel>{t('courseType')}</InputLabel>
               <Select
                 value={courseType !== undefined ? String(courseType) : ''}
-                onChange={(e: SelectChangeEvent) =>
-                  setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                }}
                 label={t('courseType')}
               >
                 {filterOptions.courseType.map((opt) => (
@@ -229,9 +230,9 @@ export function CourseMultiSelectDialog({
               <InputLabel>{t('displayType')}</InputLabel>
               <Select
                 value={displayType !== undefined ? String(displayType) : ''}
-                onChange={(e: SelectChangeEvent) =>
-                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined)
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setDisplayType(e.target.value !== '' ? (Number(e.target.value) as DisplayTypeEnum) : undefined);
+                }}
                 label={t('displayType')}
               >
                 {filterOptions.displayType.map((opt) => (
@@ -241,27 +242,14 @@ export function CourseMultiSelectDialog({
                 ))}
               </Select>
             </FormControl>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>{t('scheduleStatus')}</InputLabel>
-              <Select
-                value={scheduleStatus ?? ''}
-                onChange={(e) =>
-                  setScheduleStatus(e.target.value ? (Number(e.target.value) as ScheduleStatusEnum) : undefined)
-                }
-                label={t('scheduleStatus')}
-              >
-                {filterOptions.scheduleStatus.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {t(opt !== undefined ? ScheduleStatusDisplayNames[opt] : 'all')}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('disableStatus')}</InputLabel>
               <Select
                 value={disableStatus ?? ''}
-                onChange={(e) => setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined)}
+                onChange={(e) => {
+                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
+                }}
                 label={t('disableStatus')}
               >
                 {filterOptions.disableStatus.map((opt) => (
@@ -275,9 +263,9 @@ export function CourseMultiSelectDialog({
               <InputLabel>{t('hasPath')}</InputLabel>
               <Select
                 value={hasPath !== undefined ? String(hasPath) : ''}
-                onChange={(e: SelectChangeEvent) =>
-                  setHasPath(e.target.value === '' ? undefined : e.target.value === 'true')
-                }
+                onChange={(e: SelectChangeEvent) => {
+                  setHasPath(e.target.value === '' ? undefined : e.target.value === 'true');
+                }}
                 label={t('hasPath')}
               >
                 {filterOptions.hasPath.map((opt) => {

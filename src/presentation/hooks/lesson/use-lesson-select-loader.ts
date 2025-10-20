@@ -95,7 +95,6 @@ export function useLessonSelectLoader({
   );
 
   useEffect(() => {
-    console.log('useEffect triggered with:', { isOpen, filters, searchText });
     if (isOpen) {
       setLessons([]);
       setPageNumber(1);

@@ -7,13 +7,16 @@ import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { FileXls } from '@phosphor-icons/react';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
@@ -116,6 +119,29 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleExportToExcel = () => {
+    const exportData = quizzes.map((row) => ({
+      [t('title')]: row.title ?? '',
+      [t('title')]: row.title ?? '',
+      [t('detail')]: row.description ?? '',
+      [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
+      [t('type')]: row.type ? t(row.type.toString().toLowerCase()) : '',
+      [t('totalQuestion')]: row.totalQuestion ?? '',
+      [t('totalScore')]: row.totalScore ?? '',
+      [t('scoreToPass')]: row.scoreToPass ?? '',
+      [t('canStartOver')]: row.canStartOver ? t('yes') : t('no'),
+      [t('canShuffle')]: row.canShuffle ? t('yes') : t('no'),
+      [t('isRequired')]: row.isRequired ? t('yes') : t('no'),
+      [t('isAutoSubmitted')]: row.isAutoSubmitted ? t('yes') : t('no'),
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Quiz');
+    const dateTimeString = DateTimeUtils.getTodayAsString();
+    XLSX.writeFile(wb, `Quiz_${dateTimeString}.xlsx`);
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -139,6 +165,15 @@ export default function Page(): React.JSX.Element {
               onClick={() => window.open(excelLink, '_blank', 'noopener,noreferrer')}
             >
               {t('downloadExampleFile')}
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+              onClick={() => {
+                handleExportToExcel();
+              }}
+            >
+              {t('exportToExcel')}
             </Button>
           </Stack>
         </Stack>
