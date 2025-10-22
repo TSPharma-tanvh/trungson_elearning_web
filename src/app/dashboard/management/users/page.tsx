@@ -40,10 +40,10 @@ export default function Page(): React.JSX.Element {
         pageSize: rowsPerPage,
       });
 
-      const { users: userList, totalRecords, pageNumber } = await userUsecase.getUserListInfo(request);
+      const { users: userList, totalRecords } = await userUsecase.getUserListInfo(request);
 
       setUsers(userList);
-      setTotalCount(totalRecords / pageNumber);
+      setTotalCount(totalRecords);
     } catch (error) {
       return undefined;
     }
@@ -88,7 +88,6 @@ export default function Page(): React.JSX.Element {
     try {
       await userUsecase.importUsers(request);
       await fetchUsers();
-
       setShowImportDialog(false);
     } catch (error) {
       return undefined;

@@ -147,7 +147,9 @@ export default function Page(): React.JSX.Element {
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
-              onClick={() => { handleExportToExcel(); }}
+              onClick={() => {
+                handleExportToExcel();
+              }}
             >
               {t('exportToExcel')}
             </Button>

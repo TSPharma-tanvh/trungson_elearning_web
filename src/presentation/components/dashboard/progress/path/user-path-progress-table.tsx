@@ -97,7 +97,7 @@ export default function UserPathProgressTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteUserPathProgresss}
-        deleteConfirmHeaderTitle={t('markDone')}
+        deleteConfirmHeaderTitle={t('deletePermanently')}
         actionMenuItems={[
           {
             label: t('viewDetails'),
