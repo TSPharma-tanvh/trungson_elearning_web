@@ -807,5 +807,9 @@
   "notstarted": "Not Started",
   "inprogress": "In Progress",
   "lessonquiz": "Lesson Quiz",
-  "examquiz": "Exam Quiz"
+  "examquiz": "Exam Quiz",
+  "isDefault": "Is Default",
+  "true": "True",
+  "isAutoEnroll": "Is Auto Enroll",
+  "isUpdateOldProgress": "Is Update Old Progress"
 }

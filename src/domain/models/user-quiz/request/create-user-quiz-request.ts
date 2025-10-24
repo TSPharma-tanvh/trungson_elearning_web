@@ -1,22 +1,27 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
-  type ApproveStatusEnum,
-  type ProgressEnrollmentTypeEnum,
-  type StatusEnum,
-  type UserProgressEnum,
+  ApproveStatusEnum,
+  ProgressEnrollmentTypeEnum,
+  StatusEnum,
+  UserQuizProgressEnum, // 👈 use UserQuizProgressEnum (not UserProgressEnum)
 } from '@/utils/enum/core-enum';
 
 export class CreateUserQuizRequest {
   quizID!: string;
   userIDs?: string[];
   userFile?: File;
-  enrollType!: ProgressEnrollmentTypeEnum;
 
-  startTime?: Date;
-  endTime?: Date;
-  progressStatus!: UserProgressEnum;
-  activeStatus!: StatusEnum;
-  enrollmentCriteriaID?: string;
+  enrollType!: ProgressEnrollmentTypeEnum;
+  startTime!: Date;
+  endTime!: Date;
+
+  progressStatus!: UserQuizProgressEnum;
+  activeStatus: StatusEnum = StatusEnum.Enable;
+  enrollmentCriteriaID!: string;
+
+  isAutoEnroll: boolean = true;
+  isUpdateOldProgress: boolean = false;
+
   userID?: string;
   enrollStatus?: ApproveStatusEnum;
   approvedBy?: string;
@@ -28,21 +33,24 @@ export class CreateUserQuizRequest {
   }
 
   static fromJson(json: any): CreateUserQuizRequest {
-    const dto = new CreateUserQuizRequest();
-    dto.quizID = json.quizID;
-    dto.userIDs = json.userIDs;
-    dto.enrollType = json.enrollType ?? 0;
-    dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
-    dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
-    dto.progressStatus = json.progressStatus ?? 0;
-    dto.activeStatus = json.activeStatus ?? 0;
-    dto.enrollmentCriteriaID = json.enrollmentCriteriaID;
-    dto.userID = json.userID;
-    dto.enrollStatus = json.enrollStatus;
-    dto.approvedBy = json.approvedBy;
-    dto.approvedAt = json.approvedAt ? new Date(json.approvedAt) : undefined;
-    dto.rejectedReason = json.rejectedReason;
-    return dto;
+    return new CreateUserQuizRequest({
+      quizID: json.quizID,
+      userIDs: json.userIDs ?? [],
+      userFile: json.userFile,
+      enrollType: json.enrollType,
+      startTime: json.startTime ? new Date(json.startTime) : undefined,
+      endTime: json.endTime ? new Date(json.endTime) : undefined,
+      progressStatus: json.progressStatus ?? UserQuizProgressEnum.NotStarted,
+      activeStatus: json.activeStatus ?? StatusEnum.Enable,
+      enrollmentCriteriaID: json.enrollmentCriteriaID,
+      isAutoEnroll: json.isAutoEnroll ?? true,
+      isUpdateOldProgress: json.isUpdateOldProgress ?? false,
+      userID: json.userID,
+      enrollStatus: json.enrollStatus,
+      approvedBy: json.approvedBy,
+      approvedAt: json.approvedAt ? new Date(json.approvedAt) : undefined,
+      rejectedReason: json.rejectedReason,
+    });
   }
 
   toJson(): any {
@@ -55,6 +63,8 @@ export class CreateUserQuizRequest {
       progressStatus: this.progressStatus,
       activeStatus: this.activeStatus,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
+      isAutoEnroll: this.isAutoEnroll,
+      isUpdateOldProgress: this.isUpdateOldProgress,
       userID: this.userID,
       enrollStatus: this.enrollStatus,
       approvedBy: this.approvedBy,
@@ -65,28 +75,34 @@ export class CreateUserQuizRequest {
 
   toFormData(): FormData {
     const form = new FormData();
-    form.append('quizID', this.quizID);
-    if (this.userIDs) {
-      this.userIDs.forEach((uid) => {
-        form.append('userIDs', uid);
-      });
+
+    form.append('QuizID', this.quizID);
+    if (this.userIDs?.length) {
+      this.userIDs.forEach((uid, index) => form.append(`UserIDs[${index}]`, uid));
     }
-    form.append('enrollType', this.enrollType.toString());
-    if (this.userFile) form.append('userFile', this.userFile);
 
-    const formattedStartTime = DateTimeUtils.formatISODateToString(this.startTime);
-    if (formattedStartTime) form.append('startTime', formattedStartTime);
-    const formattedEndTime = DateTimeUtils.formatISODateToString(this.endTime);
-    if (formattedEndTime) form.append('endTime', formattedEndTime);
+    if (this.userFile) form.append('UserFile', this.userFile);
 
-    form.append('progressStatus', this.progressStatus.toString());
-    form.append('activeStatus', this.activeStatus.toString());
-    if (this.enrollmentCriteriaID) form.append('enrollmentCriteriaID', this.enrollmentCriteriaID);
-    if (this.userID) form.append('userID', this.userID);
-    if (this.enrollStatus !== undefined) form.append('enrollStatus', this.enrollStatus.toString());
-    if (this.approvedBy) form.append('approvedBy', this.approvedBy);
-    if (this.approvedAt) form.append('approvedAt', this.approvedAt.toISOString());
-    if (this.rejectedReason) form.append('rejectedReason', this.rejectedReason);
+    form.append('EnrollType', this.enrollType.toString());
+    const startDateStr = DateTimeUtils.formatISODateToString(this.startTime);
+    if (startDateStr) form.append('startTime', startDateStr);
+
+    const endDateStr = DateTimeUtils.formatISODateToString(this.endTime);
+    if (endDateStr) form.append('endTime', endDateStr);
+
+    form.append('ProgressStatus', this.progressStatus.toString());
+    form.append('ActiveStatus', this.activeStatus.toString());
+
+    form.append('IsAutoEnroll', this.isAutoEnroll.toString());
+    form.append('IsUpdateOldProgress', this.isUpdateOldProgress.toString());
+
+    if (this.enrollmentCriteriaID) form.append('EnrollmentCriteriaID', this.enrollmentCriteriaID);
+    if (this.userID) form.append('UserID', this.userID);
+    if (this.enrollStatus !== undefined) form.append('EnrollStatus', this.enrollStatus.toString());
+    if (this.approvedBy) form.append('ApprovedBy', this.approvedBy);
+    if (this.approvedAt) form.append('ApprovedAt', this.approvedAt.toISOString());
+    if (this.rejectedReason) form.append('RejectedReason', this.rejectedReason);
+
     return form;
   }
 }

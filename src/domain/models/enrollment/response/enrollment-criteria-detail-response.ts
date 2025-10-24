@@ -10,20 +10,11 @@ export class EnrollmentCriteriaDetailResponse {
   name?: string;
   desc?: string;
   enrollmentCriteriaType = '';
+  isDefault = false;
   enrollmentStatus?: string;
   maxCapacity?: number;
   targetLevelID?: string;
-  pathID?: string;
-  path?: CoursePathResponse;
-  courseID?: string;
-  courses?: CourseResponse;
-  classID?: string;
-  class?: ClassResponse;
-  quizID?: string;
-  quiz?: QuizResponse;
   targetPharmacyID?: string;
-  enrollments?: EnrollmentResponse[];
-  courseEnrollments?: EnrollmentCriteriaCourseRelationResponse[];
 
   constructor(init?: Partial<EnrollmentCriteriaDetailResponse>) {
     Object.assign(this, init);
@@ -35,22 +26,11 @@ export class EnrollmentCriteriaDetailResponse {
       name: json.name,
       desc: json.desc,
       enrollmentCriteriaType: json.enrollmentCriteriaType,
+      isDefault: json.isDefault ?? false,
       enrollmentStatus: json.enrollmentStatus,
       maxCapacity: json.maxCapacity,
       targetLevelID: json.targetLevelID,
-      pathID: json.pathID,
-      path: json.path ? CoursePathResponse.fromJson(json.path) : undefined,
-      courseID: json.courseID,
-      courses: json.courses ? CourseResponse.fromJson(json.courses) : undefined,
-      classID: json.classID,
-      class: json.class ? ClassResponse.fromJson(json.class) : undefined,
-      quizID: json.quizID,
-      quiz: json.quiz ? QuizResponse.fromJson(json.quiz) : undefined,
       targetPharmacyID: json.targetPharmacyID,
-      enrollments: json.enrollments?.map((e: any) => EnrollmentResponse.fromJson(e)),
-      courseEnrollments: json.courseEnrollments?.map((ce: any) =>
-        EnrollmentCriteriaCourseRelationResponse.fromJson(ce)
-      ),
     });
   }
 
@@ -60,20 +40,11 @@ export class EnrollmentCriteriaDetailResponse {
       name: this.name,
       desc: this.desc,
       enrollmentCriteriaType: this.enrollmentCriteriaType,
+      isDefault: this.isDefault,
       enrollmentStatus: this.enrollmentStatus,
       maxCapacity: this.maxCapacity,
       targetLevelID: this.targetLevelID,
-      pathID: this.pathID,
-      path: this.path ? this.path.toJson() : undefined,
-      courseID: this.courseID,
-      courses: this.courses ? this.courses.toJson() : undefined,
-      classID: this.classID,
-      class: this.class ? this.class.toJson() : undefined,
-      quizID: this.quizID,
-      quiz: this.quiz ? this.quiz.toJson() : undefined,
       targetPharmacyID: this.targetPharmacyID,
-      enrollments: this.enrollments?.map((e) => e.toJson()),
-      courseEnrollments: this.courseEnrollments?.map((ce) => ce.toJson()),
     };
   }
 }

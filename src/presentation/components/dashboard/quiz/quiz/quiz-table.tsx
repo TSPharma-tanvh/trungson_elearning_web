@@ -171,6 +171,7 @@ export default function QuizTable({
                 </TableCell>
                 <TableCell>{t('title')}</TableCell>
                 <TableCell>{t('detail')}</TableCell>
+                <TableCell>{t('lessonName')}</TableCell>
                 <TableCell>{t('status')}</TableCell>
                 <TableCell>{t('type')}</TableCell>
                 <TableCell>{t('totalQuestion')}</TableCell>
@@ -214,8 +215,11 @@ export default function QuizTable({
                         </Box>
                       </Stack>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 100 }}>
                       <Typography variant="body2">{row.description}</Typography>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
+                      <Typography variant="body2">{row.lesson?.name}</Typography>
                     </TableCell>
                     <TableCell>
                       {' '}

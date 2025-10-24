@@ -56,6 +56,8 @@ export function CreateAttendanceRecordsDialog({
       enrollStatus: ApproveStatusEnum.Approve,
       activeStatus: StatusEnum.Enable,
       enrollType: ProgressEnrollmentTypeEnum.AllUsers,
+      isAutoEnroll: true,
+      isUpdateOldProgress: false,
     })
   );
 
@@ -126,15 +128,16 @@ export function CreateAttendanceRecordsDialog({
             />
           </Grid>
 
-          <Grid item xs={12}>
-            <EnrollmentSingleSelect
-              enrollmentUsecase={enrollUsecase}
-              value={form.enrollmentCriteriaID ?? ''}
-              onChange={(value: string) => {
-                handleChange('enrollmentCriteriaID', value);
-              }}
-              disabled={false}
-              categoryEnum={CategoryEnum.Class}
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDown<boolean>
+              label={t('isAutoEnroll')}
+              value={form.isAutoEnroll ?? true}
+              onChange={(val) => handleChange('isAutoEnroll', val)}
+              disabled={disabled}
+              options={[
+                { value: true, label: 'yes' },
+                { value: false, label: 'no' },
+              ]}
             />
           </Grid>
 
@@ -191,7 +194,8 @@ export function CreateAttendanceRecordsDialog({
                   <UploadFile sx={{ mr: 1 }} />
                   <Typography variant="body1">{form.userFile ? form.userFile.name : t('uploadFile')}</Typography>
                 </Box>
-                {form.userFile ? <IconButton
+                {form.userFile ? (
+                  <IconButton
                     size="small"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -199,12 +203,15 @@ export function CreateAttendanceRecordsDialog({
                     }}
                   >
                     <ClearIcon />
-                  </IconButton> : null}
+                  </IconButton>
+                ) : null}
                 <input type="file" accept=".xlsx,.xls" hidden onChange={handleFileChange} />
               </Button>
-              {fileError ? <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+              {fileError ? (
+                <Typography variant="caption" color="error" sx={{ mt: 1 }}>
                   {fileError}
-                </Typography> : null}
+                </Typography>
+              ) : null}
             </Grid>
           ) : null}
 

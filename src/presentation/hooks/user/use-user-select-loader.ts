@@ -12,6 +12,7 @@ interface UseUserSelectLoaderProps {
   roles: string[];
   isOpen: boolean;
   searchText?: string;
+  isActive?: boolean;
 }
 
 interface UserSelectLoaderState {
@@ -26,6 +27,8 @@ interface UserSelectLoaderState {
   searchText: string;
   setRoles: React.Dispatch<React.SetStateAction<string[]>>;
   roles: string[];
+  isActive: boolean;
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   loadUsers: (page: number, reset?: boolean) => Promise<void>;
 }
 
@@ -33,6 +36,7 @@ export function useUserSelectLoader({
   userUsecase,
   isOpen,
   roles: initialRoles = [],
+  isActive: initialIsActive = true,
   searchText: initialSearchText = '',
 }: UseUserSelectLoaderProps): UserSelectLoaderState {
   const [users, setUsers] = useState<UserResponse[]>([]);
@@ -43,6 +47,7 @@ export function useUserSelectLoader({
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [searchText, setSearchText] = useState(initialSearchText);
   const [roles, setRoles] = useState(initialRoles);
+  const [isActive, setIsActive] = useState(initialIsActive);
 
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -57,6 +62,7 @@ export function useUserSelectLoader({
       const request = new GetUserRequest({
         roles,
         searchTerm: searchText || undefined,
+        isActive: isActive,
         pageNumber: page,
         pageSize: 10,
       });
@@ -109,5 +115,7 @@ export function useUserSelectLoader({
     setRoles,
     roles,
     loadUsers,
+    isActive,
+    setIsActive,
   };
 }

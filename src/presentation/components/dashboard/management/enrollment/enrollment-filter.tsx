@@ -19,11 +19,13 @@ export function EnrollmentFilters({
   const [searchText, setSearchText] = React.useState('');
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
   const [targetType, setTargetType] = React.useState<CategoryEnum | undefined>(undefined);
+  const [isDefault, setIsDefault] = React.useState<boolean | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetEnrollmentCriteriaRequest({
-      searchText: searchText || undefined,
+      searchText: searchText,
       disableStatus: status,
+      isDefault: isDefault,
       targetType,
       pageNumber: 1,
       pageSize: 10,
@@ -36,6 +38,7 @@ export function EnrollmentFilters({
     setSearchText('');
     setStatus(undefined);
     setTargetType(undefined);
+    setIsDefault(undefined);
     onFilter(new GetEnrollmentCriteriaRequest({ pageNumber: 1, pageSize: 10 }));
   };
 
@@ -64,12 +67,22 @@ export function EnrollmentFilters({
 
         {/* Display Type */}
         <CustomSelectFilter<CategoryEnum>
-          label={t('displayType')}
+          label={t('category')}
           value={targetType}
           onChange={(val) => {
             setTargetType(val);
           }}
           options={CoreEnumUtils.getEnumOptions(CategoryEnum)}
+        />
+
+        <CustomSelectFilter<boolean>
+          label={t('isRequired')}
+          value={isDefault}
+          onChange={setIsDefault}
+          options={[
+            { value: true, label: 'required' },
+            { value: false, label: 'optional' },
+          ]}
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

@@ -5,6 +5,7 @@ export class CreateEnrollmentCriteriaRequest {
   desc?: string;
   enrollmentStatus: StatusEnum;
   enrollmentCriteriaType: CategoryEnum;
+  isDefault: boolean;
   targetID?: string;
   targetLevelID?: string;
   maxCapacity: number;
@@ -15,6 +16,7 @@ export class CreateEnrollmentCriteriaRequest {
     this.desc = data.desc;
     this.enrollmentStatus = data.enrollmentStatus ?? StatusEnum.Enable;
     this.enrollmentCriteriaType = data.enrollmentCriteriaType ?? CategoryEnum.Criteria;
+    this.isDefault = data.isDefault ?? false;
     this.targetID = data.targetID;
     this.targetLevelID = data.targetLevelID;
     this.maxCapacity = data.maxCapacity ?? 0;
@@ -27,10 +29,11 @@ export class CreateEnrollmentCriteriaRequest {
       desc: json.desc,
       enrollmentStatus: json.enrollmentStatus
         ? StatusEnum[json.enrollmentStatus as keyof typeof StatusEnum]
-        : undefined,
+        : StatusEnum.Enable,
       enrollmentCriteriaType: json.enrollmentCriteriaType
         ? CategoryEnum[json.enrollmentCriteriaType as keyof typeof CategoryEnum]
-        : undefined,
+        : CategoryEnum.Criteria,
+      isDefault: json.isDefault ?? false,
       targetID: json.targetID,
       targetLevelID: json.targetLevelID,
       maxCapacity: json.maxCapacity,
@@ -44,6 +47,7 @@ export class CreateEnrollmentCriteriaRequest {
       desc: this.desc,
       enrollmentStatus: this.enrollmentStatus,
       enrollmentCriteriaType: this.enrollmentCriteriaType,
+      isDefault: this.isDefault,
       targetID: this.targetID,
       targetLevelID: this.targetLevelID,
       maxCapacity: this.maxCapacity,

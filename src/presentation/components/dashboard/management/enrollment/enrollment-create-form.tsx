@@ -203,6 +203,19 @@ export function CreateEnrollmentDialog({ onSubmit, loading = false, open, onClos
             </Grid>
 
             <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isDefault')}
+                value={form.isDefault ?? false}
+                onChange={(val) => handleChange('isDefault', val)}
+                disabled={isSubmitting}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('maxCapacity')}
                 value={form.maxCapacity?.toString() ?? ''}

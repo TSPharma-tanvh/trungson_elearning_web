@@ -1,11 +1,17 @@
 export class QuizLessonResponse {
   id?: string;
-  title?: string;
-  description?: string;
-  status = '';
-  startTime?: string;
-  endTime?: string;
-  totalScore?: number;
+  courseID?: string;
+  name!: string;
+  detail?: string;
+  enablePlay?: boolean;
+  isRequired?: boolean;
+  status!: string;
+  lessonType!: string;
+  contentType?: string;
+  enrollmentCriteriaID?: string;
+  categoryID?: string;
+  thumbnailID?: string;
+  videoID?: string;
 
   constructor(init?: Partial<QuizLessonResponse>) {
     Object.assign(this, init);
@@ -14,24 +20,36 @@ export class QuizLessonResponse {
   static fromJson(json: any): QuizLessonResponse {
     return new QuizLessonResponse({
       id: json.id,
-      title: json.title,
-      description: json.description,
-      status: json.status ?? '',
-      startTime: json.startTime,
-      endTime: json.endTime,
-      totalScore: json.totalScore,
+      courseID: json.courseID,
+      name: json.name,
+      detail: json.detail,
+      enablePlay: json.enablePlay,
+      isRequired: json.isRequired,
+      status: json.status,
+      lessonType: json.lessonType,
+      contentType: json.contentType,
+      enrollmentCriteriaID: json.enrollmentCriteriaID,
+      categoryID: json.categoryID,
+      thumbnailID: json.thumbnailID,
+      videoID: json.videoID,
     });
   }
 
   toJson(): any {
     return {
       id: this.id,
-      title: this.title,
-      description: this.description,
+      courseID: this.courseID,
+      name: this.name,
+      detail: this.detail,
+      enablePlay: this.enablePlay,
+      isRequired: this.isRequired,
       status: this.status,
-      startTime: this.startTime,
-      endTime: this.endTime,
-      totalScore: this.totalScore,
+      lessonType: this.lessonType,
+      contentType: this.contentType,
+      enrollmentCriteriaID: this.enrollmentCriteriaID,
+      categoryID: this.categoryID,
+      thumbnailID: this.thumbnailID,
+      videoID: this.videoID,
     };
   }
 }

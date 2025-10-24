@@ -110,7 +110,7 @@ export function UserSelectDialog({
       const fetchSelectedUsers = async () => {
         setLoading(true);
         try {
-          const request = new GetUserRequest({});
+          const request = new GetUserRequest({ isActive: true });
           const result = await userUsecase.getUserListInfo(request);
           const newMap = { ...selectedUserMap };
           let updated = false;

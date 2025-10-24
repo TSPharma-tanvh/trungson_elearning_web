@@ -58,206 +58,206 @@ function EnrollmentCriteriaDetails({
     </Grid>
   );
 
-  const renderPathDetails = () => {
-    if (!enrollment.path) return null;
+  // const renderPathDetails = () => {
+  //   if (!enrollment.path) return null;
 
-    return (
-      <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('coursePath')} />
-        <CardContent>
-          <Grid container spacing={2}>
-            {renderField('pathId', enrollment.path.id)}
-            {renderField('name', enrollment.path.name)}
-            {renderField('detail', enrollment.path.detail)}
-            {renderField('isRequired', enrollment.path.isRequired ? t('yes') : t('no'))}
+  //   return (
+  //     <Card sx={{ mb: 2 }}>
+  //       <CardHeader title={t('coursePath')} />
+  //       <CardContent>
+  //         <Grid container spacing={2}>
+  //           {renderField('pathId', enrollment.path.id)}
+  //           {renderField('name', enrollment.path.name)}
+  //           {renderField('detail', enrollment.path.detail)}
+  //           {renderField('isRequired', enrollment.path.isRequired ? t('yes') : t('no'))}
 
-            {renderField(
-              'status',
-              enrollment.path.status
-                ? t(enrollment.path.status.charAt(0).toLowerCase() + t(enrollment.path.status).slice(1))
-                : ''
-            )}
-            {renderField(
-              'displayType',
-              enrollment.path.displayType
-                ? t(enrollment.path.displayType.charAt(0).toLowerCase() + t(enrollment.path.displayType).slice(1))
-                : ''
-            )}
-            {renderField('categoryId', enrollment.path.categoryID)}
-            {renderField('thumbnailId', enrollment.path.thumbnailID)}
-          </Grid>
-        </CardContent>
-      </Card>
-    );
-  };
+  //           {renderField(
+  //             'status',
+  //             enrollment.path.status
+  //               ? t(enrollment.path.status.charAt(0).toLowerCase() + t(enrollment.path.status).slice(1))
+  //               : ''
+  //           )}
+  //           {renderField(
+  //             'displayType',
+  //             enrollment.path.displayType
+  //               ? t(enrollment.path.displayType.charAt(0).toLowerCase() + t(enrollment.path.displayType).slice(1))
+  //               : ''
+  //           )}
+  //           {renderField('categoryId', enrollment.path.categoryID)}
+  //           {renderField('thumbnailId', enrollment.path.thumbnailID)}
+  //         </Grid>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // };
 
-  const renderCourseDetails = () => {
-    if (!enrollment.courses) return null;
+  // const renderCourseDetails = () => {
+  //   if (!enrollment.courses) return null;
 
-    return (
-      <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('courses')} />
-        <CardContent>
-          <Grid container spacing={2}>
-            {renderField('courseId', enrollment.courses?.id)}
-            {renderField('name', enrollment.courses?.name)}
-            {renderField('detail', enrollment.courses?.detail)}
-            {renderField('isRequired', enrollment.courses?.isRequired ? t('yes') : t('no'))}
-            {renderField(
-              'disableStatus',
-              enrollment.courses?.disableStatus
-                ? t(
-                    enrollment.courses?.disableStatus?.toString().charAt(0).toLowerCase() +
-                      t(enrollment.courses?.disableStatus.toString() ?? '').slice(1)
-                  )
-                : ''
-            )}
-            {renderField(
-              'scheduleStatus',
-              enrollment.courses?.scheduleStatus
-                ? t(
-                    enrollment.courses?.scheduleStatus?.toString().charAt(0).toLowerCase() +
-                      t(enrollment.courses?.scheduleStatus.toString() ?? '').slice(1)
-                  )
-                : ''
-            )}
-          </Grid>
-        </CardContent>
-      </Card>
-    );
-  };
+  //   return (
+  //     <Card sx={{ mb: 2 }}>
+  //       <CardHeader title={t('courses')} />
+  //       <CardContent>
+  //         <Grid container spacing={2}>
+  //           {renderField('courseId', enrollment.courses?.id)}
+  //           {renderField('name', enrollment.courses?.name)}
+  //           {renderField('detail', enrollment.courses?.detail)}
+  //           {renderField('isRequired', enrollment.courses?.isRequired ? t('yes') : t('no'))}
+  //           {renderField(
+  //             'disableStatus',
+  //             enrollment.courses?.disableStatus
+  //               ? t(
+  //                   enrollment.courses?.disableStatus?.toString().charAt(0).toLowerCase() +
+  //                     t(enrollment.courses?.disableStatus.toString() ?? '').slice(1)
+  //                 )
+  //               : ''
+  //           )}
+  //           {renderField(
+  //             'scheduleStatus',
+  //             enrollment.courses?.scheduleStatus
+  //               ? t(
+  //                   enrollment.courses?.scheduleStatus?.toString().charAt(0).toLowerCase() +
+  //                     t(enrollment.courses?.scheduleStatus.toString() ?? '').slice(1)
+  //                 )
+  //               : ''
+  //           )}
+  //         </Grid>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // };
 
-  const renderClassDetails = () => {
-    if (!enrollment.class) return null;
+  // const renderClassDetails = () => {
+  //   if (!enrollment.class) return null;
 
-    return (
-      <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('class')} />
-        <CardContent>
-          <Grid container spacing={2}>
-            {renderField('classId', enrollment.class?.id)}
-            {renderField('name', enrollment.class?.className)}
-            {renderField('classDetail', enrollment.class?.classDetail)}
-            {renderField(
-              'startAt',
-              enrollment.class?.startAt !== undefined
-                ? DateTimeUtils.formatDateTimeToDateString(enrollment.class.startAt)
-                : ''
-            )}
-            {renderField(
-              'endAt',
-              enrollment.class?.endAt !== undefined
-                ? DateTimeUtils.formatDateTimeToDateString(enrollment.class.endAt)
-                : ''
-            )}
-            {renderField('minuteLate', enrollment.class?.minuteLate)}
-            {renderField('scheduleStatus', enrollment.class?.scheduleStatus)}
-          </Grid>
-        </CardContent>
-      </Card>
-    );
-  };
+  //   return (
+  //     <Card sx={{ mb: 2 }}>
+  //       <CardHeader title={t('class')} />
+  //       <CardContent>
+  //         <Grid container spacing={2}>
+  //           {renderField('classId', enrollment.class?.id)}
+  //           {renderField('name', enrollment.class?.className)}
+  //           {renderField('classDetail', enrollment.class?.classDetail)}
+  //           {renderField(
+  //             'startAt',
+  //             enrollment.class?.startAt !== undefined
+  //               ? DateTimeUtils.formatDateTimeToDateString(enrollment.class.startAt)
+  //               : ''
+  //           )}
+  //           {renderField(
+  //             'endAt',
+  //             enrollment.class?.endAt !== undefined
+  //               ? DateTimeUtils.formatDateTimeToDateString(enrollment.class.endAt)
+  //               : ''
+  //           )}
+  //           {renderField('minuteLate', enrollment.class?.minuteLate)}
+  //           {renderField('scheduleStatus', enrollment.class?.scheduleStatus)}
+  //         </Grid>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // };
 
-  const renderQuizDetails = () => {
-    if (!enrollment.quiz) return null;
+  // const renderQuizDetails = () => {
+  //   if (!enrollment.quiz) return null;
 
-    return (
-      <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('quiz')} />
-        <CardContent>
-          <Grid container spacing={2}>
-            {renderField('quizId', enrollment.quiz?.id)}
-            {renderField('name', enrollment.quiz?.title)}
-            {renderField('description', enrollment.quiz?.description)}
-            {renderField('status', enrollment.quiz?.status)}
-            {renderField(
-              'startTime',
-              enrollment.quiz?.startTime ? DateTimeUtils.formatDateTimeToDateString(enrollment.quiz.startTime) : ''
-            )}
-            {renderField(
-              'endTime',
-              enrollment.quiz?.endTime ? DateTimeUtils.formatDateTimeToDateString(enrollment.quiz.endTime) : ''
-            )}
-            {renderField('totalScore', enrollment.quiz?.totalScore)}
-            {renderField('canStartOver', enrollment.quiz?.canStartOver)}
-            {renderField('isRequired', enrollment.quiz?.isRequired ? t('yes') : t('no'))}
-            {renderField('isAutoSubmitted', enrollment.quiz?.isAutoSubmitted ? t('yes') : t('no'))}
-            {renderField(
-              'type',
-              enrollment.quiz?.type
-                ? t(
-                    enrollment.quiz?.type.toString().charAt(0).toLowerCase() +
-                      t(enrollment.quiz?.type.toString()).slice(1)
-                  )
-                : ''
-            )}
-            {renderField('time', enrollment.quiz?.time)}
-            {renderField('scoreToPass', enrollment.quiz?.scoreToPass)}
-            {renderField('totalQuestion', enrollment.quiz?.totalQuestion)}
-            {renderField('maxAttempts', enrollment.quiz?.maxAttempts)}
-          </Grid>
-        </CardContent>
-      </Card>
-    );
-  };
+  //   return (
+  //     <Card sx={{ mb: 2 }}>
+  //       <CardHeader title={t('quiz')} />
+  //       <CardContent>
+  //         <Grid container spacing={2}>
+  //           {renderField('quizId', enrollment.quiz?.id)}
+  //           {renderField('name', enrollment.quiz?.title)}
+  //           {renderField('description', enrollment.quiz?.description)}
+  //           {renderField('status', enrollment.quiz?.status)}
+  //           {renderField(
+  //             'startTime',
+  //             enrollment.quiz?.startTime ? DateTimeUtils.formatDateTimeToDateString(enrollment.quiz.startTime) : ''
+  //           )}
+  //           {renderField(
+  //             'endTime',
+  //             enrollment.quiz?.endTime ? DateTimeUtils.formatDateTimeToDateString(enrollment.quiz.endTime) : ''
+  //           )}
+  //           {renderField('totalScore', enrollment.quiz?.totalScore)}
+  //           {renderField('canStartOver', enrollment.quiz?.canStartOver)}
+  //           {renderField('isRequired', enrollment.quiz?.isRequired ? t('yes') : t('no'))}
+  //           {renderField('isAutoSubmitted', enrollment.quiz?.isAutoSubmitted ? t('yes') : t('no'))}
+  //           {renderField(
+  //             'type',
+  //             enrollment.quiz?.type
+  //               ? t(
+  //                   enrollment.quiz?.type.toString().charAt(0).toLowerCase() +
+  //                     t(enrollment.quiz?.type.toString()).slice(1)
+  //                 )
+  //               : ''
+  //           )}
+  //           {renderField('time', enrollment.quiz?.time)}
+  //           {renderField('scoreToPass', enrollment.quiz?.scoreToPass)}
+  //           {renderField('totalQuestion', enrollment.quiz?.totalQuestion)}
+  //           {renderField('maxAttempts', enrollment.quiz?.maxAttempts)}
+  //         </Grid>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // };
 
-  const renderEnrollments = () => {
-    if (!enrollment.enrollments || enrollment.enrollments.length === 0) return null;
+  // const renderEnrollments = () => {
+  //   if (!enrollment.enrollments || enrollment.enrollments.length === 0) return null;
 
-    return (
-      <Box sx={{ mb: 2 }}>
-        <CardHeader title={t('enrollment')} sx={{ pl: 2, pb: 1, mb: 2 }} />
-        {enrollment.enrollments.map((enroll, index) => {
-          const enrollId = enroll.id ?? `enrollment-${index}`;
-          const isExpanded = expandedSections[enrollId] || false;
+  //   return (
+  //     <Box sx={{ mb: 2 }}>
+  //       <CardHeader title={t('enrollment')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+  //       {enrollment.enrollments.map((enroll, index) => {
+  //         const enrollId = enroll.id ?? `enrollment-${index}`;
+  //         const isExpanded = expandedSections[enrollId] || false;
 
-          return (
-            <Card
-              key={enrollId}
-              sx={{
-                mb: 3,
-                mx: window.innerWidth < 600 ? 1 : 2,
-              }}
-            >
-              <CardHeader
-                title={enroll.id ?? `${t('enrollment')} ${index + 1}`}
-                action={
-                  <IconButton
-                    onClick={() => {
-                      toggleExpanded(enrollId);
-                    }}
-                    sx={{
-                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.2s',
-                    }}
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
-                }
-                sx={{ py: 1 }}
-              />
-              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                  <Grid container spacing={2}>
-                    {renderField('ID', enroll.id)}
-                    {renderField('userID', enroll.userID)}
-                    {renderField('targetType', enroll.targetType)}
-                    {renderField('targetID', enroll.targetID)}
-                    {renderField(
-                      'enrollmentDate',
-                      enroll.enrollmentDate ? DateTimeUtils.formatDateTimeToDateString(enroll.enrollmentDate) : ''
-                    )}
-                    {renderField('status', enroll.status)}
-                    {renderField('rejectedReason', enroll.rejectedReason)}
-                  </Grid>
-                </CardContent>
-              </Collapse>
-            </Card>
-          );
-        })}
-      </Box>
-    );
-  };
+  //         return (
+  //           <Card
+  //             key={enrollId}
+  //             sx={{
+  //               mb: 3,
+  //               mx: window.innerWidth < 600 ? 1 : 2,
+  //             }}
+  //           >
+  //             <CardHeader
+  //               title={enroll.id ?? `${t('enrollment')} ${index + 1}`}
+  //               action={
+  //                 <IconButton
+  //                   onClick={() => {
+  //                     toggleExpanded(enrollId);
+  //                   }}
+  //                   sx={{
+  //                     transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+  //                     transition: 'transform 0.2s',
+  //                   }}
+  //                 >
+  //                   <ExpandMoreIcon />
+  //                 </IconButton>
+  //               }
+  //               sx={{ py: 1 }}
+  //             />
+  //             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+  //               <CardContent>
+  //                 <Grid container spacing={2}>
+  //                   {renderField('ID', enroll.id)}
+  //                   {renderField('userID', enroll.userID)}
+  //                   {renderField('targetType', enroll.targetType)}
+  //                   {renderField('targetID', enroll.targetID)}
+  //                   {renderField(
+  //                     'enrollmentDate',
+  //                     enroll.enrollmentDate ? DateTimeUtils.formatDateTimeToDateString(enroll.enrollmentDate) : ''
+  //                   )}
+  //                   {renderField('status', enroll.status)}
+  //                   {renderField('rejectedReason', enroll.rejectedReason)}
+  //                 </Grid>
+  //               </CardContent>
+  //             </Collapse>
+  //           </Card>
+  //         );
+  //       })}
+  //     </Box>
+  //   );
+  // };
 
   // const renderCourseEnrollments = () => {
   //   if (!enrollment.courseEnrollments || enrollment.courseEnrollments.length === 0) return null;
@@ -357,21 +357,18 @@ function EnrollmentCriteriaDetails({
                 ? t(enrollment.enrollmentStatus.charAt(0).toLowerCase() + t(enrollment.enrollmentStatus).slice(1))
                 : ''
             )}
+            {renderField('isDefault', enrollment.isDefault ? t('yes') : t('no'))}
             {renderField('maxCapacity', enrollment.maxCapacity)}
             {renderField('targetLevelID', enrollment.targetLevelID)}
-            {renderField('pathID', enrollment.pathID)}
-            {renderField('courseID', enrollment.courseID)}
-            {renderField('classID', enrollment.classID)}
-            {renderField('quizID', enrollment.quizID)}
             {renderField('targetPharmacyID', enrollment.targetPharmacyID)}
           </Grid>
         </CardContent>
       </Card>
-      {renderPathDetails()}
+      {/* {renderPathDetails()}
       {renderCourseDetails()}
       {renderClassDetails()}
       {renderQuizDetails()}
-      {renderEnrollments()}
+      {renderEnrollments()} */}
       {/* {renderCourseEnrollments()} */}
     </Box>
   );

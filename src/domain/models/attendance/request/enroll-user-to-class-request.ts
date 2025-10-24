@@ -1,5 +1,5 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { type StatusEnum, type ApproveStatusEnum, type ProgressEnrollmentTypeEnum } from '@/utils/enum/core-enum';
+import { type ApproveStatusEnum, type ProgressEnrollmentTypeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class EnrollUserListToClassRequest {
   userIDs: string[] = [];
@@ -12,6 +12,9 @@ export class EnrollUserListToClassRequest {
 
   startAt!: Date;
   endAt!: Date;
+
+  isAutoEnroll: boolean = true;
+  isUpdateOldProgress: boolean = false;
 
   minuteLate!: number;
   minuteSoon!: number;
@@ -41,6 +44,8 @@ export class EnrollUserListToClassRequest {
       checkInTime: json.checkInTime ? new Date(json.checkInTime) : undefined,
       startAt: json.startAt ? new Date(json.startAt) : undefined,
       endAt: json.endAt ? new Date(json.endAt) : undefined,
+      isAutoEnroll: json.isAutoEnroll ?? true,
+      isUpdateOldProgress: json.isUpdateOldProgress ?? false,
       minuteLate: json.minuteLate,
       minuteSoon: json.minuteSoon,
       statusCheckIn: json.statusCheckIn,
@@ -57,13 +62,14 @@ export class EnrollUserListToClassRequest {
   toJson(): any {
     return {
       userIDs: this.userIDs,
-      // file gửi riêng qua FormData nếu có upload
       enrollType: this.enrollType,
       classID: this.classID,
       levelID: this.levelID,
       checkInTime: this.checkInTime ? DateTimeUtils.formatISODateToString(this.checkInTime) : undefined,
-      startAt: this.startAt ? DateTimeUtils.formatISODateToString(this.startAt) : undefined,
-      endAt: this.endAt ? DateTimeUtils.formatISODateToString(this.endAt) : undefined,
+      startAt: DateTimeUtils.formatISODateToString(this.startAt),
+      endAt: DateTimeUtils.formatISODateToString(this.endAt),
+      isAutoEnroll: this.isAutoEnroll,
+      isUpdateOldProgress: this.isUpdateOldProgress,
       minuteLate: this.minuteLate,
       minuteSoon: this.minuteSoon,
       statusCheckIn: this.statusCheckIn,
@@ -81,16 +87,13 @@ export class EnrollUserListToClassRequest {
     const formData = new FormData();
 
     if (this.userIDs?.length) {
-      this.userIDs.forEach((id) => { formData.append('UserIDs', id); });
+      this.userIDs.forEach((id) => formData.append('UserIDs', id));
     }
 
-    if (this.userFile) {
-      formData.append('UserFile', this.userFile);
-    }
+    if (this.userFile) formData.append('UserFile', this.userFile);
 
     formData.append('EnrollType', String(this.enrollType));
     formData.append('ClassID', this.classID);
-
     if (this.levelID) formData.append('LevelID', this.levelID);
 
     const checkInTimeStr = DateTimeUtils.formatISODateToString(this.checkInTime);
@@ -101,6 +104,9 @@ export class EnrollUserListToClassRequest {
 
     const endAtStr = DateTimeUtils.formatISODateToString(this.endAt);
     if (endAtStr) formData.append('EndAt', endAtStr);
+
+    formData.append('IsAutoEnroll', String(this.isAutoEnroll));
+    formData.append('IsUpdateOldProgress', String(this.isUpdateOldProgress));
 
     formData.append('MinuteLate', String(this.minuteLate));
     formData.append('MinuteSoon', String(this.minuteSoon));

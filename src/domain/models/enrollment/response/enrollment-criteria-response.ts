@@ -2,11 +2,11 @@ export class EnrollmentCriteriaResponse {
   id = '';
   name?: string;
   desc?: string;
-  targetType = '';
-  disableStatus?: string;
-  targetID?: string;
-  targetLevelID?: string;
+  enrollmentCriteriaType = '';
+  isDefault = false;
+  enrollmentStatus?: string;
   maxCapacity?: number;
+  targetLevelID?: string;
   targetPharmacyID?: string;
 
   constructor(init?: Partial<EnrollmentCriteriaResponse>) {
@@ -18,11 +18,11 @@ export class EnrollmentCriteriaResponse {
       id: json.id,
       name: json.name,
       desc: json.desc,
-      targetType: json.targetType,
-      disableStatus: json.disableStatus,
-      targetID: json.targetID,
-      targetLevelID: json.targetLevelID,
+      enrollmentCriteriaType: json.enrollmentCriteriaType,
+      isDefault: json.isDefault ?? false,
+      enrollmentStatus: json.enrollmentStatus,
       maxCapacity: json.maxCapacity,
+      targetLevelID: json.targetLevelID,
       targetPharmacyID: json.targetPharmacyID,
     });
   }
@@ -32,11 +32,11 @@ export class EnrollmentCriteriaResponse {
       id: this.id,
       name: this.name,
       desc: this.desc,
-      targetType: this.targetType,
-      disableStatus: this.disableStatus,
-      targetID: this.targetID,
-      targetLevelID: this.targetLevelID,
+      enrollmentCriteriaType: this.enrollmentCriteriaType,
+      isDefault: this.isDefault,
+      enrollmentStatus: this.enrollmentStatus,
       maxCapacity: this.maxCapacity,
+      targetLevelID: this.targetLevelID,
       targetPharmacyID: this.targetPharmacyID,
     };
   }

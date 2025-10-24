@@ -27,6 +27,7 @@ export default function Page(): React.JSX.Element {
   const [userPathProgress, setUserPathProgress] = React.useState<UserPathProgressDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
+  const [createLoading, setCreateLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -67,11 +68,14 @@ export default function Page(): React.JSX.Element {
 
   const handleCreateUserPathProgress = async (request: EnrollUserListToPathRequest) => {
     try {
+      setCreateLoading(true);
       await userPathProgressUsecase.enrollUserPathProgress(request);
       setShowCreateDialog(false);
       await fetchUserPathProgress();
     } catch (error) {
       return undefined;
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -139,7 +143,9 @@ export default function Page(): React.JSX.Element {
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
-              onClick={() => { handleExportToExcel(); }}
+              onClick={() => {
+                handleExportToExcel();
+              }}
             >
               {t('exportToExcel')}
             </Button>
@@ -173,7 +179,7 @@ export default function Page(): React.JSX.Element {
       <CreateUserPathProgressDialog
         onSubmit={handleCreateUserPathProgress}
         disabled={false}
-        loading={false}
+        loading={createLoading}
         open={showCreateDialog}
         onClose={() => {
           setShowCreateDialog(false);

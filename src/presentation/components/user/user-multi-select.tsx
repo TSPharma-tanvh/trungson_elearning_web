@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
+import { type UserListResult } from '@/domain/models/user/response/user-list-result';
 import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { type UserUsecase } from '@/domain/usecases/user/user-usecase';
 import { useUserSelectDebounce } from '@/presentation/hooks/user/use-user-select-debounced';
-import { useUserSelectLoader } from '@/presentation/hooks/user/use-user-select-loader';
 import { AccountCircle, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -40,7 +40,7 @@ import { ViewUserDialog } from '../dashboard/management/users/view-user-detail-d
 
 interface UserSelectDialogProps extends Omit<SelectProps<string[]>, 'value' | 'onChange'> {
   userUsecase: UserUsecase | null;
-  value: string[]; // changed from string to string[]
+  value: string[];
   onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
@@ -67,47 +67,79 @@ export function UserMultiSelectDialog({
   const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const { users, loadingUsers, pageNumber, totalPages, listRef, setSearchText, loadUsers } = useUserSelectLoader({
-    userUsecase,
-    isOpen: dialogOpen,
-    roles: [],
-    searchText: debouncedSearchText,
-  });
+  const [users, setUsers] = useState<UserResponse[]>([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const listRef = useRef<HTMLUListElement | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const isFull = isSmallScreen || isFullscreen;
+
+  const loadUsers = async (page: number, reset = false) => {
+    if (!userUsecase || loadingUsers || !dialogOpen) return;
+
+    setLoadingUsers(true);
+    abortControllerRef.current = new AbortController();
+
+    try {
+      const request = new GetUserRequest({
+        searchTerm: debouncedSearchText || undefined,
+        pageNumber: page,
+        pageSize: 10,
+        isActive: true,
+      });
+
+      const result: UserListResult = await userUsecase.getUserListInfo(request);
+      if (dialogOpen) {
+        setUsers((prev) => (reset || page === 1 ? result.users : [...prev, ...result.users]));
+        setHasMore(result.users.length > 0 && result.totalRecords > users.length + result.users.length);
+        setTotalPages(Math.ceil(result.totalRecords / 10));
+        setPageNumber(page);
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error has occurred.';
+      CustomSnackBar.showSnackbar(message, 'error');
+    } finally {
+      if (dialogOpen) setLoadingUsers(false);
+    }
+  };
+
+  useEffect(() => {
+    if (dialogOpen) {
+      setUsers([]);
+      setPageNumber(1);
+      setTotalPages(1);
+      setHasMore(true);
+      void loadUsers(1, true);
+    }
+    return () => {
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = null;
+    };
+  }, [dialogOpen, debouncedSearchText]);
 
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
   };
-
   const handleClose = () => {
     setDialogOpen(false);
     setLocalValue(value);
   };
-
   const handleSave = () => {
     onChange(localValue);
     setDialogOpen(false);
   };
-
   const handlePageChange = (_: unknown, newPage: number) => {
     if (userUsecase && !loadingUsers) {
       void loadUsers(newPage, true);
       listRef.current?.scrollTo(0, 0);
     }
   };
-
   const handleToggle = (userId: string) => {
     setLocalValue((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]));
   };
-
-  useEffect(() => {
-    setSearchText(debouncedSearchText);
-  }, [debouncedSearchText, setSearchText]);
-
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
 
   useEffect(() => {
     if (userUsecase && value.length) {
@@ -124,9 +156,7 @@ export function UserMultiSelectDialog({
               updated = true;
             }
           }
-          if (updated) {
-            setSelectedUserMap(newMap);
-          }
+          if (updated) setSelectedUserMap(newMap);
         } catch (error) {
           const message = error instanceof Error ? error.message : 'An error has occurred.';
           CustomSnackBar.showSnackbar(message, 'error');
@@ -138,7 +168,7 @@ export function UserMultiSelectDialog({
     } else {
       setLoading(false);
     }
-  }, [userUsecase, value, selectedUserMap]);
+  }, [userUsecase, value]);
 
   useEffect(() => {
     if (dialogOpen) {
@@ -188,16 +218,13 @@ export function UserMultiSelectDialog({
         </Select>
       </FormControl>
 
+      {/* Dialog chọn user */}
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm">
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography mb={1}>{t('selectUser')}</Typography>
             <Box>
-              <IconButton
-                onClick={() => {
-                  setIsFullscreen((prev) => !prev);
-                }}
-              >
+              <IconButton onClick={() => setIsFullscreen((prev) => !prev)}>
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose}>
@@ -213,18 +240,12 @@ export function UserMultiSelectDialog({
             {users.map((user) => {
               const isSelected = localValue.includes(user.id);
               return (
-                <MenuItem
-                  key={user.id}
-                  selected={isSelected}
-                  onClick={() => {
-                    handleToggle(user.id);
-                  }}
-                >
+                <MenuItem key={user.id} selected={isSelected} onClick={() => handleToggle(user.id)}>
                   <Checkbox checked={isSelected} />
                   <Avatar
                     src={user?.employee?.avatar}
                     alt={user?.employee?.name}
-                    sx={{ width: 32, height: 32, marginRight: 2 }}
+                    sx={{ width: 32, height: 32, mr: 2 }}
                   />
                   <ListItemText
                     primary={`${user.employee?.name} (${user.userName})`}
@@ -264,15 +285,10 @@ export function UserMultiSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedUser ? (
-        <ViewUserDialog
-          open={viewOpen}
-          userId={selectedUser?.id ?? null}
-          onClose={() => {
-            setViewOpen(false);
-          }}
-        />
-      ) : null}
+      {/* View detail user */}
+      {selectedUser && (
+        <ViewUserDialog open={viewOpen} userId={selectedUser?.id ?? null} onClose={() => setViewOpen(false)} />
+      )}
     </>
   );
 }

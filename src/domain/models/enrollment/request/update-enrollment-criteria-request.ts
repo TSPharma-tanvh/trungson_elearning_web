@@ -1,11 +1,11 @@
-import { type CategoryEnum, type StatusEnum } from '@/utils/enum/core-enum';
+import { StatusEnum } from '@/utils/enum/core-enum';
 
 export class UpdateEnrollmentCriteriaRequest {
   id = '';
   name?: string;
   desc?: string;
   enrollmentStatus?: StatusEnum;
-  enrollmentCriteriaType?: CategoryEnum;
+  isDefault?: boolean;
   targetID?: string;
   targetLevelID?: string;
   maxCapacity?: number;
@@ -16,7 +16,19 @@ export class UpdateEnrollmentCriteriaRequest {
   }
 
   static fromJson(json: any): UpdateEnrollmentCriteriaRequest {
-    return new UpdateEnrollmentCriteriaRequest(json);
+    return new UpdateEnrollmentCriteriaRequest({
+      id: json.id ?? '',
+      name: json.name,
+      desc: json.desc,
+      enrollmentStatus: json.enrollmentStatus
+        ? StatusEnum[json.enrollmentStatus as keyof typeof StatusEnum]
+        : undefined,
+      isDefault: json.isDefault,
+      targetID: json.targetID,
+      targetLevelID: json.targetLevelID,
+      maxCapacity: json.maxCapacity,
+      targetPharmacyID: json.targetPharmacyID,
+    });
   }
 
   toJson(): any {
@@ -25,7 +37,7 @@ export class UpdateEnrollmentCriteriaRequest {
       name: this.name,
       desc: this.desc,
       enrollmentStatus: this.enrollmentStatus,
-      enrollmentCriteriaType: this.enrollmentCriteriaType,
+      isDefault: this.isDefault,
       targetID: this.targetID,
       targetLevelID: this.targetLevelID,
       maxCapacity: this.maxCapacity,

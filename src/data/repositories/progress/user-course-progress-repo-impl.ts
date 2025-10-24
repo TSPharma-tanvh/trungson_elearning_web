@@ -99,7 +99,13 @@ export class UserCourseProgressRepoImpl implements UserCourseProgressRepository 
     try {
       const response = await customApiClient.post<ApiResponse>(
         apiEndpoints.userCourseProgress.enroll,
-        request.toJson()
+        request.toFormData(),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 3600000,
+        }
       );
 
       const apiResponse = response.data;

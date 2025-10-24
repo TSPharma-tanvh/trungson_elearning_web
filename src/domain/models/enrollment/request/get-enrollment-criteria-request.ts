@@ -3,6 +3,7 @@ import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
 export class GetEnrollmentCriteriaRequest {
   targetType?: CategoryEnum;
   disableStatus?: StatusEnum;
+  isDefault?: boolean;
   targetID?: string;
   targetLevelID?: string;
   maxCapacity?: number;
@@ -15,6 +16,7 @@ export class GetEnrollmentCriteriaRequest {
     Object.assign(this, {
       targetType: data.targetType,
       disableStatus: data.disableStatus,
+      isDefault: data.isDefault,
       targetID: data.targetID,
       targetLevelID: data.targetLevelID,
       maxCapacity: data.maxCapacity,
@@ -29,6 +31,7 @@ export class GetEnrollmentCriteriaRequest {
     return new GetEnrollmentCriteriaRequest({
       targetType: json.targetType ? CategoryEnum[json.targetType as keyof typeof CategoryEnum] : undefined,
       disableStatus: json.disableStatus ? StatusEnum[json.disableStatus as keyof typeof StatusEnum] : undefined,
+      isDefault: json.isDefault,
       targetID: json.targetID,
       targetLevelID: json.targetLevelID,
       maxCapacity: json.maxCapacity,
@@ -43,6 +46,7 @@ export class GetEnrollmentCriteriaRequest {
     return {
       targetType: this.targetType,
       disableStatus: this.disableStatus,
+      isDefault: this.isDefault,
       targetID: this.targetID,
       targetLevelID: this.targetLevelID,
       maxCapacity: this.maxCapacity,

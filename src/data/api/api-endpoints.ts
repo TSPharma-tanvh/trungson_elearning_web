@@ -4,6 +4,7 @@ type DynamicEndpoint = (...args: string[]) => string;
 
 interface IdentityEndpoints {
   signIn: StaticEndpoint;
+  signInHrm: StaticEndpoint;
   signUp: StaticEndpoint;
   forgotPassword: StaticEndpoint;
   changePassword: StaticEndpoint;
@@ -203,6 +204,7 @@ interface EndpointDefinitions {
 const endpoints: EndpointDefinitions = {
   identity: {
     signIn: 'Identity/Login',
+    signInHrm: 'Identity/LoginWithHrm',
     signUp: 'Identity/Register',
     forgotPassword: 'Auth/Forgot-password',
     changePassword: 'Identity/ChangePassword',
@@ -370,7 +372,7 @@ const getBaseUrl = (): string => {
     throw new Error('Missing NEXT_PUBLIC_LOCAL_DEV_BASE_URL environment variable.');
   }
 
-  return production.replace(/\/+$/, '');
+  return local.replace(/\/+$/, '');
 };
 
 export const apiEndpoints: EndpointDefinitions = endpoints;

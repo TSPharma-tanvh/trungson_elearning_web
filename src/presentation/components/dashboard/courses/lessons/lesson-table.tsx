@@ -114,6 +114,7 @@ export default function LessonTable({
           <>
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
+            <TableCell>{t('courseName')}</TableCell>
             <TableCell>{t('enableAutoPlay')}</TableCell>
             <TableCell>{t('required')}</TableCell>
             <TableCell>{t('status')}</TableCell>
@@ -147,8 +148,11 @@ export default function LessonTable({
               </Stack>
             </TableCell>
 
-            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 200 }}>
               <Typography variant="body2">{row.detail}</Typography>
+            </TableCell>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
+              <Typography variant="body2">{row.course?.name}</Typography>
             </TableCell>
 
             <TableCell>

@@ -8,7 +8,7 @@ import { apiEndpoints } from '@/data/api/api-endpoints';
 
 export class AuthRepositoryImpl implements AuthRepository {
   async login(request: LoginRequest): Promise<ApiResponse> {
-    const response = await customApiClient.post<ApiResponse<LoginResponse>>(apiEndpoints.identity.signIn, {
+    const response = await customApiClient.post<ApiResponse<LoginResponse>>(apiEndpoints.identity.signInHrm, {
       userName: request.userName,
       password: request.password,
       rememberMe: true,

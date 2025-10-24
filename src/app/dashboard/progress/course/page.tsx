@@ -8,7 +8,7 @@ import { type UserCourseProgressResponse } from '@/domain/models/user-course/res
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Stack, Typography } from '@mui/material';
-import { FileXls } from '@phosphor-icons/react';
+import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
@@ -27,6 +27,7 @@ export default function Page(): React.JSX.Element {
   const [userCourseProgress, setUserCourseProgress] = React.useState<UserCourseProgressResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
+  const [createLoading, setCreateLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -67,11 +68,15 @@ export default function Page(): React.JSX.Element {
 
   const handleCreateUserCourseProgress = async (request: EnrollUserListToCourseRequest) => {
     try {
+      setCreateLoading(true);
+
       await userCourseProgressUsecase.enrollUserCourseProgress(request);
       setShowCreateDialog(false);
       await fetchUserCourseProgress();
     } catch (error) {
       return undefined;
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -142,21 +147,25 @@ export default function Page(): React.JSX.Element {
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
-              onClick={() => { handleExportToExcel(); }}
+              onClick={() => {
+                handleExportToExcel();
+              }}
             >
               {t('exportToExcel')}
             </Button>
           </Stack>
         </Stack>
-        {/* <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t('enrollUsers')}
-        </Button> */}
+        <div>
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
+            {t('enrollUsers')}
+          </Button>
+        </div>
       </Stack>
       <UserCourseProgressFilters onFilter={handleFilter} enrollUsecase={enrollUsecase} courseUsecase={courseUsecase} />
       <UserCourseProgressTable
@@ -173,7 +182,7 @@ export default function Page(): React.JSX.Element {
       <CreateUserCourseProgressDialog
         onSubmit={handleCreateUserCourseProgress}
         disabled={false}
-        loading={false}
+        loading={createLoading}
         open={showCreateDialog}
         onClose={() => {
           setShowCreateDialog(false);

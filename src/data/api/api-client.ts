@@ -96,27 +96,28 @@ class ApiClient {
           }
 
           if (status === 401) {
-            const refreshToken = StoreLocalManager.getLocalData(AppStrings.REFRESH_TOKEN);
-            const accessToken = StoreLocalManager.getLocalData(AppStrings.ACCESS_TOKEN) ?? '';
+            // const refreshToken = StoreLocalManager.getLocalData(AppStrings.REFRESH_TOKEN);
+            // const accessToken = StoreLocalManager.getLocalData(AppStrings.ACCESS_TOKEN) ?? '';
 
-            if (refreshToken) {
-              const refreshed = await ApiClient.handleTokenRefresh(refreshToken, accessToken);
-              if (refreshed) {
-                const originalConfig = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
-                if (originalConfig && !originalConfig._retry) {
-                  originalConfig._retry = true;
-                  const newToken = ApiClient.getAuthToken();
-                  if (newToken && originalConfig.headers) {
-                    originalConfig.headers['Authorization'] = `Bearer ${newToken}`;
-                  }
-                  return this.client.request(originalConfig);
-                }
-              } else {
-                ApiClient.clearTokenAndRedirectToSignIn();
-              }
-            } else {
-              ApiClient.clearTokenAndRedirectToSignIn();
-            }
+            // if (refreshToken) {
+            //   const refreshed = await ApiClient.handleTokenRefresh(refreshToken, accessToken);
+            //   if (refreshed) {
+            //     const originalConfig = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+            //     if (originalConfig && !originalConfig._retry) {
+            //       originalConfig._retry = true;
+            //       const newToken = ApiClient.getAuthToken();
+            //       if (newToken && originalConfig.headers) {
+            //         originalConfig.headers['Authorization'] = `Bearer ${newToken}`;
+            //       }
+            //       return this.client.request(originalConfig);
+            //     }
+            //   } else {
+            //     ApiClient.clearTokenAndRedirectToSignIn();
+            //   }
+            // } else {
+            //   ApiClient.clearTokenAndRedirectToSignIn();
+            // }
+            ApiClient.clearTokenAndRedirectToSignIn();
           }
         } else {
           CustomSnackBar.showSnackbar('Unexpected error', 'error');
@@ -166,32 +167,32 @@ class ApiClient {
     ApiClient.redirectToSignIn();
   }
 
-  private static async handleTokenRefresh(refreshToken: string, accessToken: string): Promise<boolean> {
-    try {
-      const refreshClient = axios.create({
-        baseURL: getBaseUrl(),
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        withCredentials: true,
-      });
-      const response = await refreshClient.post(apiEndpoints.token.refreshToken, {
-        refreshToken,
-        accessToken,
-      });
+  // private static async handleTokenRefresh(refreshToken: string, accessToken: string): Promise<boolean> {
+  //   try {
+  //     const refreshClient = axios.create({
+  //       baseURL: getBaseUrl(),
+  //       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+  //       withCredentials: true,
+  //     });
+  //     const response = await refreshClient.post(apiEndpoints.token.refreshToken, {
+  //       refreshToken,
+  //       accessToken,
+  //     });
 
-      const apiResponse = ApiResponse.fromJson<{ token: string; refreshToken: string }>(response.data);
+  //     const apiResponse = ApiResponse.fromJson<{ token: string; refreshToken: string }>(response.data);
 
-      if (apiResponse.isSuccessStatusCode && apiResponse.result) {
-        StoreLocalManager.saveLocalData(AppStrings.ACCESS_TOKEN, apiResponse.result.token);
-        StoreLocalManager.saveLocalData(AppStrings.REFRESH_TOKEN, apiResponse.result.refreshToken);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'An error has occurred.';
-      CustomSnackBar.showSnackbar(message, 'error');
-      return false;
-    }
-  }
+  //     if (apiResponse.isSuccessStatusCode && apiResponse.result) {
+  //       StoreLocalManager.saveLocalData(AppStrings.ACCESS_TOKEN, apiResponse.result.token);
+  //       StoreLocalManager.saveLocalData(AppStrings.REFRESH_TOKEN, apiResponse.result.refreshToken);
+  //       return true;
+  //     }
+  //     return false;
+  //   } catch (error) {
+  //     const message = error instanceof Error ? error.message : 'An error has occurred.';
+  //     CustomSnackBar.showSnackbar(message, 'error');
+  //     return false;
+  //   }
+  // }
 }
 
 export const customApiClient = ApiClient.getInstance();

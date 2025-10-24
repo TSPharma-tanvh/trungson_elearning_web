@@ -10,6 +10,7 @@ import {
   ProgressEnrollmentTypeEnum,
   StatusEnum,
   UserProgressEnum,
+  UserQuizProgressEnum,
 } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -57,12 +58,14 @@ export function CreateUserQuizProgressDialog({
       userID: '',
       quizID: '',
       enrollType: ProgressEnrollmentTypeEnum.AllUsers,
-      progressStatus: UserProgressEnum.NotStarted,
+      progressStatus: UserQuizProgressEnum.NotStarted,
       activeStatus: StatusEnum.Enable,
       enrollStatus: ApproveStatusEnum.Approve,
       approvedAt: new Date(),
       startTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
       endTime: new Date(Date.now() + 48 * 60 * 60 * 1000),
+      isAutoEnroll: true,
+      isUpdateOldProgress: false,
     })
   );
 
@@ -201,24 +204,55 @@ export function CreateUserQuizProgressDialog({
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <EnrollmentSingleSelect
-                enrollmentUsecase={enrollUsecase}
-                value={form.enrollmentCriteriaID ?? ''}
-                onChange={(value: string) => {
-                  handleChange('enrollmentCriteriaID', value);
-                }}
-                disabled={false}
-                categoryEnum={CategoryEnum.Quiz}
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isAutoEnroll')}
+                value={form.isAutoEnroll ?? true}
+                onChange={(val) => handleChange('isAutoEnroll', val)}
+                disabled={disabled}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isUpdateOldProgress')}
+                value={form.isUpdateOldProgress ?? false}
+                onChange={(val) => handleChange('isUpdateOldProgress', val)}
+                disabled={disabled}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+              />
+            </Grid>
+
+            {form.isAutoEnroll === true ? (
+              <div></div>
+            ) : (
+              <Grid item xs={12}>
+                <EnrollmentSingleSelect
+                  enrollmentUsecase={enrollUsecase}
+                  value={form.enrollmentCriteriaID ?? ''}
+                  onChange={(value: string) => {
+                    handleChange('enrollmentCriteriaID', value);
+                  }}
+                  disabled={disabled}
+                  categoryEnum={CategoryEnum.Path}
+                  label="pathEnrollmentCriteria"
+                />
+              </Grid>
+            )}
 
             <Grid item xs={12}>
               <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
                 label={t('enrollType')}
                 value={form.enrollType ?? ''}
                 onChange={(val) => {
-                  handleChange('enrollType', val);
+                  handleChange('enrollType', Number(val) as ProgressEnrollmentTypeEnum);
                 }}
                 disabled={disabled}
                 options={[
@@ -240,7 +274,11 @@ export function CreateUserQuizProgressDialog({
                   disabled={disabled}
                 />
               </Grid>
-            ) : form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
+            ) : (
+              <div></div>
+            )}
+
+            {form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
               <Grid item xs={12}>
                 <Button
                   variant="outlined"
@@ -285,14 +323,16 @@ export function CreateUserQuizProgressDialog({
                   </Typography>
                 ) : null}
               </Grid>
-            ) : null}
+            ) : (
+              <div></div>
+            )}
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startTime')}
                 value={form.startTime ? DateTimeUtils.formatISODateToString(form.startTime) : undefined}
                 onChange={(value) => {
-                  handleChange('startTime', DateTimeUtils.formatStringToDateTime(value ?? ''));
+                  handleChange('startTime', DateTimeUtils.formatStringToDateTime(value ?? '') ?? new Date());
                 }}
                 disabled={disabled}
               />
@@ -303,7 +343,7 @@ export function CreateUserQuizProgressDialog({
                 label={t('endTime')}
                 value={form.endTime ? DateTimeUtils.formatISODateToString(form.endTime) : undefined}
                 onChange={(value) => {
-                  handleChange('endTime', DateTimeUtils.formatStringToDateTime(value ?? ''));
+                  handleChange('endTime', DateTimeUtils.formatStringToDateTime(value ?? '') ?? new Date());
                 }}
                 disabled={disabled}
               />
@@ -323,17 +363,18 @@ export function CreateUserQuizProgressDialog({
             </Grid> */}
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<UserProgressEnum>
+              <CustomSelectDropDown<UserQuizProgressEnum>
                 label={t('status')}
-                value={form.progressStatus ?? ''}
+                value={form.progressStatus}
                 onChange={(val) => {
                   handleChange('progressStatus', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: UserProgressEnum.NotStarted, label: 'notStarted' },
-                  { value: UserProgressEnum.Ongoing, label: 'ongoing' },
-                  { value: UserProgressEnum.Done, label: 'done' },
+                  { value: UserQuizProgressEnum.NotStarted, label: 'notStarted' },
+                  { value: UserQuizProgressEnum.Doing, label: 'doing' },
+                  { value: UserQuizProgressEnum.Pass, label: 'pass' },
+                  { value: UserQuizProgressEnum.Fail, label: 'fail' },
                 ]}
               />
             </Grid>

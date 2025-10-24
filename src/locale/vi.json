@@ -807,5 +807,9 @@
   "notstarted": "Chưa bắt đầu",
   "inprogress": "Đang tiến hành",
   "lessonquiz": "Bài kiểm tra bài học",
-  "examquiz": "Bài kiểm tra bài tập"
+  "examquiz": "Bài kiểm tra bài tập",
+  "isDefault": "Mặc định",
+  "true": "Đúng",
+  "isAutoEnroll": "Tự động đăng ký",
+  "isUpdateOldProgress": "Cập nhật tiến độ cũ"
 }

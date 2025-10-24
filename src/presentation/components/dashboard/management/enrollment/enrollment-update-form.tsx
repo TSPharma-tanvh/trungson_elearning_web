@@ -56,6 +56,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
             ? StatusEnum[enrollment.enrollmentStatus as keyof typeof StatusEnum]
             : undefined,
         maxCapacity: enrollment.maxCapacity || undefined,
+        isDefault: enrollment.isDefault || undefined,
       });
       setFormData(newFormData);
     }
@@ -149,6 +150,19 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
                 rows={3}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isDefault')}
+                value={formData.isDefault ?? false}
+                onChange={(val) => handleChange('isDefault', val)}
+                disabled={isSubmitting}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
 

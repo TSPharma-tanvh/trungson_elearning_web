@@ -96,6 +96,7 @@ export default function EnrollmentTable({
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('targetType')}</TableCell>
+            <TableCell>{t('isDefault')}</TableCell>
             <TableCell>{t('maxCapacity')}</TableCell>
             <TableCell>{t('status')}</TableCell>
           </>
@@ -119,6 +120,7 @@ export default function EnrollmentTable({
                 ? t(row.enrollmentCriteriaType.charAt(0).toLowerCase() + t(row.enrollmentCriteriaType).slice(1))
                 : ''}
             </TableCell>
+            <TableCell>{row.isDefault ? t('yes') : t('no')}</TableCell>
             <TableCell>{row.maxCapacity}</TableCell>
             <TableCell>
               {row.enrollmentStatus

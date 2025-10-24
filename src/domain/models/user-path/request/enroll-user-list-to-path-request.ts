@@ -8,21 +8,27 @@ import {
 
 export class EnrollUserListToPathRequest {
   userIDs: string[] = [];
+  userFile?: File;
+
   enrollType!: ProgressEnrollmentTypeEnum;
   pathID!: string;
   progress?: number;
+
   startDate!: Date;
   endDate!: Date;
-  lastAccess?: Date;
+
+  isAutoEnroll: boolean = true;
+  isUpdateOldProgress: boolean = false;
+
   status!: UserProgressEnum;
   activeStatus!: StatusEnum;
   enrollmentCriteriaID!: string;
+
   userID?: string;
   enrollStatus?: ApproveStatusEnum;
   approvedBy?: string;
   approvedAt?: Date;
   rejectedReason?: string;
-  userFile?: File;
 
   constructor(init?: Partial<EnrollUserListToPathRequest>) {
     Object.assign(this, init);
@@ -31,12 +37,14 @@ export class EnrollUserListToPathRequest {
   static fromJson(json: any): EnrollUserListToPathRequest {
     return new EnrollUserListToPathRequest({
       userIDs: json.userIDs ?? [],
+      userFile: json.userFile,
       enrollType: json.enrollType,
       pathID: json.pathID,
       progress: json.progress,
       startDate: json.startDate ? new Date(json.startDate) : undefined,
       endDate: json.endDate ? new Date(json.endDate) : undefined,
-      lastAccess: json.lastAccess ? new Date(json.lastAccess) : undefined,
+      isAutoEnroll: json.isAutoEnroll ?? true,
+      isUpdateOldProgress: json.isUpdateOldProgress ?? false,
       status: json.status,
       activeStatus: json.activeStatus,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
@@ -45,7 +53,6 @@ export class EnrollUserListToPathRequest {
       approvedBy: json.approvedBy,
       approvedAt: json.approvedAt ? new Date(json.approvedAt) : undefined,
       rejectedReason: json.rejectedReason,
-      userFile: json.userFile,
     });
   }
 
@@ -57,7 +64,8 @@ export class EnrollUserListToPathRequest {
       progress: this.progress,
       startDate: DateTimeUtils.formatISODateToString(this.startDate),
       endDate: DateTimeUtils.formatISODateToString(this.endDate),
-      lastAccess: this.lastAccess?.toISOString(),
+      isAutoEnroll: this.isAutoEnroll,
+      isUpdateOldProgress: this.isUpdateOldProgress,
       status: this.status,
       activeStatus: this.activeStatus,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
@@ -73,7 +81,7 @@ export class EnrollUserListToPathRequest {
   toFormData(): FormData {
     const formData = new FormData();
 
-    if (this.userIDs && this.userIDs.length > 0) {
+    if (this.userIDs?.length) {
       this.userIDs.forEach((id, index) => {
         formData.append(`userIDs[${index}]`, id);
       });
@@ -83,14 +91,14 @@ export class EnrollUserListToPathRequest {
     if (this.pathID) formData.append('pathID', this.pathID);
     if (this.progress !== undefined) formData.append('progress', this.progress.toString());
 
-    const startDateStr = this.startDate ? DateTimeUtils.formatISODateToString(this.startDate) : undefined;
+    const startDateStr = DateTimeUtils.formatISODateToString(this.startDate);
     if (startDateStr) formData.append('startDate', startDateStr);
 
-    const endDateStr = this.endDate ? DateTimeUtils.formatISODateToString(this.endDate) : undefined;
+    const endDateStr = DateTimeUtils.formatISODateToString(this.endDate);
     if (endDateStr) formData.append('endDate', endDateStr);
 
-    const lastAccessStr = this.lastAccess ? DateTimeUtils.formatISODateToString(this.lastAccess) : undefined;
-    if (lastAccessStr) formData.append('lastAccess', lastAccessStr);
+    formData.append('isAutoEnroll', this.isAutoEnroll.toString());
+    formData.append('isUpdateOldProgress', this.isUpdateOldProgress.toString());
 
     if (this.status) formData.append('status', this.status.toString());
     if (this.activeStatus) formData.append('activeStatus', this.activeStatus.toString());

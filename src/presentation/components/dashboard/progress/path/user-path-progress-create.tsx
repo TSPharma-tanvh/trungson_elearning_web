@@ -52,6 +52,8 @@ export function CreateUserPathProgressDialog({
       enrollType: ProgressEnrollmentTypeEnum.AllUsers,
       status: UserProgressEnum.NotStarted,
       enrollStatus: ApproveStatusEnum.Approve,
+      isAutoEnroll: true,
+      isUpdateOldProgress: false,
     })
   );
 
@@ -116,6 +118,26 @@ export function CreateUserPathProgressDialog({
     };
   }, [fullScreen]);
 
+  useEffect(() => {
+    if (!open) {
+      setForm(
+        new EnrollUserListToPathRequest({
+          userID: '',
+          pathID: '',
+          progress: 0,
+          startDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          endDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
+          enrollType: ProgressEnrollmentTypeEnum.AllUsers,
+          status: UserProgressEnum.NotStarted,
+          enrollStatus: ApproveStatusEnum.Approve,
+          isAutoEnroll: true,
+          isUpdateOldProgress: false,
+        })
+      );
+      setFileError(null);
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
@@ -172,25 +194,55 @@ export function CreateUserPathProgressDialog({
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <EnrollmentSingleSelect
-                enrollmentUsecase={enrollUsecase}
-                value={form.enrollmentCriteriaID ?? ''}
-                onChange={(value: string) => {
-                  handleChange('enrollmentCriteriaID', value);
-                }}
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isAutoEnroll')}
+                value={form.isAutoEnroll ?? true}
+                onChange={(val) => handleChange('isAutoEnroll', val)}
                 disabled={disabled}
-                categoryEnum={CategoryEnum.Path}
-                label="pathEnrollmentCriteria"
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isUpdateOldProgress')}
+                value={form.isUpdateOldProgress ?? false}
+                onChange={(val) => handleChange('isUpdateOldProgress', val)}
+                disabled={disabled}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+              />
+            </Grid>
+
+            {form.isAutoEnroll === true ? (
+              <div></div>
+            ) : (
+              <Grid item xs={12}>
+                <EnrollmentSingleSelect
+                  enrollmentUsecase={enrollUsecase}
+                  value={form.enrollmentCriteriaID ?? ''}
+                  onChange={(value: string) => {
+                    handleChange('enrollmentCriteriaID', value);
+                  }}
+                  disabled={disabled}
+                  categoryEnum={CategoryEnum.Path}
+                  label="pathEnrollmentCriteria"
+                />
+              </Grid>
+            )}
 
             <Grid item xs={12}>
               <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
                 label={t('enrollType')}
                 value={form.enrollType ?? ''}
                 onChange={(val) => {
-                  handleChange('enrollType', val);
+                  handleChange('enrollType', Number(val) as ProgressEnrollmentTypeEnum);
                 }}
                 disabled={disabled}
                 options={[
@@ -212,7 +264,11 @@ export function CreateUserPathProgressDialog({
                   disabled={disabled}
                 />
               </Grid>
-            ) : form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
+            ) : (
+              <div></div>
+            )}
+
+            {form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
               <Grid item xs={12}>
                 <Button
                   variant="outlined"
@@ -238,7 +294,8 @@ export function CreateUserPathProgressDialog({
                     <UploadFileIcon sx={{ mr: 1 }} />
                     <Typography variant="body1">{form.userFile ? form.userFile.name : t('uploadFile')}</Typography>
                   </Box>
-                  {form.userFile ? <IconButton
+                  {form.userFile ? (
+                    <IconButton
                       size="small"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -246,14 +303,19 @@ export function CreateUserPathProgressDialog({
                       }}
                     >
                       <ClearIcon />
-                    </IconButton> : null}
+                    </IconButton>
+                  ) : null}
                   <input type="file" accept=".xlsx,.xls" hidden onChange={handleFileChange} />
                 </Button>
-                {fileError ? <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                {fileError ? (
+                  <Typography variant="caption" color="error" sx={{ mt: 1 }}>
                     {fileError}
-                  </Typography> : null}
+                  </Typography>
+                ) : null}
               </Grid>
-            ) : null}
+            ) : (
+              <div></div>
+            )}
 
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker

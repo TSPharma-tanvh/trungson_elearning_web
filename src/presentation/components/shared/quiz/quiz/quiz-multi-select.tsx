@@ -313,7 +313,7 @@ export function QuizMultiSelect({
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button onClick={handleClose}>{t('cancel')}</Button>
-            <Button onClick={handleSave} variant="contained" disabled={localValue.length === 0}>
+            <Button onClick={handleSave} variant="contained" disabled={false}>
               {t('save')}
             </Button>
           </Box>
