@@ -1,4 +1,4 @@
-import { QuizTypeEnum, StatusEnum, type CategoryEnum } from '@/utils/enum/core-enum';
+import { type CategoryEnum, type QuizInputMethod, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 export class CreateQuizRequest {
   levelID?: string;
@@ -10,17 +10,17 @@ export class CreateQuizRequest {
   displayedQuestionCount!: number;
 
   type: QuizTypeEnum = QuizTypeEnum.LessonQuiz;
-  time!: string; // TimeSpan (C#) -> string: "00:30:00"
+  time!: string; // C#: TimeSpan -> "HH:mm:ss"
 
   maxAttempts!: number;
   scoreToPass!: number;
 
   title = '';
   description?: string;
-  questionIDs?: string; // comma-separated
+  questionIDs?: string; // comma-separated IDs
 
   categoryID?: string;
-  status?: StatusEnum = StatusEnum.Enable;
+  status: StatusEnum = StatusEnum.Enable;
 
   enrollmentCriteriaIDs?: string;
 
@@ -38,13 +38,21 @@ export class CreateQuizRequest {
   categoryEnum?: CategoryEnum;
   isDeleteOldThumbnail?: boolean;
 
-  isAutoSubmitted?: boolean = true;
+  isAutoSubmitted = true;
 
   enrollmentCriteriaType?: CategoryEnum;
   enrollmentStatus?: StatusEnum;
 
   maxCapacity?: number;
   enrollmentCourseIDs?: string;
+
+  // New (Excel-specific properties)
+  inputMethod!: QuizInputMethod;
+  excelFile?: File;
+  questionCategoryID?: string;
+  questionCategoryEnum?: CategoryEnum;
+  answerCategoryID?: string;
+  answerCategoryEnum?: CategoryEnum;
 
   constructor(init?: Partial<CreateQuizRequest>) {
     Object.assign(this, init);

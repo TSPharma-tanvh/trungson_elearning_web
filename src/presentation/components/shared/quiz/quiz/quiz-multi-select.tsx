@@ -241,8 +241,12 @@ export function QuizMultiSelect({
                   .filter((key) => isNaN(Number(key)))
                   .map((key) => {
                     const camelKey = camelCase(key);
+                    const color =
+                      camelKey === 'lessonQuiz'
+                        ? 'var(--mui-palette-primary-main)'
+                        : 'var(--mui-palette-secondary-main)';
                     return (
-                      <MenuItem key={key} value={QuizTypeEnum[key as keyof typeof QuizTypeEnum]}>
+                      <MenuItem key={key} value={QuizTypeEnum[key as keyof typeof QuizTypeEnum]} sx={{ color }}>
                         {t(camelKey)}
                       </MenuItem>
                     );
@@ -259,6 +263,10 @@ export function QuizMultiSelect({
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
             {quizzes.map((item) => {
               const isSelected = localValue.includes(item.id ?? '');
+              const textColor =
+                item.type === QuizTypeEnum.LessonQuiz || item.type?.toString() === 'LessonQuiz'
+                  ? 'var(--mui-palette-primary-main)'
+                  : 'var(--mui-palette-secondary-main)';
               return (
                 <MenuItem
                   key={item.id}
@@ -270,7 +278,13 @@ export function QuizMultiSelect({
                   }}
                 >
                   <Checkbox checked={isSelected} />
-                  <ListItemText primary={item.title} />
+                  <ListItemText
+                    primary={
+                      <Typography variant="body1" sx={{ color: textColor, fontWeight: isSelected ? 600 : 400 }}>
+                        {item.title}
+                      </Typography>
+                    }
+                  />{' '}
                   <IconButton
                     size="small"
                     onClick={(e) => {

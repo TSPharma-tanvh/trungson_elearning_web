@@ -262,7 +262,8 @@ export function QuizSingleFilter({
               <Select
                 value={quizType ?? ''}
                 onChange={(e) => {
-                  setQuizType(e.target.value === '' ? undefined : (e.target.value as QuizTypeEnum));
+                  const quizValue = e.target.value;
+                  setQuizType(value === '' ? undefined : (quizValue as QuizTypeEnum));
                 }}
                 input={<OutlinedInput label={t('quizType')} />}
               >
@@ -270,15 +271,22 @@ export function QuizSingleFilter({
                 {Object.keys(QuizTypeEnum)
                   .filter((key) => isNaN(Number(key)))
                   .map((key) => {
+                    const enumValue = QuizTypeEnum[key as keyof typeof QuizTypeEnum];
                     const camelKey = camelCase(key);
+
+                    const color =
+                      camelKey === 'lessonQuiz'
+                        ? 'var(--mui-palette-primary-main)'
+                        : 'var(--mui-palette-secondary-main)';
                     return (
-                      <MenuItem key={key} value={QuizTypeEnum[key as keyof typeof QuizTypeEnum]}>
+                      <MenuItem key={key} value={enumValue} sx={{ color }}>
                         {t(camelKey)}
                       </MenuItem>
                     );
                   })}
               </Select>
             </FormControl>
+
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>
@@ -287,30 +295,45 @@ export function QuizSingleFilter({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {quizzes.map((item) => (
-              <MenuItem
-                key={item.id}
-                value={item.id}
-                selected={localValue === item.id}
-                onClick={() => {
-                  setLocalValue(item.id ?? '');
-                }}
-              >
-                <Checkbox checked={localValue === item.id} />
-                <ListItemText primary={item.title} />
-                <IconButton
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedQuiz(item);
-                    setViewOpen(true);
+            {quizzes.map((item) => {
+              const isSelected = localValue === item.id;
+              const textColor =
+                item.type === QuizTypeEnum.LessonQuiz || item.type?.toString() === 'LessonQuiz'
+                  ? 'var(--mui-palette-primary-main)'
+                  : 'var(--mui-palette-secondary-main)';
+
+              return (
+                <MenuItem
+                  key={item.id}
+                  value={item.id}
+                  selected={isSelected}
+                  onClick={() => {
+                    setLocalValue(item.id ?? '');
                   }}
-                  aria-label={t('showDetails')}
                 >
-                  <InfoOutlined />
-                </IconButton>
-              </MenuItem>
-            ))}
+                  <Checkbox checked={isSelected} />
+                  <ListItemText
+                    primary={
+                      <Typography variant="body1" sx={{ color: textColor, fontWeight: isSelected ? 600 : 400 }}>
+                        {item.title}
+                      </Typography>
+                    }
+                  />
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedQuiz(item);
+                      setViewOpen(true);
+                    }}
+                    aria-label={t('showDetails')}
+                  >
+                    <InfoOutlined />
+                  </IconButton>
+                </MenuItem>
+              );
+            })}
+
             {loadingQuizzes ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('loading')}

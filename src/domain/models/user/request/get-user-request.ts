@@ -9,8 +9,8 @@ export class GetUserRequest {
   firstChangePassword?: boolean;
   roles?: string[] = [];
   searchTerm?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetUserRequest>) {
     Object.assign(this, init);

@@ -1,10 +1,3 @@
-import { ClassResponse } from '../../class/response/class-response';
-import { EnrollmentResponse } from '../../class/response/enrollment-response';
-import { CourseResponse } from '../../courses/response/course-response';
-import { CoursePathResponse } from '../../path/response/course-path-response';
-import { QuizResponse } from '../../quiz/response/quiz-response';
-import { EnrollmentCriteriaCourseRelationResponse } from './enrollment-criteria-course-relation-response';
-
 export class EnrollmentCriteriaDetailResponse {
   id = '';
   name?: string;

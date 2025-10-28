@@ -3,13 +3,7 @@
 import React, { useState } from 'react';
 import { EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import {
-  ApproveStatusEnum,
-  CategoryEnum,
-  CheckinTimeEnum,
-  ProgressEnrollmentTypeEnum,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
+import { ApproveStatusEnum, CheckinTimeEnum, ProgressEnrollmentTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { UploadFile } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -23,7 +17,6 @@ import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/c
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { ClassSelectDialog } from '@/presentation/components/shared/classes/class/class-select';
-import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
 interface CreateAttendanceRecordsProps {
@@ -42,7 +35,7 @@ export function CreateAttendanceRecordsDialog({
   onClose,
 }: CreateAttendanceRecordsProps) {
   const { t } = useTranslation();
-  const { userUsecase, enrollUsecase, classUsecase } = useDI();
+  const { userUsecase, classUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
 
@@ -132,7 +125,9 @@ export function CreateAttendanceRecordsDialog({
             <CustomSelectDropDown<boolean>
               label={t('isAutoEnroll')}
               value={form.isAutoEnroll ?? true}
-              onChange={(val) => handleChange('isAutoEnroll', val)}
+              onChange={(val) => {
+                handleChange('isAutoEnroll', val);
+              }}
               disabled={disabled}
               options={[
                 { value: true, label: 'yes' },

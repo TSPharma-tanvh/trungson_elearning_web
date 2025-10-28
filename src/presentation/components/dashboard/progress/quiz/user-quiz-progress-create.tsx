@@ -9,7 +9,6 @@ import {
   CategoryEnum,
   ProgressEnrollmentTypeEnum,
   StatusEnum,
-  UserProgressEnum,
   UserQuizProgressEnum,
 } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
@@ -208,7 +207,9 @@ export function CreateUserQuizProgressDialog({
               <CustomSelectDropDown<boolean>
                 label={t('isAutoEnroll')}
                 value={form.isAutoEnroll ?? true}
-                onChange={(val) => handleChange('isAutoEnroll', val)}
+                onChange={(val) => {
+                  handleChange('isAutoEnroll', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: true, label: 'yes' },
@@ -221,7 +222,9 @@ export function CreateUserQuizProgressDialog({
               <CustomSelectDropDown<boolean>
                 label={t('isUpdateOldProgress')}
                 value={form.isUpdateOldProgress ?? false}
-                onChange={(val) => handleChange('isUpdateOldProgress', val)}
+                onChange={(val) => {
+                  handleChange('isUpdateOldProgress', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: true, label: 'yes' },
@@ -230,8 +233,8 @@ export function CreateUserQuizProgressDialog({
               />
             </Grid>
 
-            {form.isAutoEnroll === true ? (
-              <div></div>
+            {form.isAutoEnroll ? (
+              <div />
             ) : (
               <Grid item xs={12}>
                 <EnrollmentSingleSelect
@@ -275,7 +278,7 @@ export function CreateUserQuizProgressDialog({
                 />
               </Grid>
             ) : (
-              <div></div>
+              <div />
             )}
 
             {form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
@@ -324,7 +327,7 @@ export function CreateUserQuizProgressDialog({
                 ) : null}
               </Grid>
             ) : (
-              <div></div>
+              <div />
             )}
 
             <Grid item xs={12} sm={6}>

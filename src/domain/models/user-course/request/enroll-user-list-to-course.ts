@@ -1,5 +1,5 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ApproveStatusEnum, ProgressEnrollmentTypeEnum, StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import { type ApproveStatusEnum, type ProgressEnrollmentTypeEnum, StatusEnum, type UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class EnrollUserListToCourseRequest {
   userIDs: string[] = [];
@@ -12,8 +12,8 @@ export class EnrollUserListToCourseRequest {
   startDate!: Date;
   endDate!: Date;
 
-  isAutoEnroll: boolean = true;
-  isUpdateOldProgress: boolean = false;
+  isAutoEnroll = true;
+  isUpdateOldProgress = false;
 
   lastAccess?: Date;
 
@@ -80,7 +80,7 @@ export class EnrollUserListToCourseRequest {
     const formData = new FormData();
 
     if (this.userIDs?.length) {
-      this.userIDs.forEach((id, i) => formData.append(`UserIDs[${i}]`, id));
+      this.userIDs.forEach((id, i) => { formData.append(`UserIDs[${i}]`, id); });
     }
 
     formData.append('EnrollType', this.enrollType.toString());

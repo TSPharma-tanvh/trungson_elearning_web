@@ -1,7 +1,7 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
-  ApproveStatusEnum,
-  ProgressEnrollmentTypeEnum,
+  type ApproveStatusEnum,
+  type ProgressEnrollmentTypeEnum,
   StatusEnum,
   UserQuizProgressEnum, // 👈 use UserQuizProgressEnum (not UserProgressEnum)
 } from '@/utils/enum/core-enum';
@@ -19,8 +19,8 @@ export class CreateUserQuizRequest {
   activeStatus: StatusEnum = StatusEnum.Enable;
   enrollmentCriteriaID!: string;
 
-  isAutoEnroll: boolean = true;
-  isUpdateOldProgress: boolean = false;
+  isAutoEnroll = true;
+  isUpdateOldProgress = false;
 
   userID?: string;
   enrollStatus?: ApproveStatusEnum;
@@ -78,7 +78,7 @@ export class CreateUserQuizRequest {
 
     form.append('QuizID', this.quizID);
     if (this.userIDs?.length) {
-      this.userIDs.forEach((uid, index) => form.append(`UserIDs[${index}]`, uid));
+      this.userIDs.forEach((uid, index) => { form.append(`UserIDs[${index}]`, uid); });
     }
 
     if (this.userFile) form.append('UserFile', this.userFile);

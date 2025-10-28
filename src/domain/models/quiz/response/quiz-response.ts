@@ -107,7 +107,7 @@ export class QuizResponse {
     dto.isRequired = json.isRequired ?? false;
     dto.isAutoSubmitted = json.isAutoSubmitted ?? true;
 
-    dto.type = json.type ?? 'LessonQuiz';
+    dto.type = json.type;
     dto.time = json.time;
     dto.scoreToPass = json.scoreToPass;
     dto.totalQuestion = json.totalQuestion;

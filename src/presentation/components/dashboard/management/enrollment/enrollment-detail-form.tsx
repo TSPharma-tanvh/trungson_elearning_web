@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { type EnrollmentCriteriaDetailResponse } from '@/domain/models/enrollment/response/enrollment-criteria-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import {
@@ -14,7 +12,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -40,9 +37,9 @@ function EnrollmentCriteriaDetails({
   fullScreen: boolean;
 }) {
   const { t } = useTranslation();
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [_expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
-  const toggleExpanded = (sectionId: string) => {
+  const _toggleExpanded = (sectionId: string) => {
     setExpandedSections((prev) => ({
       ...prev,
       [sectionId]: !prev[sectionId],

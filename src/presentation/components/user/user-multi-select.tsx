@@ -70,7 +70,7 @@ export function UserMultiSelectDialog({
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [_hasMore, setHasMore] = useState(true);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -224,7 +224,11 @@ export function UserMultiSelectDialog({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography mb={1}>{t('selectUser')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)}>
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose}>
@@ -240,7 +244,13 @@ export function UserMultiSelectDialog({
             {users.map((user) => {
               const isSelected = localValue.includes(user.id);
               return (
-                <MenuItem key={user.id} selected={isSelected} onClick={() => handleToggle(user.id)}>
+                <MenuItem
+                  key={user.id}
+                  selected={isSelected}
+                  onClick={() => {
+                    handleToggle(user.id);
+                  }}
+                >
                   <Checkbox checked={isSelected} />
                   <Avatar
                     src={user?.employee?.avatar}
@@ -286,9 +296,15 @@ export function UserMultiSelectDialog({
       </Dialog>
 
       {/* View detail user */}
-      {selectedUser && (
-        <ViewUserDialog open={viewOpen} userId={selectedUser?.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedUser ? (
+        <ViewUserDialog
+          open={viewOpen}
+          userId={selectedUser?.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

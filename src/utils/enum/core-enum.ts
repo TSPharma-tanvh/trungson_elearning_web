@@ -88,6 +88,11 @@ export enum LessonContentEnum {
   Video = 1,
 }
 
+export enum QuizInputMethod {
+  Manual = 0,
+  Excel = 1,
+}
+
 export const CoreEnumUtils = {
   getEnumKeys<T extends object>(enumObj: T | null | undefined): string[] {
     if (!enumObj) return [];

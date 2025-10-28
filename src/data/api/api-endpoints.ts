@@ -93,6 +93,7 @@ interface QuizEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
   create: StaticEndpoint;
+  createDetail: StaticEndpoint;
   createByExcel: StaticEndpoint;
   update: StaticEndpoint;
 }
@@ -281,6 +282,7 @@ const endpoints: EndpointDefinitions = {
     getAll: 'Quiz/GetQuizzes',
     getById: (id: string) => `Quiz/GetQuizById/${id}`,
     create: 'Quiz/CreateQuiz',
+    createDetail: 'Quiz/CreateQuizDetail',
     createByExcel: 'Quiz/CreateQuizFromExcel',
     update: 'Quiz/UpdateQuiz',
   },

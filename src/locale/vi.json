@@ -811,5 +811,10 @@
   "isDefault": "Mặc định",
   "true": "Đúng",
   "isAutoEnroll": "Tự động đăng ký",
-  "isUpdateOldProgress": "Cập nhật tiến độ cũ"
+  "isUpdateOldProgress": "Cập nhật tiến độ cũ",
+  "inputMethod": "Phương thức nhập",
+  "manual": "Thủ công",
+  "excel": "Excel",
+  "importQuestions": "Nhập câu hỏi",
+  "displayedQuestionCount": "Số lượng câu hỏi được hiển thị"
 }

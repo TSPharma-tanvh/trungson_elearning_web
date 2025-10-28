@@ -1,4 +1,3 @@
-import { ApiResponse } from '@/domain/models/core/api-response';
 import AppStrings from '@/utils/app-strings';
 import StoreLocalManager from '@/utils/store-manager';
 import axios, {
@@ -12,7 +11,7 @@ import qs from 'qs';
 import { paths } from '@/paths';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
-import { apiEndpoints, getBaseUrl } from './api-endpoints';
+import { getBaseUrl } from './api-endpoints';
 
 //custom options
 export interface CustomAxiosRequestConfig extends AxiosRequestConfig {

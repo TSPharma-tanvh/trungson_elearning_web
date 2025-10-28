@@ -24,7 +24,7 @@ export class QuizRepoImpl implements QuizRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch quiz info');
     }
   }
 
@@ -39,13 +39,13 @@ export class QuizRepoImpl implements QuizRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch quiz info');
     }
   }
 
   async createQuiz(request: CreateQuizRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.create, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.createDetail, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -60,7 +60,7 @@ export class QuizRepoImpl implements QuizRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to create course');
+      throw new Error(error?.message || 'Failed to create quiz');
     }
   }
 
@@ -81,7 +81,7 @@ export class QuizRepoImpl implements QuizRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to create course');
+      throw new Error(error?.message || 'Failed to create quiz');
     }
   }
 
@@ -104,7 +104,7 @@ export class QuizRepoImpl implements QuizRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch quiz info');
     }
   }
 }

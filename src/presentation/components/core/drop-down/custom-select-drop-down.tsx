@@ -26,7 +26,7 @@ export function CustomSelectDropDown<T extends string | number | boolean>({
     setInternalValue(value);
   }, [value]);
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
+  const handleChange = (event: SelectChangeEvent) => {
     const raw = event.target.value;
     let newValue: T;
     if (raw === 'true') newValue = true as T;

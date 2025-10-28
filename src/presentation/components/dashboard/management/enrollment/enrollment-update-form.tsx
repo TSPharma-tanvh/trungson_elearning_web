@@ -157,7 +157,7 @@ export function UpdateEnrollmentFormDialog({ open, data: enrollment, onClose, on
               <CustomSelectDropDown<boolean>
                 label={t('isDefault')}
                 value={formData.isDefault ?? false}
-                onChange={(val) => handleChange('isDefault', val)}
+                onChange={(val) => { handleChange('isDefault', val); }}
                 disabled={isSubmitting}
                 options={[
                   { value: true, label: 'yes' },

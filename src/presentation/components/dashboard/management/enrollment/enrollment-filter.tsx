@@ -23,9 +23,9 @@ export function EnrollmentFilters({
 
   const handleFilter = () => {
     const request = new GetEnrollmentCriteriaRequest({
-      searchText: searchText,
+      searchText,
       disableStatus: status,
-      isDefault: isDefault,
+      isDefault,
       targetType,
       pageNumber: 1,
       pageSize: 10,

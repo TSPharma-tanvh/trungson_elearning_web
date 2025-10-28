@@ -110,7 +110,7 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title={t('quizzes')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('questions')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {quiz.quizQuestions.map((question, index) => {
           const lessonId = question.question?.id ?? `${t('lesson')}-${index}`;
           const isExpanded = expandedLessons[lessonId] || false;

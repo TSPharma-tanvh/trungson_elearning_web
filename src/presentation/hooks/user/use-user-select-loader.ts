@@ -62,7 +62,7 @@ export function useUserSelectLoader({
       const request = new GetUserRequest({
         roles,
         searchTerm: searchText || undefined,
-        isActive: isActive,
+        isActive,
         pageNumber: page,
         pageSize: 10,
       });

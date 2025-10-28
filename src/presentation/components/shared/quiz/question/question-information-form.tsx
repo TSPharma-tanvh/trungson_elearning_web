@@ -64,7 +64,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title="Answers" sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('answers')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {question.answers.map((answer, index) => {
           const lessonId = answer.id ?? `lesson-${index}`;
           const isExpanded = expandedAnswers[lessonId] || false;

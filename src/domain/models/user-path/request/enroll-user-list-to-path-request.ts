@@ -17,8 +17,8 @@ export class EnrollUserListToPathRequest {
   startDate!: Date;
   endDate!: Date;
 
-  isAutoEnroll: boolean = true;
-  isUpdateOldProgress: boolean = false;
+  isAutoEnroll = true;
+  isUpdateOldProgress = false;
 
   status!: UserProgressEnum;
   activeStatus!: StatusEnum;

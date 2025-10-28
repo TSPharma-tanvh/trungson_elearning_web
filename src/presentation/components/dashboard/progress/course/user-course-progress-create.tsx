@@ -196,7 +196,7 @@ export function CreateUserCourseProgressDialog({
               <CustomSelectDropDown<boolean>
                 label={t('isAutoEnroll')}
                 value={form.isAutoEnroll ?? true}
-                onChange={(val) => handleChange('isAutoEnroll', val)}
+                onChange={(val) => { handleChange('isAutoEnroll', val); }}
                 disabled={disabled}
                 options={[
                   { value: true, label: 'yes' },
@@ -209,7 +209,7 @@ export function CreateUserCourseProgressDialog({
               <CustomSelectDropDown<boolean>
                 label={t('isUpdateOldProgress')}
                 value={form.isUpdateOldProgress ?? false}
-                onChange={(val) => handleChange('isUpdateOldProgress', val)}
+                onChange={(val) => { handleChange('isUpdateOldProgress', val); }}
                 disabled={disabled}
                 options={[
                   { value: true, label: 'yes' },
@@ -218,8 +218,8 @@ export function CreateUserCourseProgressDialog({
               />
             </Grid>
 
-            {form.isAutoEnroll === true ? (
-              <div></div>
+            {form.isAutoEnroll ? (
+              <div />
             ) : (
               <Grid item xs={12}>
                 <EnrollmentSingleSelect
@@ -263,7 +263,7 @@ export function CreateUserCourseProgressDialog({
                 />
               </Grid>
             ) : (
-              <div></div>
+              <div />
             )}
 
             {form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
@@ -312,7 +312,7 @@ export function CreateUserCourseProgressDialog({
                 ) : null}
               </Grid>
             ) : (
-              <div></div>
+              <div />
             )}
 
             <Grid item xs={12} sm={6}>

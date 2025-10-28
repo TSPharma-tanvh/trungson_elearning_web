@@ -122,89 +122,6 @@ function StatusCard({ coursePath }: StatusCardProps) {
   );
 }
 
-// Enrollment Criteria
-interface EnrollmentCardProps {
-  coursePath: CoursePathResponse;
-  fullScreen: boolean;
-}
-
-export function EnrollmentCard({ coursePath, fullScreen }: EnrollmentCardProps) {
-  const { t } = useTranslation();
-
-  const enrollments = coursePath.enrollmentCriteria ?? [];
-  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
-
-  const toggleExpanded = (id: string) => {
-    setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const renderField = (
-    label: string,
-    value?: string | number | boolean | null | undefined,
-    children?: React.ReactNode
-  ) => (
-    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
-      <Typography variant="subtitle2" fontWeight={500}>
-        {t(label)}
-      </Typography>
-      {children ?? <CustomFieldTypography value={value} />}
-    </Grid>
-  );
-
-  if (enrollments.length === 0) return null;
-
-  return (
-    <Box sx={{ mb: 2 }}>
-      <CardHeader title={t('criteria')} sx={{ pl: 2, pb: 1, mb: 2 }} />
-      {enrollments.map((enroll, index) => {
-        const isExpanded = expandedIds[enroll.id] ?? false;
-
-        return (
-          <Card
-            key={enroll.id}
-            variant="outlined"
-            sx={{
-              mb: 2,
-              mx: window.innerWidth < 600 ? 1 : 2,
-            }}
-          >
-            <CardHeader
-              title={enroll.name ?? `${t('enrollment')} #${index + 1}`}
-              action={
-                <IconButton
-                  onClick={() => {
-                    toggleExpanded(enroll.id);
-                  }}
-                  sx={{
-                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s',
-                  }}
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              }
-              sx={{ py: 1 }}
-            />
-            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                <Grid container spacing={2}>
-                  {renderField('id', enroll.id)}
-                  {renderField('maxCapacity', enroll.maxCapacity)}
-                  {renderField('targetType', enroll.targetType)}
-                  {renderField('targetID', enroll.targetID)}
-                  {renderField('targetLevelID', enroll.targetLevelID)}
-                  {renderField('targetPharmacyID', enroll.targetPharmacyID)}
-                  {renderField('description', enroll.desc)}
-                </Grid>
-              </CardContent>
-            </Collapse>
-          </Card>
-        );
-      })}
-    </Box>
-  );
-}
-
 // Course Details (Collapsible)
 interface CourseDetailsCardProps {
   course: CourseResponse;
@@ -349,7 +266,7 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Co
             {/* Courses Section */}
             <Box sx={{ mb: 2 }}>
               <CardHeader title={t('includedCourses')} sx={{ pl: 2, pb: 1, mb: 2 }} />
-              {coursePath.courses.length > 0 ? (
+              {coursePath.courses !== undefined && coursePath.courses.length > 0 ? (
                 coursePath.courses.map((course) => (
                   <CourseDetailsCard key={course.id} course={course} fullScreen={fullScreen} />
                 ))
@@ -358,9 +275,6 @@ export default function CoursePathDetailForm({ open, coursePathId, onClose }: Co
                   <CustomFieldTypography value={undefined} fallback={t('noCoursesIncluded')} />
                 </Box>
               )}
-            </Box>
-            <Box sx={{ mb: 2 }}>
-              <EnrollmentCard coursePath={coursePath} fullScreen={fullScreen} />
             </Box>
           </Box>
         )}

@@ -236,8 +236,12 @@ export function QuizSingleSelect({
                   .filter((key) => isNaN(Number(key)))
                   .map((key) => {
                     const camelKey = camelCase(key);
+                    const color =
+                      camelKey === 'lessonQuiz'
+                        ? 'var(--mui-palette-primary-main)'
+                        : 'var(--mui-palette-secondary-main)';
                     return (
-                      <MenuItem key={key} value={QuizTypeEnum[key as keyof typeof QuizTypeEnum]}>
+                      <MenuItem key={key} value={QuizTypeEnum[key as keyof typeof QuizTypeEnum]} sx={{ color }}>
                         {t(camelKey)}
                       </MenuItem>
                     );
@@ -252,30 +256,43 @@ export function QuizSingleSelect({
 
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
-            {quizzes.map((item) => (
-              <MenuItem
-                key={item.id}
-                value={item.id}
-                selected={localValue === item.id}
-                onClick={() => {
-                  setLocalValue(item.id ?? '');
-                }}
-              >
-                <Checkbox checked={localValue === item.id} />
-                <ListItemText primary={item.title} />
-                <IconButton
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedQuiz(item);
-                    setViewOpen(true);
+            {quizzes.map((item) => {
+              const isSelected = localValue === item.id;
+              const textColor =
+                item.type === QuizTypeEnum.LessonQuiz || item.type?.toString() === 'LessonQuiz'
+                  ? 'var(--mui-palette-primary-main)'
+                  : 'var(--mui-palette-secondary-main)';
+              return (
+                <MenuItem
+                  key={item.id}
+                  value={item.id}
+                  selected={localValue === item.id}
+                  onClick={() => {
+                    setLocalValue(item.id ?? '');
                   }}
-                  aria-label={t('showDetails')}
                 >
-                  <InfoOutlined />
-                </IconButton>
-              </MenuItem>
-            ))}
+                  <Checkbox checked={localValue === item.id} />
+                  <ListItemText
+                    primary={
+                      <Typography variant="body1" sx={{ color: textColor, fontWeight: isSelected ? 600 : 400 }}>
+                        {item.title}
+                      </Typography>
+                    }
+                  />
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedQuiz(item);
+                      setViewOpen(true);
+                    }}
+                    aria-label={t('showDetails')}
+                  >
+                    <InfoOutlined />
+                  </IconButton>
+                </MenuItem>
+              );
+            })}
 
             {loadingQuizzes ? (
               <Typography variant="body2" sx={{ p: 2 }}>
