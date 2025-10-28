@@ -107,7 +107,7 @@ export default function Page(): React.JSX.Element {
       [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
       [t('displayType')]: row.displayType ? t(row.displayType.toLowerCase()) : '',
       [t('category')]: row.category?.categoryName ?? '',
-      [t('courses')]: row.courses.length ?? 0,
+      [t('courses')]: row.courses?.length ?? 0,
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);

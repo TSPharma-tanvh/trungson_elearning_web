@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -69,8 +68,6 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
             {renderField('criteriaId', criteria.id)}
             {renderField('criteriaName', criteria.name)}
             {renderField('criteriaDescription', criteria.desc)}
-            {renderField('criteriaTargetType', criteria.targetType)}
-            {renderField('criteriaTargetId', criteria.targetID)}
             {renderField('criteriaTargetLevelId', criteria.targetLevelID)}
             {renderField('criteriaMaxCapacity', criteria.maxCapacity)}
             {renderField('criteriaTargetPharmacyId', criteria.targetPharmacyID)}
@@ -106,7 +103,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
               }}
             >
               <CardHeader
-                title={quiz.title ?? `${t('quiz')} ${index + 1}`}
+                title={quiz.name ?? `${t('quiz')} ${index + 1}`}
                 action={
                   <IconButton
                     onClick={() => {
@@ -126,12 +123,9 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
                 <CardContent>
                   <Grid container spacing={2}>
                     {renderField('quizId', quiz.id)}
-                    {renderField('quizName', quiz.title)}
-                    {renderField('quizDetail', quiz.description)}
+                    {renderField('quizName', quiz.name)}
+                    {renderField('quizDetail', quiz.detail)}
                     {renderField('quizStatus', quiz.status)}
-                    {renderField('quizStartTime', DateTimeUtils.formatISODateStringToString(quiz.startTime ?? ''))}
-                    {renderField('quizEndTime', DateTimeUtils.formatISODateStringToString(quiz.endTime ?? ''))}
-                    {renderField('quizTotalScore', quiz.totalScore)}
                   </Grid>
                 </CardContent>
               </Collapse>

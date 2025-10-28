@@ -224,7 +224,7 @@ export default function CoursePathTable({
                       {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + t(row.displayType).slice(1)) : ''}
                     </TableCell>
                     <TableCell>{row.category?.categoryName}</TableCell>
-                    <TableCell>{row.courses.length}</TableCell>
+                    <TableCell>{row.courses?.length}</TableCell>
                     <TableCell align="right">
                       <IconButton
                         onClick={(event) => {
