@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { CoreEnumUtils, LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { Button, Card, Checkbox, FormControlLabel, Stack } from '@mui/material';
+import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
@@ -103,28 +103,24 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
           }))}
         />
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={hasVideo ?? false}
-              onChange={(e) => {
-                setHasVideo(e.target.checked ? true : undefined);
-              }}
-            />
-          }
+        <CustomSelectFilter<boolean>
           label={t('hasVideo')}
+          value={hasVideo}
+          onChange={setHasVideo}
+          options={[
+            { value: true, label: 'yes' },
+            { value: false, label: 'no' },
+          ]}
         />
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={hasFileResource ?? false}
-              onChange={(e) => {
-                setHasFileResource(e.target.checked ? true : undefined);
-              }}
-            />
-          }
+        <CustomSelectFilter<boolean>
           label={t('hasFileResource')}
+          value={hasFileResource}
+          onChange={setHasFileResource}
+          options={[
+            { value: true, label: 'yes' },
+            { value: false, label: 'no' },
+          ]}
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

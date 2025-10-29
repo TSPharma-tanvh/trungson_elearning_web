@@ -25,7 +25,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   ListItemText,
@@ -59,6 +58,7 @@ const filterOptions = {
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
   contentType: [LessonContentEnum.PDF, LessonContentEnum.Video, undefined],
   status: [StatusEnum.Enable, StatusEnum.Disable, undefined],
+  hasPath: [undefined, true, false],
 };
 
 export function LessonMultiSelectDialog({
@@ -274,28 +274,50 @@ export function LessonMultiSelectDialog({
                 ))}
               </Select>
             </FormControl>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={hasVideo ?? false}
-                  onChange={(e) => {
-                    setHasVideo(e.target.checked ? true : undefined);
-                  }}
-                />
-              }
-              label={t('hasVideo')}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={hasFileResource ?? false}
-                  onChange={(e) => {
-                    setHasFileResource(e.target.checked ? true : undefined);
-                  }}
-                />
-              }
-              label={t('hasFileResource')}
-            />
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('hasVideo')}</InputLabel>
+              <Select
+                value={hasVideo === undefined ? '' : hasVideo ? 'true' : 'false'}
+                onChange={(e: SelectChangeEvent) => {
+                  const newValue = e.target.value;
+                  if (newValue === '') {
+                    setHasVideo(undefined);
+                  } else {
+                    setHasVideo(newValue === 'true');
+                  }
+                }}
+                label={t('hasVideo')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('hasFileResource')}</InputLabel>
+              <Select
+                value={hasFileResource === undefined ? '' : hasFileResource ? 'true' : 'false'}
+                onChange={(e: SelectChangeEvent) => {
+                  const newValue = e.target.value;
+                  if (newValue === '') {
+                    setHasFileResource(undefined);
+                  } else {
+                    setHasFileResource(newValue === 'true');
+                  }
+                }}
+                label={t('hasFileResource')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>

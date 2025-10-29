@@ -430,11 +430,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
     { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
-
   if (!lesson) return null;
 
   return (

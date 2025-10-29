@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ExpandMore, InfoOutlined } from '@mui/icons-material';
+import { ExpandMore } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -29,8 +28,6 @@ import CustomFieldTypography from '@/presentation/components/core/text-field/cus
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
-import EnrollmentDetailForm from '../../management/enrollment/enrollment-detail-form';
-
 interface ClassDetailProps {
   open: boolean;
   classId: string | null;
@@ -42,7 +39,6 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fullScreenQR, setFullScreenQR] = useState(false);
   const [criteriaExpanded, setCriteriaExpanded] = useState<Record<string, boolean>>({});
-  const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 3 : 4}>
@@ -88,7 +84,9 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                 title={`${t('enrollmentCriteria')}: ${enroll.enrollmentCriteria?.name ?? criteriaId}`}
                 action={
                   <IconButton
-                    onClick={() => toggleExpanded(criteriaId)}
+                    onClick={() => {
+                      toggleExpanded(criteriaId);
+                    }}
                     sx={{
                       transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -137,12 +135,14 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                                   mb: 1,
                                 }}
                               >
-                                {isImage && (
+                                {isImage ? (
                                   <Box
                                     component="img"
                                     src={res.resourceUrl}
                                     alt={res.name}
-                                    onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                                    onClick={() => {
+                                      setPreviewUrl(res.resourceUrl ?? '');
+                                    }}
                                     sx={{
                                       position: 'absolute',
                                       top: 0,
@@ -153,9 +153,9 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                                       cursor: 'pointer',
                                     }}
                                   />
-                                )}
+                                ) : null}
 
-                                {isVideo && (
+                                {isVideo ? (
                                   <Box
                                     sx={{
                                       position: 'absolute',
@@ -167,9 +167,9 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                                   >
                                     <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
                                   </Box>
-                                )}
+                                ) : null}
 
-                                {isOther && (
+                                {isOther ? (
                                   <Box
                                     sx={{
                                       position: 'absolute',
@@ -185,7 +185,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                                   >
                                     <Typography variant="body2">{t('noPreview')}</Typography>
                                   </Box>
-                                )}
+                                ) : null}
                               </Box>
 
                               <Typography

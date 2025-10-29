@@ -226,11 +226,6 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
     { value: QuestionEnum.LongAnswer, label: 'longAnswer' },
   ];
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
-
   if (!question) return null;
 
   return (

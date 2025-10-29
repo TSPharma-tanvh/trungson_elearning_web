@@ -18,7 +18,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   ListItemText,
@@ -28,6 +27,7 @@ import {
   Select,
   Typography,
   useMediaQuery,
+  type SelectChangeEvent,
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -45,6 +45,10 @@ interface QuizSingleSelectProps extends Omit<SelectProps<string>, 'value' | 'onC
   label?: string;
   disabled?: boolean;
 }
+
+const filterOptions = {
+  hasPath: [undefined, true, false],
+};
 
 export function QuizSingleSelect({
   quizUsecase,
@@ -189,39 +193,72 @@ export function QuizSingleSelect({
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={canStartOver ?? false}
-                  onChange={(e) => {
-                    setCanStartOver(e.target.checked ? true : undefined);
-                  }}
-                />
-              }
-              label={t('canStartOver')}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isRequired ?? false}
-                  onChange={(e) => {
-                    setIsRequired(e.target.checked ? true : undefined);
-                  }}
-                />
-              }
-              label={t('isRequired')}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={hasLesson ?? false}
-                  onChange={(e) => {
-                    setHasLesson(e.target.checked ? true : undefined);
-                  }}
-                />
-              }
-              label={t('hasLesson')}
-            />
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('canStartOver')}</InputLabel>
+              <Select
+                value={canStartOver === undefined ? '' : canStartOver ? 'true' : 'false'}
+                onChange={(e: SelectChangeEvent) => {
+                  const newValue = e.target.value;
+                  if (newValue === '') {
+                    setCanStartOver(undefined);
+                  } else {
+                    setCanStartOver(newValue === 'true');
+                  }
+                }}
+                label={t('canStartOver')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('isRequired')}</InputLabel>
+              <Select
+                value={isRequired === undefined ? '' : isRequired ? 'true' : 'false'}
+                onChange={(e: SelectChangeEvent) => {
+                  const newValue = e.target.value;
+                  if (newValue === '') {
+                    setIsRequired(undefined);
+                  } else {
+                    setIsRequired(newValue === 'true');
+                  }
+                }}
+                label={t('isRequired')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('hasLesson')}</InputLabel>
+              <Select
+                value={hasLesson === undefined ? '' : hasLesson ? 'true' : 'false'}
+                onChange={(e: SelectChangeEvent) => {
+                  const newValue = e.target.value;
+                  if (newValue === '') {
+                    setHasLesson(undefined);
+                  } else {
+                    setHasLesson(newValue === 'true');
+                  }
+                }}
+                label={t('hasLesson')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <FormControl size="small" sx={{ minWidth: 150 }}>
               <InputLabel>{t('quizType')}</InputLabel>
               <Select

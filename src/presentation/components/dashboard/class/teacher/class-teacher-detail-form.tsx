@@ -212,7 +212,7 @@ function TeacherDetails({ teacher, fullScreen }: { teacher: ClassTeacherResponse
                     {renderField('duration', classData.duration)}
                     {renderField('startAt', DateTimeUtils.formatDateTimeToDateString(classData.startAt))}
                     {renderField('endAt', DateTimeUtils.formatDateTimeToDateString(classData.endAt))}
-                    {renderField('', classData.qrCode?.resourceUrl)}
+
                     {renderField('minuteLate', classData.minuteLate)}
                     {renderField(
                       'classType',

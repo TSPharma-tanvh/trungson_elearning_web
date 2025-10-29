@@ -289,11 +289,11 @@ export function CourseSelectDialog({
               <Select
                 value={hasPath === undefined ? '' : hasPath ? 'true' : 'false'}
                 onChange={(e: SelectChangeEvent) => {
-                  const value = e.target.value;
-                  if (value === '') {
+                  const newValue = e.target.value;
+                  if (newValue === '') {
                     setHasPath(undefined);
                   } else {
-                    setHasPath(value === 'true');
+                    setHasPath(newValue === 'true');
                   }
                 }}
                 label={t('hasPath')}

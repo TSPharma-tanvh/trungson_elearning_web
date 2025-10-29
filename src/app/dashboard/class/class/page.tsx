@@ -112,7 +112,7 @@ export default function Page(): React.JSX.Element {
       [t('detail')]: row.classDetail ?? '',
       [t('duration')]: row.duration ?? '',
       [t('attendanceRecordsCount')]: row.attendanceRecords?.length ?? '',
-      [t('enrollmentCriteriaCount')]: row.enrollmentCriteria?.length ?? '',
+      [t('enrollmentCriteriaCount')]: row.classEnrollments?.length ?? '',
       [t('teacher')]: row.classTeacher?.user?.employee?.name ?? '',
       [t('classType')]: row.classType ? t(row.classType.toLowerCase()) : '',
       [t('scheduleStatus')]: row.scheduleStatus ? t(row.scheduleStatus.toLowerCase()) : '',
@@ -138,7 +138,9 @@ export default function Page(): React.JSX.Element {
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
-              onClick={() => { handleExportToExcel(); }}
+              onClick={() => {
+                handleExportToExcel();
+              }}
             >
               {t('exportToExcel')}
             </Button>

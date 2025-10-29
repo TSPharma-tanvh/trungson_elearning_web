@@ -51,11 +51,6 @@ const typeOptions = [
   { value: QuizTypeEnum.LessonQuiz, label: 'lessonQuiz' },
 ];
 
-const booleanOptions = [
-  { value: 'true', label: 'yes' },
-  { value: 'false', label: 'no' },
-];
-
 export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: EditQuizDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));

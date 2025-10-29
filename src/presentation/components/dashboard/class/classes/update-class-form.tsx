@@ -95,7 +95,8 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
             ? ScheduleStatusEnum[classes.scheduleStatus as keyof typeof ScheduleStatusEnum]
             : undefined,
         enrollmentCriteriaType: CategoryEnum.Class,
-        enrollmentCriteriaIDs: classes.enrollmentCriteria?.map((item) => item.id).join(',') || undefined,
+        enrollmentCriteriaIDs:
+          classes.classEnrollments?.map((item) => item.enrollmentCriteriaID).join(',') || undefined,
         categoryID: classes.categoryID || undefined,
         thumbnailID: classes.thumbnailID || undefined,
         resourceIDs:

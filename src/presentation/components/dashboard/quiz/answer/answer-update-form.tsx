@@ -187,11 +187,6 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
     { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
-
   if (!answer) return null;
 
   return (

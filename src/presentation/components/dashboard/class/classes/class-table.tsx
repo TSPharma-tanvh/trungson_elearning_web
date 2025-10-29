@@ -114,7 +114,7 @@ export default function ClassTable({
                 {row.attendanceRecords !== undefined ? row.attendanceRecords.length : ''}
               </Typography>
             </TableCell>
-            <TableCell>{row.enrollmentCriteria !== undefined ? row.enrollmentCriteria.length : ''}</TableCell>
+            <TableCell>{row.classEnrollments !== undefined ? row.classEnrollments.length : ''}</TableCell>
             <TableCell>{row.classTeacher?.user?.employee?.name}</TableCell>
 
             <TableCell>

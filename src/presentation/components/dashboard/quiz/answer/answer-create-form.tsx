@@ -131,11 +131,6 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
     { value: StatusEnum.Deleted, label: 'deleted' },
   ];
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>

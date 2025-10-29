@@ -84,7 +84,6 @@ function AttendanceRecordDetails({
               cls.classType ? t(cls.classType.charAt(0).toLowerCase() + t(cls.classType).slice(1)) : ''
             )}
             {renderField('duration', cls.duration)}
-            {renderField('qrCode', cls.qrCode?.resourceUrl)}
           </Grid>
         </CardContent>
       </Card>
