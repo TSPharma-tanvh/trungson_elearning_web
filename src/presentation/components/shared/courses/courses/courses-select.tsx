@@ -97,6 +97,8 @@ export function CourseSelectDialog({
     loadCourses,
     disableStatus,
     displayType,
+    hasPath,
+    setHasPath,
   } = useCourseSelectLoader({
     courseUsecase,
     isOpen: dialogOpen,
@@ -276,6 +278,29 @@ export function CourseSelectDialog({
                 {filterOptions.disableStatus.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
                     {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Has Path */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('hasPath')}</InputLabel>
+              <Select
+                value={hasPath === undefined ? '' : hasPath ? 'true' : 'false'}
+                onChange={(e: SelectChangeEvent) => {
+                  const value = e.target.value;
+                  if (value === '') {
+                    setHasPath(undefined);
+                  } else {
+                    setHasPath(value === 'true');
+                  }
+                }}
+                label={t('hasPath')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
                   </MenuItem>
                 ))}
               </Select>

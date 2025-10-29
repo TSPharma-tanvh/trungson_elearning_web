@@ -317,15 +317,18 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <CustomSelectDropDown
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
                 label={t('canShuffle')}
-                value={String(formData.canShuffle ?? '')}
+                value={formData.canShuffle ?? false}
                 onChange={(value) => {
-                  handleChange('canShuffle', value === 'true');
+                  handleChange('canShuffle', value);
                 }}
                 disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: t('yes') },
+                  { value: false, label: t('no') },
+                ]}
               />
             </Grid>
 

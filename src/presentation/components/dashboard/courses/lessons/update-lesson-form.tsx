@@ -536,14 +536,17 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
+              <CustomSelectDropDown<boolean>
                 label={t('required')}
-                value={String(formData.isRequired ?? '')}
+                value={formData.isRequired ?? false}
                 onChange={(value) => {
-                  handleChange('isRequired', value === 'true');
+                  handleChange('isRequired', value);
                 }}
                 disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: t('yes') },
+                  { value: false, label: t('no') },
+                ]}
               />
             </Grid>
 

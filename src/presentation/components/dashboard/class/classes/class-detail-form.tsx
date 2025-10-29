@@ -54,7 +54,8 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
   );
 
   const renderEnrollmentCriteria = () => {
-    if (!classes.enrollmentCriteria || classes.enrollmentCriteria.length === 0) return null;
+    const enrollments = classes.classEnrollments ?? [];
+    if (enrollments.length === 0) return null;
 
     const toggleExpanded = (criteriaId: string) => {
       setCriteriaExpanded((prev) => ({
@@ -63,20 +64,17 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
       }));
     };
 
-    const showDetail = (criteriaId: string | null) => {
-      setSelectedEnrollmentId(criteriaId);
-    };
-
     return (
       <Box sx={{ mb: 2 }}>
         <CardHeader title={t('enrollment')} sx={{ pl: 2, pb: 1, mb: 2 }} />
-        {classes.enrollmentCriteria.map((criteria, index) => {
-          const criteriaId = criteria.id ?? `${index}`;
+
+        {enrollments.map((enroll, index) => {
+          const criteriaId = enroll.enrollmentCriteriaID ?? `${index}`;
           const isExpanded = criteriaExpanded[criteriaId] || false;
 
-          // lấy danh sách file QR có enrollmentCriteriaId match
+          // Lọc QR theo enrollmentCriteriaId
           const relatedQRFiles =
-            classes.fileClassQRRelation?.filter((qr) => qr.enrollmentCriteriaId === criteria.id) ?? [];
+            classes.fileClassQRRelation?.filter((qr) => qr.enrollmentCriteriaId === criteriaId) ?? [];
 
           return (
             <Card
@@ -87,47 +85,29 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
               }}
             >
               <CardHeader
-                title={criteria.name ?? ''}
+                title={`${t('enrollmentCriteria')}: ${enroll.enrollmentCriteria?.name ?? criteriaId}`}
                 action={
-                  <Box>
-                    <IconButton
-                      onClick={() => {
-                        showDetail(criteriaId);
-                      }}
-                    >
-                      <InfoOutlined />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => {
-                        toggleExpanded(criteriaId);
-                      }}
-                      sx={{
-                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.2s',
-                      }}
-                    >
-                      <ExpandMore />
-                    </IconButton>
-                  </Box>
+                  <IconButton
+                    onClick={() => toggleExpanded(criteriaId)}
+                    sx={{
+                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s',
+                    }}
+                  >
+                    <ExpandMore />
+                  </IconButton>
                 }
                 sx={{ py: 1 }}
               />
+
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <CardContent sx={{ p: 0 }}>
                   <Grid container spacing={2} sx={{ m: 0, p: 2 }}>
-                    {renderField('id', criteria.id)}
-                    {renderField('name', criteria.name)}
-                    {renderField('description', criteria.desc)}
-                    {renderField(
-                      'targetType',
-                      criteria.targetType !== undefined
-                        ? t(criteria.targetType?.charAt(0).toLowerCase() + criteria.targetType.slice(1))
-                        : ''
-                    )}
-                    {renderField('targetId', criteria.targetID)}
-                    {renderField('targetLevelId', criteria.targetLevelID)}
-                    {renderField('maxCapacity', criteria.maxCapacity)}
-                    {renderField('targetPharmacyId', criteria.targetPharmacyID)}
+                    {renderField('id', enroll.id)}
+                    {renderField('name', enroll.enrollmentCriteria?.name)}
+                    {renderField('desc', enroll.enrollmentCriteria?.desc)}
+                    {renderField('enrollmentCriteriaID', enroll.enrollmentCriteriaID)}
+                    {renderField('classID', enroll.classID)}
                   </Grid>
 
                   {relatedQRFiles.length > 0 && (
@@ -135,6 +115,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                       <Typography variant="subtitle2" fontWeight={600} gutterBottom>
                         {t('qrCodeFiles')}
                       </Typography>
+
                       <Grid container spacing={2}>
                         {relatedQRFiles.map((relation, qrIndex) => {
                           const res = relation.fileResources;
@@ -156,14 +137,12 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                                   mb: 1,
                                 }}
                               >
-                                {isImage ? (
+                                {isImage && (
                                   <Box
                                     component="img"
                                     src={res.resourceUrl}
                                     alt={res.name}
-                                    onClick={() => {
-                                      setPreviewUrl(res.resourceUrl ?? '');
-                                    }}
+                                    onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
                                     sx={{
                                       position: 'absolute',
                                       top: 0,
@@ -174,9 +153,9 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                                       cursor: 'pointer',
                                     }}
                                   />
-                                ) : null}
+                                )}
 
-                                {isVideo ? (
+                                {isVideo && (
                                   <Box
                                     sx={{
                                       position: 'absolute',
@@ -188,9 +167,9 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                                   >
                                     <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
                                   </Box>
-                                ) : null}
+                                )}
 
-                                {isOther ? (
+                                {isOther && (
                                   <Box
                                     sx={{
                                       position: 'absolute',
@@ -206,10 +185,16 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                                   >
                                     <Typography variant="body2">{t('noPreview')}</Typography>
                                   </Box>
-                                ) : null}
+                                )}
                               </Box>
 
-                              <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  wordBreak: 'break-word',
+                                  whiteSpace: 'pre-line',
+                                }}
+                              >
                                 {res.name}
                               </Typography>
                             </Grid>
@@ -220,14 +205,6 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
                   )}
                 </CardContent>
               </Collapse>
-
-              <EnrollmentDetailForm
-                open={selectedEnrollmentId !== undefined}
-                enrollmentId={selectedEnrollmentId}
-                onClose={() => {
-                  showDetail(null);
-                }}
-              />
             </Card>
           );
         })}
@@ -411,11 +388,12 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
             {renderField('categoryId', classes.categoryID)}
             {renderField('thumbnailId', classes.thumbnailID)}
             {renderField('minuteLate', classes.minuteLate)}
-            {renderField(
+            {renderField('minuteSoon', classes.minuteSoon)}
+            {/* {renderField(
               'startAt',
               classes.startAt ? DateTimeUtils.formatDateTimeToDateString(classes.startAt) : undefined
             )}
-            {renderField('endAt', classes.endAt ? DateTimeUtils.formatDateTimeToDateString(classes.endAt) : undefined)}
+            {renderField('endAt', classes.endAt ? DateTimeUtils.formatDateTimeToDateString(classes.endAt) : undefined)} */}
           </Grid>
         </CardContent>
       </Card>

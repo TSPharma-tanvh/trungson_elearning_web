@@ -172,14 +172,17 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
-                label={t('correct')}
-                value={String(formData.isCorrect ?? '')}
+              <CustomSelectDropDown<boolean>
+                label={t('isCorrect')}
+                value={formData.isCorrect ?? false}
                 onChange={(value) => {
-                  handleChange('isCorrect', value === 'true');
+                  handleChange('isCorrect', value);
                 }}
                 disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: t('yes') },
+                  { value: false, label: t('no') },
+                ]}
               />
             </Grid>
 

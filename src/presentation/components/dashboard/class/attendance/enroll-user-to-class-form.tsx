@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { ApproveStatusEnum, CheckinTimeEnum, ProgressEnrollmentTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
@@ -91,6 +91,26 @@ export function CreateAttendanceRecordsDialog({
     handleChange('userFile', undefined);
   };
 
+  useEffect(() => {
+    if (!open) {
+      setForm(
+        new EnrollUserListToClassRequest({
+          startAt: new Date(),
+          endAt: new Date(new Date().setDate(new Date().getDate() + 1)),
+          minuteLate: 5,
+          minuteSoon: 5,
+          statusCheckIn: CheckinTimeEnum[CheckinTimeEnum.Absent],
+          enrollStatus: ApproveStatusEnum.Approve,
+          activeStatus: StatusEnum.Enable,
+          enrollType: ProgressEnrollmentTypeEnum.AllUsers,
+          isAutoEnroll: true,
+          isUpdateOldProgress: false,
+        })
+      );
+      setFileError(null);
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
@@ -136,12 +156,27 @@ export function CreateAttendanceRecordsDialog({
             />
           </Grid>
 
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDown<boolean>
+              label={t('isUpdateOldProgress')}
+              value={form.isUpdateOldProgress ?? false}
+              onChange={(val) => {
+                handleChange('isUpdateOldProgress', val);
+              }}
+              disabled={disabled}
+              options={[
+                { value: true, label: 'yes' },
+                { value: false, label: 'no' },
+              ]}
+            />
+          </Grid>
+
           <Grid item xs={12}>
             <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
               label={t('enrollType')}
               value={form.enrollType ?? ''}
               onChange={(val) => {
-                handleChange('enrollType', val);
+                handleChange('enrollType', Number(val) as ProgressEnrollmentTypeEnum);
               }}
               disabled={disabled}
               options={[
@@ -163,7 +198,11 @@ export function CreateAttendanceRecordsDialog({
                 disabled={disabled}
               />
             </Grid>
-          ) : form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
+          ) : (
+            <div />
+          )}
+
+          {form.enrollType === ProgressEnrollmentTypeEnum.FromFile ? (
             <Grid item xs={12}>
               <Button
                 variant="outlined"
@@ -208,7 +247,9 @@ export function CreateAttendanceRecordsDialog({
                 </Typography>
               ) : null}
             </Grid>
-          ) : null}
+          ) : (
+            <div />
+          )}
 
           <Grid item xs={12} sm={6}>
             <CustomDateTimePicker

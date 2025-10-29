@@ -357,47 +357,62 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
+              <CustomSelectDropDown<boolean>
                 label={t('canStartOver')}
-                value={String(formData.canStartOver ?? '')}
+                value={formData.canStartOver ?? false}
                 onChange={(value) => {
-                  handleChange('canStartOver', value === 'true');
+                  handleChange('canStartOver', value);
                 }}
                 disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: t('yes') },
+                  { value: false, label: t('no') },
+                ]}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
+              <CustomSelectDropDown<boolean>
                 label={t('canShuffle')}
-                value={String(formData.canShuffle ?? '')}
+                value={formData.canShuffle ?? false}
                 onChange={(value) => {
-                  handleChange('canShuffle', value === 'true');
+                  handleChange('canShuffle', value);
                 }}
                 disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: t('yes') },
+                  { value: false, label: t('no') },
+                ]}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
+              <CustomSelectDropDown<boolean>
                 label={t('isRequired')}
-                value={String(formData.isRequired ?? '')}
+                value={formData.isRequired ?? false}
                 onChange={(value) => {
-                  handleChange('isRequired', value === 'true');
+                  handleChange('isRequired', value);
                 }}
                 disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: t('yes') },
+                  { value: false, label: t('no') },
+                ]}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
+              <CustomSelectDropDown<boolean>
                 label={t('isAutoSubmitted')}
-                value={String(formData.isAutoSubmitted ?? '')}
+                value={formData.isAutoSubmitted ?? false}
                 onChange={(value) => {
-                  handleChange('isAutoSubmitted', value === 'true');
+                  handleChange('isAutoSubmitted', value);
                 }}
                 disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: t('yes') },
+                  { value: false, label: t('no') },
+                ]}
               />
             </Grid>
 

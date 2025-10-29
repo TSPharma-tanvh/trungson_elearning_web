@@ -1,10 +1,6 @@
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
 
-
-
-
-
 export const navItems = [
   { key: 'overview', title: 'overview', href: paths.dashboard.overview, icon: 'chart-pie' },
   {
@@ -22,16 +18,6 @@ export const navItems = [
     ],
   },
   {
-    key: 'courses',
-    title: 'courses',
-    icon: 'book',
-    items: [
-      { key: 'path', title: 'path', href: paths.dashboard.path, icon: 'path' },
-      { key: 'courses', title: 'courses', href: paths.dashboard.courses, icon: 'course' },
-      { key: 'lesson', title: 'lesson', href: paths.dashboard.lesson, icon: 'lesson' },
-    ],
-  },
-  {
     key: 'class',
     title: 'class',
     icon: 'class',
@@ -39,6 +25,16 @@ export const navItems = [
       { key: 'class', title: 'class', href: paths.dashboard.class, icon: 'chalkboard-simple' },
       { key: 'teacher', title: 'teacher', href: paths.dashboard.teacher, icon: 'teacher' },
       { key: 'attendance', title: 'attendance', href: paths.dashboard.attendance, icon: 'student' },
+    ],
+  },
+  {
+    key: 'courses',
+    title: 'courses',
+    icon: 'book',
+    items: [
+      { key: 'path', title: 'path', href: paths.dashboard.path, icon: 'path' },
+      { key: 'courses', title: 'courses', href: paths.dashboard.courses, icon: 'course' },
+      { key: 'lesson', title: 'lesson', href: paths.dashboard.lesson, icon: 'lesson' },
     ],
   },
   {
@@ -79,6 +75,7 @@ export const navItems = [
       },
     ],
   },
+
   {
     key: 'system',
     title: 'system',
