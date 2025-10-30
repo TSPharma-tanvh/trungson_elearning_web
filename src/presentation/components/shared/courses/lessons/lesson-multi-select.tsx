@@ -5,13 +5,7 @@ import { type LessonDetailResponse } from '@/domain/models/lessons/response/less
 import { type LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
-import {
-  LearningModeDisplayNames,
-  LearningModeEnum,
-  LessonContentEnum,
-  StatusDisplayNames,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
+import { LearningModeEnum, LessonContentEnum, StatusDisplayNames, StatusEnum } from '@/utils/enum/core-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -54,7 +48,7 @@ interface LessonMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'valu
 }
 
 const filterOptions = {
-  lessonType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
+  // lessonType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
   contentType: [LessonContentEnum.PDF, LessonContentEnum.Video, undefined],
   status: [StatusEnum.Enable, StatusEnum.Disable, undefined],
@@ -210,7 +204,7 @@ export function LessonMultiSelectDialog({
             placeholder={t('searchLessons')}
           />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('lessonType')}</InputLabel>
               <Select
                 value={lessonType !== undefined ? String(lessonType) : ''}
@@ -225,7 +219,7 @@ export function LessonMultiSelectDialog({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('disableStatus')}</InputLabel>
               <Select

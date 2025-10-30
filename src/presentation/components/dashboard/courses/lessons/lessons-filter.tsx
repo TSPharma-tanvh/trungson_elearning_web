@@ -60,6 +60,7 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
+          onEnter={() => handleFilter()}
           placeholder={t('searchLessons') || 'Search lessons'}
         />
 

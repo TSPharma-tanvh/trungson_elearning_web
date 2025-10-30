@@ -187,6 +187,7 @@ export default function UserQuizProgressTable({
         renderHeader={() => (
           <>
             <TableCell>{t('quizName')}</TableCell>
+            <TableCell>{t('lessonName')}</TableCell>
             <TableCell>{t('fullName')}</TableCell>
             <TableCell>{t('gender')}</TableCell>
             <TableCell>{t('progressStatus')}</TableCell>
@@ -246,6 +247,16 @@ export default function UserQuizProgressTable({
                 }}
               >
                 {row.quiz?.title}
+              </TableCell>
+
+              <TableCell
+                sx={{
+                  minWidth: 150,
+                  whiteSpace: 'normal',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {row.quiz?.lesson?.name}
               </TableCell>
 
               <TableCell

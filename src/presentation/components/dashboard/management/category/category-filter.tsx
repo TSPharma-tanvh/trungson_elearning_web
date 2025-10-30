@@ -42,7 +42,12 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchCategory')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchCategory')}
+        />
 
         {/* Status */}
         <CustomSelectFilter<CategoryEnum>

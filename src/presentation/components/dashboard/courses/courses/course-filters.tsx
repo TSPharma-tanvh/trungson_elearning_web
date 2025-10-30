@@ -53,7 +53,12 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchCourses')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchCourses')}
+        />
 
         {/* Is Required */}
         <CustomSelectFilter<boolean>

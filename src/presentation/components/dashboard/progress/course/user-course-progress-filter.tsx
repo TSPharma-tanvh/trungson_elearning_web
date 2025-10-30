@@ -74,6 +74,7 @@ export function UserCourseProgressFilters({
           onChange={(val) => {
             handleChange('searchText', val);
           }}
+          onEnter={() => handleFilter()}
           placeholder={t('searchProgress')}
         />
 
@@ -85,7 +86,7 @@ export function UserCourseProgressFilters({
             handleChange('status', String(val));
           }}
           options={CoreEnumUtils.getEnumOptions(UserProgressEnum).map((opt) => ({
-            value: String(opt.value),
+            value: opt.label,
             label: opt.label,
           }))}
         />

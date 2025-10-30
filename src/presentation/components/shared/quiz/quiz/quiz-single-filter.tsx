@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
-import { QuizTypeEnum } from '@/utils/enum/core-enum';
+import { QuizTypeEnum, QuizTypeEnumUtils } from '@/utils/enum/core-enum';
 import { InfoOutlined, Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -18,7 +19,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   ListItemText,
@@ -30,9 +30,9 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'react-i18next';
 
+import { CustomSelectDropDownDialog } from '@/presentation/components/core/drop-down/custom-select-drop-down-dialog';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import QuizDetailForm from '@/presentation/components/dashboard/quiz/quiz/quiz-detail-form';
@@ -72,7 +72,7 @@ export function QuizSingleFilter({
   const [quizType, setQuizType] = useState<QuizTypeEnum | undefined>(undefined);
 
   const filters = useMemo(
-    () => ({
+    (): Partial<GetQuizRequest> => ({
       canStartOver,
       isRequired,
       hasLesson,
@@ -84,6 +84,7 @@ export function QuizSingleFilter({
   const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, listRef, loadQuizzes } = useQuizSelectLoader({
     quizUsecase,
     isOpen: dialogOpen,
+    searchText: localSearchText,
     filters,
   });
 
@@ -105,7 +106,7 @@ export function QuizSingleFilter({
 
   useEffect(() => {
     void fetchQuizDetails();
-  }, [value]);
+  }, [fetchQuizDetails]);
 
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
@@ -136,26 +137,7 @@ export function QuizSingleFilter({
 
   return (
     <>
-      <FormControl
-        disabled={disabled}
-        size="small"
-        sx={{
-          '& .MuiInputLabel-root': {
-            color: 'var(--mui-palette-secondary-main)',
-          },
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: 'var(--mui-palette-primary-main)',
-          },
-          '& .MuiInputLabel-shrink': {
-            color: 'var(--mui-palette-primary-main)',
-          },
-          '& .MuiInputLabel-shrink.Mui-focused': {
-            color: 'var(--mui-palette-secondary-main)',
-          },
-          maxWidth,
-          width: '100%',
-        }}
-      >
+      <FormControl disabled={disabled} size="small" sx={{ maxWidth, width: '100%' }}>
         <InputLabel id="quiz-select-label">{t(label)}</InputLabel>
         <Select
           labelId="quiz-select-label"
@@ -200,12 +182,7 @@ export function QuizSingleFilter({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectQuiz')}</Typography>
             <Box>
-              <IconButton
-                onClick={() => {
-                  setIsFullscreen(!isFullscreen);
-                }}
-                size="small"
-              >
+              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
                 {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -224,68 +201,64 @@ export function QuizSingleFilter({
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={canStartOver ?? false}
-                  onChange={(e) => {
-                    setCanStartOver(e.target.checked ? true : undefined);
-                  }}
-                />
-              }
-              label={t('canStartOver')}
+            <CustomSelectDropDownDialog
+              label="canStartOver"
+              value={canStartOver}
+              onChange={(val) => setCanStartOver(val as boolean | undefined)}
+              options={[
+                { value: undefined, label: t('all') },
+                { value: true, label: t('yes') },
+                { value: false, label: t('no') },
+              ]}
             />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isRequired ?? false}
-                  onChange={(e) => {
-                    setIsRequired(e.target.checked ? true : undefined);
-                  }}
-                />
-              }
-              label={t('isRequired')}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={hasLesson ?? false}
-                  onChange={(e) => {
-                    setHasLesson(e.target.checked ? true : undefined);
-                  }}
-                />
-              }
-              label={t('hasLesson')}
-            />
-            <FormControl size="small" sx={{ minWidth: 150 }}>
-              <InputLabel>{t('quizType')}</InputLabel>
-              <Select
-                value={quizType ?? ''}
-                onChange={(e) => {
-                  const quizValue = e.target.value;
-                  setQuizType(value === '' ? undefined : (quizValue as QuizTypeEnum));
-                }}
-                input={<OutlinedInput label={t('quizType')} />}
-              >
-                <MenuItem value="">{t('all')}</MenuItem>
-                {Object.keys(QuizTypeEnum)
-                  .filter((key) => isNaN(Number(key)))
-                  .map((key) => {
-                    const enumValue = QuizTypeEnum[key as keyof typeof QuizTypeEnum];
-                    const camelKey = camelCase(key);
 
-                    const color =
-                      camelKey === 'lessonQuiz'
-                        ? 'var(--mui-palette-primary-main)'
-                        : 'var(--mui-palette-secondary-main)';
-                    return (
-                      <MenuItem key={key} value={enumValue} sx={{ color }}>
-                        {t(camelKey)}
-                      </MenuItem>
-                    );
-                  })}
-              </Select>
-            </FormControl>
+            <CustomSelectDropDownDialog
+              label="isRequired"
+              value={isRequired}
+              onChange={(val) => setIsRequired(val as boolean | undefined)}
+              options={[
+                { value: undefined, label: t('all') },
+                { value: true, label: t('yes') },
+                { value: false, label: t('no') },
+              ]}
+            />
+
+            <CustomSelectDropDownDialog
+              label="hasLesson"
+              value={hasLesson}
+              onChange={(val) => setHasLesson(val as boolean | undefined)}
+              options={[
+                { value: undefined, label: t('all') },
+                { value: true, label: t('yes') },
+                { value: false, label: t('no') },
+              ]}
+            />
+
+            <CustomSelectDropDownDialog<QuizTypeEnum>
+              label="quizType"
+              value={quizType}
+              onChange={setQuizType}
+              minWidth={160}
+              options={[
+                { value: undefined, label: t('all') },
+                {
+                  value: QuizTypeEnum.LessonQuiz,
+                  label: t(
+                    (QuizTypeEnumUtils.getStatusKeyFromValue(QuizTypeEnum.LessonQuiz) ?? '').replace(/^\w/, (c) =>
+                      c.toLowerCase()
+                    )
+                  ),
+                },
+                {
+                  value: QuizTypeEnum.ExamQuiz,
+                  label: t(
+                    (QuizTypeEnumUtils.getStatusKeyFromValue(QuizTypeEnum.ExamQuiz) ?? '').replace(/^\w/, (c) =>
+                      c.toLowerCase()
+                    )
+                  ),
+                },
+              ]}
+            />
 
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
@@ -307,14 +280,12 @@ export function QuizSingleFilter({
                   key={item.id}
                   value={item.id}
                   selected={isSelected}
-                  onClick={() => {
-                    setLocalValue(item.id ?? '');
-                  }}
+                  onClick={() => setLocalValue(item.id ?? '')}
                 >
                   <Checkbox checked={isSelected} />
                   <ListItemText
                     primary={
-                      <Typography variant="body1" sx={{ color: textColor, fontWeight: isSelected ? 600 : 400 }}>
+                      <Typography variant="body1" sx={{ color: textColor }}>
                         {item.title}
                       </Typography>
                     }
@@ -368,15 +339,9 @@ export function QuizSingleFilter({
         </DialogActions>
       </Dialog>
 
-      {selectedQuiz ? (
-        <QuizDetailForm
-          open={viewOpen}
-          quizId={selectedQuiz.id ?? null}
-          onClose={() => {
-            setViewOpen(false);
-          }}
-        />
-      ) : null}
+      {selectedQuiz && (
+        <QuizDetailForm open={viewOpen} quizId={selectedQuiz.id ?? null} onClose={() => setViewOpen(false)} />
+      )}
     </>
   );
 }

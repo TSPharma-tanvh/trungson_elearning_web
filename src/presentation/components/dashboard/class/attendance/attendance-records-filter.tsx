@@ -65,7 +65,12 @@ export function AttendanceRecordsFilters({
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
         {/* Search */}
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchAttendance')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchAttendance')}
+        />
 
         {/* Status */}
         <CustomSelectFilter<CheckinTimeEnum>

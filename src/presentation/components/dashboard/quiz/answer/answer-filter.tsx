@@ -46,7 +46,12 @@ export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerReque
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchAnswers')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchAnswers')}
+        />
 
         {/* Is Required */}
         <CustomSelectFilter<boolean>

@@ -7,14 +7,16 @@ import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react';
 interface SearchInputProps {
   value: string;
   onChange: (val: string) => void;
+  onEnter?: (val: string) => void;
   placeholder?: string;
   maxWidth?: number | string;
-  sx?: SxProps<Theme>; // 🔥 Add this line
+  sx?: SxProps<Theme>;
 }
 
 export const CustomSearchFilter: React.FC<SearchInputProps> = ({
   value,
   onChange,
+  onEnter,
   placeholder = 'Search...',
   maxWidth = 250,
   sx,
@@ -23,7 +25,19 @@ export const CustomSearchFilter: React.FC<SearchInputProps> = ({
     <OutlinedInput
       size="small"
       value={value}
-      onChange={(e) => { onChange(e.target.value); }}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (onEnter) {
+            onEnter(value);
+          } else {
+            onChange(value);
+          }
+        }
+      }}
       placeholder={placeholder}
       fullWidth
       startAdornment={

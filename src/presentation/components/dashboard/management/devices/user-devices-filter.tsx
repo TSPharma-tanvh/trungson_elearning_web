@@ -42,7 +42,12 @@ export function UserDevicesFilters({
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchDevices')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchDevices')}
+        />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
           {t('filter')}

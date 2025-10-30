@@ -124,7 +124,6 @@ export default function UserPathProgressTable({
           <>
             <TableCell>{t('id')}</TableCell>
             <TableCell>{t('pathName')}</TableCell>
-            <TableCell>{t('userName')}</TableCell>
             <TableCell>{t('fullName')}</TableCell>
             <TableCell>{t('gender')}</TableCell>
             <TableCell>{t('progress')}</TableCell>
@@ -200,10 +199,6 @@ export default function UserPathProgressTable({
                   wordBreak: 'break-word',
                 }}
               >
-                {row.user?.userName}
-              </TableCell>
-
-              <TableCell sx={{ width: '10%' }}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar
                     src={
@@ -212,12 +207,17 @@ export default function UserPathProgressTable({
                         : row.user?.thumbnail?.resourceUrl
                     }
                   >
-                    {row.user?.employee?.name?.[0]}
+                    {row.user?.employee?.name?.[0] || row.user?.userName?.[0]}
                   </Avatar>
                   <Box>
                     <Typography variant="subtitle2" noWrap>
-                      {row.user?.employee?.name}
+                      {row.user?.employee?.name || row.user?.userName}
                     </Typography>
+                    {row.user?.userName ? (
+                      <Typography variant="body2" color="text.secondary" noWrap>
+                        {row.user?.userName}
+                      </Typography>
+                    ) : null}
                   </Box>
                 </Stack>
               </TableCell>

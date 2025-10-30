@@ -34,7 +34,6 @@ export function UserQuizLiveFilters({
   const [selectedCategory, setSelectedCategory] = React.useState<CategoryEnum>(CategoryEnum.Path);
 
   const [intervalSeconds, setIntervalSeconds] = React.useState<number | undefined>(15);
-  const [pageSize, setPageSize] = React.useState(50);
 
   const handleFilter = () => {
     if (!form.quizId || !form.enrollmentCriteriaId || !intervalSeconds) {
@@ -48,7 +47,7 @@ export function UserQuizLiveFilters({
       progressStatus: progressStatus !== undefined ? progressStatus : undefined,
       activeStatus: status !== undefined ? status : undefined,
       pageNumber: 1,
-      pageSize,
+      pageSize: form.pageSize ?? 50,
     });
 
     onFilter(request, intervalSeconds);
@@ -57,9 +56,12 @@ export function UserQuizLiveFilters({
   const handleClear = () => {
     setSearchText('');
     setStatus(undefined);
+    setProgressStatus(undefined);
     setIntervalSeconds(15);
-    setPageSize(50);
-    onFilter(new GetUserQuizLiveStatusRequest({ pageNumber: 1, pageSize: 10 }), undefined);
+
+    const cleared = new GetUserQuizLiveStatusRequest({ pageNumber: 1, pageSize: 50 });
+    handleChange('pageSize', '50'); // Reset pageSize
+    onFilter(cleared, undefined);
   };
 
   return (
@@ -73,7 +75,12 @@ export function UserQuizLiveFilters({
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
         {/* Search */}
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchProgress')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchProgress')}
+        />
 
         {/* Status */}
         <CustomSelectFilter<StatusEnum>
@@ -81,6 +88,7 @@ export function UserQuizLiveFilters({
           value={status}
           onChange={(val) => {
             setStatus(val);
+            handleChange('status', val?.toString() ?? '');
           }}
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
@@ -91,6 +99,7 @@ export function UserQuizLiveFilters({
           value={progressStatus}
           onChange={(val) => {
             setProgressStatus(val);
+            handleChange('progressStatus', val?.toString() ?? '');
           }}
           options={CoreEnumUtils.getEnumOptions(UserQuizProgressEnum)}
         />
@@ -157,9 +166,10 @@ export function UserQuizLiveFilters({
         {/* Page Size */}
         <CustomSelectFilter<number>
           label={t('pageSize')}
-          value={pageSize}
+          value={form.pageSize ?? 50}
           onChange={(val) => {
-            setPageSize(val ?? 0);
+            const newSize = val ?? 50;
+            handleChange('pageSize', newSize.toString());
           }}
           options={[
             { value: 50, label: '50' },

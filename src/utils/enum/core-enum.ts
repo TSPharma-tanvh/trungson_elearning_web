@@ -144,6 +144,25 @@ export const StatusEnumUtils = {
   },
 };
 
+export const QuizTypeEnumUtils = {
+  getStatusKeys(): string[] {
+    return Object.keys(QuizTypeEnum).filter((key) => isNaN(Number(key)));
+  },
+
+  getStatusOptions(): { label: string; value: QuizTypeEnum }[] {
+    return Object.keys(QuizTypeEnum)
+      .filter((key) => isNaN(Number(key)))
+      .map((key) => ({
+        label: key,
+        value: QuizTypeEnum[key as keyof typeof QuizTypeEnum],
+      }));
+  },
+
+  getStatusKeyFromValue(value: QuizTypeEnum): string | undefined {
+    return QuizTypeEnum[value];
+  },
+};
+
 export const LearningModeDisplayNames: Record<LearningModeEnum, string> = {
   [LearningModeEnum.Online]: 'online',
   [LearningModeEnum.Offline]: 'offline',

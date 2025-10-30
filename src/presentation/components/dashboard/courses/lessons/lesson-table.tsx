@@ -11,8 +11,8 @@ import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confi
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 
-import { UpdateLessonFormDialog } from './update-lesson-form';
 import LessonDetailForm from './lesson-detail-form';
+import { UpdateLessonFormDialog } from './update-lesson-form';
 
 interface LessonTableProps {
   rows: LessonDetailResponse[];

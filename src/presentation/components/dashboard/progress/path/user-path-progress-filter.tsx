@@ -69,6 +69,7 @@ export function UserPathProgressFilters({
           onChange={(val) => {
             handleChange('searchText', val);
           }}
+          onEnter={() => handleFilter()}
           placeholder={t('searchProgress')}
         />
 
@@ -76,9 +77,11 @@ export function UserPathProgressFilters({
         <CustomSelectFilter<string>
           label={t('status')}
           value={form.status}
-          onChange={(val) => { handleChange('status', val); }}
+          onChange={(val) => {
+            handleChange('status', val);
+          }}
           options={CoreEnumUtils.getEnumOptions(UserProgressEnum).map((opt) => ({
-            value: String(opt.value),
+            value: opt.label,
             label: opt.label,
           }))}
         />

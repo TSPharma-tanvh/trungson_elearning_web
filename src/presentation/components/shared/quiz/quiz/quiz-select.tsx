@@ -311,7 +311,7 @@ export function QuizSingleSelect({
                   <Checkbox checked={localValue === item.id} />
                   <ListItemText
                     primary={
-                      <Typography variant="body1" sx={{ color: textColor, fontWeight: isSelected ? 600 : 400 }}>
+                      <Typography variant="body1" sx={{ color: textColor }}>
                         {item.title}
                       </Typography>
                     }

@@ -47,7 +47,12 @@ export function ClassTeacherFilters({
       }}
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchTeacher')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchTeacher')}
+        />
 
         {/* Status */}
         <CustomSelectFilter<ActiveEnum>

@@ -123,7 +123,7 @@ export default function UserLessonProgressTable({
           <>
             <TableCell>{t('id')}</TableCell>
             <TableCell>{t('lessonName')}</TableCell>
-            <TableCell>{t('userName')}</TableCell>
+            <TableCell>{t('courseName')}</TableCell>
             <TableCell>{t('fullName')}</TableCell>
             <TableCell>{t('gender')}</TableCell>
             <TableCell>{t('progress')}</TableCell>
@@ -190,7 +190,8 @@ export default function UserLessonProgressTable({
                 {row.id}
               </TableCell>
 
-              <TableCell sx={{ width: '15%' }}>{row.lessons?.name}</TableCell>
+              <TableCell sx={{ minWidth: 150 }}>{row.lessons?.name}</TableCell>
+              <TableCell sx={{ minWidth: 150 }}>{row.lessons?.course?.name}</TableCell>
 
               <TableCell
                 sx={{
@@ -199,10 +200,6 @@ export default function UserLessonProgressTable({
                   wordBreak: 'break-word',
                 }}
               >
-                {row.user?.userName}
-              </TableCell>
-
-              <TableCell sx={{ width: '10%' }}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Avatar
                     src={
@@ -211,12 +208,17 @@ export default function UserLessonProgressTable({
                         : row.user?.thumbnail?.resourceUrl
                     }
                   >
-                    {row.user?.employee?.name?.[0]}
+                    {row.user?.employee?.name?.[0] || row.user?.userName?.[0]}
                   </Avatar>
                   <Box>
                     <Typography variant="subtitle2" noWrap>
-                      {row.user?.employee?.name}
+                      {row.user?.employee?.name || row.user?.userName}
                     </Typography>
+                    {row.user?.userName ? (
+                      <Typography variant="body2" color="text.secondary" noWrap>
+                        {row.user?.userName}
+                      </Typography>
+                    ) : null}
                   </Box>
                 </Stack>
               </TableCell>

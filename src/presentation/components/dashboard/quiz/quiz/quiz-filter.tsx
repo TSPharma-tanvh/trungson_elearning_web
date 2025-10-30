@@ -49,7 +49,12 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
       }}
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchQuiz')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchQuiz')}
+        />
 
         {/* Is Required */}
 

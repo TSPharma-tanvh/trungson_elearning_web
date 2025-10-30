@@ -416,7 +416,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
               {renderField('lessonDetail', lesson.detail)}
               {renderField('enableAutoPlay', lesson.enablePlay ? t('yes') : t('no'))}
               {renderField('lessonStatus', t(lesson.status.charAt(0).toLowerCase() + t(lesson.status).slice(1)))}
-              {renderField('lessonType', t(lesson.lessonType.charAt(0).toLowerCase() + t(lesson.lessonType).slice(1)))}
+              {/* {renderField('lessonType', t(lesson.lessonType.charAt(0).toLowerCase() + t(lesson.lessonType).slice(1)))} */}
               {renderField('lessonEnrollmentCriteriaID', lesson.enrollmentCriteriaID)}
               {renderField('lessonCategoryID', lesson.categoryID)}
               {renderField('lessonThumbnailID', lesson.thumbnailID)}

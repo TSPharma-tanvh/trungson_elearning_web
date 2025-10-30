@@ -419,10 +419,10 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
     color: '#616161',
   };
 
-  const lessonTypeOptions = [
-    { value: LearningModeEnum.Online, label: 'online' },
-    { value: LearningModeEnum.Offline, label: 'offline' },
-  ];
+  // const lessonTypeOptions = [
+  //   { value: LearningModeEnum.Online, label: 'online' },
+  //   { value: LearningModeEnum.Offline, label: 'offline' },
+  // ];
 
   const statusTypeOptions = [
     { value: StatusEnum.Enable, label: 'enable' },
@@ -483,7 +483,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('lessonType')}
                 value={formData.lessonType ?? ''}
@@ -493,7 +493,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                 disabled={isSubmitting}
                 options={lessonTypeOptions}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
@@ -520,22 +520,26 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <QuizMultiSelect
-                quizUsecase={quizUsecase}
-                value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
-                onChange={(val) => {
-                  handleChange('quizIDs', val.join(','));
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('required')}
                 value={formData.isRequired ?? false}
                 onChange={(value) => {
                   handleChange('isRequired', value);
+                }}
+                disabled={isSubmitting}
+                options={[
+                  { value: true, label: t('yes') },
+                  { value: false, label: t('no') },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('enablePlay')}
+                value={formData.enablePlay ?? false}
+                onChange={(value) => {
+                  handleChange('enablePlay', value);
                 }}
                 disabled={isSubmitting}
                 options={[
@@ -556,6 +560,17 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   { value: LessonContentEnum.PDF, label: 'pdf' },
                   { value: LessonContentEnum.Video, label: 'video' },
                 ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <QuizMultiSelect
+                quizUsecase={quizUsecase}
+                value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
+                onChange={(val) => {
+                  handleChange('quizIDs', val.join(','));
+                }}
+                disabled={isSubmitting}
               />
             </Grid>
 

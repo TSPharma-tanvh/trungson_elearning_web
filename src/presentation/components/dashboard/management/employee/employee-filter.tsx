@@ -42,7 +42,12 @@ export function EmployeeFilters({ onFilter }: { onFilter: (filters: GetEmployeeR
     >
       {' '}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchEmployee')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchEmployee')}
+        />
 
         <CustomDateTimeFilter
           label={t('startTime')}

@@ -16,16 +16,12 @@ export default function Page(): React.JSX.Element {
   const { userQuizProgressUsecase, enrollUsecase, quizUsecase } = useDI();
 
   const [filters, setFilters] = React.useState<GetUserQuizLiveStatusRequest>(
-    new GetUserQuizLiveStatusRequest({
-      pageNumber: 1,
-      pageSize: 10,
-    })
+    new GetUserQuizLiveStatusRequest({ pageNumber: 1, pageSize: 50 })
   );
   const [userQuizProgress, setUserQuizProgress] = React.useState<UserQuizProgressDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+  const [rowsPerPage, setRowsPerPage] = React.useState(50);
   const [intervalId, setIntervalId] = React.useState<ReturnType<typeof setInterval> | null>(null);
 
   const fetchUserQuizProgress = React.useCallback(async () => {
@@ -39,7 +35,6 @@ export default function Page(): React.JSX.Element {
       const { progress, totalRecords } = await userQuizProgressUsecase.getUserQuizLiveStatus(request);
 
       if (!progress || progress.length === 0 || totalRecords === 0) {
-        resetAll();
         CustomSnackBar.showSnackbar(t('noDataFound') ?? '', 'warning');
         return;
       }
@@ -50,7 +45,7 @@ export default function Page(): React.JSX.Element {
       resetAll();
       CustomSnackBar.showSnackbar(t('fetchError') ?? '', 'error');
     }
-  }, [filters, page, rowsPerPage, userQuizProgressUsecase, intervalId, t]);
+  }, [filters, page, rowsPerPage, userQuizProgressUsecase, t]);
 
   const resetAll = React.useCallback(() => {
     if (intervalId) {
@@ -58,15 +53,12 @@ export default function Page(): React.JSX.Element {
       setIntervalId(null);
     }
 
-    setFilters(new GetUserQuizLiveStatusRequest({ pageNumber: 1, pageSize: 10 }));
+    setFilters(new GetUserQuizLiveStatusRequest({ pageNumber: 1, pageSize: 50 }));
     setUserQuizProgress([]);
     setTotalCount(0);
     setPage(0);
     setRowsPerPage(10);
-
-    setTimeout(() => {
-      window.location.reload();
-    }, 10 * 1000);
+    // XÓA reload
   }, [intervalId]);
 
   const handleFilter = (newFilters: GetUserQuizLiveStatusRequest, intervalSeconds?: number) => {
@@ -108,23 +100,26 @@ export default function Page(): React.JSX.Element {
   };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSize = parseInt(event.target.value, 10);
+    const newSize = parseInt(event.target.value, 50);
     setRowsPerPage(newSize);
     setPage(0);
+    handleChange('pageSize', newSize.toString());
     handleFilter(filters);
   };
 
   const handleDeleteUserQuizProgress = async (id: string, quizId: string) => {
     try {
       const response = await userQuizProgressUsecase.deleteUserQuizProgress(id, quizId);
-      if (!response) {
-        throw new Error(`Failed to delete lesson with ID: ${id}`);
-      }
+      if (!response) throw new Error(`Failed to delete lesson with ID: ${id}`);
       await fetchUserQuizProgress();
-    } catch {
-      
-    }
+    } catch {}
   };
+
+  // Đồng bộ rowsPerPage từ filters.pageSize
+  React.useEffect(() => {
+    const size = filters.pageSize;
+    setRowsPerPage(size);
+  }, [filters.pageSize]);
 
   return (
     <Stack spacing={3}>

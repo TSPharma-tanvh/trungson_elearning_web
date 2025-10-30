@@ -7,7 +7,6 @@ import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-les
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
 import {
   DisplayTypeEnum,
-  LearningModeDisplayNames,
   LearningModeEnum,
   LessonContentEnum,
   ScheduleStatusEnum,
@@ -57,7 +56,7 @@ interface LessonSingleFilterDialogProps extends Omit<SelectProps<string>, 'value
 }
 
 const filterOptions = {
-  lessonType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
+  // lessonType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
@@ -259,7 +258,7 @@ export function LessonSingleFilter({
             placeholder={t('searchLessons')}
           />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('lessonType')}</InputLabel>
               <Select
                 value={lessonType !== undefined ? String(lessonType) : ''}
@@ -274,7 +273,7 @@ export function LessonSingleFilter({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('disableStatus')}</InputLabel>

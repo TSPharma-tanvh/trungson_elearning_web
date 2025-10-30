@@ -48,7 +48,12 @@ export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" flexWrap="wrap">
         {/* Search Text */}
-        <CustomSearchFilter value={searchText} onChange={setSearchText} placeholder={t('searchClass')} />
+        <CustomSearchFilter
+          value={searchText}
+          onChange={setSearchText}
+          onEnter={() => handleFilter()}
+          placeholder={t('searchClass')}
+        />
 
         {/* Class Type */}
         <CustomSelectFilter<LearningModeEnum>

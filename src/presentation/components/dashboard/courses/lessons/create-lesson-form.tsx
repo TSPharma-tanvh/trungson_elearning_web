@@ -311,10 +311,10 @@ export function CreateLessonDialog({
     }
   };
 
-  const lessonTypeOptions = [
-    { value: LearningModeEnum.Online, label: 'online' },
-    { value: LearningModeEnum.Offline, label: 'offline' },
-  ];
+  // const lessonTypeOptions = [
+  //   { value: LearningModeEnum.Online, label: 'online' },
+  //   { value: LearningModeEnum.Offline, label: 'offline' },
+  // ];
 
   const statusTypeOptions = [
     { value: StatusEnum.Enable, label: 'enable' },
@@ -384,7 +384,7 @@ export function CreateLessonDialog({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <CustomSelectDropDown
               label={t('lessonType')}
               value={form.lessonType ?? ''}
@@ -394,7 +394,7 @@ export function CreateLessonDialog({
               disabled={isSubmitting}
               options={lessonTypeOptions}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown
@@ -420,7 +420,19 @@ export function CreateLessonDialog({
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDown
+              label={t('enablePlay')}
+              value={String(form.enablePlay ?? '')}
+              onChange={(value) => {
+                handleChange('enablePlay', value === 'true');
+              }}
+              disabled={false}
+              options={booleanOptions}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<LessonContentEnum>
               label={t('contentType')}
               value={form.contentType ?? ''}
