@@ -294,6 +294,19 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
     setFilePreviewOpen(true);
   };
 
+  useEffect(() => {
+    if (
+      filePreviewData?.url &&
+      filePreviewOpen &&
+      !filePreviewData.type?.includes('image') &&
+      !filePreviewData.type?.includes('video')
+    ) {
+      window.open(filePreviewData.url, '_blank', 'noopener,noreferrer');
+      setFilePreviewOpen(false);
+      setFilePreviewData(null);
+    }
+  }, [filePreviewData, filePreviewOpen]);
+
   const handleSave = async () => {
     if (!formData?.id || !formData.name) {
       CustomSnackBar.showSnackbar(!formData ? t('formDataMissing') : t('requiredFieldsMissing'), 'error');
@@ -777,6 +790,40 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                 </Grid>
               )}
             </Grid>
+
+            {formData.resourceIDs && formData.resourceIDs.length > 0 && resourceSource === 'select' ? (
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" mb={1}>
+                  {t('selectedFiles')}
+                </Typography>
+                <Grid container spacing={1} direction="column">
+                  {formData.resourceIDs.split(',').map((id) => {
+                    const file = lesson?.fileLessonRelation?.find((f) => f.fileResourceId === id)?.fileResources;
+                    if (!file) return null;
+                    return (
+                      <Grid item key={file.id}>
+                        <Button
+                          variant="text"
+                          fullWidth
+                          onClick={() => {
+                            handleFilePreview(file.resourceUrl ?? '', file.name, file.type);
+                          }}
+                          sx={{
+                            justifyContent: 'flex-start',
+                            textAlign: 'left',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {file.name}
+                        </Button>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            ) : null}
 
             {resourceFiles.length > 0 && resourceSource === 'upload' && (
               <Grid item xs={12}>

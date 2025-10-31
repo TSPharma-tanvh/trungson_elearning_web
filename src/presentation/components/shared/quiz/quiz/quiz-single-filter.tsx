@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
+import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
@@ -182,7 +182,7 @@ export function QuizSingleFilter({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectQuiz')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+              <IconButton onClick={() => { setIsFullscreen(!isFullscreen); }} size="small">
                 {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -204,7 +204,7 @@ export function QuizSingleFilter({
             <CustomSelectDropDownDialog
               label="canStartOver"
               value={canStartOver}
-              onChange={(val) => setCanStartOver(val as boolean | undefined)}
+              onChange={(val) => { setCanStartOver(val); }}
               options={[
                 { value: undefined, label: t('all') },
                 { value: true, label: t('yes') },
@@ -215,7 +215,7 @@ export function QuizSingleFilter({
             <CustomSelectDropDownDialog
               label="isRequired"
               value={isRequired}
-              onChange={(val) => setIsRequired(val as boolean | undefined)}
+              onChange={(val) => { setIsRequired(val); }}
               options={[
                 { value: undefined, label: t('all') },
                 { value: true, label: t('yes') },
@@ -226,7 +226,7 @@ export function QuizSingleFilter({
             <CustomSelectDropDownDialog
               label="hasLesson"
               value={hasLesson}
-              onChange={(val) => setHasLesson(val as boolean | undefined)}
+              onChange={(val) => { setHasLesson(val); }}
               options={[
                 { value: undefined, label: t('all') },
                 { value: true, label: t('yes') },
@@ -280,7 +280,7 @@ export function QuizSingleFilter({
                   key={item.id}
                   value={item.id}
                   selected={isSelected}
-                  onClick={() => setLocalValue(item.id ?? '')}
+                  onClick={() => { setLocalValue(item.id ?? ''); }}
                 >
                   <Checkbox checked={isSelected} />
                   <ListItemText
@@ -339,9 +339,7 @@ export function QuizSingleFilter({
         </DialogActions>
       </Dialog>
 
-      {selectedQuiz && (
-        <QuizDetailForm open={viewOpen} quizId={selectedQuiz.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedQuiz ? <QuizDetailForm open={viewOpen} quizId={selectedQuiz.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
     </>
   );
 }

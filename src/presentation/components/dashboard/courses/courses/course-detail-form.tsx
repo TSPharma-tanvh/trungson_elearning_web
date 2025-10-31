@@ -410,12 +410,12 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                 ? t(course.disableStatus.charAt(0).toLowerCase() + t(course.disableStatus).slice(1))
                 : ''
             )}
-            {renderField(
+            {/* {renderField(
               'scheduleStatus',
               course.scheduleStatus
                 ? t(course.scheduleStatus.charAt(0).toLowerCase() + t(course.scheduleStatus).slice(1))
                 : ''
-            )}
+            )} */}
             {renderField('teacherId', course.teacherId)}
             {renderField('meetingLink', course.meetingLink)}
             {/* {renderField('enrollmentCriteriaId', course.enrollmentCriteria.id)} */}

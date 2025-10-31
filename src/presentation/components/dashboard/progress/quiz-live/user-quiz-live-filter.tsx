@@ -78,7 +78,7 @@ export function UserQuizLiveFilters({
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => handleFilter()}
+          onEnter={() => { handleFilter(); }}
           placeholder={t('searchProgress')}
         />
 

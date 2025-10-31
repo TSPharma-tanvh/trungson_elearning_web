@@ -42,7 +42,7 @@ export function useQuizSelectLoader({
           pageNumber: page,
           pageSize: 10,
           searchText: searchText || undefined,
-          ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v != null)),
+          ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== null)),
         });
 
         const result: QuizListResult = await quizUsecase.getQuizListInfo(request);

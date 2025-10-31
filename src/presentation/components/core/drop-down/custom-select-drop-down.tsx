@@ -29,8 +29,10 @@ export function CustomSelectDropDown<T extends string | number | boolean>({
   const handleChange = (event: SelectChangeEvent) => {
     const raw = event.target.value;
     let newValue: T;
+
     if (raw === 'true') newValue = true as T;
     else if (raw === 'false') newValue = false as T;
+    else if (!isNaN(Number(raw))) newValue = Number(raw) as T;
     else newValue = raw as T;
 
     setInternalValue(newValue);

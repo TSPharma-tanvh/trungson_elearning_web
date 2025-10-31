@@ -34,6 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface EditPathDialogProps {
@@ -47,7 +48,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
   const theme = useTheme();
   const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, fileUsecase } = useDI();
+  const { categoryUsecase, fileUsecase, courseUsecase } = useDI();
 
   const [courseFormData, setCourseFormData] = useState<UpdateCoursePathRequest>(new UpdateCoursePathRequest());
 
@@ -73,7 +74,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
         enrollmentCriteriaType: CategoryEnum.Path,
         categoryID: path.categoryID || undefined,
         thumbnailID: path.thumbnailID || undefined,
-        // enrollmentCourseIDs: path.courses.map((course) => course.id).join(',') || '',
+        enrollmentCourseIDs: path.courses?.map((course) => course.id).join(',') || '',
         categoryEnum: CategoryEnumUtils.getCategoryKeyFromValue(CategoryEnum.Path),
         isDeleteOldThumbnail: false,
       });
@@ -272,7 +273,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                 options={displayTypeOptions}
               />
             </Grid>
-            {/* <Grid item xs={12}>
+            <Grid item xs={12}>
               <CourseMultiSelectDialog
                 courseUsecase={courseUsecase}
                 value={
@@ -286,7 +287,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                 disabled={isSubmitting}
                 // pathID={courseFormData.id}
               />
-            </Grid> */}
+            </Grid>
             {/* <Grid item xs={12} sm={6}>
               <EnrollmentMultiSelect
                 enrollmentUsecase={enrollUsecase}
@@ -302,7 +303,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
                 disabled={isSubmitting}
               />
             </Grid> */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={courseFormData.categoryID}

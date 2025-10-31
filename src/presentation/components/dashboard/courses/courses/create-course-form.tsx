@@ -180,21 +180,15 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
             </Grid>
 
             <Grid item xs={12}>
-              <LessonMultiSelectDialog
-                lessonUsecase={lessonUsecase}
-                value={form.lessonIds ? form.lessonIds.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => {
-                  handleChange('lessonIds', value.join(','));
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
               <CustomSelectDropDown<LearningModeEnum>
                 label={t('courseType')}
                 value={form.courseType}
                 onChange={(val) => {
                   handleChange('courseType', val);
+
+                  if (val === LearningModeEnum.Offline) {
+                    handleChange('meetingLink', undefined);
+                  }
                 }}
                 disabled={disabled}
                 options={[
@@ -217,6 +211,16 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                 />
               </Grid>
             )}
+
+            <Grid item xs={12}>
+              <LessonMultiSelectDialog
+                lessonUsecase={lessonUsecase}
+                value={form.lessonIds ? form.lessonIds.split(',').filter((id) => id) : []}
+                onChange={(value: string[]) => {
+                  handleChange('lessonIds', value.join(','));
+                }}
+              />
+            </Grid>
 
             <Grid item xs={12}>
               <CategorySelect

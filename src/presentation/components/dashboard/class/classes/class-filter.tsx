@@ -51,7 +51,7 @@ export function ClassFilters({ onFilter }: { onFilter: (filters: GetClassRequest
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => handleFilter()}
+          onEnter={() => { handleFilter(); }}
           placeholder={t('searchClass')}
         />
 

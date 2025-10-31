@@ -294,7 +294,6 @@ export function QuizSingleSelect({
         <DialogContent dividers>
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
             {quizzes.map((item) => {
-              const isSelected = localValue === item.id;
               const textColor =
                 item.type === QuizTypeEnum.LessonQuiz || item.type?.toString() === 'LessonQuiz'
                   ? 'var(--mui-palette-primary-main)'

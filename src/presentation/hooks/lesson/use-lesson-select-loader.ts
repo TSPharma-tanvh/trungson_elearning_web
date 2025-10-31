@@ -15,6 +15,7 @@ interface LessonFilters {
   status?: StatusEnum;
   hasVideo?: boolean;
   hasFileResource?: boolean;
+  hasCourse?: boolean;
 }
 
 interface UseLessonSelectLoaderProps {
@@ -69,6 +70,7 @@ export function useLessonSelectLoader({
           contentType: filters.contentType,
           hasVideo: filters.hasVideo,
           hasFileResource: filters.hasFileResource,
+          hasCourse: filters.hasCourse,
 
           pageNumber: page,
           pageSize: 10,

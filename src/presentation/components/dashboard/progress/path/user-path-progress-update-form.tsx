@@ -3,7 +3,7 @@ import { UpdateUserPathProgressRequest } from '@/domain/models/user-path/request
 import { type UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { UserProgressEnum } from '@/utils/enum/core-enum';
+import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -59,6 +59,7 @@ export function UpdateUserPathProgressFormDialog({
         endDate: userPathProgress.endDate || undefined,
         lastAccess: userPathProgress.lastAccess || undefined,
         status: userPathProgress.status || undefined,
+        activeStatus: userPathProgress.activeStatus || undefined,
         enrollmentID: userPathProgress.enrollmentID || undefined,
         actualStartDate: userPathProgress.actualStartDate || undefined,
         actualEndDate: userPathProgress.actualEndDate || undefined,
@@ -191,7 +192,7 @@ export function UpdateUserPathProgressFormDialog({
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               {' '}
               <CustomSelectDropDown<string>
                 label={t('status')}
@@ -204,6 +205,23 @@ export function UpdateUserPathProgressFormDialog({
                   { value: UserProgressEnum[UserProgressEnum.NotStarted], label: 'notStarted' },
                   { value: UserProgressEnum[UserProgressEnum.Ongoing], label: 'ongoing' },
                   { value: UserProgressEnum[UserProgressEnum.Done], label: 'done' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              {' '}
+              <CustomSelectDropDown<string>
+                label={t('activeStatus')}
+                value={formData.activeStatus ?? ''}
+                onChange={(val) => {
+                  handleChange('activeStatus', val);
+                }}
+                disabled={false}
+                options={[
+                  { value: StatusEnum[StatusEnum.Enable], label: 'enable' },
+                  { value: StatusEnum[StatusEnum.Disable], label: 'disable' },
+                  { value: StatusEnum[StatusEnum.Deleted], label: 'deleted' },
                 ]}
               />
             </Grid>

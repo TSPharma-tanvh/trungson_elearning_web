@@ -45,7 +45,7 @@ export function EmployeeFilters({ onFilter }: { onFilter: (filters: GetEmployeeR
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => handleFilter()}
+          onEnter={() => { handleFilter(); }}
           placeholder={t('searchEmployee')}
         />
 

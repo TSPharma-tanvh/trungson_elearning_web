@@ -45,7 +45,7 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => handleFilter()}
+          onEnter={() => { handleFilter(); }}
           placeholder={t('searchCategory')}
         />
 

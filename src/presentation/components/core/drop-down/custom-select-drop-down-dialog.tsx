@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 interface CustomSelectDropDownDialogProps<T> {
   label: string;
   value: T | undefined;
-  options: Array<{ value: T | undefined; label: string }>; // ← Cho phép undefined
+  options: { value: T | undefined; label: string }[]; // ← Cho phép undefined
   onChange: (value: T | undefined) => void;
   minWidth?: number;
 }
@@ -22,7 +22,7 @@ export function CustomSelectDropDownDialog<T extends string | number | boolean>(
 }: CustomSelectDropDownDialogProps<T>) {
   const { t } = useTranslation();
 
-  const handleChange = (e: SelectChangeEvent<string>) => {
+  const handleChange = (e: SelectChangeEvent) => {
     const rawValue = e.target.value;
 
     // XỬ LÝ "All" → undefined

@@ -52,7 +52,7 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => handleFilter()}
+          onEnter={() => { handleFilter(); }}
           placeholder={t('searchQuiz')}
         />
 

@@ -5,7 +5,7 @@ import { type LessonDetailResponse } from '@/domain/models/lessons/response/less
 import { type LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
-import { LearningModeEnum, LessonContentEnum, StatusDisplayNames, StatusEnum } from '@/utils/enum/core-enum';
+import { type LearningModeEnum, LessonContentEnum, StatusDisplayNames, StatusEnum } from '@/utils/enum/core-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -80,6 +80,7 @@ export function LessonMultiSelectDialog({
   const [status, setStatus] = useState<StatusEnum | undefined>(undefined);
   const [hasVideo, setHasVideo] = useState<boolean | undefined>(undefined);
   const [hasFileResource, setHasFileResource] = useState<boolean | undefined>(undefined);
+  const [hasCourse, setHasCourse] = useState<boolean | undefined>(undefined);
 
   const filters = useMemo(
     () => ({
@@ -89,8 +90,9 @@ export function LessonMultiSelectDialog({
       status,
       hasVideo,
       hasFileResource,
+      hasCourse,
     }),
-    [lessonType, disableStatus, contentType, status, hasVideo, hasFileResource]
+    [lessonType, disableStatus, contentType, status, hasVideo, hasFileResource, hasCourse]
   );
 
   const { lessons, loadingLessons, pageNumber, totalPages, listRef, setSearchText, loadLessons } =
@@ -220,22 +222,7 @@ export function LessonMultiSelectDialog({
                 ))}
               </Select>
             </FormControl> */}
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>{t('disableStatus')}</InputLabel>
-              <Select
-                value={disableStatus ?? ''}
-                onChange={(e) => {
-                  setDisableStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
-                }}
-                label={t('disableStatus')}
-              >
-                {filterOptions.disableStatus.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('contentType')}</InputLabel>
               <Select
@@ -252,6 +239,7 @@ export function LessonMultiSelectDialog({
                 ))}
               </Select>
             </FormControl>
+
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('status')}</InputLabel>
               <Select
@@ -268,6 +256,29 @@ export function LessonMultiSelectDialog({
                 ))}
               </Select>
             </FormControl>
+
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('hasCourse')}</InputLabel>
+              <Select
+                value={hasCourse === undefined ? '' : hasCourse ? 'true' : 'false'}
+                onChange={(e: SelectChangeEvent) => {
+                  const newValue = e.target.value;
+                  if (newValue === '') {
+                    setHasCourse(undefined);
+                  } else {
+                    setHasCourse(newValue === 'true');
+                  }
+                }}
+                label={t('hasCourse')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('hasVideo')}</InputLabel>
               <Select

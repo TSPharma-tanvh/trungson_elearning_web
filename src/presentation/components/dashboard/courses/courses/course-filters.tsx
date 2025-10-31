@@ -56,7 +56,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => handleFilter()}
+          onEnter={() => { handleFilter(); }}
           placeholder={t('searchCourses')}
         />
 

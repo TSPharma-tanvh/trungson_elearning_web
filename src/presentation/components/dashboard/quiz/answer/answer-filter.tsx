@@ -49,7 +49,7 @@ export function AnswerFilters({ onFilter }: { onFilter: (filters: GetAnswerReque
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => handleFilter()}
+          onEnter={() => { handleFilter(); }}
           placeholder={t('searchAnswers')}
         />
 

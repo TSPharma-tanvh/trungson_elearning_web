@@ -7,6 +7,7 @@ export class GetLessonRequest {
   lessonType?: LearningModeEnum;
   contentType?: LessonContentEnum;
   hasVideo?: boolean;
+  hasCourse?: boolean;
   hasFileResource?: boolean;
   enablePlay?: boolean;
   searchText?: string;
@@ -25,6 +26,7 @@ export class GetLessonRequest {
       lessonType: json.lessonType,
       contentType: json.contentType,
       hasVideo: json.hasVideo,
+      hasCourse: json.hasCourse,
       hasFileResource: json.hasFileResource,
       enablePlay: json.enablePlay,
       searchText: json.searchText,
@@ -41,6 +43,7 @@ export class GetLessonRequest {
       lessonType: this.lessonType,
       contentType: this.contentType,
       hasVideo: this.hasVideo,
+      hasCourse: this.hasCourse,
       hasFileResource: this.hasFileResource,
       enablePlay: this.enablePlay,
       searchText: this.searchText,
@@ -58,6 +61,7 @@ export class GetLessonRequest {
     if (this.lessonType !== undefined) params['LessonType'] = this.lessonType.toString();
     if (this.contentType !== undefined) params['ContentType'] = this.contentType.toString();
     if (this.hasVideo !== undefined) params['HasVideo'] = this.hasVideo.toString();
+    if (this.hasCourse !== undefined) params['HasCourse'] = this.hasCourse.toString();
     if (this.hasFileResource !== undefined) params['HasFileResource'] = this.hasFileResource.toString();
     if (this.enablePlay !== undefined) params['EnablePlay'] = this.enablePlay.toString();
     if (this.searchText) params['SearchText'] = this.searchText;

@@ -69,7 +69,7 @@ export function UserPathProgressFilters({
           onChange={(val) => {
             handleChange('searchText', val);
           }}
-          onEnter={() => handleFilter()}
+          onEnter={() => { handleFilter(); }}
           placeholder={t('searchProgress')}
         />
 

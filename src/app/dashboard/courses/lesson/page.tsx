@@ -126,7 +126,9 @@ export default function Page(): React.JSX.Element {
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
-              onClick={() => { handleExportToExcel(); }}
+              onClick={() => {
+                handleExportToExcel();
+              }}
             >
               {t('exportToExcel')}
             </Button>
@@ -183,7 +185,6 @@ export default function Page(): React.JSX.Element {
         }
       }
       await fetchLessons();
-      CustomSnackBar.showSnackbar(t('lessonsDeleted'), 'success');
     } catch (error) {
       CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to delete lessons', 'error');
     } finally {

@@ -816,5 +816,6 @@
   "manual": "Thủ công",
   "excel": "Excel",
   "importQuestions": "Nhập câu hỏi",
-  "displayedQuestionCount": "Số lượng câu hỏi được hiển thị"
+  "displayedQuestionCount": "Số lượng câu hỏi được hiển thị",
+  "hasCourse": "Có khóa học"
 }

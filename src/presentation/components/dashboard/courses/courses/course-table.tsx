@@ -99,7 +99,7 @@ export default function CourseTable({
             <TableCell>{t('required')}</TableCell>
             <TableCell>{t('disableStatus')}</TableCell>
             <TableCell>{t('courseType')}</TableCell>
-            <TableCell>{t('scheduleStatus')}</TableCell>
+            <TableCell>{t('teacher')}</TableCell>
             <TableCell>{t('displayType')}</TableCell>
             <TableCell>{t('lessons')}</TableCell>
           </>
@@ -133,8 +133,39 @@ export default function CourseTable({
             <TableCell>
               {row.courseType ? t(row.courseType.charAt(0).toLowerCase() + row.courseType.slice(1)) : ''}
             </TableCell>
-            <TableCell>
-              {row.scheduleStatus ? t(row.scheduleStatus.charAt(0).toLowerCase() + row.scheduleStatus.slice(1)) : ''}
+            <TableCell
+              sx={{
+                minWidth: 150,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+              }}
+            >
+              <Stack direction="row" alignItems="center" spacing={2}>
+                {row.classTeacher?.user?.employee !== undefined ? (
+                  <Avatar
+                    src={
+                      row.classTeacher?.user?.employee?.avatar !== undefined
+                        ? row.classTeacher?.user?.employee?.avatar
+                        : row.classTeacher?.user?.thumbnail?.resourceUrl
+                    }
+                  >
+                    {row.classTeacher?.user?.employee?.name?.[0] || row.classTeacher?.user?.userName?.[0]}
+                  </Avatar>
+                ) : (
+                  <div />
+                )}
+
+                <Box>
+                  <Typography variant="subtitle2" noWrap>
+                    {row.classTeacher?.user?.employee?.name || row.classTeacher?.user?.userName}
+                  </Typography>
+                  {row.classTeacher?.user?.userName ? (
+                    <Typography variant="body2" color="text.secondary" noWrap>
+                      {row.classTeacher?.user?.userName}
+                    </Typography>
+                  ) : null}
+                </Box>
+              </Stack>
             </TableCell>
             <TableCell>
               {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + row.displayType.slice(1)) : ''}

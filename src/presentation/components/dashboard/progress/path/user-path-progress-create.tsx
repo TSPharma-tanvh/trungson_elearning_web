@@ -4,7 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { EnrollUserListToPathRequest } from '@/domain/models/user-path/request/enroll-user-list-to-path-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { ApproveStatusEnum, CategoryEnum, ProgressEnrollmentTypeEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import {
+  ApproveStatusEnum,
+  CategoryEnum,
+  ProgressEnrollmentTypeEnum,
+  StatusEnum,
+  UserProgressEnum,
+} from '@/utils/enum/core-enum';
 import ClearIcon from '@mui/icons-material/Clear';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -130,6 +136,7 @@ export function CreateUserPathProgressDialog({
           enrollType: ProgressEnrollmentTypeEnum.AllUsers,
           status: UserProgressEnum.NotStarted,
           enrollStatus: ApproveStatusEnum.Approve,
+          activeStatus: StatusEnum.Enable,
           isAutoEnroll: true,
           isUpdateOldProgress: false,
         })
@@ -198,7 +205,9 @@ export function CreateUserPathProgressDialog({
               <CustomSelectDropDown<boolean>
                 label={t('isAutoEnroll')}
                 value={form.isAutoEnroll ?? true}
-                onChange={(val) => { handleChange('isAutoEnroll', val); }}
+                onChange={(val) => {
+                  handleChange('isAutoEnroll', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: true, label: 'yes' },
@@ -211,7 +220,9 @@ export function CreateUserPathProgressDialog({
               <CustomSelectDropDown<boolean>
                 label={t('isUpdateOldProgress')}
                 value={form.isUpdateOldProgress ?? false}
-                onChange={(val) => { handleChange('isUpdateOldProgress', val); }}
+                onChange={(val) => {
+                  handleChange('isUpdateOldProgress', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: true, label: 'yes' },
@@ -356,6 +367,23 @@ export function CreateUserPathProgressDialog({
             </Grid>
 
             <Grid item xs={12} sm={6}>
+              {' '}
+              <CustomSelectDropDown<StatusEnum>
+                label={t('activeStatus')}
+                value={form.activeStatus}
+                onChange={(val) => {
+                  handleChange('activeStatus', val);
+                }}
+                disabled={false}
+                options={[
+                  { value: StatusEnum.Enable, label: 'enable' },
+                  { value: StatusEnum.Disable, label: 'disable' },
+                  { value: StatusEnum.Deleted, label: 'deleted' },
+                ]}
+              />
+            </Grid>
+
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<ApproveStatusEnum>
                 label={t('enrollStatus')}
                 value={form.enrollStatus!}
@@ -368,7 +396,7 @@ export function CreateUserPathProgressDialog({
                   { value: ApproveStatusEnum.Reject, label: 'reject' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <CustomButton

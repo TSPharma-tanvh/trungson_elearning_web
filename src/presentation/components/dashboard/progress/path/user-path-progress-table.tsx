@@ -2,8 +2,16 @@ import React from 'react';
 import { type UpdateUserPathProgressRequest } from '@/domain/models/user-path/request/update-user-path-progress-request';
 import { type UserPathProgressDetailResponse } from '@/domain/models/user-path/response/user-path-progress-detail-response';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { UserProgressEnum } from '@/utils/enum/core-enum';
-import { CancelOutlined, CheckCircleOutline, DataUsage, MoreVert } from '@mui/icons-material';
+import { StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
+import {
+  CancelOutlined,
+  Check,
+  CheckCircleOutline,
+  Close,
+  DataUsage,
+  DeleteOutline,
+  MoreVert,
+} from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -61,6 +69,7 @@ export default function UserPathProgressTable({
     setPendingDeleteId(null);
     setDialogOpen(false);
   };
+
   const renderStatus = (status: string) => {
     switch (status) {
       case UserProgressEnum[UserProgressEnum.NotStarted]:
@@ -81,6 +90,32 @@ export default function UserPathProgressTable({
             <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
           </Tooltip>
         );
+      default:
+        return <span>{t('unknown')}</span>;
+    }
+  };
+
+  const renderActiveStatus = (status: string) => {
+    switch (status) {
+      case StatusEnum[StatusEnum.Enable]:
+        return (
+          <Tooltip title={t('enable')}>
+            <Check sx={{ color: 'var(--mui-palette-primary-main)' }} />
+          </Tooltip>
+        );
+      case StatusEnum[StatusEnum.Disable]:
+        return (
+          <Tooltip title={t('disable')}>
+            <Close sx={{ color: 'var(--mui-palette-secondary-main)' }} />
+          </Tooltip>
+        );
+      case StatusEnum[StatusEnum.Deleted]:
+        return (
+          <Tooltip title={t('deleted')}>
+            <DeleteOutline sx={{ color: 'var(--mui-palette-error-main)' }} />
+          </Tooltip>
+        );
+
       default:
         return <span>{t('unknown')}</span>;
     }
@@ -133,6 +168,8 @@ export default function UserPathProgressTable({
             <TableCell>{t('actualEndDate')}</TableCell>
             <TableCell>{t('lastAccess')}</TableCell>
             <TableCell>{t('status')}</TableCell>
+            <TableCell>{t('activeStatus')}</TableCell>
+
             <TableCell
               sx={{
                 minWidth: 100,
@@ -232,6 +269,8 @@ export default function UserPathProgressTable({
               <TableCell>{DateTimeUtils.formatISODateStringToString(row.lastAccess ?? '')}</TableCell>
 
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
+              <TableCell align="center">{renderActiveStatus(row.activeStatus ?? '')}</TableCell>
+
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentDepartmentName ?? ''}</TableCell>
