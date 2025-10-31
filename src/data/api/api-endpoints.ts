@@ -374,7 +374,7 @@ const getBaseUrl = (): string => {
     throw new Error('Missing NEXT_PUBLIC_LOCAL_DEV_BASE_URL environment variable.');
   }
 
-  return local.replace(/\/+$/, '');
+  return production.replace(/\/+$/, '');
 };
 
 export const apiEndpoints: EndpointDefinitions = endpoints;
