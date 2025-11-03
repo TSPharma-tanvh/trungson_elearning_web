@@ -1,3 +1,5 @@
+import { getBaseUrl } from './base-endpoints';
+
 // Define two types: one for static (string) and one for dynamic (function)
 type StaticEndpoint = string;
 type DynamicEndpoint = (...args: string[]) => string;
@@ -355,26 +357,6 @@ const endpoints: EndpointDefinitions = {
     update: 'UserDevices/UpdateUserDevices',
     delete: 'UserDevices/DeleteUserDevices',
   },
-};
-
-const getBaseUrl = (): string => {
-  const production = process.env.NEXT_PUBLIC_PRODUCTION_BASE_URL;
-  const dev = process.env.NEXT_PUBLIC_DEV_BASE_URL;
-  const local = process.env.NEXT_PUBLIC_LOCAL_DEV_BASE_URL;
-
-  if (!production) {
-    throw new Error('Missing NEXT_PUBLIC_PRODUCTION_BASE_URL environment variable.');
-  }
-
-  if (!dev) {
-    throw new Error('Missing NEXT_PUBLIC_DEV_BASE_URL environment variable.');
-  }
-
-  if (!local) {
-    throw new Error('Missing NEXT_PUBLIC_LOCAL_DEV_BASE_URL environment variable.');
-  }
-
-  return production.replace(/\/+$/, '');
 };
 
 export const apiEndpoints: EndpointDefinitions = endpoints;
