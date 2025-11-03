@@ -1,3 +1,5 @@
+import { getBaseUrl } from './base-endpoints';
+
 // Define two types: one for static (string) and one for dynamic (function)
 type StaticEndpoint = string;
 type DynamicEndpoint = (...args: string[]) => string;
@@ -122,6 +124,14 @@ interface EmployeeEndpoints {
   syncHrm: StaticEndpoint;
   delete: DynamicEndpoint;
 }
+
+interface DepartmentEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  getHrm: StaticEndpoint;
+  syncHrm: StaticEndpoint;
+  delete: DynamicEndpoint;
+}
 interface UserPathProgressEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
@@ -192,6 +202,7 @@ interface EndpointDefinitions {
   answers: AnswerEndpoints;
   fileResources: FileResourcesEndpoints;
   employee: EmployeeEndpoints;
+  department: DepartmentEndpoints;
   userPathProgress: UserPathProgressEndpoints;
   userCourseProgress: UserCourseProgressEndpoints;
   userLessonProgress: UserLessonProgressEndpoints;
@@ -309,6 +320,13 @@ const endpoints: EndpointDefinitions = {
     syncHrm: 'Employee/SaveEmployeeFromHrm',
     delete: (id: string) => `Employee/DeleteEmployee/${id}`,
   },
+  department: {
+    getAll: 'Department/GetDepartments',
+    getById: (id: string) => `Department/GetDepartmentInfoById/${id}`,
+    getHrm: 'Department/GetDepartmentFromHrm',
+    syncHrm: 'Department/GetDepartmentFromHrm',
+    delete: (id: string) => `Department/DeleteDepartment/${id}`,
+  },
   userPathProgress: {
     getAll: 'UserPathProgress/GetUserPathProgress',
     getById: (id: string) => `UserPathProgress/GetUserPathProgressById/${id}`,
@@ -355,26 +373,6 @@ const endpoints: EndpointDefinitions = {
     update: 'UserDevices/UpdateUserDevices',
     delete: 'UserDevices/DeleteUserDevices',
   },
-};
-
-const getBaseUrl = (): string => {
-  const production = process.env.NEXT_PUBLIC_PRODUCTION_BASE_URL;
-  const dev = process.env.NEXT_PUBLIC_DEV_BASE_URL;
-  const local = process.env.NEXT_PUBLIC_LOCAL_DEV_BASE_URL;
-
-  if (!production) {
-    throw new Error('Missing NEXT_PUBLIC_PRODUCTION_BASE_URL environment variable.');
-  }
-
-  if (!dev) {
-    throw new Error('Missing NEXT_PUBLIC_DEV_BASE_URL environment variable.');
-  }
-
-  if (!local) {
-    throw new Error('Missing NEXT_PUBLIC_LOCAL_DEV_BASE_URL environment variable.');
-  }
-
-  return local.replace(/\/+$/, '');
 };
 
 export const apiEndpoints: EndpointDefinitions = endpoints;

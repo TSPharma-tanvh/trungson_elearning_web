@@ -13,5 +13,7 @@ export interface EmployeeRepository {
 
   syncEmployeeFromHrm: (request: SyncEmployeeFromHrmRequest) => Promise<ApiResponse>;
 
+  syncDepartmentFromHrm: (request: SyncEmployeeFromHrmRequest) => Promise<ApiResponse>;
+
   deleteEmployee: (id: string) => Promise<ApiResponse>;
 }

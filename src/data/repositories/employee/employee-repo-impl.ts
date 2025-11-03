@@ -92,4 +92,22 @@ export class EmployeeRepoImpl implements EmployeeRepository {
       throw new Error(error?.message || 'Failed to fetch course info');
     }
   }
+
+  async syncDepartmentFromHrm(request: SyncEmployeeFromHrmRequest): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.employee.syncHrm, request.toJson(), {
+        timeout: 3600000,
+      });
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch course info');
+    }
+  }
 }

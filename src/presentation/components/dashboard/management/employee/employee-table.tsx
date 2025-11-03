@@ -89,15 +89,11 @@ export default function EmployeeTable({
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('gender')}</TableCell>
             <TableCell>{t('birthday')}</TableCell>
-            <TableCell>{t('hireDate')}</TableCell>
             <TableCell>{t('department')}</TableCell>
             <TableCell>{t('departmentType')}</TableCell>
             <TableCell>{t('position')}</TableCell>
             <TableCell>{t('positionState')}</TableCell>
             <TableCell>{t('asm')}</TableCell>
-            <TableCell>{t('city')}</TableCell>
-            <TableCell>{t('district')}</TableCell>
-            <TableCell>{t('ward')}</TableCell>
             <TableCell>{t('status')}</TableCell>
           </>
         )}
@@ -107,7 +103,7 @@ export default function EmployeeTable({
             <TableCell>{row.userId}</TableCell>
             <TableCell sx={{ width: '10%' }}>
               <Stack direction="row" alignItems="center" spacing={2}>
-                <Avatar src={row.avatar}>{row.name?.[0]}</Avatar>
+                <Avatar src={row.name}>{row.name?.[0]}</Avatar>
                 <Box>
                   <Typography variant="subtitle2" noWrap>
                     {row.name}
@@ -116,23 +112,17 @@ export default function EmployeeTable({
               </Stack>
             </TableCell>
 
-            <TableCell>{row.gender}</TableCell>
-            <TableCell>
-              {row.birthDate !== undefined ? DateTimeUtils.formatISODateStringToString(row.birthDate) : ''}
-            </TableCell>
-            <TableCell>
-              {row.hireDate !== undefined ? DateTimeUtils.formatISODateStringToString(row.hireDate) : ''}
-            </TableCell>
-            <TableCell>{row.currentDepartmentName}</TableCell>
-            <TableCell>{row.currentDepartmentTypeName}</TableCell>
-            <TableCell sx={{ width: '6%' }}>{row.currentPositionName}</TableCell>
-            <TableCell>{row.currentPositionStateName}</TableCell>
-            <TableCell sx={{ width: '10%' }}>{row.asm}</TableCell>
-            <TableCell sx={{ width: '6%' }}>{row.cityName}</TableCell>
-            <TableCell sx={{ width: '6%' }}>{row.districtName}</TableCell>
-            <TableCell sx={{ width: '6%' }}>{row.wardName}</TableCell>
+            <TableCell>{row.gender === true ? t('male') : row.gender === false ? t('female') : ''}</TableCell>
+            <TableCell>{row.birthDay ? DateTimeUtils.formatISODateStringToString(row.birthDay) : ''}</TableCell>
+
+            <TableCell>{row.departmentName}</TableCell>
+            <TableCell>{row.departmentTypeName}</TableCell>
+            <TableCell sx={{ width: '8%' }}>{row.positionName}</TableCell>
+            <TableCell>{row.positionStateName}</TableCell>
+            <TableCell>{row.asmName}</TableCell>
+
             <TableCell sx={{ width: '1%' }}>
-              {row.status === 'Hoạt Động' ? (
+              {row.statusValue === 1 ? (
                 <CheckCircle fontSize="24px" color="var(--mui-palette-primary-main)" />
               ) : (
                 <XCircle fontSize="24px" color="var(--mui-palette-error-main)" />

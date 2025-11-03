@@ -33,6 +33,7 @@ import { RoleRepositoryImpl } from '@/data/repositories/role/role-repo-impl';
 import { UserRepositoryImpl } from '@/data/repositories/user/user-repo-impl';
 
 import { AttendanceRecordsRepoImpl } from './data/repositories/class/attendance-records-repo-impl';
+import { DepartmentRepoImpl } from './data/repositories/department/department-repo-impl';
 import { EmployeeRepoImpl } from './data/repositories/employee/employee-repo-impl';
 import { UserAnswerRepoImpl } from './data/repositories/progress/user-answer-repo-impl';
 import { UserCourseProgressRepoImpl } from './data/repositories/progress/user-course-progress-repo-impl';
@@ -40,6 +41,7 @@ import { UserLessonProgressRepoImpl } from './data/repositories/progress/user-le
 import { UserQuizProgressRepoImpl } from './data/repositories/progress/user-quiz-progress-repo-impl';
 import { UserDevicesRepoImpl } from './data/repositories/user/user-devices-repo-impl';
 import { AttendanceRecordsUsecase } from './domain/usecases/class/attendance-records-usecase';
+import { DepartmentUsecase } from './domain/usecases/department/department-usecase';
 import { EmployeeUsecase } from './domain/usecases/employee/employee-usecase';
 import { UserAnswerUsecase } from './domain/usecases/progress/user-answer-usecase';
 import { UserCourseProgressUsecase } from './domain/usecases/progress/user-course-progress-usecase';
@@ -99,6 +101,9 @@ export class DependencyContainer {
   //employee
   public employeeRepo = new EmployeeRepoImpl();
 
+  //department
+  public departmentRepo = new DepartmentRepoImpl();
+
   //progress
   public userPathProgressRepo = new UserPathProgressRepoImpl();
   public userCourseProgressRepo = new UserCourseProgressRepoImpl();
@@ -155,6 +160,9 @@ export class DependencyContainer {
 
   //employee
   public employeeUsecase = new EmployeeUsecase(this.employeeRepo);
+
+  //department
+  public departmentUsecase = new DepartmentUsecase(this.departmentRepo);
 
   //progress
   public userPathProgressUsecase = new UserPathProgressUsecase(this.userPathProgressRepo);

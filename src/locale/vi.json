@@ -817,5 +817,7 @@
   "excel": "Excel",
   "importQuestions": "Nhập câu hỏi",
   "displayedQuestionCount": "Số lượng câu hỏi được hiển thị",
-  "hasCourse": "Có khóa học"
+  "hasCourse": "Có khóa học",
+  "male": "Nam",
+  "female": "Nữ"
 }

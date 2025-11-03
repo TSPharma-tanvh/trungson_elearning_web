@@ -817,5 +817,7 @@
   "excel": "Excel",
   "importQuestions": "Import Questions",
   "displayedQuestionCount": "Displayed Question Count",
-  "hasCourse": "Have Course"
+  "hasCourse": "Have Course",
+  "male": "Male",
+  "female": "Female"
 }
