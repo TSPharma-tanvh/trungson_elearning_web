@@ -2,21 +2,21 @@ export class EmployeeResponse {
   id?: string;
   code?: string;
   name?: string;
+  avatar?: string;
+  phoneNumber?: string;
+  mail?: string;
   birthDay?: string;
   gender?: boolean;
   positionCode?: string;
   positionName?: string;
   positionStateCode?: string;
   positionStateName?: string;
-
   departmentTypeCode?: string;
   departmentTypeName?: string;
   departmentCode?: string;
   departmentName?: string;
-
   asmCode?: string;
   asmName?: string;
-
   statusValue?: number;
   status?: string;
   userId?: string;
@@ -30,6 +30,9 @@ export class EmployeeResponse {
       id: json.id,
       code: json.code,
       name: json.name,
+      avatar: json.avatar,
+      phoneNumber: json.phoneNumber,
+      mail: json.mail,
       birthDay: json.birthDay,
       gender: json.gender,
       positionCode: json.positionCode,
@@ -53,6 +56,9 @@ export class EmployeeResponse {
       id: this.id,
       code: this.code,
       name: this.name,
+      avatar: this.avatar,
+      phoneNumber: this.phoneNumber,
+      mail: this.mail,
       birthDay: this.birthDay,
       gender: this.gender,
       positionCode: this.positionCode,

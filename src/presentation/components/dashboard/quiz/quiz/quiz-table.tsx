@@ -177,6 +177,7 @@ export default function QuizTable({
                 <TableCell>{t('totalQuestion')}</TableCell>
                 <TableCell>{t('totalScore')}</TableCell>
                 <TableCell>{t('scoreToPass')}</TableCell>
+                <TableCell>{t('displayedQuestionCount')}</TableCell>
                 <TableCell>{t('canStartOver')}</TableCell>
                 <TableCell>{t('canShuffle')}</TableCell>
                 <TableCell>{t('isRequired')}</TableCell>
@@ -232,6 +233,7 @@ export default function QuizTable({
                     <TableCell>{row.totalQuestion}</TableCell>
                     <TableCell>{row.totalScore}</TableCell>
                     <TableCell>{row.scoreToPass}</TableCell>
+                    <TableCell>{row.displayedQuestionCount}</TableCell>
                     <TableCell>{row.canStartOver ? t('yes') : t('no')}</TableCell>
                     <TableCell>{row.canShuffle ? t('yes') : t('no')}</TableCell>
                     <TableCell>{row.isRequired ? t('yes') : t('no')}</TableCell>

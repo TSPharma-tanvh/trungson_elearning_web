@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { SyncDepartmentFromHrmRequest } from '@/domain/models/department/request/sync-department-from-hrm-request';
 import { GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
 import { SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
 import { type EmployeeResponse } from '@/domain/models/employee/response/employee-response';
@@ -14,7 +15,7 @@ import EmployeeTable from '@/presentation/components/dashboard/management/employ
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { employeeUsecase } = useDI();
+  const { employeeUsecase, departmentUsecase } = useDI();
 
   const [_showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetEmployeeRequest>(
@@ -64,14 +65,19 @@ export default function Page(): React.JSX.Element {
   };
 
   const syncFromHrm = async (request: SyncEmployeeFromHrmRequest) => {
-    setSyncLoading(true); // 🔹 bật loading
+    setSyncLoading(true);
     try {
+      const requestDepartment = new SyncDepartmentFromHrmRequest({
+        username: request.username,
+        password: request.password,
+      });
+      await departmentUsecase.syncDepartmentFromHrm(requestDepartment);
       await employeeUsecase.syncEmployeeFromHrm(request);
       setShowCreateDialog(false);
       await fetchCategories();
     } catch (error) {
     } finally {
-      setSyncLoading(false); // 🔹 tắt loading
+      setSyncLoading(false);
     }
   };
 

@@ -20,7 +20,7 @@ export class DepartmentRepoImpl implements DepartmentRepository {
 
   //     return apiResponse;
   //   } catch (error: any) {
-  //     throw new Error(error?.message || 'Failed to fetch course info');
+  //     throw new Error(error?.message || 'Failed to fetch department info');
   //   }
   // }
 
@@ -35,7 +35,7 @@ export class DepartmentRepoImpl implements DepartmentRepository {
 
   //     return apiResponse;
   //   } catch (error: any) {
-  //     throw new Error(error?.message || 'Failed to fetch course info');
+  //     throw new Error(error?.message || 'Failed to fetch department info');
   //   }
   // }
 
@@ -53,7 +53,7 @@ export class DepartmentRepoImpl implements DepartmentRepository {
 
   //     return apiResponse;
   //   } catch (error: any) {
-  //     throw new Error(error?.message || 'Failed to fetch course info');
+  //     throw new Error(error?.message || 'Failed to fetch department info');
   //   }
   // }
 
@@ -71,7 +71,7 @@ export class DepartmentRepoImpl implements DepartmentRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch department info');
     }
   }
 
@@ -86,7 +86,7 @@ export class DepartmentRepoImpl implements DepartmentRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch department info');
     }
   }
 }

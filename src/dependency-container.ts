@@ -39,6 +39,7 @@ import { UserAnswerRepoImpl } from './data/repositories/progress/user-answer-rep
 import { UserCourseProgressRepoImpl } from './data/repositories/progress/user-course-progress-repo-impl';
 import { UserLessonProgressRepoImpl } from './data/repositories/progress/user-lesson-progress-repo-impl';
 import { UserQuizProgressRepoImpl } from './data/repositories/progress/user-quiz-progress-repo-impl';
+import { AppSettingsRepoImpl } from './data/repositories/settings/app-settings-repo-impl';
 import { UserDevicesRepoImpl } from './data/repositories/user/user-devices-repo-impl';
 import { AttendanceRecordsUsecase } from './domain/usecases/class/attendance-records-usecase';
 import { DepartmentUsecase } from './domain/usecases/department/department-usecase';
@@ -47,6 +48,7 @@ import { UserAnswerUsecase } from './domain/usecases/progress/user-answer-usecas
 import { UserCourseProgressUsecase } from './domain/usecases/progress/user-course-progress-usecase';
 import { UserLessonProgressUsecase } from './domain/usecases/progress/user-lesson-progress-usecase';
 import { UserQuizProgressUsecase } from './domain/usecases/progress/user-quiz-progress-usecase';
+import { AppSettingsUsecase } from './domain/usecases/settings/setting-usecase';
 import { UserDevicesUsecase } from './domain/usecases/user/user-device-usecase';
 
 export class DependencyContainer {
@@ -103,6 +105,9 @@ export class DependencyContainer {
 
   //department
   public departmentRepo = new DepartmentRepoImpl();
+
+  //setting
+  public settingRepo = new AppSettingsRepoImpl();
 
   //progress
   public userPathProgressRepo = new UserPathProgressRepoImpl();
@@ -163,6 +168,9 @@ export class DependencyContainer {
 
   //department
   public departmentUsecase = new DepartmentUsecase(this.departmentRepo);
+
+  //setting
+  public settingUsecase = new AppSettingsUsecase(this.settingRepo);
 
   //progress
   public userPathProgressUsecase = new UserPathProgressUsecase(this.userPathProgressRepo);

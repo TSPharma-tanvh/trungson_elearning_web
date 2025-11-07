@@ -26,7 +26,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Article, Clock, Image as ImageIcon, NumberCircleNine, Tag } from '@phosphor-icons/react';
+import { Article, Clock, Image as ImageIcon, NumberCircleFive, NumberCircleNine, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
@@ -85,7 +85,8 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
         description: quiz.description || undefined,
         time: quiz.time,
         status: quiz.status !== undefined ? StatusEnum[quiz.status as keyof typeof StatusEnum] : undefined,
-        scoreToPass: quiz.scoreToPass || undefined,
+        scoreToPass: quiz.scoreToPass,
+        displayedQuestionCount: quiz.displayedQuestionCount,
         enrollmentCriteriaType: CategoryEnum.Quiz,
         enrollmentCriteriaIDs:
           quiz.quizEnrollments?.map((enrollment) => enrollment.enrollmentCriteria.id).join(',') || undefined,
@@ -315,6 +316,21 @@ export function UpdateQuizFormDialog({ open, data: quiz, onClose, onSubmit }: Ed
                 icon={<NumberCircleNine {...iconStyle} />}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                label={t('displayedQuestionCount')}
+                inputMode="numeric"
+                value={formData.displayedQuestionCount?.toString() ?? ''}
+                onChange={(value: string) => {
+                  const numericValue = /^\d+$/.test(value) ? Number(value) : undefined;
+                  handleChange('displayedQuestionCount', numericValue);
+                }}
+                disabled={isSubmitting}
+                icon={<NumberCircleFive {...iconStyle} />}
+              />
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('maxAttempts')}

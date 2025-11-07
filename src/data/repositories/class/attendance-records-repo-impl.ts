@@ -1,4 +1,5 @@
 import { type CreateAttendanceRecordsRequest } from '@/domain/models/attendance/request/create-attendance-records-request';
+import { CreateAttendanceReportRequest } from '@/domain/models/attendance/request/create-attendance-report-request';
 import { type EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { type GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/get-attendance-records-request';
 import { type UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';
@@ -115,6 +116,28 @@ export class AttendanceRecordsRepoImpl implements AttendanceRecordsRepository {
       return apiResponse;
     } catch (error: any) {
       throw new Error(error?.message || 'Failed to create AttendanceRecords');
+    }
+  }
+
+  async createAttendanceReport(request: CreateAttendanceReportRequest): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.attendanceRecords.createReport,
+        request.toJson(),
+        {
+          timeout: 3600000,
+        }
+      );
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to create attendance report');
     }
   }
 }

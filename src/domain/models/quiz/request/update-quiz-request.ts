@@ -32,6 +32,7 @@ export class UpdateQuizRequest {
   totalScore?: number;
   enrollmentCourseIDs?: string;
   scoreToPass?: number;
+  displayedQuestionCount?: number;
 
   constructor(init?: Partial<UpdateQuizRequest>) {
     Object.assign(this, init);
@@ -73,6 +74,7 @@ export class UpdateQuizRequest {
       totalScore: this.totalScore,
       enrollmentCourseIDs: this.enrollmentCourseIDs,
       scoreToPass: this.scoreToPass,
+      displayedQuestionCount: this.displayedQuestionCount,
 
       // Files (thumbnail, resources) excluded here
     };
@@ -116,6 +118,7 @@ export class UpdateQuizRequest {
     appendIfExists('totalScore', this.totalScore);
     appendIfExists('enrollmentCourseIDs', this.enrollmentCourseIDs);
     appendIfExists('scoreToPass', this.scoreToPass);
+    appendIfExists('displayedQuestionCount', this.displayedQuestionCount);
 
     if (this.thumbnail) {
       formData.append('thumbnail', this.thumbnail);

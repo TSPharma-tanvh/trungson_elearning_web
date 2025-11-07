@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 interface CustomFormControlSelectProps<T extends string | number | boolean> {
@@ -10,6 +10,7 @@ interface CustomFormControlSelectProps<T extends string | number | boolean> {
   onChange: (value: T) => void;
   disabled?: boolean;
   options: { value: T; label: string }[];
+  isRequired?: boolean;
 }
 
 export function CustomSelectDropDown<T extends string | number | boolean>({
@@ -18,6 +19,7 @@ export function CustomSelectDropDown<T extends string | number | boolean>({
   onChange,
   disabled = false,
   options,
+  isRequired = false,
 }: CustomFormControlSelectProps<T>) {
   const { t } = useTranslation();
   const [internalValue, setInternalValue] = useState<T | ''>(value);
@@ -38,10 +40,28 @@ export function CustomSelectDropDown<T extends string | number | boolean>({
     setInternalValue(newValue);
     onChange(newValue);
   };
+  const borderColor = isRequired ? 'error.main' : 'grey.400';
 
   return (
-    <FormControl fullWidth disabled={disabled}>
-      <InputLabel shrink>{t(label)}</InputLabel>
+    <FormControl
+      fullWidth
+      disabled={disabled}
+      sx={{
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: borderColor,
+        },
+        '&:hover .MuiOutlinedInput-notchedOutline': {
+          borderColor: isRequired ? 'error.dark' : 'primary.main',
+        },
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          borderColor: isRequired ? 'error.main' : 'primary.main',
+        },
+      }}
+    >
+      <InputLabel shrink sx={{ color: isRequired ? 'error.main' : 'inherit' }}>
+        {t(label)}
+        {isRequired && <span style={{ color: 'error.main' }}> *</span>}
+      </InputLabel>
       <Select
         label={t(label)}
         value={String(internalValue)}
@@ -57,6 +77,8 @@ export function CustomSelectDropDown<T extends string | number | boolean>({
           </MenuItem>
         ))}
       </Select>
+
+      {isRequired && internalValue === '' && <FormHelperText error>{t('thisFieldIsRequired')}</FormHelperText>}
     </FormControl>
   );
 }

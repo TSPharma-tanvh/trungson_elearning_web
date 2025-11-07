@@ -78,22 +78,70 @@ export function ClassSelectDialog({
   const [localValue, setLocalValue] = useState<string>(value);
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useClassSelectDebounce(localSearchText, 300);
+
   const [selectedClassMap, setSelectedClassMap] = useState<Record<string, ClassResponse>>({});
   const [classType, setClassType] = useState<LearningModeEnum | undefined>(undefined);
   const [scheduleStatus, setScheduleStatus] = useState<ScheduleStatusEnum | undefined>(undefined);
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [selectedClass, setSelectedClass] = React.useState<ClassResponse | null>(null);
-  const { classes, loadingClasses, pageNumber, totalPages, setSearchText, listRef, loadClasses } = useClassSelectLoader(
-    {
-      classUsecase,
-      isOpen: dialogOpen,
-      classType,
-      scheduleStatus,
-      searchText: debouncedSearchText,
-    }
-  );
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<ClassResponse | null>(null);
+
+  const { classes, loadingClasses, pageNumber, totalPages, listRef, loadClasses } = useClassSelectLoader({
+    classUsecase,
+    isOpen: dialogOpen,
+    classType,
+    scheduleStatus,
+    searchText: debouncedSearchText,
+  });
 
   const isFull = isSmallScreen || isFullscreen;
+
+  // Reset khi mở dialog
+  useEffect(() => {
+    if (dialogOpen) {
+      setLocalValue(value);
+      setLocalSearchText('');
+      setClassType(undefined);
+      setScheduleStatus(undefined);
+    }
+  }, [dialogOpen, value]);
+
+  // Tải chi tiết lớp đã chọn
+  useEffect(() => {
+    if (!classUsecase || !value) return;
+
+    const fetchSelectedClass = async () => {
+      try {
+        const request = new GetClassRequest({ searchText: undefined, pageNumber: 1, pageSize: 1 });
+        const result = await classUsecase.getClassListInfo(request);
+        const found = result.class.find((c) => c.id === value);
+        if (found) {
+          setSelectedClassMap((prev) => ({ ...prev, [value]: found }));
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to load selected class.';
+        CustomSnackBar.showSnackbar(message, 'error');
+      }
+    };
+
+    if (!selectedClassMap[value]) {
+      void fetchSelectedClass();
+    }
+  }, [value, classUsecase, selectedClassMap]);
+
+  // Cập nhật selectedClassMap từ danh sách classes
+  useEffect(() => {
+    if (classes.length > 0) {
+      const newMap = { ...selectedClassMap };
+      let updated = false;
+      for (const cls of classes) {
+        if (cls.id && !newMap[cls.id]) {
+          newMap[cls.id] = cls;
+          updated = true;
+        }
+      }
+      if (updated) setSelectedClassMap(newMap);
+    }
+  }, [classes]);
 
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
@@ -101,7 +149,6 @@ export function ClassSelectDialog({
 
   const handleClose = () => {
     setDialogOpen(false);
-    setLocalValue(value);
   };
 
   const handleSave = () => {
@@ -115,64 +162,10 @@ export function ClassSelectDialog({
     setScheduleStatus(undefined);
   };
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (classUsecase && !loadingClasses) {
-      void loadClasses(newPage, true);
-      if (listRef.current) {
-        listRef.current.scrollTop = 0;
-      }
-    }
+  const handlePageChange = (_: React.ChangeEvent<unknown>, newPage: number) => {
+    void loadClasses(newPage, false);
+    listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    setSearchText(debouncedSearchText);
-  }, [debouncedSearchText, setSearchText]);
-
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (classUsecase && value) {
-      const fetchSelectedClasses = async () => {
-        try {
-          const request = new GetClassRequest({ searchText: undefined, pageNumber: 1, pageSize: 10 });
-          const result = await classUsecase.getClassListInfo(request);
-          const newMap = { ...selectedClassMap };
-          let updated = false;
-          for (const cls of result.class) {
-            if (!newMap[cls.id]) {
-              newMap[cls.id] = cls;
-              updated = true;
-            }
-          }
-          if (updated) {
-            setSelectedClassMap(newMap);
-          }
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
-        }
-      };
-      void fetchSelectedClasses();
-    }
-  }, [classUsecase, value, pathID]);
-
-  useEffect(() => {
-    if (dialogOpen) {
-      const newMap = { ...selectedClassMap };
-      let updated = false;
-      for (const cls of classes) {
-        if (cls.id && !newMap[cls.id]) {
-          newMap[cls.id] = cls;
-          updated = true;
-        }
-      }
-      if (updated) {
-        setSelectedClassMap(newMap);
-      }
-    }
-  }, [classes, dialogOpen]);
 
   return (
     <>
@@ -180,15 +173,19 @@ export function ClassSelectDialog({
         <InputLabel id="class-select-label">{t(label)}</InputLabel>
         <Select
           labelId="class-select-label"
-          value={value}
+          value={value || ''}
           input={
             <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedClassMap[selected]?.className || 'No Class Selected'}
+          renderValue={(selected) => selectedClassMap[selected]?.className || ''}
           open={false}
           {...selectProps}
-        />
+        >
+          <MenuItem value="" disabled>
+            {t('selectClass')}
+          </MenuItem>
+        </Select>
       </FormControl>
 
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
@@ -196,12 +193,7 @@ export function ClassSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectClass')}</Typography>
             <Box>
-              <IconButton
-                onClick={() => {
-                  setIsFullscreen((prev) => !prev);
-                }}
-                size="small"
-              >
+              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -209,24 +201,52 @@ export function ClassSelectDialog({
               </IconButton>
             </Box>
           </Box>
+
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchClass')} />
+
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('classType')}</InputLabel>
               <Select
                 value={classType !== undefined ? String(classType) : ''}
                 onChange={(e: SelectChangeEvent) => {
-                  setClassType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                  const val = e.target.value;
+                  setClassType(val === '' ? undefined : (Number(val) as LearningModeEnum));
                 }}
                 label={t('classType')}
               >
-                {filterOptions.courseType.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? LearningModeDisplayNames[opt] : 'All'}
-                  </MenuItem>
-                ))}
+                <MenuItem value="">{t('all')}</MenuItem>
+                {filterOptions.courseType
+                  .filter((opt): opt is LearningModeEnum => opt !== undefined)
+                  .map((opt) => (
+                    <MenuItem key={opt} value={String(opt)}>
+                      {t(LearningModeDisplayNames[opt])}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
+
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('scheduleStatus')}</InputLabel>
+              <Select
+                value={scheduleStatus !== undefined ? String(scheduleStatus) : ''}
+                onChange={(e: SelectChangeEvent) => {
+                  const val = e.target.value;
+                  setScheduleStatus(val === '' ? undefined : (Number(val) as ScheduleStatusEnum));
+                }}
+                label={t('scheduleStatus')}
+              >
+                <MenuItem value="">{t('all')}</MenuItem>
+                {Object.entries(ScheduleStatusEnum)
+                  .filter(([_, v]) => !isNaN(Number(v)))
+                  .map(([key, val]) => (
+                    <MenuItem key={val} value={String(val)}>
+                      {t(key)}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>
@@ -240,9 +260,8 @@ export function ClassSelectDialog({
                 key={cls.id}
                 value={cls.id}
                 selected={localValue === cls.id}
-                onClick={() => {
-                  setLocalValue(cls.id);
-                }}
+                onClick={() => setLocalValue(cls.id ?? '')}
+                sx={{ py: 1.5 }}
               >
                 <Checkbox checked={localValue === cls.id} />
                 <ListItemText
@@ -268,20 +287,22 @@ export function ClassSelectDialog({
                 </IconButton>
               </MenuItem>
             ))}
-            {loadingClasses ? (
-              <Typography variant="body2" sx={{ p: 2 }}>
+
+            {loadingClasses && (
+              <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
                 {t('loading')}
               </Typography>
-            ) : null}
+            )}
+
             {!loadingClasses && classes.length === 0 && (
-              <Typography variant="body2" sx={{ p: 2 }}>
+              <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
                 {t('empty')}
               </Typography>
             )}
           </Box>
         </DialogContent>
 
-        <DialogActions sx={{ flexDirection: 'column', gap: 2 }}>
+        <DialogActions sx={{ flexDirection: 'column', gap: 2, p: 2 }}>
           {totalPages > 1 && (
             <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
               <Pagination
@@ -293,7 +314,8 @@ export function ClassSelectDialog({
               />
             </Box>
           )}
-          <Box sx={{ display: 'flex', gap: 1 }}>
+
+          <Box sx={{ display: 'flex', gap: 1, width: '100%', justifyContent: 'flex-end' }}>
             <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained" disabled={!localValue}>
               {t('save')}
@@ -302,15 +324,9 @@ export function ClassSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedClass ? (
-        <ClassDetailForm
-          open={viewOpen}
-          classId={selectedClass?.id ?? null}
-          onClose={() => {
-            setViewOpen(false);
-          }}
-        />
-      ) : null}
+      {selectedClass && (
+        <ClassDetailForm open={viewOpen} classId={selectedClass.id ?? null} onClose={() => setViewOpen(false)} />
+      )}
     </>
   );
 }

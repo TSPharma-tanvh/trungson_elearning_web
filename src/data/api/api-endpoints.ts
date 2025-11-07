@@ -128,7 +128,7 @@ interface EmployeeEndpoints {
 interface DepartmentEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
-  getHrm: StaticEndpoint;
+  update: StaticEndpoint;
   syncHrm: StaticEndpoint;
   delete: DynamicEndpoint;
 }
@@ -174,6 +174,7 @@ interface AttendanceRecordsEndpoints {
   update: StaticEndpoint;
   delete: DynamicEndpoint;
   enroll: StaticEndpoint;
+  createReport: StaticEndpoint;
 }
 
 interface UserDevicesEndpoints {
@@ -181,6 +182,15 @@ interface UserDevicesEndpoints {
   getById: DynamicEndpoint;
   update: StaticEndpoint;
   delete: StaticEndpoint;
+}
+
+interface AppSettingsEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  getAllKey: StaticEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 
 // Main type containing all endpoint categories
@@ -210,6 +220,7 @@ interface EndpointDefinitions {
   userAnswerProgress: UserAnswerProgressEndpoints;
   attendanceRecords: AttendanceRecordsEndpoints;
   userDevices: UserDevicesEndpoints;
+  appSettings: AppSettingsEndpoints;
 }
 
 //endpoint values
@@ -323,8 +334,8 @@ const endpoints: EndpointDefinitions = {
   department: {
     getAll: 'Department/GetDepartments',
     getById: (id: string) => `Department/GetDepartmentInfoById/${id}`,
-    getHrm: 'Department/GetDepartmentFromHrm',
-    syncHrm: 'Department/GetDepartmentFromHrm',
+    update: 'Department/UpdateDepartment',
+    syncHrm: 'Department/SaveDepartmentFromHrm',
     delete: (id: string) => `Department/DeleteDepartment/${id}`,
   },
   userPathProgress: {
@@ -366,12 +377,21 @@ const endpoints: EndpointDefinitions = {
     update: 'AttendanceRecords/UpdateAttendanceRecords',
     delete: (id: string) => `AttendanceRecords/DeleteAttendanceRecords/${id}`,
     enroll: 'Class/EnrollUserListToClass',
+    createReport: 'AttendanceRecords/CreateAttendanceReport',
   },
   userDevices: {
     getAll: 'UserDevices/GetUserDevices',
     getById: (id: string) => `UserDevices/GetUserDevicesById/${id}`,
     update: 'UserDevices/UpdateUserDevices',
     delete: 'UserDevices/DeleteUserDevices',
+  },
+  appSettings: {
+    getAll: 'AppSettings/GetAppSettings',
+    getById: (id: string) => `AppSettings/GetAppSettingById/${id}`,
+    getAllKey: 'AppSettings/GetAllAppSettingKeys',
+    create: 'AppSettings/CreateAppSetting',
+    update: 'AppSettings/UpdateAppSetting',
+    delete: (id: string) => `AppSettings/DeleteAppSetting/${id}`,
   },
 };
 

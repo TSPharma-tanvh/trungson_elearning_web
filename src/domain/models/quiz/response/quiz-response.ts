@@ -20,6 +20,7 @@ export class QuizResponse {
   startTime?: Date;
   endTime?: Date;
   totalScore?: number;
+  displayedQuestionCount?: number;
 
   thumbnail?: FileResourcesResponse;
   thumbnailID?: string;
@@ -63,6 +64,7 @@ export class QuizResponse {
     dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
     dto.endTime = json.endTime ? new Date(json.endTime) : undefined;
     dto.totalScore = json.totalScore;
+    dto.displayedQuestionCount = json.displayedQuestionCount;
 
     dto.thumbnail = json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined;
     dto.thumbnailID = json.thumbnailID;
@@ -126,6 +128,7 @@ export class QuizResponse {
       startTime: this.startTime?.toISOString(),
       endTime: this.endTime?.toISOString(),
       totalScore: this.totalScore,
+      displayedQuestionCount: this.displayedQuestionCount,
 
       thumbnail: this.thumbnail?.toJson?.() ?? this.thumbnail,
       thumbnailID: this.thumbnailID,

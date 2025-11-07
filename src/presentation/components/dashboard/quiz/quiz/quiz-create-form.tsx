@@ -299,6 +299,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                   handleChange('title', val);
                 }}
                 disabled={disabled}
+                required={true}
               />
             </Grid>
 
@@ -359,8 +360,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 disabled={isSubmitting}
                 inputMode="text"
-                pattern="^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$"
+                pattern="^(?:[0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
                 patternError="hh:mm:ss"
+                required={true}
                 icon={<Clock {...iconStyle} />}
               />
             </Grid>
@@ -374,6 +376,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"
+                required={true}
                 icon={<NumberCircleNine {...iconStyle} />}
               />
             </Grid>
@@ -414,6 +417,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"
+                required={true}
                 icon={<NumberCircleFive {...iconStyle} />}
               />
             </Grid>
@@ -427,6 +431,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
+                required={true}
               />
             </Grid>
 
@@ -466,6 +471,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                     handleChange('questionIDs', value.join(','));
                   }}
                   disabled={isSubmitting}
+                  required={true}
                 />
               </Grid>
             ) : (
@@ -484,6 +490,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                     }}
                     categoryEnum={CategoryEnum.Question}
                     disabled={isSubmitting}
+                    required={true}
                   />
                 </Grid>
 
@@ -497,6 +504,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                     }}
                     categoryEnum={CategoryEnum.Answer}
                     disabled={isSubmitting}
+                    required={true}
                   />
                 </Grid>
 

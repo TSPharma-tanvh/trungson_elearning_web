@@ -229,11 +229,9 @@ export default function UsersTable({
                     </TableCell>{' '}
                     <TableCell>{row.employee?.mail}</TableCell>
                     <TableCell>
-                      {row.employee
-                        ? `${row.employee.currentPositionName} (${row.employee.currentPositionStateName})`
-                        : null}
+                      {row.employee ? `${row.employee.positionName} (${row.employee.positionStateName})` : null}
                     </TableCell>
-                    <TableCell>{row.employee?.currentDepartmentName}</TableCell>
+                    <TableCell>{row.employee?.departmentName}</TableCell>
                     <TableCell>{row.roles?.join(', ')}</TableCell>
                     <TableCell>
                       {row.isActive ? (
@@ -299,14 +297,14 @@ export default function UsersTable({
           {t('viewDetails')}
         </MenuItem>
         <MenuItem onClick={handleEditClick}> {t('edit')}</MenuItem>
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             handleDeleteOneUser(selectedUser?.id ?? '');
             handleMenuClose();
           }}
         >
           {t('delete')}
-        </MenuItem>
+        </MenuItem> */}
       </Popover>
 
       {/* Dialogs */}

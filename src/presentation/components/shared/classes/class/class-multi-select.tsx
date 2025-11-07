@@ -6,11 +6,10 @@ import { type ClassUsecase } from '@/domain/usecases/class/class-usecase';
 import { useClassSelectDebounce } from '@/presentation/hooks/class/use-class-select-debounce';
 import { useClassSelectLoader } from '@/presentation/hooks/class/use-class-select-loader';
 import {
-  DisplayTypeEnum,
   LearningModeDisplayNames,
   LearningModeEnum,
+  ScheduleStatusDisplayNames,
   ScheduleStatusEnum,
-  StatusEnum,
 } from '@/utils/enum/core-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -50,15 +49,14 @@ interface ClassMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'value
   onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
-  pathID?: string;
 }
 
-const filterOptions = {
-  courseType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
-  displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
-  scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
-  disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
-};
+const COURSE_TYPES = [LearningModeEnum.Online, LearningModeEnum.Offline] as const;
+const SCHEDULE_STATUSES = [
+  ScheduleStatusEnum.Schedule,
+  ScheduleStatusEnum.Ongoing,
+  ScheduleStatusEnum.Cancelled,
+] as const;
 
 export function ClassMultiSelectDialog({
   classUsecase,
@@ -71,119 +69,115 @@ export function ClassMultiSelectDialog({
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
+
+  /* --------------------------- UI state --------------------------- */
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
   const [localSearchText, setLocalSearchText] = useState('');
-  const debouncedSearchText = useClassSelectDebounce(localSearchText, 300);
-  const [selectedClassMap, setSelectedClassMap] = useState<Record<string, ClassResponse>>({});
+  const debouncedSearch = useClassSelectDebounce(localSearchText, 300);
+
   const [classType, setClassType] = useState<LearningModeEnum | undefined>(undefined);
   const [scheduleStatus, setScheduleStatus] = useState<ScheduleStatusEnum | undefined>(undefined);
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [selectedClass, setSelectedClass] = React.useState<ClassResponse | null>(null);
 
-  const { classes, loadingClasses, pageNumber, totalPages, setSearchText, listRef, loadClasses } = useClassSelectLoader(
-    {
-      classUsecase,
-      isOpen: dialogOpen,
-      classType,
-      scheduleStatus,
-      searchText: debouncedSearchText,
-    }
-  );
+  const [selectedClassMap, setSelectedClassMap] = useState<Record<string, ClassResponse>>({});
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<ClassResponse | null>(null);
+
+  /* --------------------------- Loader --------------------------- */
+  const { classes, loadingClasses, pageNumber, totalPages, listRef, loadClasses } = useClassSelectLoader({
+    classUsecase,
+    isOpen: dialogOpen,
+    classType,
+    scheduleStatus,
+    searchText: debouncedSearch,
+  });
 
   const isFull = isSmallScreen || isFullscreen;
 
-  const handleOpen = () => {
-    if (!disabled) setDialogOpen(true);
-  };
+  /* --------------------------- Effects --------------------------- */
+  useEffect(() => setLocalValue(value), [value]);
 
-  const handleClose = () => {
-    setDialogOpen(false);
-    setLocalValue(value);
-  };
+  // Reset when dialog opens
+  useEffect(() => {
+    if (dialogOpen) {
+      setLocalValue(value);
+      setLocalSearchText('');
+      setClassType(undefined);
+      setScheduleStatus(undefined);
+    }
+  }, [dialogOpen, value]);
 
+  // Load any selected classes that are **not** already cached
+  useEffect(() => {
+    if (!classUsecase || value.length === 0) return;
+
+    const fetchMissing = async () => {
+      const missingIds = value.filter((id) => !selectedClassMap[id]);
+      if (missingIds.length === 0) return;
+
+      try {
+        const promises = missingIds.map((id) => classUsecase!.getClassById(id));
+        const results = await Promise.all(promises);
+        const newMap = { ...selectedClassMap };
+        let changed = false;
+        for (const cls of results) {
+          if (cls?.id && !newMap[cls.id]) {
+            newMap[cls.id] = cls;
+            changed = true;
+          }
+        }
+        if (changed) setSelectedClassMap(newMap);
+      } catch (e) {
+        CustomSnackBar.showSnackbar(e instanceof Error ? e.message : 'Failed to load selected classes', 'error');
+      }
+    };
+    void fetchMissing();
+  }, [classUsecase, value, selectedClassMap]);
+
+  // Merge newly loaded classes into cache
+  useEffect(() => {
+    if (!dialogOpen) return;
+    const newMap = { ...selectedClassMap };
+    let changed = false;
+    for (const cls of classes) {
+      if (cls.id && !newMap[cls.id]) {
+        newMap[cls.id] = cls;
+        changed = true;
+      }
+    }
+    if (changed) setSelectedClassMap(newMap);
+  }, [classes, dialogOpen]);
+
+  /* --------------------------- Handlers --------------------------- */
+  const handleOpen = () => !disabled && setDialogOpen(true);
+  const handleClose = () => setDialogOpen(false);
   const handleSave = () => {
     onChange(localValue);
     setDialogOpen(false);
   };
-
   const handleClearFilters = () => {
     setLocalSearchText('');
     setClassType(undefined);
     setScheduleStatus(undefined);
   };
-
-  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    if (classUsecase && !loadingClasses) {
-      void loadClasses(newPage, true);
-      if (listRef.current) {
-        listRef.current.scrollTop = 0;
-      }
-    }
+  const handlePageChange = (_: any, page: number) => {
+    void loadClasses(page, false);
+    listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    setSearchText(debouncedSearchText);
-  }, [debouncedSearchText, setSearchText]);
+  const toggleClass = (id: string) => {
+    setLocalValue((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]));
+  };
 
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (classUsecase && value.length > 0) {
-      const fetchSelectedClasses = async () => {
-        try {
-          const newMap = { ...selectedClassMap };
-          let updated = false;
-
-          for (const id of value) {
-            if (!newMap[id]) {
-              const response = await classUsecase.getClassById(id);
-              const cls = response;
-              if (cls?.id) {
-                newMap[cls.id] = cls;
-                updated = true;
-              }
-            }
-          }
-
-          if (updated) {
-            setSelectedClassMap(newMap);
-          }
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : 'An error has occurred.';
-          CustomSnackBar.showSnackbar(message, 'error');
-        }
-      };
-
-      void fetchSelectedClasses();
-    }
-  }, [classUsecase, value]);
-
-  useEffect(() => {
-    if (dialogOpen) {
-      const newMap = { ...selectedClassMap };
-      let updated = false;
-      for (const cls of classes) {
-        if (cls.id && !newMap[cls.id]) {
-          newMap[cls.id] = cls;
-          updated = true;
-        }
-      }
-      if (updated) {
-        setSelectedClassMap(newMap);
-      }
-    }
-  }, [classes, dialogOpen]);
-
+  /* ------------------------------ UI ------------------------------ */
   return (
     <>
+      {/* ---------- MULTI‑SELECT (outside dialog) ---------- */}
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="class-multi-select-label">{t(label)}</InputLabel>
+        <InputLabel id="class-multi-label">{t(label)}</InputLabel>
         <Select
-          labelId="class-multi-select-label"
+          labelId="class-multi-label"
           multiple
           value={value}
           input={
@@ -201,17 +195,13 @@ export function ClassMultiSelectDialog({
         />
       </FormControl>
 
+      {/* ------------------- DIALOG ------------------- */}
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectClass')}</Typography>
             <Box>
-              <IconButton
-                onClick={() => {
-                  setIsFullscreen((prev) => !prev);
-                }}
-                size="small"
-              >
+              <IconButton onClick={() => setIsFullscreen((p) => !p)} size="small">
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -219,24 +209,50 @@ export function ClassMultiSelectDialog({
               </IconButton>
             </Box>
           </Box>
+
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchClass')} />
+
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {/* ---- Class Type ---- */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('classType')}</InputLabel>
               <Select
                 value={classType !== undefined ? String(classType) : ''}
                 onChange={(e: SelectChangeEvent) => {
-                  setClassType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                  const v = e.target.value;
+                  setClassType(v === '' ? undefined : (Number(v) as LearningModeEnum));
                 }}
                 label={t('classType')}
               >
-                {filterOptions.courseType.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {t(opt !== undefined ? LearningModeDisplayNames[opt] : 'all')}
+                <MenuItem value="">{t('all')}</MenuItem>
+                {COURSE_TYPES.map((opt) => (
+                  <MenuItem key={opt} value={String(opt)}>
+                    {t(LearningModeDisplayNames[opt])}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+
+            {/* ---- Schedule Status ---- */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('scheduleStatus')}</InputLabel>
+              <Select
+                value={scheduleStatus !== undefined ? String(scheduleStatus) : ''}
+                onChange={(e: SelectChangeEvent) => {
+                  const v = e.target.value;
+                  setScheduleStatus(v === '' ? undefined : (Number(v) as ScheduleStatusEnum));
+                }}
+                label={t('scheduleStatus')}
+              >
+                <MenuItem value="">{t('all')}</MenuItem>
+                {SCHEDULE_STATUSES.map((opt) => (
+                  <MenuItem key={opt} value={String(opt)}>
+                    {t(ScheduleStatusDisplayNames[opt])}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
             </Button>
@@ -244,28 +260,18 @@ export function ClassMultiSelectDialog({
         </DialogTitle>
 
         <DialogContent dividers>
-          <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
+          <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', p: 0 }}>
             {classes.map((cls) => (
               <MenuItem
                 key={cls.id}
-                value={cls.id}
                 selected={localValue.includes(cls.id)}
-                onClick={() => {
-                  setLocalValue((prev) =>
-                    prev.includes(cls.id) ? prev.filter((id) => id !== cls.id) : [...prev, cls.id]
-                  );
-                }}
+                onClick={() => toggleClass(cls.id)}
+                sx={{ py: 1.5 }}
               >
                 <Checkbox checked={localValue.includes(cls.id)} />
                 <ListItemText
                   primary={cls.className}
-                  sx={{
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    flex: 1,
-                    mr: 1,
-                  }}
+                  sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', flex: 1, mr: 1 }}
                 />
                 <IconButton
                   size="small"
@@ -280,20 +286,22 @@ export function ClassMultiSelectDialog({
                 </IconButton>
               </MenuItem>
             ))}
-            {loadingClasses ? (
-              <Typography variant="body2" sx={{ p: 2 }}>
+
+            {loadingClasses && (
+              <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
                 {t('loading')}
               </Typography>
-            ) : null}
+            )}
+
             {!loadingClasses && classes.length === 0 && (
-              <Typography variant="body2" sx={{ p: 2 }}>
+              <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
                 {t('empty')}
               </Typography>
             )}
           </Box>
         </DialogContent>
 
-        <DialogActions sx={{ flexDirection: 'column', gap: 2 }}>
+        <DialogActions sx={{ flexDirection: 'column', gap: 2, p: 2 }}>
           {totalPages > 1 && (
             <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
               <Pagination
@@ -305,7 +313,8 @@ export function ClassMultiSelectDialog({
               />
             </Box>
           )}
-          <Box sx={{ display: 'flex', gap: 1 }}>
+
+          <Box sx={{ display: 'flex', gap: 1, width: '100%', justifyContent: 'flex-end' }}>
             <Button onClick={handleClose}>{t('cancel')}</Button>
             <Button onClick={handleSave} variant="contained" disabled={localValue.length === 0}>
               {t('save')}
@@ -314,15 +323,10 @@ export function ClassMultiSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedClass ? (
-        <ClassDetailForm
-          open={viewOpen}
-          classId={selectedClass?.id ?? null}
-          onClose={() => {
-            setViewOpen(false);
-          }}
-        />
-      ) : null}
+      {/* ------------------- Detail Modal ------------------- */}
+      {selectedClass && (
+        <ClassDetailForm open={viewOpen} classId={selectedClass.id ?? null} onClose={() => setViewOpen(false)} />
+      )}
     </>
   );
 }
