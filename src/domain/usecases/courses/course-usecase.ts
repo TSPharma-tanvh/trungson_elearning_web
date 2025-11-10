@@ -62,4 +62,10 @@ export class CourseUsecase {
 
     return result;
   }
+
+  async deleteCoursePermanently(id: string): Promise<ApiResponse> {
+    const result = await this.courseRepo.deleteCourse(id);
+
+    return result;
+  }
 }

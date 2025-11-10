@@ -12,4 +12,6 @@ export interface CourseRepository {
   createCourse: (request: CreateCourseRequest) => Promise<ApiResponse>;
 
   updateCourse: (request: UpdateCourseRequest) => Promise<ApiResponse>;
+
+  deleteCourse: (id: string) => Promise<ApiResponse>;
 }

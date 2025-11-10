@@ -839,5 +839,9 @@
   "allowanceAmount": "Số tiền Phụ cấp",
   "createAppSetting": "Tạo cài đặt ứng dụng",
   "updateAppSetting": "Cập nhật cài đặt ứng dụng",
-  "enrollCourse": "Ghi danh khóa học"
+  "enrollCourse": "Ghi danh khóa học",
+  "confirmDeletePermanently": "Xác nhận Xóa vĩnh viễn",
+  "confirmDeleteItemPermanently": "Bạn có chắc chắn muốn xóa vĩnh viễn {{count}} đã chọn không?",
+  "quizEnrollments": "Ghi danh bài kiểm tra",
+  "students": "Học viên"
 }

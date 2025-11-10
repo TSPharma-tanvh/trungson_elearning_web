@@ -839,5 +839,9 @@
   "allowanceAmount": "Allowance Amount",
   "createAppSetting": "Create App Setting",
   "updateAppSetting": "Update App Setting",
-  "enrollCourse": "Enroll In The Course"
+  "enrollCourse": "Enroll In The Course",
+  "confirmDeletePermanently": "Confirm Delete Permanently",
+  "confirmDeleteItemPermanently": "Are you sure you want to delete {{count}} selected permanently?",
+  "quizEnrollments": "Quiz Enrollments",
+  "students": "Students"
 }

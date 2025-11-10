@@ -20,6 +20,7 @@ interface CourseTableProps {
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteCourses: (ids: string[]) => Promise<void>;
   onEditCourse: (data: UpdateCourseRequest) => Promise<void>;
+  onDeleteCoursePermanently: (id: string[]) => Promise<void>;
 }
 
 export default function CourseTable({
@@ -31,18 +32,39 @@ export default function CourseTable({
   onRowsPerPageChange,
   onDeleteCourses,
   onEditCourse,
+  onDeleteCoursePermanently,
 }: CourseTableProps) {
   const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editCourseData, setEditCourseData] = React.useState<CourseDetailResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
+  const [pendingDeleteIdPermanently, setPendingDeleteIdPermanently] = React.useState<string | null>(null);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogDeletePermanentOpen, setDialogDeletePermanentOpen] = React.useState(false);
 
   const handleRequestDelete = (id: string) => {
     setPendingDeleteId(id);
     setDialogOpen(true);
+  };
+
+  const handleRequestDeletePermanently = (id: string) => {
+    setPendingDeleteIdPermanently(id);
+    setDialogDeletePermanentOpen(true);
+  };
+
+  const handleConfirmDeletePermanently = async () => {
+    if (pendingDeleteIdPermanently) {
+      await onDeleteCoursePermanently([pendingDeleteIdPermanently]);
+      setPendingDeleteIdPermanently(null);
+    }
+    setDialogDeletePermanentOpen(false);
+  };
+
+  const handleCancelDeletePermanently = () => {
+    onDeleteCoursePermanently([]);
+    setDialogDeletePermanentOpen(false);
   };
 
   const handleConfirmDelete = async () => {
@@ -88,6 +110,12 @@ export default function CourseTable({
             label: t('delete'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
+            },
+          },
+          {
+            label: t('deletePermanently'),
+            onClick: (row) => {
+              if (row.id) handleRequestDeletePermanently(row.id);
             },
           },
         ]}
@@ -213,6 +241,15 @@ export default function CourseTable({
         selectedCount={1}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
+      />
+
+      <ConfirmDeleteDialog
+        open={dialogDeletePermanentOpen}
+        selectedCount={1}
+        title="confirmDeletePermanently"
+        content="confirmDeleteItemPermanently"
+        onCancel={handleCancelDeletePermanently}
+        onConfirm={handleConfirmDeletePermanently}
       />
     </>
   );

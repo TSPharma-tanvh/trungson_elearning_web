@@ -96,7 +96,7 @@ export default function Page(): React.JSX.Element {
       for (const id of ids) {
         const response = await employeeUsecase.deleteEmployee(id);
         if (!response) {
-          throw new Error(`Failed to delete path with ID: ${id}`);
+          throw new Error(`Failed to delete category with ID: ${id}`);
         }
       }
       await fetchCategories();

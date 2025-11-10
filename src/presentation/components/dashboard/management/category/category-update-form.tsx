@@ -214,7 +214,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
             <Grid item xs={12}>
               <CustomTextField
                 label={t('description')}
-                value={formData.description ?? 'z'}
+                value={formData.description ?? ''}
                 onChange={(value) => {
                   handleChange('description', value);
                 }}

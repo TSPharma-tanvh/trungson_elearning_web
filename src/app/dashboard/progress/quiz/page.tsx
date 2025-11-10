@@ -128,10 +128,10 @@ export default function Page(): React.JSX.Element {
       [t('completedAt')]: row.completedAt ? DateTimeUtils.formatDateTimeToDateString(row.completedAt) : '',
       [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatDateTimeToDateString(row.lastAccess) : '',
       [t('activeStatus')]: row.activeStatus ? t(row.activeStatus.toLowerCase()) : '',
-      [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
-      [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
-      [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
-      [t('cityName')]: row.user?.employee?.cityName ?? '',
+      // [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
+      // [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
+      // [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
+      // [t('cityName')]: row.user?.employee?.cityName ?? '',
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);
@@ -146,7 +146,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            {t('userQuizProgress')}
+            {t('quizEnrollments')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button

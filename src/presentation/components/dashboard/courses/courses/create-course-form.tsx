@@ -16,6 +16,7 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
 import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
+import { LessonMultiSelectAndCreateDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select-and-create-form';
 
 interface CreateCourseProps {
   disabled?: boolean;
@@ -40,7 +41,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
       disableStatus: StatusEnum.Enable,
       displayType: DisplayTypeEnum.Public,
       categoryEnum: CategoryEnum.Course,
-      courseType: LearningModeEnum.Offline,
+      courseType: LearningModeEnum.Online,
     })
   );
 
@@ -179,7 +180,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <CustomSelectDropDown<LearningModeEnum>
                 label={t('courseType')}
                 value={form.courseType}
@@ -196,24 +197,10 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                   { value: LearningModeEnum.Online, label: t('online') },
                 ]}
               />
-            </Grid>
-
-            {form.courseType === LearningModeEnum.Online && (
-              <Grid item xs={12}>
-                <CustomTextField
-                  label={t('meetingLink')}
-                  value={form.meetingLink}
-                  onChange={(val) => {
-                    handleChange('meetingLink', val);
-                  }}
-                  disabled={false}
-                  sx={{ '& .MuiInputBase-root': { height: fullScreen ? '100%' : 'auto' } }}
-                />
-              </Grid>
-            )}
+            </Grid> */}
 
             <Grid item xs={12}>
-              <LessonMultiSelectDialog
+              <LessonMultiSelectAndCreateDialog
                 lessonUsecase={lessonUsecase}
                 value={form.lessonIds ? form.lessonIds.split(',').filter((id) => id) : []}
                 onChange={(value: string[]) => {

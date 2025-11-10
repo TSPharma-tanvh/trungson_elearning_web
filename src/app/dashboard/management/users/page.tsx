@@ -1,15 +1,19 @@
 'use client';
 
 import * as React from 'react';
+import { SyncDepartmentFromHrmRequest } from '@/domain/models/department/request/sync-department-from-hrm-request';
+import { SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
 import { GetUserRequest } from '@/domain/models/user/request/get-user-request';
 import { type CreateUsersFromExcelRequest } from '@/domain/models/user/request/import-user-request';
 import { UpdateUserInfoRequest } from '@/domain/models/user/request/user-update-request';
 import { type UserResponse } from '@/domain/models/user/response/user-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { Download, Upload } from '@phosphor-icons/react';
+import { ArrowsClockwise, Download, Upload } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
 
@@ -22,8 +26,9 @@ const excelLink = process.env.NEXT_PUBLIC_IMPORT_USER_FORM;
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
+  const theme = useTheme();
 
-  const userUsecase = useDI().userUsecase;
+  const { userUsecase, departmentUsecase, employeeUsecase } = useDI();
   const [users, setUsers] = React.useState<UserResponse[]>([]);
   const [showForm, setShowForm] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -31,6 +36,7 @@ export default function Page(): React.JSX.Element {
   const [totalCount, setTotalCount] = React.useState(0);
   const [filters, setFilters] = React.useState<GetUserRequest>(new GetUserRequest({ pageNumber: 1, pageSize: 10 }));
   const [showImportDialog, setShowImportDialog] = React.useState(false);
+  const [syncLoading, setSyncLoading] = React.useState(false);
 
   const fetchUsers = React.useCallback(async () => {
     try {
@@ -94,6 +100,22 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const syncFromHrm = async (request: SyncEmployeeFromHrmRequest) => {
+    setSyncLoading(true);
+    try {
+      const requestDepartment = new SyncDepartmentFromHrmRequest({
+        username: request.username,
+        password: request.password,
+      });
+      await departmentUsecase.syncDepartmentFromHrm(requestDepartment);
+      await employeeUsecase.syncEmployeeFromHrm(request);
+      await fetchUsers();
+    } catch (error) {
+    } finally {
+      setSyncLoading(false);
+    }
+  };
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -121,15 +143,51 @@ export default function Page(): React.JSX.Element {
           </Stack>
         </Stack>
         <div>
-          <Button
-            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-            variant="contained"
-            onClick={() => {
-              setShowForm(true);
-            }}
-          >
-            {t('add')}
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button
+              startIcon={
+                syncLoading ? (
+                  <CircularProgress size={18} color="inherit" />
+                ) : (
+                  <ArrowsClockwise fontSize="var(--icon-fontSize-md)" />
+                )
+              }
+              variant="contained"
+              color="success"
+              disabled={syncLoading}
+              onClick={() => {
+                const request = new SyncEmployeeFromHrmRequest({
+                  username: '',
+                  password: '',
+                });
+                void syncFromHrm(request);
+              }}
+              sx={{
+                textTransform: 'none',
+                minWidth: 160,
+                bgcolor: theme.palette.secondary.main,
+              }}
+            >
+              {syncLoading ? t('syncing') : t('syncFromHRM')}
+            </Button>
+
+            <Button
+              startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+              variant="contained"
+              color="primary"
+              onClick={() => setShowForm(true)}
+              sx={{
+                textTransform: 'none',
+                minWidth: 120,
+                bgcolor: theme.palette.primary.main,
+                '&:hover': {
+                  bgcolor: theme.palette.primary.dark,
+                },
+              }}
+            >
+              {t('add')}
+            </Button>
+          </Stack>
         </div>
       </Stack>
 

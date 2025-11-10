@@ -42,6 +42,16 @@ export enum CategoryEnum {
   Criteria = 7,
 }
 
+export enum CategoryFilterEnum {
+  Course = 1,
+  Lesson = 2,
+  Class = 3,
+  Quiz = 4,
+  Question = 5,
+  Answer = 6,
+  Criteria = 7,
+}
+
 export enum CheckinTimeEnum {
   OnTime = 0,
   Late = 1,

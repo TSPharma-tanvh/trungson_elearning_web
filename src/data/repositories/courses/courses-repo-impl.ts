@@ -85,4 +85,20 @@ export class CourseRepoImpl implements CourseRepository {
       throw new Error(error?.message || 'Failed to fetch course info');
     }
   }
+
+  async deleteCourse(id: string): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.courses.delete(id));
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch AttendanceRecords info');
+    }
+  }
 }

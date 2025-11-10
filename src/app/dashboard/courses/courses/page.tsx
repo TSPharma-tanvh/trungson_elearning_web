@@ -99,6 +99,23 @@ export default function Page(): React.JSX.Element {
     }
   };
 
+  const handleDeleteCoursesPermanently = async (ids: string[]) => {
+    try {
+      setDeleteLoading(true);
+      for (const id of ids) {
+        const response = await courseUsecase.deleteCoursePermanently(id);
+        if (!response) {
+          throw new Error(`Failed to delete course with ID: ${id}`);
+        }
+      }
+      await fetchCourses();
+    } catch (error) {
+      return undefined;
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   //export table data to Excel
   const handleExportToExcel = () => {
     const exportData = courses.map((row) => ({
@@ -134,7 +151,9 @@ export default function Page(): React.JSX.Element {
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
-              onClick={() => { handleExportToExcel(); }}
+              onClick={() => {
+                handleExportToExcel();
+              }}
             >
               {t('exportToExcel')}
             </Button>
@@ -169,6 +188,7 @@ export default function Page(): React.JSX.Element {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDeleteCourses={handleDeleteCourses}
         onEditCourse={handleEditCourse}
+        onDeleteCoursePermanently={handleDeleteCoursesPermanently}
       />
 
       <CreateCourseDialog

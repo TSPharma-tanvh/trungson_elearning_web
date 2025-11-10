@@ -255,8 +255,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         const file = await fileUsecase.getFileResouceById(id);
         setPreviewUrl(file.resourceUrl || null);
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
         setPreviewUrl(null);
       }
     } else {
@@ -271,8 +269,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         const file = await fileUsecase.getFileResouceById(id);
         setVideoPreviewUrl(file.resourceUrl || null);
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
         setVideoPreviewUrl(null);
       }
     } else {
@@ -284,8 +280,10 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
     setThumbnailFile(file);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
+      handleChange('thumbnail', file);
     } else {
       setPreviewUrl(null);
+      handleChange('thumbnail', undefined);
     }
   };
 
@@ -521,18 +519,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CategorySelect
-                categoryUsecase={categoryUsecase}
-                value={formData.categoryID}
-                onChange={(value) => {
-                  handleChange('categoryID', value);
-                }}
-                categoryEnum={CategoryEnum.Lesson}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('required')}
                 value={formData.isRequired ?? false}
@@ -576,7 +562,19 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={formData.categoryID}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
+                categoryEnum={CategoryEnum.Lesson}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <QuizMultiSelect
                 quizUsecase={quizUsecase}
                 value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}

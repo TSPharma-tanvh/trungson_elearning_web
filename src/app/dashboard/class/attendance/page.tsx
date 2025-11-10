@@ -33,7 +33,7 @@ export default function Page(): React.JSX.Element {
   const [filters, setFilters] = React.useState<GetAttendanceRecordsRequest>(
     new GetAttendanceRecordsRequest({ pageNumber: 1, pageSize: 10 })
   );
-  const [attendanceRecordses, setAttendanceRecordses] = React.useState<AttendanceRecordDetailResponse[]>([]);
+  const [attendanceRecords, setAttendanceRecordses] = React.useState<AttendanceRecordDetailResponse[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
@@ -191,7 +191,7 @@ export default function Page(): React.JSX.Element {
       />
       <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>
         <AttendanceRecordsTable
-          rows={attendanceRecordses}
+          rows={attendanceRecords}
           count={totalCount}
           page={page}
           rowsPerPage={rowsPerPage}

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { CategoryEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
+import { CategoryEnum, CategoryFilterEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -12,12 +12,12 @@ import { CustomSearchFilter } from '@/presentation/components/core/text-field/cu
 export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryRequest) => void }): React.JSX.Element {
   const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
-  const [categoryValue, setCategoryValue] = React.useState<CategoryEnum | undefined>(undefined);
+  const [categoryValue, setCategoryValue] = React.useState<CategoryFilterEnum | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetCategoryRequest({
       searchText: searchText || undefined,
-      category: categoryValue !== undefined ? CategoryEnum[categoryValue] : undefined,
+      category: categoryValue !== undefined ? CategoryFilterEnum[categoryValue] : undefined,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -45,18 +45,20 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => { handleFilter(); }}
+          onEnter={() => {
+            handleFilter();
+          }}
           placeholder={t('searchCategory')}
         />
 
         {/* Status */}
-        <CustomSelectFilter<CategoryEnum>
+        <CustomSelectFilter<CategoryFilterEnum>
           label={t('category')}
           value={categoryValue}
           onChange={(val) => {
             setCategoryValue(val);
           }}
-          options={CoreEnumUtils.getEnumOptions(CategoryEnum)}
+          options={CoreEnumUtils.getEnumOptions(CategoryFilterEnum)}
         />
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

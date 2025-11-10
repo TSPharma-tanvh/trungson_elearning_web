@@ -1,8 +1,8 @@
 export const paths = {
-  home: '/',
+  home: '/dashboard/courses/courses',
   auth: { signIn: '/auth/sign-in', signUp: '/auth/sign-up', resetPassword: '/auth/reset-password' },
   dashboard: {
-    overview: '/dashboard',
+    overview: '/dashboard/courses/courses',
     account: '/dashboard/system/account',
     customers: '/dashboard/management/customers',
     users: '/dashboard/management/users',

@@ -68,6 +68,7 @@ interface CoursesEndpoints {
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 
 interface LessonsEndpoints {
@@ -281,6 +282,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `Course/GetCourseById/${id}`,
     create: 'Course/CreateCourse',
     update: 'Course/UpdateCourse',
+    delete: (id: string) => `Course/DeleteCourse/${id}`,
   },
   lessons: {
     getAll: 'Lesson/GetLesson',
