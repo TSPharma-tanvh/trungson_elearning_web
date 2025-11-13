@@ -66,7 +66,7 @@ class ApiClient {
           } else if (
             data.message &&
             response.config.method?.toLowerCase() !== 'get' &&
-            !(response.config as CustomAxiosRequestConfig).suppressSuccessMessage
+            String(response.config.headers?.['x-suppress-success']).toLowerCase() !== 'true'
           ) {
             CustomSnackBar.showSnackbar(data.message, 'success');
           }

@@ -130,7 +130,7 @@ export function CreateLessonDialog({
       }
     } else if (form.thumbnailID) {
       fileUsecase
-        .getFileResouceById(form.thumbnailID)
+        .getFileResourceById(form.thumbnailID)
         .then((file) => {
           setPreviewUrl(file.resourceUrl || null);
         })
@@ -146,7 +146,7 @@ export function CreateLessonDialog({
     handleChange('thumbnailID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'An error has occurred.';

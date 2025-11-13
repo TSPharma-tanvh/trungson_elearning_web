@@ -1,6 +1,6 @@
 export class UpdateAppSettingsRequest {
   id!: string;
-  key: string = '';
+  key = '';
   value?: string;
   description?: string;
   category?: string;

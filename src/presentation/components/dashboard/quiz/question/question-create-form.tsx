@@ -110,7 +110,7 @@ export function QuestionCreateForm({
         handleChange('thumbnail', undefined);
         if (form.thumbnailID) {
           fileUsecase
-            .getFileResouceById(form.thumbnailID)
+            .getFileResourceById(form.thumbnailID)
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })

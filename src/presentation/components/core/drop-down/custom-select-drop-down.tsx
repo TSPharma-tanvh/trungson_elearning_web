@@ -48,7 +48,7 @@ export function CustomSelectDropDown<T extends string | number | boolean>({
       disabled={disabled}
       sx={{
         '& .MuiOutlinedInput-notchedOutline': {
-          borderColor: borderColor,
+          borderColor,
         },
         '&:hover .MuiOutlinedInput-notchedOutline': {
           borderColor: isRequired ? 'error.dark' : 'primary.main',
@@ -60,7 +60,7 @@ export function CustomSelectDropDown<T extends string | number | boolean>({
     >
       <InputLabel shrink sx={{ color: isRequired ? 'error.main' : 'inherit' }}>
         {t(label)}
-        {isRequired && <span style={{ color: 'error.main' }}> *</span>}
+        {isRequired ? <span style={{ color: 'error.main' }}> *</span> : null}
       </InputLabel>
       <Select
         label={t(label)}
@@ -78,7 +78,7 @@ export function CustomSelectDropDown<T extends string | number | boolean>({
         ))}
       </Select>
 
-      {isRequired && internalValue === '' && <FormHelperText error>{t('thisFieldIsRequired')}</FormHelperText>}
+      {isRequired && internalValue === '' ? <FormHelperText error>{t('thisFieldIsRequired')}</FormHelperText> : null}
     </FormControl>
   );
 }

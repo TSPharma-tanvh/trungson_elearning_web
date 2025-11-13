@@ -74,4 +74,5 @@ export const navIcons = {
   category: BookmarkSimple,
   employee: IdentificationCard,
   devices: DeviceMobile,
+  files: File,
 } as Record<string, Icon>;

@@ -109,7 +109,7 @@ export function AccountForm(): React.JSX.Element {
                 <Stack spacing={1} sx={{ textAlign: 'center' }}>
                   <Typography variant="h5">{user?.employee?.name ?? user?.userName}</Typography>
                   <Typography color="text.secondary" variant="body2">
-                    {user?.employee?.address ?? ''}
+                    {user?.employee?.departmentName ?? ''}
                   </Typography>
                 </Stack>
               </Stack>

@@ -175,7 +175,7 @@ export default function Page(): React.JSX.Element {
               startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
               variant="contained"
               color="primary"
-              onClick={() => setShowForm(true)}
+              onClick={() => { setShowForm(true); }}
               sx={{
                 textTransform: 'none',
                 minWidth: 120,

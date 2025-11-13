@@ -1,9 +1,9 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateAppSettingsRequest } from '@/domain/models/settings/request/create-app-setting-request';
-import { GetAppSettingsRequest } from '@/domain/models/settings/request/get-app-settings-request';
-import { UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
-import { AppSettingsRepository } from '@/domain/repositories/app/app-settings-repository';
+import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateAppSettingsRequest } from '@/domain/models/settings/request/create-app-setting-request';
+import { type GetAppSettingsRequest } from '@/domain/models/settings/request/get-app-settings-request';
+import { type UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
+import { type AppSettingsRepository } from '@/domain/repositories/app/app-settings-repository';
 
 import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';

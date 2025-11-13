@@ -114,7 +114,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
       // thumbnail id
       if (courseFormData.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(courseFormData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(courseFormData.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -129,7 +129,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
     handleChange('thumbnailID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
         if (thumbnailSource === 'select') {
           setPreviewUrl(file.resourceUrl || null);

@@ -32,6 +32,7 @@ export const paths = {
     userQuizProgress: '/dashboard/progress/quiz',
     liveQuizTracking: '/dashboard/progress/quiz-live',
     userClassProgress: '/dashboard/progress/class',
+    resources: '/dashboard/system/resources',
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

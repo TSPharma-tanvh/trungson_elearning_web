@@ -1,17 +1,16 @@
 'use client';
 
 import * as React from 'react';
-import { CreateAppSettingsRequest } from '@/domain/models/settings/request/create-app-setting-request';
+import { type CreateAppSettingsRequest } from '@/domain/models/settings/request/create-app-setting-request';
 import { GetAppSettingsRequest } from '@/domain/models/settings/request/get-app-settings-request';
-import { UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
-import { GetAppSettingsResponse } from '@/domain/models/settings/response/get-app-settings-response';
+import { type UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
+import { type GetAppSettingsResponse } from '@/domain/models/settings/response/get-app-settings-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
-import { Notifications } from '@/presentation/components/dashboard/settings/notifications';
 import { CreateAppSettingDialog } from '@/presentation/components/dashboard/settings/settings/create-setting-form';
 import AppSettingsTable from '@/presentation/components/dashboard/settings/settings/settings-table';
 
@@ -22,7 +21,7 @@ export default function Page(): React.JSX.Element {
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [settings, setSettings] = React.useState<GetAppSettingsResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
-  const [filters, setFilters] = React.useState<GetAppSettingsRequest>(
+  const [filters, _setFilters] = React.useState<GetAppSettingsRequest>(
     new GetAppSettingsRequest({ pageNumber: 1, pageSize: 10 })
   );
 
@@ -103,7 +102,7 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('settings')}
           </Typography>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}></Stack>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }} />
         </Stack>
         <div>
           <Button
@@ -119,7 +118,7 @@ export default function Page(): React.JSX.Element {
       </Stack>
       <AppSettingsTable
         rows={settings}
-        count={totalCount}
+        countData={totalCount}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}

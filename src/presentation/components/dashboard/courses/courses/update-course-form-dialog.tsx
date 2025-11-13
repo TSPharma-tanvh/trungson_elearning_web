@@ -32,7 +32,6 @@ import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/c
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
 import { LessonMultiSelectAndCreateDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select-and-create-form';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
@@ -131,7 +130,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
       // thumbnail id
       if (formData.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(formData.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -146,7 +145,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     handleChange('thumbnailID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
         if (thumbnailSource === 'select') {
           setPreviewUrl(file.resourceUrl || null);

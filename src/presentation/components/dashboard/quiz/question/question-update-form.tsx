@@ -137,7 +137,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
       // thumbnail id
       if (formData.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(formData.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);

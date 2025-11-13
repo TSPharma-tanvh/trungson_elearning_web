@@ -67,7 +67,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [totalChunks, setTotalChunks] = useState(0);
-  const [_currentChunkIndex, setCurrentChunkIndex] = useState(0);
+  // const [_currentChunkIndex, setCurrentChunkIndex] = useState(0);
 
   //thumbnail
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -136,7 +136,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         setSelectedVideoId(lesson.video?.id ?? null);
         setUploadProgress(0);
         setTotalChunks(0);
-        setCurrentChunkIndex(0);
+        // setCurrentChunkIndex(0);
         setSelectedResourceIds(
           lesson.fileLessonRelation?.map((item) => item.fileResourceId).filter((id): id is string => Boolean(id)) ?? []
         );
@@ -177,7 +177,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       }
     } else if (formData.thumbnailID) {
       fileUsecase
-        .getFileResouceById(formData.thumbnailID)
+        .getFileResourceById(formData.thumbnailID)
         .then((file) => {
           setPreviewUrl(file.resourceUrl || null);
         })
@@ -207,7 +207,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         const chunkSize = 5 * 1024 * 1024; // 5 MB
         const calculatedTotalChunks = Math.ceil(videoFile.size / chunkSize);
         setTotalChunks(calculatedTotalChunks);
-        setCurrentChunkIndex(0);
+        // setCurrentChunkIndex(0);
         setUploadProgress(0);
       }
     } else {
@@ -218,7 +218,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
 
       if (selectedVideoId) {
         fileUsecase
-          .getFileResouceById(selectedVideoId)
+          .getFileResourceById(selectedVideoId)
           .then((file) => {
             setVideoPreviewUrl(file.resourceUrl || null);
           })
@@ -237,14 +237,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       const chunkSize = 5 * 1024 * 1024; // 5 MB
       const calculatedTotalChunks = Math.ceil(file.size / chunkSize);
       setTotalChunks(calculatedTotalChunks);
-      setCurrentChunkIndex(0);
+      // setCurrentChunkIndex(0);
       setUploadProgress(0);
       setVideoPreviewUrl(URL.createObjectURL(file));
     } else {
       setVideoPreviewUrl(null);
       setTotalChunks(0);
       setUploadProgress(0);
-      setCurrentChunkIndex(0);
+      // setCurrentChunkIndex(0);
     }
   };
 
@@ -252,7 +252,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
     handleChange('thumbnailID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
       } catch (error: unknown) {
         setPreviewUrl(null);
@@ -266,7 +266,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
     handleChange('videoID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setVideoPreviewUrl(file.resourceUrl || null);
       } catch (error: unknown) {
         setVideoPreviewUrl(null);
@@ -354,14 +354,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             suppressSuccessMessage: chunkIndex < totalChunksCount - 1,
           });
 
-          setCurrentChunkIndex(chunkIndex + 1);
+          // setCurrentChunkIndex(chunkIndex + 1);
           setUploadProgress(((chunkIndex + 1) / totalChunksCount) * 100);
           lastResponse = response;
 
           if (chunkIndex === totalChunksCount - 1 && lastResponse) {
             setUploadProgress(0);
             setTotalChunks(0);
-            setCurrentChunkIndex(0);
+            // setCurrentChunkIndex(0);
             onClose();
           }
         }
@@ -382,7 +382,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         if (lastResponse) {
           setUploadProgress(0);
           setTotalChunks(0);
-          setCurrentChunkIndex(0);
+          // setCurrentChunkIndex(0);
           onClose();
         }
       }
@@ -415,7 +415,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       setVideoPreviewUrl(null);
       setUploadProgress(0);
       setTotalChunks(0);
-      setCurrentChunkIndex(0);
+      // setCurrentChunkIndex(0);
       setThumbnailSource('select');
       setVideoSource('select');
       setSelectedResourceIds([]);

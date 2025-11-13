@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { CreateAttendanceReportRequest } from '@/domain/models/attendance/request/create-attendance-report-request';
+import { type CreateAttendanceReportRequest } from '@/domain/models/attendance/request/create-attendance-report-request';
 import { type EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/get-attendance-records-request';
 import { type UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';
@@ -112,7 +112,7 @@ export default function Page(): React.JSX.Element {
 
       URL.revokeObjectURL(link.href);
     } catch (error) {
-      console.error('Failed to export Excel:', error);
+      return null;
     }
   };
 
@@ -226,7 +226,7 @@ export default function Page(): React.JSX.Element {
         loading={false}
         open={showCreateReportDialog}
         onClose={() => {
-          setShowCreateDialog(false);
+          setShowCreateReportDialog(false);
         }}
       />
     </Stack>

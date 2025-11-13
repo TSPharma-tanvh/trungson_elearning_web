@@ -44,7 +44,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
   const [helperText, setHelperText] = useState('');
   const [isEmpty, setIsEmpty] = useState(true);
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestValueRef = useRef<string>('');
 
   const validateInput = useCallback(
@@ -93,7 +93,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
           case 'url':
             if (val) {
               try {
-                new URL(val);
+                const _ = new URL(val);
               } catch {
                 message = t('invalidUrl');
                 valid = false;
@@ -166,7 +166,7 @@ export const CustomTextField: React.FC<CustomTextFieldProps> = ({
       label={
         <span>
           {t(label)}
-          {required && <span style={{ color: 'error.main', marginLeft: 4 }}>*</span>}
+          {required ? <span style={{ color: 'error.main', marginLeft: 4 }}>*</span> : null}
         </span>
       }
       value={value ?? ''}

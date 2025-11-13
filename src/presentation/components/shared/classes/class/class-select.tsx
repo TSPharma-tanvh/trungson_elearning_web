@@ -67,7 +67,6 @@ export function ClassSelectDialog({
   onChange,
   label = 'class',
   disabled = false,
-  pathID,
   ...selectProps
 }: ClassSelectDialogProps) {
   const theme = useTheme();
@@ -193,7 +192,12 @@ export function ClassSelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectClass')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen(!isFullscreen);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -260,7 +264,9 @@ export function ClassSelectDialog({
                 key={cls.id}
                 value={cls.id}
                 selected={localValue === cls.id}
-                onClick={() => setLocalValue(cls.id ?? '')}
+                onClick={() => {
+                  setLocalValue(cls.id ?? '');
+                }}
                 sx={{ py: 1.5 }}
               >
                 <Checkbox checked={localValue === cls.id} />
@@ -288,11 +294,11 @@ export function ClassSelectDialog({
               </MenuItem>
             ))}
 
-            {loadingClasses && (
+            {loadingClasses ? (
               <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
                 {t('loading')}
               </Typography>
-            )}
+            ) : null}
 
             {!loadingClasses && classes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
@@ -324,9 +330,15 @@ export function ClassSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {selectedClass && (
-        <ClassDetailForm open={viewOpen} classId={selectedClass.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedClass ? (
+        <ClassDetailForm
+          open={viewOpen}
+          classId={selectedClass.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

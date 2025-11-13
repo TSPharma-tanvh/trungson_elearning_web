@@ -1,5 +1,5 @@
 import { type CreateAttendanceRecordsRequest } from '@/domain/models/attendance/request/create-attendance-records-request';
-import { CreateAttendanceReportRequest } from '@/domain/models/attendance/request/create-attendance-report-request';
+import { type CreateAttendanceReportRequest } from '@/domain/models/attendance/request/create-attendance-report-request';
 import { type EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { type GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/get-attendance-records-request';
 import { type UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';

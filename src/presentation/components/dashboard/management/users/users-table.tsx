@@ -112,11 +112,6 @@ export default function UsersTable({
     setSelected(new Set());
   };
 
-  const handleDeleteOneUser = (id: string) => {
-    setSelected(new Set([id]));
-    setDeleteConfirmOpen(true);
-  };
-
   return (
     <>
       <Card

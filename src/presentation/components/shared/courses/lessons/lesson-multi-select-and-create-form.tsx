@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { type LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
-import { LessonContentEnum, StatusDisplayNames, StatusEnum } from '@/utils/enum/core-enum';
+import { type LessonContentEnum, type StatusEnum } from '@/utils/enum/core-enum';
 import { Add, Book, Close, FilterList, Fullscreen, FullscreenExit, MoreVert } from '@mui/icons-material';
 import {
   Box,
@@ -217,7 +217,9 @@ export function LessonMultiSelectAndCreateDialog({
           input={
             <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
           }
-          onClick={() => setDialogOpen(true)}
+          onClick={() => {
+            setDialogOpen(true);
+          }}
           renderValue={(selected) =>
             selected
               .map((id) => selectedLessonMap[id]?.name || id)
@@ -234,7 +236,12 @@ export function LessonMultiSelectAndCreateDialog({
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6">{t('selectLessons')}</Typography>
           <Box>
-            <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+            <IconButton
+              onClick={() => {
+                setIsFullscreen(!isFullscreen);
+              }}
+              size="small"
+            >
               {isFull ? <FullscreenExit /> : <Fullscreen />}
             </IconButton>
             <IconButton onClick={handleClose} size="small">
@@ -254,11 +261,25 @@ export function LessonMultiSelectAndCreateDialog({
             placeholder={t('searchLessons')}
           />
 
-          <Button variant="outlined" size="small" startIcon={<FilterList />} onClick={() => setFilterOpen(true)}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<FilterList />}
+            onClick={() => {
+              setFilterOpen(true);
+            }}
+          >
             {t('filter')}
           </Button>
 
-          <Button variant="contained" size="small" startIcon={<Add />} onClick={() => setShowCreateDialog(true)}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<Add />}
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
             {t('createLesson')}
           </Button>
         </Box>
@@ -271,11 +292,11 @@ export function LessonMultiSelectAndCreateDialog({
                 key={lesson.id}
                 lesson={lesson}
                 selected={localValue.includes(lesson.id)}
-                onToggle={() =>
+                onToggle={() => {
                   setLocalValue((prev) =>
                     prev.includes(lesson.id) ? prev.filter((id) => id !== lesson.id) : [...prev, lesson.id]
-                  )
-                }
+                  );
+                }}
                 onView={() => {
                   setSelectedLesson(lesson);
                   setViewOpen(true);
@@ -290,11 +311,11 @@ export function LessonMultiSelectAndCreateDialog({
               />
             ))}
 
-            {loadingLessons && (
+            {loadingLessons ? (
               <Typography variant="body2" sx={{ p: 2 }}>
                 {t('loading')}
               </Typography>
-            )}
+            ) : null}
 
             {!loadingLessons && lessons.length === 0 && (
               <Typography variant="body2" sx={{ p: 2 }}>
@@ -328,7 +349,9 @@ export function LessonMultiSelectAndCreateDialog({
       {/* Filter Dialog */}
       <LessonSelectFilterDialog
         open={filterOpen}
-        onClose={() => setFilterOpen(false)}
+        onClose={() => {
+          setFilterOpen(false);
+        }}
         onConfirm={handleFilterConfirm}
         initialFilters={filters}
       />
@@ -336,14 +359,16 @@ export function LessonMultiSelectAndCreateDialog({
       {/* Create Lesson */}
       <CreateLessonDialog
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
         onSubmit={handleCreateLesson}
         disabled={false}
         loading={false}
       />
 
       {/* Edit Lesson */}
-      {selectedLesson && (
+      {selectedLesson ? (
         <UpdateLessonFormDialog
           open={showEditDialog}
           data={selectedLesson}
@@ -357,10 +382,10 @@ export function LessonMultiSelectAndCreateDialog({
             setSelectedLesson(null);
           }}
         />
-      )}
+      ) : null}
 
       {/* View Detail */}
-      {selectedLesson && (
+      {selectedLesson ? (
         <LessonDetailForm
           open={viewOpen}
           lessonId={selectedLesson.id ?? null}
@@ -369,7 +394,7 @@ export function LessonMultiSelectAndCreateDialog({
             setSelectedLesson(null);
           }}
         />
-      )}
+      ) : null}
 
       {/* Confirm Delete */}
       <ConfirmDeleteDialog
@@ -419,7 +444,16 @@ function LessonListItem({
       >
         <MoreVert />
       </IconButton>
-      <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)} onClick={(e) => e.stopPropagation()}>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <MenuItem
           onClick={() => {
             onView();

@@ -1,6 +1,6 @@
 export class AppSettingKeyDetailResponse {
-  name: string = '';
-  key: string = '';
+  name = '';
+  key = '';
 
   constructor(init?: Partial<AppSettingKeyDetailResponse>) {
     Object.assign(this, init);

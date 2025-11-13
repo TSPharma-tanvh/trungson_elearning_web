@@ -160,6 +160,7 @@ export function CreateCategoryDialog({
                   { value: CategoryEnum.Quiz, label: 'quiz' },
                   { value: CategoryEnum.Question, label: 'question' },
                   { value: CategoryEnum.Answer, label: 'answer' },
+                  { value: CategoryEnum.Resource, label: 'resource' },
                 ]}
               />
             </Grid>
@@ -175,6 +176,7 @@ export function CreateCategoryDialog({
               />
             </Grid>
           </Grid>
+          
         </Box>
       </DialogContent>
     </Dialog>

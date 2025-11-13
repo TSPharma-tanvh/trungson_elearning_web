@@ -74,7 +74,7 @@ export function FileResourceSelect({
   useEffect(() => {
     if (value && !selectedFile) {
       fileUsecase
-        .getFileResouceById(value)
+        .getFileResourceById(value)
         .then(setSelectedFile)
         .catch(() => {
           undefined;

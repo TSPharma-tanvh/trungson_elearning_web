@@ -77,7 +77,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
     handleChange('thumbnailID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
         if (thumbnailSource === 'select') {
           setPreviewUrl(file.resourceUrl || null);
@@ -136,7 +136,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
       // thumbnail id
       if (form.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(form.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(form.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -299,7 +299,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                   handleChange('title', val);
                 }}
                 disabled={disabled}
-                required={true}
+                required
               />
             </Grid>
 
@@ -362,7 +362,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 inputMode="text"
                 pattern="^(?:[0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
                 patternError="hh:mm:ss"
-                required={true}
+                required
                 icon={<Clock {...iconStyle} />}
               />
             </Grid>
@@ -376,7 +376,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"
-                required={true}
+                required
                 icon={<NumberCircleNine {...iconStyle} />}
               />
             </Grid>
@@ -417,7 +417,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 disabled={isSubmitting}
                 inputMode="numeric"
-                required={true}
+                required
                 icon={<NumberCircleFive {...iconStyle} />}
               />
             </Grid>
@@ -431,7 +431,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                 }}
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
-                required={true}
+                required
               />
             </Grid>
 
@@ -471,7 +471,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                     handleChange('questionIDs', value.join(','));
                   }}
                   disabled={isSubmitting}
-                  required={true}
+                  required
                 />
               </Grid>
             ) : (
@@ -490,7 +490,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                     }}
                     categoryEnum={CategoryEnum.Question}
                     disabled={isSubmitting}
-                    required={true}
+                    required
                   />
                 </Grid>
 
@@ -504,7 +504,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                     }}
                     categoryEnum={CategoryEnum.Answer}
                     disabled={isSubmitting}
-                    required={true}
+                    required
                   />
                 </Grid>
 

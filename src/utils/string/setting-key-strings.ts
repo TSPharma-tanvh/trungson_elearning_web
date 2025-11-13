@@ -1,3 +1,3 @@
-export class AppSettingKeys {
-  static readonly TravelAllowance = 'Class.TravelAllowance';
-}
+export const AppSettingKeys = {
+  TravelAllowance: 'Class.TravelAllowance',
+} as const;

@@ -1,4 +1,4 @@
-import { GetAppSettingsResponse } from './get-app-settings-response';
+import { type GetAppSettingsResponse } from './get-app-settings-response';
 
 export interface GetAppSettingResult {
   settings: GetAppSettingsResponse[];

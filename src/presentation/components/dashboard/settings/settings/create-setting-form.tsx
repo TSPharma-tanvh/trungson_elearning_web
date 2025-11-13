@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { CreateAppSettingsRequest } from '@/domain/models/settings/request/create-app-setting-request';
 import { TravelAllowanceRequest } from '@/domain/models/settings/request/travel-allowance-request';
-import { AppSettingDataType, SelectableAppSettingCategoryEnum } from '@/utils/enum/setting-enum';
+import { AppSettingDataType } from '@/utils/enum/setting-enum';
 import { AppSettingKeys } from '@/utils/string/setting-key-strings';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -60,13 +60,13 @@ export function CreateAppSettingDialog({
       return { value: fullKey, label };
     });
 
-  const categoryOptions = Object.keys(SelectableAppSettingCategoryEnum)
-    .filter((k) => isNaN(Number(k)))
-    .map((k) => ({ value: k.toLowerCase(), label: k }));
+  // const categoryOptions = Object.keys(SelectableAppSettingCategoryEnum)
+  //   .filter((k) => isNaN(Number(k)))
+  //   .map((k) => ({ value: k.toLowerCase(), label: k }));
 
-  const dataTypeOptions = Object.keys(AppSettingDataType)
-    .filter((k) => isNaN(Number(k)))
-    .map((k) => ({ value: k, label: k }));
+  // const dataTypeOptions = Object.keys(AppSettingDataType)
+  //   .filter((k) => isNaN(Number(k)))
+  //   .map((k) => ({ value: k, label: k }));
 
   const getDataTypeFromKey = (key: string): string => {
     switch (key) {
@@ -104,7 +104,11 @@ export function CreateAppSettingDialog({
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">{t('createAppSetting')}</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -145,7 +149,9 @@ export function CreateAppSettingDialog({
                 <CustomTextField
                   label={t('value')}
                   value={form.value ?? ''}
-                  onChange={(val) => handleChange('value', val)}
+                  onChange={(val) => {
+                    handleChange('value', val);
+                  }}
                   disabled={disabled}
                 />
               </Grid>
@@ -155,7 +161,9 @@ export function CreateAppSettingDialog({
               <CustomTextField
                 label={t('description')}
                 value={form.description ?? ''}
-                onChange={(val) => handleChange('description', val)}
+                onChange={(val) => {
+                  handleChange('description', val);
+                }}
                 disabled={disabled}
                 multiline
                 rows={3}
@@ -165,8 +173,10 @@ export function CreateAppSettingDialog({
             <Grid item xs={12}>
               <CustomSelectDropDown<boolean>
                 label={t('isDefault')}
-                value={!!form.isDefault}
-                onChange={(val) => handleChange('isDefault', val)}
+                value={Boolean(form.isDefault)}
+                onChange={(val) => {
+                  handleChange('isDefault', val);
+                }}
                 options={[
                   { value: true, label: t('yes') },
                   { value: false, label: t('no') },
@@ -187,27 +197,27 @@ export function CreateAppSettingDialog({
                   <CustomTextField
                     label={t('distanceFromKm')}
                     value={travelData.distanceFromKm ?? ''}
-                    onChange={(val) =>
-                      setTravelData((p) => new TravelAllowanceRequest({ ...p, distanceFromKm: Number(val) }))
-                    }
+                    onChange={(val) => {
+                      setTravelData((p) => new TravelAllowanceRequest({ ...p, distanceFromKm: Number(val) }));
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomTextField
                     label={t('distanceToKm')}
                     value={travelData.distanceToKm ?? ''}
-                    onChange={(val) =>
-                      setTravelData((p) => new TravelAllowanceRequest({ ...p, distanceToKm: Number(val) }))
-                    }
+                    onChange={(val) => {
+                      setTravelData((p) => new TravelAllowanceRequest({ ...p, distanceToKm: Number(val) }));
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomTextField
                     label={t('allowanceAmount')}
                     value={travelData.allowanceAmount ?? ''}
-                    onChange={(val) =>
-                      setTravelData((p) => new TravelAllowanceRequest({ ...p, allowanceAmount: Number(val) }))
-                    }
+                    onChange={(val) => {
+                      setTravelData((p) => new TravelAllowanceRequest({ ...p, allowanceAmount: Number(val) }));
+                    }}
                   />
                 </Grid>
               </>

@@ -250,9 +250,9 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {renderField('employeeId', user?.employeeId)}
 
             {/* Employee Details */}
-            {renderField('title', employee?.title)}
+            {/* {renderField('title', employee?.title)}
             {renderField('department', employee?.currentDepartmentName)}
-            {renderField('position', employee?.currentPositionName)}
+            {renderField('position', employee?.currentPositionName)} */}
             {renderField('gender', employee?.gender)}
           </Grid>
         </CardContent>

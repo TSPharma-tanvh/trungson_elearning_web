@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { CategoryEnum, CategoryFilterEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
+import { CategoryFilterEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

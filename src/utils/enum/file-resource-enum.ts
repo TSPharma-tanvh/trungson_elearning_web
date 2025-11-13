@@ -36,3 +36,16 @@ export const FileResourceEnumUtils = {
     }
   },
 };
+
+export enum FileTypeEnum {
+  Image = 0,
+  Video = 1,
+  PDF = 2,
+  PPT = 3,
+  Others = 4,
+}
+
+export enum FileUploadAdminEnum {
+  Files,
+  Video,
+}

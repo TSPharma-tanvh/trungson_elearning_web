@@ -102,7 +102,7 @@ export function FileResourceMultiSelect({
     if (missingIds.length > 0) {
       void Promise.all(
         missingIds.map(async (id) =>
-          fileUsecase.getFileResouceById(id).catch(() => {
+          fileUsecase.getFileResourceById(id).catch(() => {
             return undefined;
           })
         )

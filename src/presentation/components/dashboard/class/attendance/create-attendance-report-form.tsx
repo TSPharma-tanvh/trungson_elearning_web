@@ -32,9 +32,8 @@ export function CreateAttendanceReportDialog({
   onClose,
 }: CreateAttendanceReportProps) {
   const { t } = useTranslation();
-  const { userUsecase, classUsecase, enrollUsecase } = useDI();
+  const { classUsecase, enrollUsecase } = useDI();
   const [fullScreen, setFullScreen] = useState(false);
-  const [fileError, setFileError] = useState<string | null>(null);
 
   const [form, setForm] = useState<CreateAttendanceReportRequest>(
     new CreateAttendanceReportRequest({
@@ -56,7 +55,6 @@ export function CreateAttendanceReportDialog({
           startAt: new Date(),
         })
       );
-      setFileError(null);
     }
   }, [open]);
 
@@ -121,7 +119,9 @@ export function CreateAttendanceReportDialog({
               <EnrollmentSingleSelect
                 enrollmentUsecase={enrollUsecase}
                 value={form.enrollmentCriteriaID ?? ''}
-                onChange={(value: string) => handleChange('enrollmentCriteriaID', value)}
+                onChange={(value: string) => {
+                  handleChange('enrollmentCriteriaID', value);
+                }}
                 disabled={false}
                 categoryEnum={CategoryEnum.Class}
               />

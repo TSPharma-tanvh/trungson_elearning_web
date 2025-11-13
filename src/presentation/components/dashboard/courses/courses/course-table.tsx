@@ -62,8 +62,8 @@ export default function CourseTable({
     setDialogDeletePermanentOpen(false);
   };
 
-  const handleCancelDeletePermanently = () => {
-    onDeleteCoursePermanently([]);
+  const handleCancelDeletePermanently = async () => {
+    await onDeleteCoursePermanently([]);
     setDialogDeletePermanentOpen(false);
   };
 

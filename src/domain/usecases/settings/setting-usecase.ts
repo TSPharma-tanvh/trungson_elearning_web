@@ -1,12 +1,11 @@
-import { ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
-import { ApiResponse } from '@/domain/models/core/api-response';
-import { CreateAppSettingsRequest } from '@/domain/models/settings/request/create-app-setting-request';
-import { GetAppSettingsRequest } from '@/domain/models/settings/request/get-app-settings-request';
-import { UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
+import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateAppSettingsRequest } from '@/domain/models/settings/request/create-app-setting-request';
+import { type GetAppSettingsRequest } from '@/domain/models/settings/request/get-app-settings-request';
+import { type UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
 import { AppSettingKeyResponse } from '@/domain/models/settings/response/app-setting-key-response';
-import { GetAppSettingResult } from '@/domain/models/settings/response/get-app-setting-result';
+import { type GetAppSettingResult } from '@/domain/models/settings/response/get-app-setting-result';
 import { GetAppSettingsResponse } from '@/domain/models/settings/response/get-app-settings-response';
-import { AppSettingsRepository } from '@/domain/repositories/app/app-settings-repository';
+import { type AppSettingsRepository } from '@/domain/repositories/app/app-settings-repository';
 
 export class AppSettingsUsecase {
   constructor(private readonly appSettingRepo: AppSettingsRepository) {}

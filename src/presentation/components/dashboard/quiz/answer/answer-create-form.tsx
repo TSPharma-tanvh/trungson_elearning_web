@@ -84,7 +84,7 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
         handleChange('thumbnail', undefined);
         if (formData.thumbnailID) {
           fileUsecase
-            .getFileResouceById(formData.thumbnailID)
+            .getFileResourceById(formData.thumbnailID)
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })

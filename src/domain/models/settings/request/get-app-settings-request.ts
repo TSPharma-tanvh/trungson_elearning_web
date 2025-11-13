@@ -3,8 +3,8 @@ export class GetAppSettingsRequest {
   dataType?: string;
   isDefault?: boolean;
   searchText?: string;
-  pageNumber: number = 1;
-  pageSize: number = 10;
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(init?: Partial<GetAppSettingsRequest>) {
     Object.assign(this, init);

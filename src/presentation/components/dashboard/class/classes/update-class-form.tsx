@@ -162,7 +162,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
       // thumbnail id
       if (formData.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(formData.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -177,7 +177,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
     handleChange('thumbnailID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
         if (thumbnailSource === 'select') {
           setPreviewUrl(file.resourceUrl || null);

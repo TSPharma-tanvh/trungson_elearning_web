@@ -1,7 +1,7 @@
 import { AppSettingKeyDetailResponse } from './app-setting-key-detail-response';
 
 export class AppSettingKeyResponse {
-  category: string = '';
+  category = '';
   data: AppSettingKeyDetailResponse[] = [];
 
   constructor(init?: Partial<AppSettingKeyResponse>) {

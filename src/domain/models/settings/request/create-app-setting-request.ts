@@ -1,9 +1,9 @@
 export class CreateAppSettingsRequest {
-  key: string = '';
+  key = '';
   value?: string;
   description?: string;
-  category: string = 'General';
-  dataType: string = 'String';
+  category = 'General';
+  dataType = 'String';
   isDefault?: boolean;
   scope?: string;
   metadataJson?: string;

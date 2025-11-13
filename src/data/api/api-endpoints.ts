@@ -116,6 +116,9 @@ interface AnswerEndpoints {
 interface FileResourcesEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 
 interface EmployeeEndpoints {
@@ -325,6 +328,9 @@ const endpoints: EndpointDefinitions = {
   fileResources: {
     getAll: 'Resource/GetFileResources',
     getById: (id: string) => `Resource/GetFileResourcesById/${id}`,
+    create: 'Resource/CreateFileResources',
+    update: 'Resource/UpdateFileResources',
+    delete: (id: string) => `Resource/DeleteFileResources/${id}`,
   },
   employee: {
     getAll: 'Employee/GetEmployees',

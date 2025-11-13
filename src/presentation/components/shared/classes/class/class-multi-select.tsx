@@ -70,7 +70,6 @@ export function ClassMultiSelectDialog({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
 
-  /* --------------------------- UI state --------------------------- */
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string[]>(value);
@@ -84,7 +83,7 @@ export function ClassMultiSelectDialog({
   const [viewOpen, setViewOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState<ClassResponse | null>(null);
 
-  /* --------------------------- Loader --------------------------- */
+  //loader
   const { classes, loadingClasses, pageNumber, totalPages, listRef, loadClasses } = useClassSelectLoader({
     classUsecase,
     isOpen: dialogOpen,
@@ -95,10 +94,10 @@ export function ClassMultiSelectDialog({
 
   const isFull = isSmallScreen || isFullscreen;
 
-  /* --------------------------- Effects --------------------------- */
-  useEffect(() => setLocalValue(value), [value]);
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
 
-  // Reset when dialog opens
   useEffect(() => {
     if (dialogOpen) {
       setLocalValue(value);
@@ -108,7 +107,6 @@ export function ClassMultiSelectDialog({
     }
   }, [dialogOpen, value]);
 
-  // Load any selected classes that are **not** already cached
   useEffect(() => {
     if (!classUsecase || value.length === 0) return;
 
@@ -117,7 +115,7 @@ export function ClassMultiSelectDialog({
       if (missingIds.length === 0) return;
 
       try {
-        const promises = missingIds.map((id) => classUsecase!.getClassById(id));
+        const promises = missingIds.map((id) => classUsecase.getClassById(id));
         const results = await Promise.all(promises);
         const newMap = { ...selectedClassMap };
         let changed = false;
@@ -149,9 +147,13 @@ export function ClassMultiSelectDialog({
     if (changed) setSelectedClassMap(newMap);
   }, [classes, dialogOpen]);
 
-  /* --------------------------- Handlers --------------------------- */
-  const handleOpen = () => !disabled && setDialogOpen(true);
-  const handleClose = () => setDialogOpen(false);
+  const handleOpen = () => {
+    !disabled && setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
   const handleSave = () => {
     onChange(localValue);
     setDialogOpen(false);
@@ -170,10 +172,8 @@ export function ClassMultiSelectDialog({
     setLocalValue((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]));
   };
 
-  /* ------------------------------ UI ------------------------------ */
   return (
     <>
-      {/* ---------- MULTI‑SELECT (outside dialog) ---------- */}
       <FormControl fullWidth disabled={disabled}>
         <InputLabel id="class-multi-label">{t(label)}</InputLabel>
         <Select
@@ -195,13 +195,17 @@ export function ClassMultiSelectDialog({
         />
       </FormControl>
 
-      {/* ------------------- DIALOG ------------------- */}
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectClass')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((p) => !p)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((p) => !p);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -213,7 +217,6 @@ export function ClassMultiSelectDialog({
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchClass')} />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {/* ---- Class Type ---- */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('classType')}</InputLabel>
               <Select
@@ -233,7 +236,6 @@ export function ClassMultiSelectDialog({
               </Select>
             </FormControl>
 
-            {/* ---- Schedule Status ---- */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('scheduleStatus')}</InputLabel>
               <Select
@@ -265,7 +267,9 @@ export function ClassMultiSelectDialog({
               <MenuItem
                 key={cls.id}
                 selected={localValue.includes(cls.id)}
-                onClick={() => toggleClass(cls.id)}
+                onClick={() => {
+                  toggleClass(cls.id);
+                }}
                 sx={{ py: 1.5 }}
               >
                 <Checkbox checked={localValue.includes(cls.id)} />
@@ -287,11 +291,11 @@ export function ClassMultiSelectDialog({
               </MenuItem>
             ))}
 
-            {loadingClasses && (
+            {loadingClasses ? (
               <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
                 {t('loading')}
               </Typography>
-            )}
+            ) : null}
 
             {!loadingClasses && classes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
@@ -323,10 +327,15 @@ export function ClassMultiSelectDialog({
         </DialogActions>
       </Dialog>
 
-      {/* ------------------- Detail Modal ------------------- */}
-      {selectedClass && (
-        <ClassDetailForm open={viewOpen} classId={selectedClass.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedClass ? (
+        <ClassDetailForm
+          open={viewOpen}
+          classId={selectedClass.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

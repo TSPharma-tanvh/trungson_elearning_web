@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { GetClassRequest } from '@/domain/models/class/request/get-class-request';
+import React, { useEffect, useState } from 'react';
 import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { type ClassUsecase } from '@/domain/usecases/class/class-usecase';
 import { useClassSelectDebounce } from '@/presentation/hooks/class/use-class-select-debounce';
@@ -52,9 +51,6 @@ interface ClassSingleFilterProps extends Omit<SelectProps<string>, 'value' | 'on
   disabled?: boolean;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Filter options – **no undefined** (All is rendered separately)   */
-/* ------------------------------------------------------------------ */
 const COURSE_TYPES = [LearningModeEnum.Online, LearningModeEnum.Offline] as const;
 const SCHEDULE_STATUSES = [
   ScheduleStatusEnum.Schedule,
@@ -74,7 +70,6 @@ export function ClassSingleFilter({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
 
-  /* --------------------------- UI state --------------------------- */
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [localValue, setLocalValue] = useState<string>(value);
@@ -88,7 +83,6 @@ export function ClassSingleFilter({
   const [viewOpen, setViewOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState<ClassResponse | null>(null);
 
-  /* --------------------------- Loader --------------------------- */
   const { classes, loadingClasses, pageNumber, totalPages, listRef, loadClasses } = useClassSelectLoader({
     classUsecase,
     isOpen: dialogOpen,
@@ -99,9 +93,10 @@ export function ClassSingleFilter({
 
   const isFull = isSmallScreen || isFullscreen;
 
-  /* --------------------------- Effects --------------------------- */
   // Sync external value
-  useEffect(() => setLocalValue(value), [value]);
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
 
   // Reset filters when dialog opens
   useEffect(() => {
@@ -113,7 +108,7 @@ export function ClassSingleFilter({
     }
   }, [dialogOpen, value]);
 
-  // Load the **currently selected** class (if not cached)
+  // Load the selected class
   useEffect(() => {
     if (!classUsecase || !value || selectedClassMap[value]) return;
 
@@ -144,9 +139,13 @@ export function ClassSingleFilter({
     if (changed) setSelectedClassMap(newMap);
   }, [classes, dialogOpen]);
 
-  /* --------------------------- Handlers --------------------------- */
-  const handleOpen = () => !disabled && setDialogOpen(true);
-  const handleClose = () => setDialogOpen(false);
+  const handleOpen = () => {
+    !disabled && setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
   const handleSave = () => {
     onChange(localValue);
     setDialogOpen(false);
@@ -161,10 +160,8 @@ export function ClassSingleFilter({
     listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  /* ------------------------------ UI ------------------------------ */
   return (
     <>
-      {/* ---------- SELECT (outside dialog) ---------- */}
       <FormControl
         disabled={disabled}
         size="small"
@@ -200,13 +197,17 @@ export function ClassSingleFilter({
         />
       </FormControl>
 
-      {/* ------------------- DIALOG ------------------- */}
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectClass')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((p) => !p)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((p) => !p);
+                }}
+                size="small"
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -218,7 +219,6 @@ export function ClassSingleFilter({
           <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} placeholder={t('searchClass')} />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {/* ---- Class Type ---- */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('classType')}</InputLabel>
               <Select
@@ -238,7 +238,6 @@ export function ClassSingleFilter({
               </Select>
             </FormControl>
 
-            {/* ---- Schedule Status ---- */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('scheduleStatus')}</InputLabel>
               <Select
@@ -270,7 +269,9 @@ export function ClassSingleFilter({
               <MenuItem
                 key={cls.id}
                 selected={localValue === cls.id}
-                onClick={() => setLocalValue(cls.id ?? '')}
+                onClick={() => {
+                  setLocalValue(cls.id ?? '');
+                }}
                 sx={{ py: 1.5 }}
               >
                 <Checkbox checked={localValue === cls.id} />
@@ -292,11 +293,11 @@ export function ClassSingleFilter({
               </MenuItem>
             ))}
 
-            {loadingClasses && (
+            {loadingClasses ? (
               <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
                 {t('loading')}
               </Typography>
-            )}
+            ) : null}
 
             {!loadingClasses && classes.length === 0 && (
               <Typography variant="body2" sx={{ p: 2, textAlign: 'center' }}>
@@ -328,10 +329,15 @@ export function ClassSingleFilter({
         </DialogActions>
       </Dialog>
 
-      {/* ------------------- Detail Modal ------------------- */}
-      {selectedClass && (
-        <ClassDetailForm open={viewOpen} classId={selectedClass.id ?? null} onClose={() => setViewOpen(false)} />
-      )}
+      {selectedClass ? (
+        <ClassDetailForm
+          open={viewOpen}
+          classId={selectedClass.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

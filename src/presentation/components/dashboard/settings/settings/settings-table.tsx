@@ -1,13 +1,10 @@
 'use client';
 
 import React from 'react';
-import { TravelAllowanceRequest } from '@/domain/models/settings/request/travel-allowance-request';
-import { UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
-import { GetAppSettingsResponse } from '@/domain/models/settings/response/get-app-settings-response';
-import { AppSettingKeys } from '@/utils/string/setting-key-strings';
-import { Delete, Edit, Info, MoreVert } from '@mui/icons-material';
+import { type UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
+import { type GetAppSettingsResponse } from '@/domain/models/settings/response/get-app-settings-response';
+import { MoreVert } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
   Button,
   Card,
@@ -16,7 +13,6 @@ import {
   MenuItem,
   MenuList,
   Popover,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -24,7 +20,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +29,7 @@ import { UpdateAppSettingDialog } from './update-setting-form';
 
 interface AppSettingsTableProps {
   rows: GetAppSettingsResponse[];
-  count: number;
+  countData: number;
   page: number;
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
@@ -45,7 +40,7 @@ interface AppSettingsTableProps {
 
 export default function AppSettingsTable({
   rows,
-  count,
+  countData,
   page,
   rowsPerPage,
   onPageChange,
@@ -64,21 +59,25 @@ export default function AppSettingsTable({
   const [editOpen, setEditOpen] = React.useState(false);
 
   const isSelected = (id: string) => selected.has(id);
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelected(e.target.checked ? new Set(rows.map((r) => r.id!)) : new Set());
-  const handleSelectOne = (id: string) =>
+  };
+  const handleSelectOne = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
+  };
 
   const handleMenuClick = (e: React.MouseEvent<HTMLElement>, row: GetAppSettingsResponse) => {
     setAnchorEl(e.currentTarget);
     setSelectedRow(row);
   };
 
-  const handleMenuClose = () => setAnchorEl(null);
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleOpenDeleteDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -95,16 +94,15 @@ export default function AppSettingsTable({
     setDeleteDialogOpen(false);
   };
 
-  const parseMetadata = (row: GetAppSettingsResponse): TravelAllowanceRequest[] | null => {
-    if (!row.key?.includes(AppSettingKeys.TravelAllowance) || !row.metadataJson) return null;
-    try {
-      const obj = JSON.parse(row.metadataJson);
-      return [TravelAllowanceRequest.fromJson(obj)];
-    } catch (error) {
-      console.error('Failed to parse metadataJson', error);
-      return null;
-    }
-  };
+  // const parseMetadata = (row: GetAppSettingsResponse): TravelAllowanceRequest[] | null => {
+  //   if (!row.key?.includes(AppSettingKeys.TravelAllowance) || !row.metadataJson) return null;
+  //   try {
+  //     const obj = JSON.parse(row.metadataJson);
+  //     return [TravelAllowanceRequest.fromJson(obj)];
+  //   } catch (error) {
+  //     return null;
+  //   }
+  // };
 
   const renderTravelAllowanceSummary = (metadataJson: string) => {
     try {
@@ -115,8 +113,7 @@ export default function AppSettingsTable({
 
       return `${distanceFrom} → ${distanceTo} km / ${amount.toLocaleString()}₫`;
     } catch (error) {
-      console.error('Invalid metadataJson:', error);
-      return 'Invalid data';
+      return null;
     }
   };
 
@@ -152,7 +149,9 @@ export default function AppSettingsTable({
                 '&:hover': { backgroundColor: 'var(--mui-palette-secondary-dark)' },
               }}
               variant="outlined"
-              onClick={() => handleOpenDeleteDialog(Array.from(selected))}
+              onClick={() => {
+                handleOpenDeleteDialog(Array.from(selected));
+              }}
             >
               {t('deleteSelectedItems')} ({selected.size})
             </Button>
@@ -190,13 +189,18 @@ export default function AppSettingsTable({
             <TableBody>
               {rows.map((row) => {
                 const isItemSelected = isSelected(row.id!);
-                const travelData = parseMetadata(row);
+                // const travelData = parseMetadata(row);
 
                 return (
                   <React.Fragment key={row.id}>
                     <TableRow hover selected={isItemSelected}>
                       <TableCell padding="checkbox">
-                        <Checkbox checked={isItemSelected} onChange={() => handleSelectOne(row.id!)} />
+                        <Checkbox
+                          checked={isItemSelected}
+                          onChange={() => {
+                            handleSelectOne(row.id!);
+                          }}
+                        />
                       </TableCell>
                       <TableCell>{t(formatKey(row.key))}</TableCell>
                       <TableCell>
@@ -208,7 +212,11 @@ export default function AppSettingsTable({
                       <TableCell>{row.isDefault ? t('yes') : t('no')}</TableCell>
                       <TableCell>{row.description}</TableCell>
                       <TableCell align="right">
-                        <IconButton onClick={(e) => handleMenuClick(e, row)}>
+                        <IconButton
+                          onClick={(e) => {
+                            handleMenuClick(e, row);
+                          }}
+                        >
                           <MoreVert />
                         </IconButton>
                       </TableCell>
@@ -222,7 +230,7 @@ export default function AppSettingsTable({
 
         <TablePagination
           component="div"
-          count={count}
+          count={countData}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={onPageChange}
@@ -278,7 +286,9 @@ export default function AppSettingsTable({
       <ConfirmDeleteDialog
         open={deleteDialogOpen}
         selectedCount={idsToDelete.length}
-        onCancel={() => setDeleteDialogOpen(false)}
+        onCancel={() => {
+          setDeleteDialogOpen(false);
+        }}
         onConfirm={handleConfirmDelete}
       />
     </>

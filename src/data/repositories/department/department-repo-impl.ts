@@ -1,6 +1,6 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { SyncDepartmentFromHrmRequest } from '@/domain/models/department/request/sync-department-from-hrm-request';
-import { DepartmentRepository } from '@/domain/repositories/department/department-repository';
+import { type SyncDepartmentFromHrmRequest } from '@/domain/models/department/request/sync-department-from-hrm-request';
+import { type DepartmentRepository } from '@/domain/repositories/department/department-repository';
 
 import { customApiClient } from '@/data/api/api-client';
 import { apiEndpoints } from '@/data/api/api-endpoints';

@@ -13,7 +13,6 @@ import {
   FormControl,
   IconButton,
   InputLabel,
-  Menu,
   MenuItem,
   Select,
   Typography,
@@ -70,7 +69,12 @@ export function LessonSelectFilterDialog({ open, onClose, onConfirm, initialFilt
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6">{t('filter')}</Typography>
         <Box>
-          <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+          <IconButton
+            onClick={() => {
+              setIsFullscreen(!isFullscreen);
+            }}
+            size="small"
+          >
             {isFull ? <FullscreenExit /> : <Fullscreen />}
           </IconButton>
           <IconButton onClick={onClose} size="small">

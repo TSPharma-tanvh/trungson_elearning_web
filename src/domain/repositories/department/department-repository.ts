@@ -1,5 +1,5 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { SyncDepartmentFromHrmRequest } from '@/domain/models/department/request/sync-department-from-hrm-request';
+import { type SyncDepartmentFromHrmRequest } from '@/domain/models/department/request/sync-department-from-hrm-request';
 
 export interface DepartmentRepository {
   // getDepartmentListInfo: (request: GetDepartmentRequest) => Promise<ApiPaginationResponse>;
