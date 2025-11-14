@@ -2,10 +2,10 @@
 
 import * as React from 'react';
 import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateFileResourcesRequest } from '@/domain/models/file/request/create-file-resource-request';
+import { GetFileResourcesRequest } from '@/domain/models/file/request/get-file-resource-request';
+import { type UpdateFileResourcesRequest } from '@/domain/models/file/request/update-file-resource-request';
 import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
-import { type CreateFileResourcesRequest } from '@/domain/models/file/resquest/create-file-resource-request';
-import { GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
-import { type UpdateFileResourcesRequest } from '@/domain/models/file/resquest/update-file-resource-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Button, Typography } from '@mui/material';
 import { Stack, useMediaQuery, useTheme } from '@mui/system';

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
+import { GetFileResourcesRequest } from '@/domain/models/file/request/get-file-resource-request';
 import { CoreEnumUtils } from '@/utils/enum/core-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import { Button, Card, Stack } from '@mui/material';

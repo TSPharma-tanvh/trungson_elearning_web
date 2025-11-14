@@ -7,6 +7,7 @@ import { Close as CloseIcon, ExpandMore, Fullscreen, FullscreenExit, InfoOutline
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -22,6 +23,8 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
+import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
+import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
 import ClassDetailForm from '../../class/classes/class-detail-form';
 import CourseDetailForm from '../../courses/courses/course-detail-form';
@@ -37,6 +40,8 @@ interface ResourceDetailFormProps {
 function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResponseForAdmin; fullScreen: boolean }) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewFullScreen, setPreviewFullScreen] = useState(false);
 
   //detail id
   const [openCourseDetailId, setOpenCourseDetailId] = useState<string | null>(null);
@@ -86,6 +91,106 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
       </CardContent>
     </Card>
   );
+
+  const renderSingleFile = () => {
+    if (!resource) return null;
+
+    const res = resource;
+    const isImage = res.type?.startsWith('image');
+    const isVideo = res.type?.startsWith('video');
+    const isOther = !isImage && !isVideo;
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardHeader title={t('attachedFile')} />
+        <CardContent>
+          <Box
+            sx={{
+              position: 'relative',
+              width: '100%',
+              paddingTop: '56.25%',
+              borderRadius: 1,
+              overflow: 'hidden',
+              mb: 1,
+            }}
+          >
+            {isImage && (
+              <Box
+                component="img"
+                src={res.resourceUrl}
+                alt={res.name}
+                onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  cursor: 'pointer',
+                }}
+              />
+            )}
+
+            {isVideo && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
+              </Box>
+            )}
+
+            {isOther && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: '#f5f5f5',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  href={res.resourceUrl ?? '#'}
+                  download={res.name}
+                  sx={{ textTransform: 'none', fontWeight: 500 }}
+                >
+                  {t('download')} {res.name}
+                </Button>
+              </Box>
+            )}
+          </Box>
+
+          <Typography variant="body2" noWrap>
+            {res.name}
+          </Typography>
+
+          {previewUrl && (
+            <ImagePreviewDialog
+              open={!!previewUrl}
+              onClose={() => setPreviewUrl(null)}
+              imageUrl={previewUrl}
+              title={t('imagePreview')}
+              fullscreen={previewFullScreen}
+              onToggleFullscreen={() => setPreviewFullScreen((prev) => !prev)}
+            />
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
 
   // const relationCounts = (
   //   <Card sx={{ mb: 2 }}>
@@ -568,6 +673,7 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
   return (
     <Box sx={{ p: fullScreen ? 2 : 1 }}>
       {basicInfo}
+      {renderSingleFile()}
       {/* {relationCounts}
       {relationDetails} */}
       {renderCourses()}

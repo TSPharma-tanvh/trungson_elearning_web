@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { CreateFileResourcesRequest } from '@/domain/models/file/resquest/create-file-resource-request';
+import { CreateFileResourcesRequest } from '@/domain/models/file/request/create-file-resource-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import AppStrings from '@/utils/app-strings';
 import { CategoryEnum } from '@/utils/enum/core-enum';
@@ -43,10 +43,7 @@ import { QuizSingleSelect } from '@/presentation/components/shared/quiz/quiz/qui
 
 interface CreateFileResourcesProps {
   disabled?: boolean;
-  onSubmit: (
-    request: CreateFileResourcesRequest,
-    options?: { suppressSuccessMessage?: boolean }
-  ) => Promise<ApiResponse>;
+  onSubmit: (request: CreateFileResourcesRequest) => Promise<ApiResponse>;
   onSuccess?: () => void;
   loading?: boolean;
   open: boolean;
@@ -161,9 +158,7 @@ export function CreateFileResourcesDialog({
             totalChunks: totalChunksCount,
           });
 
-          const response = await onSubmit(chunkRequest, {
-            suppressSuccessMessage: chunkIndex < totalChunksCount - 1,
-          });
+          const response = await onSubmit(chunkRequest);
 
           // setCurrentChunkIndex(chunkIndex + 1);
           setUploadProgress(((chunkIndex + 1) / totalChunksCount) * 100);
@@ -185,7 +180,8 @@ export function CreateFileResourcesDialog({
         // });
 
         form.videoChunk = undefined;
-        const response = await onSubmit(form, { suppressSuccessMessage: false });
+        form.files = resourceFiles;
+        const response = await onSubmit(form);
         lastResponse = response;
 
         if (lastResponse) {

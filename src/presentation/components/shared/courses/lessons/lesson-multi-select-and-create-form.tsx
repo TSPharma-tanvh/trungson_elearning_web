@@ -135,9 +135,9 @@ export function LessonMultiSelectAndCreateDialog({
     }
   };
 
-  const handleEditLesson = async (request: UpdateLessonRequest, options?: { suppressSuccessMessage?: boolean }) => {
+  const handleEditLesson = async (request: UpdateLessonRequest) => {
     try {
-      const response = await lessonUsecase.updateLesson(request, options);
+      const response = await lessonUsecase.updateLesson(request);
 
       await loadLessons(pageNumber, true);
       setShowEditDialog(false);

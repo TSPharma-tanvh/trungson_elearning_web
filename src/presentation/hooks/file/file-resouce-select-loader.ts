@@ -1,11 +1,11 @@
 import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { GetFileResourcesRequest } from '@/domain/models/file/request/get-file-resource-request';
 import type { FileResourceListResult } from '@/domain/models/file/response/file-resource-result';
 import type { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
-import { GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
 import type { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import type { StatusEnum } from '@/utils/enum/core-enum';
-import { type FileResourceEnum, FileResourceEnumUtils } from '@/utils/enum/file-resource-enum';
+import { FileResourceEnumUtils, type FileResourceEnum } from '@/utils/enum/file-resource-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 

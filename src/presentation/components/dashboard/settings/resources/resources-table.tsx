@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { type UpdateFileResourcesRequest } from '@/domain/models/file/request/update-file-resource-request';
 import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
-import { type UpdateFileResourcesRequest } from '@/domain/models/file/resquest/update-file-resource-request';
 import { MoreVert } from '@mui/icons-material';
 import { Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confi
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
 import ResourceDetailForm from './resource-detail-form';
+import { UpdateFileResourcesDialog } from './update-resource-form';
 
 interface FileResourcesTableProps {
   rows: FileResourcesResponseForAdmin[];
@@ -137,10 +138,10 @@ export default function FileResourcesTable({
         ]}
       />
 
-      {/* {editFileResourcesData ? (
-        <UpdateFileResourcesFormDialog
+      {editFileResourcesData ? (
+        <UpdateFileResourcesDialog
           open={editOpen}
-          classes={editFileResourcesData}
+          data={editFileResourcesData}
           onClose={() => {
             setEditOpen(false);
           }}
@@ -149,7 +150,7 @@ export default function FileResourcesTable({
             setEditOpen(false);
           }}
         />
-      ) : null} */}
+      ) : null}
 
       {selectedRow ? (
         <ResourceDetailForm

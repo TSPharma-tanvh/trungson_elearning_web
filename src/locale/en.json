@@ -865,5 +865,6 @@
   "sizeKB": "Size Kb",
   "tagID": "Tag Id",
   "unnamedResource": "Unnamed Resource",
-  "resourceType": "Resource Type"
+  "resourceType": "Resource Type",
+  "attachedFile": "Attached File"
 }

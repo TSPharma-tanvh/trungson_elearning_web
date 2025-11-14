@@ -865,5 +865,6 @@
   "sizeKB": "Kích thước Kb",
   "tagID": "Mã thẻ",
   "unnamedResource": "Tài nguyên chưa được đặt tên",
-  "resourceType": "Loại tài nguyên"
+  "resourceType": "Loại tài nguyên",
+  "attachedFile": "Tệp đính kèm"
 }

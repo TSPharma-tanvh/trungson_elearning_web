@@ -1,8 +1,8 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { type CreateFileResourcesRequest } from '@/domain/models/file/resquest/create-file-resource-request';
-import { type GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
-import { type UpdateFileResourcesRequest } from '@/domain/models/file/resquest/update-file-resource-request';
+import { type CreateFileResourcesRequest } from '@/domain/models/file/request/create-file-resource-request';
+import { type GetFileResourcesRequest } from '@/domain/models/file/request/get-file-resource-request';
+import { type UpdateFileResourcesRequest } from '@/domain/models/file/request/update-file-resource-request';
 import { type FileResourceRepository } from '@/domain/repositories/file/file-resources-repository';
 
 import { customApiClient } from '@/data/api/api-client';
@@ -49,7 +49,7 @@ export class FileResourceRepositoryImpl implements FileResourceRepository {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'x-suppress-success': 'true',
+            'x-suppress-success': request.videoChunk != null ? 'true' : 'false',
           },
           timeout: 10800000,
         }
