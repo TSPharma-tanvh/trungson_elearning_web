@@ -49,7 +49,7 @@ export class FileResourceRepositoryImpl implements FileResourceRepository {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'x-suppress-success': request.videoChunk != null ? 'true' : 'false',
+            'x-suppress-success': request.videoChunk !== null ? 'true' : 'false',
           },
           timeout: 10800000,
         }

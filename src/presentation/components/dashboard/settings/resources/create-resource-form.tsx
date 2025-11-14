@@ -50,14 +50,7 @@ interface CreateFileResourcesProps {
   onClose: () => void;
 }
 
-export function CreateFileResourcesDialog({
-  disabled,
-  onSubmit,
-  onSuccess,
-  loading,
-  open,
-  onClose,
-}: CreateFileResourcesProps) {
+export function CreateFileResourcesDialog({ disabled, onSubmit, onSuccess, open, onClose }: CreateFileResourcesProps) {
   //usecase
   const { categoryUsecase, classUsecase, courseUsecase, lessonUsecase, quizUsecase, questionUsecase } = useDI();
 
@@ -67,7 +60,7 @@ export function CreateFileResourcesDialog({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
+  const [_detailRows, setDetailRows] = useState(3);
 
   const userId = StoreLocalManager.getLocalData(AppStrings.USER_ID) ?? '';
 
@@ -85,7 +78,7 @@ export function CreateFileResourcesDialog({
 
   //resource
   const [resourceFiles, setResourceFiles] = useState<File[]>([]);
-  const [selectedResourceIds, setSelectedResourceIds] = useState<string[]>([]);
+  const [_selectedResourceIds, setSelectedResourceIds] = useState<string[]>([]);
   const [filePreviewOpen, setFilePreviewOpen] = useState(false);
   const [filePreviewData, setFilePreviewData] = useState<{
     url: string;

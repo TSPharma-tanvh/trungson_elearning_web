@@ -1,14 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { type ApiResponse } from '@/domain/models/core/api-response';
 import { UpdateFileResourcesRequest } from '@/domain/models/file/request/update-file-resource-request';
-import { FileResourceListForAdminResult } from '@/domain/models/file/response/file-resource-for-admin-result';
-import { FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
+import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import AppStrings from '@/utils/app-strings';
 import { CategoryEnum } from '@/utils/enum/core-enum';
-import { FileUploadAdminEnum } from '@/utils/enum/file-resource-enum';
 import StoreLocalManager from '@/utils/store-manager';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -23,30 +20,20 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  LinearProgress,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Image as ImageIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
-import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassMultiSelectDialog } from '@/presentation/components/shared/classes/class/class-multi-select';
-import { ClassSelectDialog } from '@/presentation/components/shared/classes/class/class-select';
 import { CourseMultiSelectDialog } from '@/presentation/components/shared/courses/courses/courses-multi-select';
-import { CourseSelectDialog } from '@/presentation/components/shared/courses/courses/courses-select';
 import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
-import { LessonSingleSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-select';
-import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 import { QuestionMultiSelect } from '@/presentation/components/shared/quiz/question/question-multi-select';
-import { QuestionSingleSelectDialog } from '@/presentation/components/shared/quiz/question/question-single-select';
 import { QuizMultiSelect } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select';
-import { QuizSingleSelect } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 
 interface UpdateFileResourcesProps {
   disabled?: boolean;
@@ -57,14 +44,7 @@ interface UpdateFileResourcesProps {
   onClose: () => void;
 }
 
-export function UpdateFileResourcesDialog({
-  disabled,
-  data,
-  onSubmit,
-  loading,
-  open,
-  onClose,
-}: UpdateFileResourcesProps) {
+export function UpdateFileResourcesDialog({ disabled, data, onSubmit, open, onClose }: UpdateFileResourcesProps) {
   //usecase
   const { categoryUsecase, classUsecase, courseUsecase, lessonUsecase, quizUsecase, questionUsecase } = useDI();
 
@@ -74,7 +54,7 @@ export function UpdateFileResourcesDialog({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
+  const [_detailRows, setDetailRows] = useState(3);
 
   const userId = StoreLocalManager.getLocalData(AppStrings.USER_ID) ?? '';
 
@@ -109,7 +89,7 @@ export function UpdateFileResourcesDialog({
         name: data.name,
         categoryEnum: CategoryEnum.Resource,
         userID: userIdValue,
-
+        categoryID: data.categoryID,
         classIDs: data.fileClassRelation?.map((x) => x.classId).join(','),
         courseIDs: data.fileCourseRelation?.map((x) => x.courseId).join(','),
         lessonIDs: data.fileLessonRelation?.map((x) => x.lessonId).join(','),
@@ -126,24 +106,20 @@ export function UpdateFileResourcesDialog({
   };
 
   //video
-
-  const handleFilePreview = (url: string, title?: string, type?: string) => {
-    setFilePreviewData({ url, title, type });
-    setFilePreviewOpen(true);
-  };
-
-  const handleSave = async () => {
+  // const handleFilePreview = (url: string, title?: string, type?: string) => {
+  //   setFilePreviewData({ url, title, type });
+  //   setFilePreviewOpen(true);
+  // };
+  const handleSave = () => {
     setIsSubmitting(true);
 
     try {
-      await onSubmit(form);
-
+      onSubmit(form);
       onClose();
     } catch (error) {
-      return;
+      return null;
     } finally {
       setIsSubmitting(false);
-      onClose();
     }
   };
 

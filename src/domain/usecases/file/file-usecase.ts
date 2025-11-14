@@ -4,7 +4,6 @@ import { type GetFileResourcesRequest } from '@/domain/models/file/request/get-f
 import { type UpdateFileResourcesRequest } from '@/domain/models/file/request/update-file-resource-request';
 import { type FileResourceListForAdminResult } from '@/domain/models/file/response/file-resource-for-admin-result';
 import { FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
-import { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
 import { type FileResourceRepository } from '@/domain/repositories/file/file-resources-repository';
 
 export class FileResourcesUsecase {

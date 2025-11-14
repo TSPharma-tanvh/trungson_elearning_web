@@ -39,7 +39,7 @@ interface ResourceDetailFormProps {
 
 function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResponseForAdmin; fullScreen: boolean }) {
   const { t } = useTranslation();
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [_expanded, _setExpanded] = useState<Record<string, boolean>>({});
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
 
@@ -49,7 +49,9 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
   const [openQuizDetailId, setOpenQuizDetailId] = useState<string | null>(null);
   const [openClassDetailId, setOpenClassDetailId] = useState<string | null>(null);
 
-  const toggle = (key: string) => setExpanded((p) => ({ ...p, [key]: !p[key] }));
+  // const toggle = (key: string) => {
+  //   setExpanded((p) => ({ ...p, [key]: !p[key] }));
+  // };
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -114,12 +116,14 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
               mb: 1,
             }}
           >
-            {isImage && (
+            {isImage ? (
               <Box
                 component="img"
                 src={res.resourceUrl}
                 alt={res.name}
-                onClick={() => setPreviewUrl(res.resourceUrl ?? '')}
+                onClick={() => {
+                  setPreviewUrl(res.resourceUrl ?? '');
+                }}
                 sx={{
                   position: 'absolute',
                   top: 0,
@@ -130,9 +134,9 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                   cursor: 'pointer',
                 }}
               />
-            )}
+            ) : null}
 
-            {isVideo && (
+            {isVideo ? (
               <Box
                 sx={{
                   position: 'absolute',
@@ -144,9 +148,9 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
               >
                 <CustomVideoPlayer src={res.resourceUrl ?? ''} fullscreen={fullScreen} />
               </Box>
-            )}
+            ) : null}
 
-            {isOther && (
+            {isOther ? (
               <Box
                 sx={{
                   position: 'absolute',
@@ -170,23 +174,27 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                   {t('download')} {res.name}
                 </Button>
               </Box>
-            )}
+            ) : null}
           </Box>
 
           <Typography variant="body2" noWrap>
             {res.name}
           </Typography>
 
-          {previewUrl && (
+          {previewUrl ? (
             <ImagePreviewDialog
-              open={!!previewUrl}
-              onClose={() => setPreviewUrl(null)}
+              open={Boolean(previewUrl)}
+              onClose={() => {
+                setPreviewUrl(null);
+              }}
               imageUrl={previewUrl}
               title={t('imagePreview')}
               fullscreen={previewFullScreen}
-              onToggleFullscreen={() => setPreviewFullScreen((prev) => !prev)}
+              onToggleFullscreen={() => {
+                setPreviewFullScreen((prev) => !prev);
+              }}
             />
-          )}
+          ) : null}
         </CardContent>
       </Card>
     );
@@ -314,10 +322,10 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
   //   </>
   // );
 
+  const [courseExpanded, setCourseExpanded] = useState<Record<string, boolean>>({});
+
   const renderCourses = () => {
     if (!resource.fileCourseRelation || resource.fileCourseRelation.length === 0) return null;
-
-    const [courseExpanded, setCourseExpanded] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (courseId: string) => {
       setCourseExpanded((prev) => ({
@@ -368,7 +376,9 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
-                      onClick={() => toggleExpanded(courseId)}
+                      onClick={() => {
+                        toggleExpanded(courseId);
+                      }}
                       sx={{
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s',
@@ -403,15 +413,15 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
     );
   };
 
+  const [lessonExpanded, setLessonExpanded] = useState<Record<string, boolean>>({});
+
   const renderLessons = () => {
     if (!resource.fileLessonRelation || resource.fileLessonRelation.length === 0) return null;
 
-    const [lessonExpanded, setLessonExpanded] = useState<Record<string, boolean>>({});
-
-    const toggleExpanded = (LessonId: string) => {
+    const toggleExpanded = (lessonId: string) => {
       setLessonExpanded((prev) => ({
         ...prev,
-        [LessonId]: !prev[LessonId],
+        [lessonId]: !prev[lessonId],
       }));
     };
 
@@ -457,7 +467,9 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
-                      onClick={() => toggleExpanded(lessonId)}
+                      onClick={() => {
+                        toggleExpanded(lessonId);
+                      }}
                       sx={{
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s',
@@ -492,10 +504,10 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
     );
   };
 
+  const [quizExpanded, setQuizExpanded] = useState<Record<string, boolean>>({});
+
   const renderQuizzes = () => {
     if (!resource.fileQuizRelation || resource.fileQuizRelation.length === 0) return null;
-
-    const [quizExpanded, setQuizExpanded] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (courseId: string) => {
       setQuizExpanded((prev) => ({
@@ -546,7 +558,9 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
-                      onClick={() => toggleExpanded(quizId)}
+                      onClick={() => {
+                        toggleExpanded(quizId);
+                      }}
                       sx={{
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s',
@@ -581,10 +595,10 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
     );
   };
 
+  const [classExpanded, setClassExpanded] = useState<Record<string, boolean>>({});
+
   const renderClasses = () => {
     if (!resource.fileClassRelation || resource.fileClassRelation.length === 0) return null;
-
-    const [classExpanded, setClassExpanded] = useState<Record<string, boolean>>({});
 
     const toggleExpanded = (ClassId: string) => {
       setClassExpanded((prev) => ({
@@ -635,7 +649,9 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                       <InfoOutlined />
                     </IconButton>
                     <IconButton
-                      onClick={() => toggleExpanded(classId)}
+                      onClick={() => {
+                        toggleExpanded(classId);
+                      }}
                       sx={{
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s',
@@ -697,9 +713,15 @@ export default function ResourceDetailForm({ open, resourceId, onClose }: Resour
       setLoading(true);
       fileUsecase
         .getFileResourceById(resourceId)
-        .then((raw) => setResource(FileResourcesResponseForAdmin.fromJson(raw)))
-        .catch(() => setResource(null))
-        .finally(() => setLoading(false));
+        .then((raw) => {
+          setResource(FileResourcesResponseForAdmin.fromJson(raw));
+        })
+        .catch(() => {
+          setResource(null);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
       setResource(null);
     }
@@ -712,7 +734,11 @@ export default function ResourceDetailForm({ open, resourceId, onClose }: Resour
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">{t('resourceDetails')}</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((p) => !p)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((p) => !p);
+            }}
+          >
             {fullScreen ? <FullscreenExit /> : <Fullscreen />}
           </IconButton>
           <IconButton onClick={onClose}>

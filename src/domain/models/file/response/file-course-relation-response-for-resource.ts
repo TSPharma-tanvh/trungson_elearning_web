@@ -1,4 +1,3 @@
-import { CourseDetailResponse } from '../../courses/response/course-detail-response';
 import { CourseResponse } from '../../courses/response/course-response';
 
 export class FileCourseRelationResponseForResource {
