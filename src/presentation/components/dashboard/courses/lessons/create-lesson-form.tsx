@@ -266,6 +266,18 @@ export function CreateLessonDialog({
             />
           </Grid>
 
+          <Grid item xs={12}>
+            <CategorySelect
+              categoryUsecase={categoryUsecase}
+              value={form.categoryID}
+              onChange={(value) => {
+                handleChange('categoryID', value);
+              }}
+              categoryEnum={CategoryEnum.Lesson}
+              disabled={isSubmitting}
+            />
+          </Grid>
+
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown
               label={t('required')}
@@ -290,7 +302,7 @@ export function CreateLessonDialog({
             />
           </Grid> */}
 
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <CustomSelectDropDown
               label={t('status')}
               value={form.status ?? ''}
@@ -300,21 +312,9 @@ export function CreateLessonDialog({
               disabled={isSubmitting}
               options={statusTypeOptions}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} sm={6}>
-            <CategorySelect
-              categoryUsecase={categoryUsecase}
-              value={form.categoryID}
-              onChange={(value) => {
-                handleChange('categoryID', value);
-              }}
-              categoryEnum={CategoryEnum.Lesson}
-              disabled={isSubmitting}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <CustomSelectDropDown
               label={t('enablePlay')}
               value={String(form.enablePlay ?? '')}
@@ -324,7 +324,7 @@ export function CreateLessonDialog({
               disabled={false}
               options={booleanOptions}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<LessonContentEnum>

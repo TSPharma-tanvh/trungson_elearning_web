@@ -28,6 +28,7 @@ export const paths = {
     lesson: '/dashboard/courses/lesson',
     userPathProgress: '/dashboard/progress/path',
     userCourseProgress: '/dashboard/progress/course',
+    userCourseProgressCreate: '/dashboard/progress/courseCreate',
     userLessonProgress: '/dashboard/progress/lesson',
     userQuizProgress: '/dashboard/progress/quiz',
     liveQuizTracking: '/dashboard/progress/quiz-live',

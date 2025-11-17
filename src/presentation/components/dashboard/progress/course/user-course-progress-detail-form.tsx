@@ -66,7 +66,7 @@ function UserCourseProgressDetails({
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('enrollmentCriteria')} />
+        <CardHeader title={t('course')} />
         <CardContent>
           <Box key={course.id} sx={{ mb: 2 }}>
             <Grid container spacing={2}>

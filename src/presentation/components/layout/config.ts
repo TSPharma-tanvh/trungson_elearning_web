@@ -14,8 +14,14 @@ export const navItems = [
       { key: 'lesson', title: 'lesson', href: paths.dashboard.lesson, icon: 'lesson' },
       {
         key: 'courseProgress',
-        title: 'enrollCourse',
+        title: 'userCourseProgress',
         href: paths.dashboard.userCourseProgress,
+        icon: 'userCourse',
+      },
+      {
+        key: 'courseProgressCreate',
+        title: 'enrollCourse',
+        href: paths.dashboard.userCourseProgressCreate,
         icon: 'userCourse',
       },
     ],

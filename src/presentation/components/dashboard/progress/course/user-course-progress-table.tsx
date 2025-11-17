@@ -150,7 +150,7 @@ export default function UserCourseProgressTable({
                 paddingY: 1,
               }}
             >
-              {t('currentPositionName')}
+              {t('positionCode')}
             </TableCell>
             <TableCell
               sx={{
@@ -160,7 +160,7 @@ export default function UserCourseProgressTable({
                 paddingY: 1,
               }}
             >
-              {t('currentPositionStateName')}
+              {t('positionName')}
             </TableCell>
             <TableCell
               sx={{
@@ -170,7 +170,7 @@ export default function UserCourseProgressTable({
                 paddingY: 1,
               }}
             >
-              {t('currentDepartmentName')}
+              {t('positionStateCode')}
             </TableCell>
             <TableCell
               sx={{
@@ -180,10 +180,8 @@ export default function UserCourseProgressTable({
                 paddingY: 1,
               }}
             >
-              {t('currentPositionStateName')}
+              {t('positionStateName')}
             </TableCell>
-
-            <TableCell>{t('cityName')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => {
@@ -249,11 +247,11 @@ export default function UserCourseProgressTable({
               <TableCell>{DateTimeUtils.formatISODateStringToString(row.actualEndDate ?? '')}</TableCell>
               <TableCell>{DateTimeUtils.formatISODateStringToString(row.lastAccess ?? '')}</TableCell>
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentDepartmentName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
-              <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
+
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionCode ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionStateCode ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionStateName ?? ''}</TableCell>
 
               <TableCell align="right">
                 <IconButton

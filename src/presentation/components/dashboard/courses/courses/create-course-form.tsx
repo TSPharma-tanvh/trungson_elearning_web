@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { CreateLessonCollectionRequest } from '@/domain/models/courses/request/create-course-lesson-collection-request';
 import { CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
@@ -15,6 +16,7 @@ import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/c
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
+import { LessonCollectionCreateEditor } from '@/presentation/components/shared/courses/lessons/lesson-collection-create-form';
 import { LessonMultiSelectAndCreateDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select-and-create-form';
 
 interface CreateCourseProps {
@@ -43,6 +45,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
       courseType: LearningModeEnum.Online,
     })
   );
+  const [lessonCollections, setLessonCollections] = useState<CreateLessonCollectionRequest[]>([]);
 
   const handleChange = <K extends keyof CreateCourseRequest>(key: K, value: CreateCourseRequest[K]) => {
     setForm((prev) => new CreateCourseRequest({ ...prev, [key]: value }));
@@ -149,7 +152,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
                 label={t('disableStatus')}
                 value={form.disableStatus}
@@ -177,7 +180,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                   { value: DisplayTypeEnum.Private, label: t('private') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             {/* <Grid item xs={12}>
               <CustomSelectDropDown<LearningModeEnum>
@@ -199,12 +202,17 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
             </Grid> */}
 
             <Grid item xs={12}>
-              <LessonMultiSelectAndCreateDialog
-                lessonUsecase={lessonUsecase}
-                value={form.lessonIds ? form.lessonIds.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => {
-                  handleChange('lessonIds', value.join(','));
+              <CustomSelectDropDown<boolean>
+                label={t('isFixedCourse')}
+                value={form.isFixedCourse ?? true}
+                onChange={(val) => {
+                  handleChange('isFixedCourse', val);
                 }}
+                disabled={disabled}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
 
@@ -230,10 +238,23 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
             </Grid>
 
             <Grid item xs={12}>
+              <LessonCollectionCreateEditor
+                value={lessonCollections}
+                onChange={setLessonCollections}
+                fixedCourse={form.isFixedCourse}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <CustomButton
                 label={t('create')}
                 onClick={() => {
-                  onSubmit(form);
+                  onSubmit(
+                    new CreateCourseRequest({
+                      ...form,
+                      collections: lessonCollections,
+                    })
+                  );
                 }}
                 loading={loading}
                 disabled={disabled}

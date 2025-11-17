@@ -1,6 +1,6 @@
 import React from 'react';
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
-import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -123,12 +123,13 @@ export default function CourseTable({
           <>
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
-            <TableCell>{t('pathName')}</TableCell>
+            <TableCell>{t('isFixedCourse')}</TableCell>
             <TableCell>{t('required')}</TableCell>
-            <TableCell>{t('disableStatus')}</TableCell>
-            <TableCell>{t('courseType')}</TableCell>
+            <TableCell>{t('status')}</TableCell>
+            {/* <TableCell>{t('courseType')}</TableCell> */}
             <TableCell>{t('teacher')}</TableCell>
-            <TableCell>{t('displayType')}</TableCell>
+            {/* <TableCell>{t('displayType')}</TableCell> */}
+            <TableCell>{t('parts')}</TableCell>
             <TableCell>{t('lessons')}</TableCell>
           </>
         )}
@@ -147,7 +148,7 @@ export default function CourseTable({
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
               <Typography variant="body2">{row.detail}</Typography>
             </TableCell>
-            <TableCell>{row.coursePath?.name}</TableCell>
+            <TableCell>{row.isFixedCourse ? t('yes') : t('no')}</TableCell>
             <TableCell>
               {row.isRequired ? (
                 <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
@@ -158,9 +159,9 @@ export default function CourseTable({
             <TableCell>
               {row.disableStatus ? t(row.disableStatus.charAt(0).toLowerCase() + row.disableStatus.slice(1)) : ''}
             </TableCell>
-            <TableCell>
+            {/* <TableCell>
               {row.courseType ? t(row.courseType.charAt(0).toLowerCase() + row.courseType.slice(1)) : ''}
-            </TableCell>
+            </TableCell> */}
             <TableCell
               sx={{
                 minWidth: 150,
@@ -195,10 +196,13 @@ export default function CourseTable({
                 </Box>
               </Stack>
             </TableCell>
-            <TableCell>
+            {/* <TableCell>
               {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + row.displayType.slice(1)) : ''}
+            </TableCell> */}
+            <TableCell>{row.collections ? row.collections.length : 0}</TableCell>
+            <TableCell>
+              {row.collections ? row.collections.reduce((sum, c) => sum + (c.lessons?.length ?? 0), 0) : 0}
             </TableCell>
-            <TableCell>{row.lessons?.length}</TableCell>
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

@@ -55,7 +55,7 @@ export function CreateUserCourseProgressDialog({
       startDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
       endDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
       status: UserProgressEnum.NotStarted,
-      enrollStatus: ApproveStatusEnum.Approve,
+      // enrollStatus: ApproveStatusEnum.Approve,
       activeStatus: StatusEnum.Enable,
       enrollType: ProgressEnrollmentTypeEnum.AllUsers,
       isAutoEnroll: true,
@@ -192,24 +192,28 @@ export function CreateUserCourseProgressDialog({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('isAutoEnroll')}
                 value={form.isAutoEnroll ?? true}
-                onChange={(val) => { handleChange('isAutoEnroll', val); }}
+                onChange={(val) => {
+                  handleChange('isAutoEnroll', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: true, label: 'yes' },
                   { value: false, label: 'no' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('isUpdateOldProgress')}
                 value={form.isUpdateOldProgress ?? false}
-                onChange={(val) => { handleChange('isUpdateOldProgress', val); }}
+                onChange={(val) => {
+                  handleChange('isUpdateOldProgress', val);
+                }}
                 disabled={disabled}
                 options={[
                   { value: true, label: 'yes' },
@@ -218,7 +222,7 @@ export function CreateUserCourseProgressDialog({
               />
             </Grid>
 
-            {form.isAutoEnroll ? (
+            {/* {form.isAutoEnroll ? (
               <div />
             ) : (
               <Grid item xs={12}>
@@ -233,7 +237,7 @@ export function CreateUserCourseProgressDialog({
                   label="pathEnrollmentCriteria"
                 />
               </Grid>
-            )}
+            )} */}
 
             <Grid item xs={12}>
               <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
@@ -315,7 +319,7 @@ export function CreateUserCourseProgressDialog({
               <div />
             )}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startTime')}
                 value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
@@ -335,9 +339,9 @@ export function CreateUserCourseProgressDialog({
                 }}
                 disabled={disabled}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<UserProgressEnum>
                 label={t('status')}
                 value={form.status}
@@ -351,9 +355,9 @@ export function CreateUserCourseProgressDialog({
                   { value: UserProgressEnum.Done, label: 'done' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<ApproveStatusEnum>
                 label={t('enrollStatus')}
                 value={form.enrollStatus!}
@@ -366,9 +370,9 @@ export function CreateUserCourseProgressDialog({
                   { value: ApproveStatusEnum.Reject, label: 'reject' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
                 label={t('activeStatus')}
                 value={form.activeStatus}
@@ -382,7 +386,7 @@ export function CreateUserCourseProgressDialog({
                   { value: StatusEnum.Deleted, label: 'deleted' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <CustomButton

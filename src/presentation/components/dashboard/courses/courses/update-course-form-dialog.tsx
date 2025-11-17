@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { LessonsCollectionUpdateRequest } from '@/domain/models/lessons/request/lesson-collection-update-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
@@ -32,7 +33,7 @@ import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/c
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { LessonMultiSelectAndCreateDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select-and-create-form';
+import { LessonCollectionUpdateEditor } from '@/presentation/components/shared/courses/lessons/lesson-collection-update-form';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
@@ -49,7 +50,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
   const theme = useTheme();
   const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, lessonUsecase, fileUsecase, classTeacherUsecase } = useDI();
+  const { categoryUsecase, fileUsecase, classTeacherUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateCourseRequest>(new UpdateCourseRequest({}));
@@ -74,37 +75,35 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         name: course.name || '',
         detail: course.detail || undefined,
         isRequired: course.isRequired || false,
-        disableStatus:
-          course.disableStatus !== undefined ? StatusEnum[course.disableStatus as keyof typeof StatusEnum] : undefined,
-        displayType:
-          course.displayType !== undefined
-            ? DisplayTypeEnum[course.displayType as keyof typeof DisplayTypeEnum]
-            : undefined,
-        courseType:
-          course.courseType !== undefined
-            ? LearningModeEnum[course.courseType as keyof typeof LearningModeEnum]
-            : undefined,
+        disableStatus: course.disableStatus !== undefined ? course.disableStatus : undefined,
         meetingLink: course.meetingLink || undefined,
-        teacherID: course.teacherId || undefined,
-        enrollmentCriteriaType: course.pathId !== undefined ? undefined : CategoryEnum.Course,
-        enrollmentCriteriaIDs:
-          course.pathId === undefined
-            ? course.courseEnrollments?.map((enrollment) => enrollment.enrollmentCriteriaID).join(',') || undefined
-            : undefined,
-        categoryID: course.categoryId || undefined,
-        thumbnailID: course.thumbnailId || undefined,
-        lessonIds: course.lessons !== undefined ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
-        categoryEnum: CategoryEnum.Course,
+        teacherId: course.teacherId || undefined,
+        isFixedCourse: course.isFixedCourse ?? false,
+        categoryId: course.categoryId || undefined,
+        thumbnailId: course.thumbnailId || undefined,
+        categoryEnum: CategoryEnum[CategoryEnum.Course],
         isDeleteOldThumbnail: false,
-        resourceIDs:
+        resourceIds:
           course.fileCourseRelation
             ?.map((item) => item.fileResources?.id)
             .filter((id): id is string => Boolean(id))
             .join(',') || undefined,
+        collections:
+          course.collections?.map((c) =>
+            LessonsCollectionUpdateRequest.fromJson({
+              id: c.id,
+              name: c.name,
+              order: c.order,
+              startDate: c.startDate,
+              endDate: c.endDate,
+              fixedCourseDayDuration: c.fixedCourseDayDuration,
+              lessonIds: c.lessons?.map((l) => l.id) ?? [],
+            })
+          ) ?? [],
       });
+
       setFormData(newFormData);
       setPreviewUrl(course.thumbnail?.resourceUrl ?? null);
-
       setSelectedResourceIDs(
         course.fileCourseRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ?? []
       );
@@ -118,19 +117,13 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
   const handleThumbnailSourceChange = async (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
     if (!newSource) return;
     setThumbnailSource(newSource);
-
     if (newSource === 'upload') {
-      // file
-      if (thumbnailFile) {
-        setPreviewUrl(URL.createObjectURL(thumbnailFile));
-      } else {
-        setPreviewUrl(null);
-      }
+      if (thumbnailFile) setPreviewUrl(URL.createObjectURL(thumbnailFile));
+      else setPreviewUrl(null);
     } else {
-      // thumbnail id
-      if (formData.thumbnailID) {
+      if (formData.thumbnailId) {
         try {
-          const file = await fileUsecase.getFileResourceById(formData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(formData.thumbnailId);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -142,33 +135,24 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
   };
 
   const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    handleChange('thumbnailId', id);
     if (id) {
       try {
         const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
-        if (thumbnailSource === 'select') {
-          setPreviewUrl(file.resourceUrl || null);
-        }
       } catch {
         setPreviewUrl(null);
       }
     } else {
       setPreviewUrl(null);
-      if (thumbnailSource === 'select') {
-        setPreviewUrl(null);
-      }
     }
   };
 
   const handleFileUpload = (file: File | null) => {
     setThumbnailFile(file);
     handleChange('thumbnail', file ?? undefined);
-    if (file) {
-      setPreviewUrl(URL.createObjectURL(file));
-    } else {
-      setPreviewUrl(null);
-    }
+    if (file) setPreviewUrl(URL.createObjectURL(file));
+    else setPreviewUrl(null);
   };
 
   const handleMultipleFileUpload = (files: File[]) => {
@@ -184,23 +168,21 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     setIsSubmitting(true);
     try {
       if (thumbnailSource === 'upload') {
-        formData.thumbnailID = undefined;
+        formData.thumbnailId = undefined;
       } else {
         formData.thumbnail = undefined;
       }
-
       if (fileSelectSource === 'upload') {
-        formData.resourceIDs = undefined;
+        formData.resourceIds = undefined;
         formData.resources = uploadedFiles;
       } else {
         formData.resources = undefined;
-        formData.resourceIDs = selectedResourceIDs.join(',');
+        formData.resourceIds = selectedResourceIDs.join(',');
       }
-
       onSubmit(new UpdateCourseRequest({ ...formData }));
       onClose();
     } catch (error) {
-      return undefined;
+      // ignore
     } finally {
       setIsSubmitting(false);
     }
@@ -220,18 +202,12 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     }
   }, [open]);
 
-  const iconStyle = {
-    size: 20,
-    weight: 'fill' as const,
-    color: '#616161',
-  };
-
+  const iconStyle = { size: 20, weight: 'fill' as const, color: '#616161' };
   const statusOptions = [
-    { value: StatusEnum.Enable, label: 'enable' },
-    { value: StatusEnum.Disable, label: 'disable' },
-    { value: StatusEnum.Deleted, label: 'deleted' },
+    { value: StatusEnum[StatusEnum.Enable], label: 'enable' },
+    { value: StatusEnum[StatusEnum.Disable], label: 'disable' },
+    { value: StatusEnum[StatusEnum.Deleted], label: 'deleted' },
   ];
-
   const displayTypeOptions = [
     { value: DisplayTypeEnum.Public, label: 'public' },
     { value: DisplayTypeEnum.Private, label: 'private' },
@@ -246,11 +222,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           {t('updateCourse')}
         </Typography>
         <Box>
-          <IconButton
-            onClick={() => {
-              setFullScreen((prev) => !prev);
-            }}
-          >
+          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -258,110 +230,82 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           </IconButton>
         </Box>
       </DialogTitle>
-
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
             {t('id')}: {course?.id}
           </Typography>
-
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
                 label={t('name')}
                 value={formData.name}
-                onChange={(value) => {
-                  handleChange('name', value);
-                }}
+                onChange={(value) => handleChange('name', value)}
                 disabled={isSubmitting}
                 icon={<Tag {...iconStyle} />}
               />
             </Grid>
-
             <Grid item xs={12}>
               <CustomTextField
                 label={t('detail')}
                 value={formData.detail}
-                onChange={(value) => {
-                  handleChange('detail', value);
-                }}
+                onChange={(value) => handleChange('detail', value)}
                 disabled={isSubmitting}
                 icon={<Article {...iconStyle} />}
               />
             </Grid>
-
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('disableStatus')}
                 value={formData.disableStatus ?? ''}
-                onChange={(value) => {
-                  handleChange('disableStatus', value);
-                }}
+                onChange={(value) => handleChange('disableStatus', value)}
                 disabled={isSubmitting}
                 options={statusOptions}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('displayType')}
                 value={formData.displayType ?? ''}
-                onChange={(value) => {
-                  handleChange('displayType', value);
-                }}
+                onChange={(value) => handleChange('displayType', value)}
                 disabled={isSubmitting}
                 options={displayTypeOptions}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12}>
-              <LessonMultiSelectAndCreateDialog
-                lessonUsecase={lessonUsecase}
-                value={formData.lessonIds ? formData.lessonIds.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => {
-                  handleChange('lessonIds', value.join(','));
-                }}
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isFixedCourse')}
+                value={formData.isFixedCourse ?? false}
+                onChange={(val) => handleChange('isFixedCourse', val)}
+                disabled={isSubmitting}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
 
-            {/* {course.pathId === undefined ? (
-              <Grid item xs={12}>
-                <EnrollmentMultiSelect
-                  enrollmentUsecase={enrollUsecase}
-                  categoryEnum={CategoryEnum.Course}
-                  value={
-                    formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
-                  }
-                  onChange={(value: string[]) => {
-                    handleChange('enrollmentCriteriaIDs', value.join(','));
-                  }}
-                  disabled={isSubmitting}
-                />
-              </Grid>
-            ) : null} */}
-
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
-                value={formData.categoryID}
-                onChange={(value) => {
-                  handleChange('categoryID', value);
-                }}
+                value={formData.categoryId}
+                onChange={(value) => handleChange('categoryId', value)}
                 categoryEnum={CategoryEnum.Course}
                 disabled={isSubmitting}
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
-                value={formData.teacherID ?? ''}
-                onChange={(value) => {
-                  handleChange('teacherID', value);
-                }}
+                value={formData.teacherId ?? ''}
+                onChange={(value) => handleChange('teacherId', value)}
                 disabled={isSubmitting}
               />
             </Grid>
 
+            {/* Thumbnail Section */}
             <Grid item xs={12}>
               <ToggleButtonGroup
                 value={thumbnailSource}
@@ -372,21 +316,18 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="select" aria-label={t('selectFromResources')}>
-                  {t('selectFromResources')}
-                </ToggleButton>
-                <ToggleButton value="upload" aria-label={t('uploadFile')}>
-                  {t('uploadFile')}
-                </ToggleButton>
+                <ToggleButton value="select">{t('selectFromResources')}</ToggleButton>
+                <ToggleButton value="upload">{t('uploadFile')}</ToggleButton>
               </ToggleButtonGroup>
             </Grid>
-            <Grid item xs={12} sm={12}>
+
+            <Grid item xs={12}>
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
                   status={StatusEnum.Enable}
-                  value={formData.thumbnailID}
+                  value={formData.thumbnailId}
                   onChange={handleFileSelectChange}
                   label={t('thumbnail')}
                   disabled={isSubmitting}
@@ -397,9 +338,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                     <CustomTextField
                       label={t('thumbnailDocumentNo')}
                       value={formData.thumbDocumentNo}
-                      onChange={(value) => {
-                        handleChange('thumbDocumentNo', value);
-                      }}
+                      onChange={(value) => handleChange('thumbDocumentNo', value)}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -408,9 +347,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                     <CustomTextField
                       label={t('thumbnailPrefixName')}
                       value={formData.thumbPrefixName}
-                      onChange={(value) => {
-                        handleChange('thumbPrefixName', value);
-                      }}
+                      onChange={(value) => handleChange('thumbPrefixName', value)}
                       disabled={isSubmitting}
                       icon={<ImageIcon {...iconStyle} />}
                     />
@@ -428,9 +365,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => {
-                          handleFileUpload(e.target.files?.[0] || null);
-                        }}
+                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
                       />
                     </Button>
                   </Grid>
@@ -439,9 +374,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       control={
                         <Checkbox
                           checked={Boolean(formData.isRequired)}
-                          onChange={(e) => {
-                            handleChange('isRequired', e.target.checked);
-                          }}
+                          onChange={(e) => handleChange('isRequired', e.target.checked)}
                           disabled={isSubmitting}
                         />
                       }
@@ -453,16 +386,14 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       control={
                         <Checkbox
                           checked={Boolean(formData.isDeleteOldThumbnail)}
-                          onChange={(e) => {
-                            handleChange('isDeleteOldThumbnail', e.target.checked);
-                          }}
+                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
                           disabled={isSubmitting}
                         />
                       }
                       label={t('deleteOldThumbnail')}
                     />
                   </Grid>
-                  {previewUrl ? (
+                  {previewUrl && (
                     <Grid item xs={12}>
                       <Box
                         sx={{
@@ -485,11 +416,12 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                         />
                       </Box>
                     </Grid>
-                  ) : null}
+                  )}
                 </Grid>
               )}
             </Grid>
 
+            {/* File Resources */}
             <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
                 {t('uploadFiles')}
@@ -497,9 +429,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <ToggleButtonGroup
                 value={fileSelectSource}
                 exclusive
-                onChange={(e, newValue: 'upload' | 'multi-select') => {
-                  if (newValue) setFileSelectSource(newValue);
-                }}
+                onChange={(e, newValue: 'upload' | 'multi-select') => newValue && setFileSelectSource(newValue)}
                 aria-label={t('uploadFiles')}
                 fullWidth
                 sx={{ mb: 2 }}
@@ -508,16 +438,15 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 <ToggleButton value="upload">{t('uploadFiles')}</ToggleButton>
               </ToggleButtonGroup>
             </Grid>
+
             {fileSelectSource === 'multi-select' ? (
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
                   type={FileResourceEnum.Image}
                   value={selectedResourceIDs}
-                  onChange={(ids) => {
-                    setSelectedResourceIDs(ids);
-                  }}
-                  disabled={false}
+                  onChange={setSelectedResourceIDs}
+                  disabled={isSubmitting}
                   showTypeSwitcher
                   allowAllTypes
                 />
@@ -545,13 +474,13 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               </Grid>
             )}
 
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource === 'multi-select' ? (
+            {formData.resourceIds && fileSelectSource === 'multi-select' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
                 </Typography>
                 <Grid container spacing={1} direction="column">
-                  {formData.resourceIDs.split(',').map((id) => {
+                  {formData.resourceIds.split(',').map((id) => {
                     const file = course?.fileCourseRelation?.find((f) => f.fileResources?.id === id)?.fileResources;
                     if (!file) return null;
                     return (
@@ -559,9 +488,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                         <Button
                           variant="text"
                           fullWidth
-                          onClick={() => {
-                            handleFilePreview(file.resourceUrl ?? '', file.name, file.type);
-                          }}
+                          onClick={() => handleFilePreview(file.resourceUrl ?? '', file.name, file.type)}
                           sx={{
                             justifyContent: 'flex-start',
                             textAlign: 'left',
@@ -577,7 +504,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                   })}
                 </Grid>
               </Grid>
-            ) : null}
+            )}
+
             {uploadedFiles.length > 0 && fileSelectSource === 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
@@ -589,9 +517,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       <Button
                         variant="text"
                         fullWidth
-                        onClick={() => {
-                          handleFilePreview(URL.createObjectURL(file), file.name, file.type);
-                        }}
+                        onClick={() => handleFilePreview(URL.createObjectURL(file), file.name, file.type)}
                         sx={{
                           justifyContent: 'flex-start',
                           textAlign: 'left',
@@ -607,6 +533,14 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 </Grid>
               </Grid>
             )}
+
+            <Grid item xs={12}>
+              <LessonCollectionUpdateEditor
+                fixedCourse={formData.isFixedCourse}
+                value={formData.collections}
+                onChange={(collections) => handleChange('collections', collections)}
+              />
+            </Grid>
           </Grid>
         </Box>
       </DialogContent>
@@ -642,37 +576,29 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         </Box>
       </DialogActions>
 
-      {filePreviewData?.url ? (
+      {filePreviewData?.url && (
         <>
           {filePreviewData.type?.includes('image') ? (
             <ImagePreviewDialog
               open={filePreviewOpen}
-              onClose={() => {
-                setFilePreviewOpen(false);
-              }}
+              onClose={() => setFilePreviewOpen(false)}
               imageUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => {
-                setFullScreen((prev) => !prev);
-              }}
+              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
             />
           ) : filePreviewData.type?.includes('video') ? (
             <VideoPreviewDialog
               open={filePreviewOpen}
-              onClose={() => {
-                setFilePreviewOpen(false);
-              }}
+              onClose={() => setFilePreviewOpen(false)}
               videoUrl={filePreviewData.url}
               title={filePreviewData.title}
               fullscreen={fullScreen}
-              onToggleFullscreen={() => {
-                setFullScreen((prev) => !prev);
-              }}
+              onToggleFullscreen={() => setFullScreen((prev) => !prev)}
             />
           ) : null}
         </>
-      ) : null}
+      )}
     </Dialog>
   );
 }

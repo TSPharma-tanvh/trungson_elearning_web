@@ -506,6 +506,29 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid> */}
 
+            <Grid item xs={12}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={formData.categoryID}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
+                categoryEnum={CategoryEnum.Lesson}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <QuizMultiSelect
+                quizUsecase={quizUsecase}
+                value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
+                onChange={(val) => {
+                  handleChange('quizIDs', val.join(','));
+                }}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('status')}
@@ -533,7 +556,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('enablePlay')}
                 value={formData.enablePlay ?? false}
@@ -546,7 +569,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   { value: false, label: t('no') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<LessonContentEnum>
@@ -559,29 +582,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   { value: LessonContentEnum.PDF, label: 'pdf' },
                   { value: LessonContentEnum.Video, label: 'video' },
                 ]}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <CategorySelect
-                categoryUsecase={categoryUsecase}
-                value={formData.categoryID}
-                onChange={(value) => {
-                  handleChange('categoryID', value);
-                }}
-                categoryEnum={CategoryEnum.Lesson}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <QuizMultiSelect
-                quizUsecase={quizUsecase}
-                value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
-                onChange={(val) => {
-                  handleChange('quizIDs', val.join(','));
-                }}
-                disabled={isSubmitting}
               />
             </Grid>
 
