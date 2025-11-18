@@ -1,7 +1,9 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
+import { GetEmployeeDistinctRequest } from '@/domain/models/employee/request/get-employee-distinct-request';
 import { type GetEmployeeFromHrmRequest } from '@/domain/models/employee/request/get-employee-from-hrm-request';
 import { type GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
 import { type SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';
+import { EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
 import { EmployeeResponse } from '@/domain/models/employee/response/employee-response';
 import { type EmployeeListResult } from '@/domain/models/employee/response/employee-result';
 import { type EmployeeRepository } from '@/domain/repositories/employee/employee-repository';
@@ -36,6 +38,16 @@ export class EmployeeUsecase {
     const userResponse = EmployeeResponse.fromJson(result.result);
 
     return userResponse;
+  }
+
+  async getEmployeeDistinct(request: GetEmployeeDistinctRequest): Promise<EmployeeDistinctResponse[]> {
+    const result = await this.courseRepo.getEmployeeDistinct(request);
+
+    if (!result || !Array.isArray(result.result)) {
+      throw new Error('Invalid distinct employee response.');
+    }
+
+    return result.result.map((x: any) => EmployeeDistinctResponse.fromJson(x));
   }
 
   async getEmployeeFromHrm(request: GetEmployeeFromHrmRequest): Promise<ApiResponse> {

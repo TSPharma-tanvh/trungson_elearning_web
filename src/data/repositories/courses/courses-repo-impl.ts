@@ -12,7 +12,7 @@ export class CourseRepoImpl implements CourseRepository {
   async getCourseListInfo(request: GetCourseRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.courses.getAll, {
-        params: request.toJson(),
+        params: request.toQueryParams(),
       });
 
       const apiResponse = response.data;

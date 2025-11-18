@@ -124,6 +124,7 @@ interface FileResourcesEndpoints {
 interface EmployeeEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
+  getDistinct: StaticEndpoint;
   getHrm: StaticEndpoint;
   syncHrm: StaticEndpoint;
   delete: DynamicEndpoint;
@@ -335,6 +336,7 @@ const endpoints: EndpointDefinitions = {
   employee: {
     getAll: 'Employee/GetEmployees',
     getById: (id: string) => `Employee/GetEmployeeInfoById/${id}`,
+    getDistinct: 'Employee/GetDistinct',
     getHrm: 'Employee/GetEmployeeFromHrm',
     syncHrm: 'Employee/SaveEmployeeFromHrm',
     delete: (id: string) => `Employee/DeleteEmployee/${id}`,

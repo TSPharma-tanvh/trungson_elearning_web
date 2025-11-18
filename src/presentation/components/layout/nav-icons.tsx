@@ -75,4 +75,5 @@ export const navIcons = {
   employee: IdentificationCard,
   devices: DeviceMobile,
   files: File,
+  bookUser: BookOpenUser,
 } as Record<string, Icon>;

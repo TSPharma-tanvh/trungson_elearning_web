@@ -22,7 +22,7 @@ export const navItems = [
         key: 'courseProgressCreate',
         title: 'enrollCourse',
         href: paths.dashboard.userCourseProgressCreate,
-        icon: 'userCourse',
+        icon: 'bookUser',
       },
     ],
   },

@@ -130,7 +130,7 @@ export default function CourseTable({
             <TableCell>{t('teacher')}</TableCell>
             {/* <TableCell>{t('displayType')}</TableCell> */}
             <TableCell>{t('parts')}</TableCell>
-            <TableCell>{t('lessons')}</TableCell>
+            {/* <TableCell>{t('lessons')}</TableCell> */}
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -200,9 +200,7 @@ export default function CourseTable({
               {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + row.displayType.slice(1)) : ''}
             </TableCell> */}
             <TableCell>{row.collections ? row.collections.length : 0}</TableCell>
-            <TableCell>
-              {row.collections ? row.collections.reduce((sum, c) => sum + (c.lessons?.length ?? 0), 0) : 0}
-            </TableCell>
+
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

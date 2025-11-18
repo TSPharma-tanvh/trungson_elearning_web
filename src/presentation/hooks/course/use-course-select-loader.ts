@@ -11,12 +11,16 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 interface UseCourseSelectLoaderProps {
   courseUsecase: CourseUsecase | null;
   isOpen: boolean;
-  pathID?: string;
   disableStatus?: StatusEnum;
   courseType?: LearningModeEnum;
   displayType?: DisplayTypeEnum;
-  hasPath?: boolean;
   searchText?: string;
+
+  // NEW FILTERS
+  positionCode?: string;
+  positionStateCode?: string;
+  departmentTypeCode?: string;
+  isFixedCourse?: boolean;
 }
 
 interface CourseSelectLoaderState {
@@ -26,30 +30,51 @@ interface CourseSelectLoaderState {
   isSelectOpen: boolean;
   pageNumber: number;
   totalPages: number;
+
   listRef: React.RefObject<HTMLUListElement>;
+
   setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setCourseType: React.Dispatch<React.SetStateAction<LearningModeEnum | undefined>>;
   setDisplayType: React.Dispatch<React.SetStateAction<DisplayTypeEnum | undefined>>;
   setDisableStatus: React.Dispatch<React.SetStateAction<StatusEnum | undefined>>;
-  setHasPath: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+
+  // NEW SETTERS
+  setPositionCode: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setPositionStateCode: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setDepartmentTypeCode: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setIsFixedCourse: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+
+  // CURRENT FILTERS
   searchText: string;
   courseType: LearningModeEnum | undefined;
   displayType: DisplayTypeEnum | undefined;
   disableStatus: StatusEnum | undefined;
-  hasPath: boolean | undefined;
+
+  // NEW FILTER VALUES
+  positionCode?: string;
+  positionStateCode?: string;
+  departmentTypeCode?: string;
+  isFixedCourse?: boolean;
+
   loadCourses: (page: number, reset?: boolean) => Promise<void>;
 }
 
 export function useCourseSelectLoader({
   courseUsecase,
   isOpen,
-  pathID,
   disableStatus: initialDisableStatus,
   courseType: initialCourseType,
   displayType: initialDisplayType,
-  hasPath: initialHasPath,
   searchText: initialSearchText = '',
+
+  positionCode: initialPositionCode,
+  positionStateCode: initialPositionStateCode,
+  departmentTypeCode: initialDepartmentTypeCode,
+  isFixedCourse: initialIsFixedCourse,
+  positionCode: position,
+  positionStateCode: positionState,
+  departmentTypeCode: deptType,
 }: UseCourseSelectLoaderProps): CourseSelectLoaderState {
   const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -57,11 +82,18 @@ export function useCourseSelectLoader({
   const [hasMore, setHasMore] = useState(true);
   const [loadingCourses, setLoadingCourses] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+
   const [searchText, setSearchText] = useState(initialSearchText);
   const [courseType, setCourseType] = useState<LearningModeEnum | undefined>(initialCourseType);
   const [displayType, setDisplayType] = useState<DisplayTypeEnum | undefined>(initialDisplayType);
   const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(initialDisableStatus);
-  const [hasPath, setHasPath] = useState<boolean | undefined>(initialHasPath);
+
+  // NEW FILTER STATES
+  const [positionCode, setPositionCode] = useState<string | undefined>(initialPositionCode);
+  const [positionStateCode, setPositionStateCode] = useState<string | undefined>(initialPositionStateCode);
+  const [departmentTypeCode, setDepartmentTypeCode] = useState<string | undefined>(initialDepartmentTypeCode);
+  const [isFixedCourse, setIsFixedCourse] = useState<boolean | undefined>(initialIsFixedCourse);
+
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -73,19 +105,26 @@ export function useCourseSelectLoader({
 
     try {
       const request = new GetCourseRequest({
-        pathID,
         name: searchText || undefined,
         disableStatus,
         courseType,
         displayType,
-        hasPath,
+
+        // NEW FILTERS
+        positionCode,
+        positionStateCode,
+        departmentTypeCode,
+        isFixedCourse,
+
         pageNumber: page,
         pageSize: 10,
       });
 
       const result: CourseDetailListResult = await courseUsecase.getCourseListInfo(request);
+
       if (isOpen) {
         setCourses((prev) => (reset || page === 1 ? result.courses : [...prev, ...result.courses]));
+
         setHasMore(result.courses.length > 0 && result.totalRecords > courses.length + result.courses.length);
         setTotalPages(Math.ceil(result.totalRecords / 10));
         setPageNumber(page);
@@ -116,7 +155,19 @@ export function useCourseSelectLoader({
       setHasMore(true);
       setIsSelectOpen(false);
     };
-  }, [isOpen, pathID, searchText, disableStatus, courseType, displayType, hasPath]);
+  }, [
+    isOpen,
+    searchText,
+    disableStatus,
+    courseType,
+    displayType,
+
+    // NEW FILTERS
+    positionCode,
+    positionStateCode,
+    departmentTypeCode,
+    isFixedCourse,
+  ]);
 
   return {
     courses,
@@ -126,17 +177,30 @@ export function useCourseSelectLoader({
     pageNumber,
     totalPages,
     listRef,
+
     setIsSelectOpen,
     setSearchText,
     setCourseType,
     setDisplayType,
     setDisableStatus,
-    setHasPath,
+
+    // NEW SETTERS
+    setPositionCode,
+    setPositionStateCode,
+    setDepartmentTypeCode,
+    setIsFixedCourse,
+
     searchText,
     courseType,
     displayType,
     disableStatus,
-    hasPath,
+
+    // NEW VALUES
+    positionCode,
+    positionStateCode,
+    departmentTypeCode,
+    isFixedCourse,
+
     loadCourses,
   };
 }

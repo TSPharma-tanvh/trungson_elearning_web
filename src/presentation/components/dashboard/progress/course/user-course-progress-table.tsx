@@ -142,16 +142,7 @@ export default function UserCourseProgressTable({
             <TableCell>{t('actualEndDate')}</TableCell>
             <TableCell>{t('lastAccess')}</TableCell>
             <TableCell>{t('progressStatus')}</TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('positionCode')}
-            </TableCell>
+
             <TableCell
               sx={{
                 minWidth: 100,
@@ -162,16 +153,7 @@ export default function UserCourseProgressTable({
             >
               {t('positionName')}
             </TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('positionStateCode')}
-            </TableCell>
+
             <TableCell
               sx={{
                 minWidth: 100,
@@ -248,9 +230,7 @@ export default function UserCourseProgressTable({
               <TableCell>{DateTimeUtils.formatISODateStringToString(row.lastAccess ?? '')}</TableCell>
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
 
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionCode ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionStateCode ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionStateName ?? ''}</TableCell>
 
               <TableCell align="right">

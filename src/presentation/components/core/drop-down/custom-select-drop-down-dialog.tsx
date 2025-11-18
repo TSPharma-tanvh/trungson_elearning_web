@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 interface CustomSelectDropDownDialogProps<T> {
   label: string;
   value: T | undefined;
-  options: { value: T | undefined; label: string }[]; // ← Cho phép undefined
+  options: { value: T | undefined; label: string }[];
   onChange: (value: T | undefined) => void;
   minWidth?: number;
 }
@@ -25,7 +25,7 @@ export function CustomSelectDropDownDialog<T extends string | number | boolean>(
   const handleChange = (e: SelectChangeEvent) => {
     const rawValue = e.target.value;
 
-    // XỬ LÝ "All" → undefined
+    // XỬ LÝ "All"  undefined
     if (rawValue === '') {
       onChange(undefined);
       return;
@@ -63,7 +63,7 @@ export function CustomSelectDropDownDialog<T extends string | number | boolean>(
         {options.map((opt) => (
           <MenuItem
             key={opt.value === undefined ? 'all' : String(opt.value)}
-            value={opt.value === undefined ? '' : String(opt.value)} // ← DÙNG '' CHO undefined
+            value={opt.value === undefined ? '' : String(opt.value)}
           >
             {opt.label}
           </MenuItem>
