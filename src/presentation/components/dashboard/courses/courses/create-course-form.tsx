@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CreateLessonCollectionRequest } from '@/domain/models/courses/request/create-course-lesson-collection-request';
+import { type CreateLessonCollectionRequest } from '@/domain/models/courses/request/create-course-lesson-collection-request';
 import { CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -12,12 +13,12 @@ import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography }
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
+import { CustomEmployeeDistinctSelectInForm } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-in-form';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
 import { LessonCollectionCreateEditor } from '@/presentation/components/shared/courses/lessons/lesson-collection-create-form';
-import { LessonMultiSelectAndCreateDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select-and-create-form';
 
 interface CreateCourseProps {
   disabled?: boolean;
@@ -29,7 +30,7 @@ interface CreateCourseProps {
 
 export function CreateCourseDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateCourseProps) {
   const { t } = useTranslation();
-  const { categoryUsecase, lessonUsecase, classTeacherUsecase } = useDI();
+  const { categoryUsecase, classTeacherUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
@@ -78,8 +79,26 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
     };
   }, [fullScreen]);
 
+  const handleClose = () => {
+    setForm(
+      new CreateCourseRequest({
+        name: '',
+        detail: '',
+        isRequired: false,
+        disableStatus: StatusEnum.Enable,
+        displayType: DisplayTypeEnum.Public,
+        categoryEnum: CategoryEnum.Course,
+        courseType: LearningModeEnum.Online,
+      })
+    );
+
+    setLessonCollections([]);
+
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
           {t('createCourse')}
@@ -201,7 +220,28 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid> */}
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={form.categoryID}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
+                categoryEnum={CategoryEnum.Course}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <ClassTeacherSelectDialog
+                classUsecase={classTeacherUsecase}
+                value={form.teacherID ?? ''}
+                onChange={(value) => {
+                  handleChange('teacherID', value);
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('isFixedCourse')}
                 value={form.isFixedCourse ?? true}
@@ -216,23 +256,35 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <CategorySelect
-                categoryUsecase={categoryUsecase}
-                value={form.categoryID}
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label={'departmentType'}
+                value={form.departmentTypeCode}
+                type={DepartmentFilterType.DepartmentType}
                 onChange={(value) => {
-                  handleChange('categoryID', value);
+                  handleChange('departmentTypeCode', value);
                 }}
-                categoryEnum={CategoryEnum.Course}
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <ClassTeacherSelectDialog
-                classUsecase={classTeacherUsecase}
-                value={form.teacherID ?? ''}
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label={'position'}
+                value={form.positionCode}
+                type={DepartmentFilterType.Position}
                 onChange={(value) => {
-                  handleChange('teacherID', value);
+                  handleChange('positionCode', value);
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label={'currentPositionStateName'}
+                value={form.positionStateCode}
+                type={DepartmentFilterType.PositionState}
+                onChange={(value) => {
+                  handleChange('positionStateCode', value);
                 }}
               />
             </Grid>

@@ -2,14 +2,13 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { ProgressEnrollmentTypeEnum, StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { Box, Button, Card, Container, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Container, Grid, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
@@ -27,8 +26,8 @@ export default function EnrollUsersToCoursePage() {
   const [loading, setLoading] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
   const [selectedCourseDetail, setSelectedCourseDetail] = useState<CourseDetailResponse | null>(null);
-  const [startDateError, setStartDateError] = useState<string | null>(null);
-  const [endDateError, setEndDateError] = useState<string | null>(null);
+  // const [startDateError, setStartDateError] = useState<string | null>(null);
+  // const [endDateError, setEndDateError] = useState<string | null>(null);
 
   const [form, setForm] = useState<EnrollUserListToCourseRequest>(
     new EnrollUserListToCourseRequest({
@@ -134,30 +133,30 @@ export default function EnrollUsersToCoursePage() {
               />
             </Grid>
 
-            {selectedCourseDetail?.isFixedCourse && (
-              <>
-                <Grid item xs={12}>
-                  <CustomDateTimePicker
-                    label={t('startDate') + ' *'}
-                    value={
-                      form.fixedCourseStartDate ? DateTimeUtils.formatISODateToString(form.fixedCourseStartDate) : ''
-                    }
-                    onChange={(val) => {
-                      const date = val ? DateTimeUtils.formatStringToDateTime(val) : null;
-                      handleChange('fixedCourseStartDate', date);
-                    }}
-                    disabled={loading}
-                  />
-                </Grid>
-              </>
-            )}
+            {selectedCourseDetail?.isFixedCourse ? (
+              <Grid item xs={12}>
+                <CustomDateTimePicker
+                  label={`${t('startDate')} *`}
+                  value={
+                    form.fixedCourseStartDate ? DateTimeUtils.formatISODateToString(form.fixedCourseStartDate) : ''
+                  }
+                  onChange={(val) => {
+                    const date = val ? DateTimeUtils.formatStringToDateTime(val) : null;
+                    handleChange('fixedCourseStartDate', date);
+                  }}
+                  disabled={loading}
+                />
+              </Grid>
+            ) : null}
 
             {/* Update Old Progress */}
             <Grid item xs={12}>
               <CustomSelectDropDown<boolean>
                 label={t('isUpdateOldProgress')}
                 value={form.isUpdateOldProgress ?? false}
-                onChange={(val) => handleChange('isUpdateOldProgress', val)}
+                onChange={(val) => {
+                  handleChange('isUpdateOldProgress', val);
+                }}
                 disabled={loading}
                 options={[
                   { value: true, label: t('yes') },
@@ -171,7 +170,9 @@ export default function EnrollUsersToCoursePage() {
               <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
                 label={t('enrollType')}
                 value={form.enrollType}
-                onChange={(val) => handleChange('enrollType', Number(val) as ProgressEnrollmentTypeEnum)}
+                onChange={(val) => {
+                  handleChange('enrollType', Number(val) as ProgressEnrollmentTypeEnum);
+                }}
                 disabled={loading}
                 options={[
                   { value: ProgressEnrollmentTypeEnum.AllUsers, label: t('allUsers') },
@@ -187,7 +188,9 @@ export default function EnrollUsersToCoursePage() {
                 <UserMultiSelectDialog
                   userUsecase={userUsecase}
                   value={form.userIDs || []}
-                  onChange={(ids) => handleChange('userIDs', ids)}
+                  onChange={(ids) => {
+                    handleChange('userIDs', ids);
+                  }}
                   disabled={loading}
                 />
               </Grid>
@@ -226,11 +229,11 @@ export default function EnrollUsersToCoursePage() {
                   )}
                   <input type="file" hidden accept=".xlsx,.xls" onChange={handleFileChange} />
                 </Button>
-                {fileError && (
+                {fileError ? (
                   <Typography color="error" variant="caption" sx={{ mt: 1, ml: 1 }}>
                     {fileError}
                   </Typography>
-                )}
+                ) : null}
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
                   {t('supportedFormats')}: .xlsx, .xls | {t('maxSize')}: 5MB
                 </Typography>

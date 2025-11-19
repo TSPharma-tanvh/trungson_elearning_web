@@ -903,5 +903,11 @@
   "fileRequired": "Yêu cầu tệp",
   "fileTooLarge": "Tệp quá lớn",
   "invalidFileFormat": "Định dạng tệp không hợp lệ",
-  "positionStateCode": "Mã trạng thái vị trí"
+  "positionStateCode": "Mã trạng thái vị trí",
+  "selectLesson": "Chọn bài học",
+  "addLesson": "Thêm bài học",
+  "noLessonsAddedYet": "Chưa có bài học nào được thêm vào",
+  "noLessonsSelected": "Không có bài học nào được chọn",
+  "courseDurationInDays": "Thời lượng khóa học tính theo ngày",
+  "noLessons": "Không có bài học"
 }

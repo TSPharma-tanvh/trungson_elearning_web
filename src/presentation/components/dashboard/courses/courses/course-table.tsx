@@ -1,6 +1,6 @@
 import React from 'react';
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
-import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -124,7 +124,7 @@ export default function CourseTable({
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('isFixedCourse')}</TableCell>
-            <TableCell>{t('required')}</TableCell>
+            {/* <TableCell>{t('required')}</TableCell> */}
             <TableCell>{t('status')}</TableCell>
             {/* <TableCell>{t('courseType')}</TableCell> */}
             <TableCell>{t('teacher')}</TableCell>
@@ -149,13 +149,13 @@ export default function CourseTable({
               <Typography variant="body2">{row.detail}</Typography>
             </TableCell>
             <TableCell>{row.isFixedCourse ? t('yes') : t('no')}</TableCell>
-            <TableCell>
+            {/* <TableCell>
               {row.isRequired ? (
                 <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
               ) : (
                 <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
               )}
-            </TableCell>
+            </TableCell> */}
             <TableCell>
               {row.disableStatus ? t(row.disableStatus.charAt(0).toLowerCase() + row.disableStatus.slice(1)) : ''}
             </TableCell>

@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
+import { type EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
 import { useEmployeeDistinct } from '@/presentation/hooks/employee/use-employee-distinct';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from './custom-select-filter';
 
-interface Props {
+interface CustomEmployeeDistinctFilterProps {
   label: string;
   value?: string;
   type: number;
@@ -24,15 +24,14 @@ export function CustomEmployeeDistinctFilter({
   onChange,
   minWidth = 150,
   withAllOption = true,
-}: Props) {
+}: CustomEmployeeDistinctFilterProps) {
   const { t } = useTranslation();
   const { employeeUsecase } = useDI();
   const { items, loading, load, loaded } = useEmployeeDistinct(employeeUsecase, type);
 
-  // Chỉ load khi mở dropdown lần đầu
-  const handleOpen = () => {
+  const handleOpen = async () => {
     if (!loaded && !loading) {
-      load();
+      await load();
     }
   };
 

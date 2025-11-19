@@ -186,7 +186,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                 }
                 action={
                   <IconButton
-                    onClick={() => toggleExpand(colId)}
+                    onClick={() => { toggleExpand(colId); }}
                     sx={{
                       transform: colExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -219,12 +219,12 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                             title={lesson.name ?? `Lesson ${idx + 1}`}
                             action={
                               <Stack direction="row" spacing={1}>
-                                <IconButton onClick={() => handleViewLessonDetail(lesson.id ?? '')}>
+                                <IconButton onClick={() => { handleViewLessonDetail(lesson.id ?? ''); }}>
                                   <InfoOutlined />
                                 </IconButton>
 
                                 <IconButton
-                                  onClick={() => toggleExpand(lessonId)}
+                                  onClick={() => { toggleExpand(lessonId); }}
                                   sx={{
                                     transform: lessonExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                                     transition: 'transform 0.2s',
@@ -267,9 +267,9 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
 
         {/* lesson detail form */}
         <LessonDetailForm
-          open={!!openLessonDetailId}
+          open={Boolean(openLessonDetailId)}
           lessonId={openLessonDetailId ?? ''}
-          onClose={() => setOpenLessonDetailId(null)}
+          onClose={() => { setOpenLessonDetailId(null); }}
         />
       </Box>
     );

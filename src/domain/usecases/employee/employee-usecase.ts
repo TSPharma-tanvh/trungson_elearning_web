@@ -1,5 +1,5 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { GetEmployeeDistinctRequest } from '@/domain/models/employee/request/get-employee-distinct-request';
+import { type GetEmployeeDistinctRequest } from '@/domain/models/employee/request/get-employee-distinct-request';
 import { type GetEmployeeFromHrmRequest } from '@/domain/models/employee/request/get-employee-from-hrm-request';
 import { type GetEmployeeRequest } from '@/domain/models/employee/request/get-employee-request';
 import { type SyncEmployeeFromHrmRequest } from '@/domain/models/employee/request/sync-employee-from-hrm-request';

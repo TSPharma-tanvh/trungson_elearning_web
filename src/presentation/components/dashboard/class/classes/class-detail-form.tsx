@@ -344,9 +344,8 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
             {renderField('employeeId', user?.employeeId)}
 
             {/* Employee Details */}
-            {renderField('title', employee?.title)}
-            {renderField('department', employee?.currentDepartmentName)}
-            {renderField('position', employee?.currentPositionName)}
+            {renderField('position', employee?.positionName)}
+            {renderField('department', employee?.departmentName)}
             {renderField('gender', employee?.gender)}
           </Grid>
         </CardContent>

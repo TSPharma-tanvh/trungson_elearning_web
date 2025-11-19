@@ -163,7 +163,7 @@ export function CategorySelectDialog({
 
   return (
     <>
-      <FormControl fullWidth disabled={disabled} error={required ? !value : null}>
+      <FormControl fullWidth disabled={disabled}>
         <InputLabel id="category-select-label">
           {t(label)}
           {required && !value ? <span style={{ color: 'error.main', marginLeft: 4 }}>*</span> : <div />}
@@ -206,7 +206,9 @@ export function CategorySelectDialog({
           }}
         />
 
-        {required && !value ? <FormHelperText sx={{ color: 'error.main', mt: 0.5 }}>{t('requiredField')}</FormHelperText> : null}
+        {required && !value ? (
+          <FormHelperText sx={{ color: 'error.main', mt: 0.5 }}>{t('requiredField')}</FormHelperText>
+        ) : null}
       </FormControl>
 
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">

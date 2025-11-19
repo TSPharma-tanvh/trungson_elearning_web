@@ -1,8 +1,8 @@
 // use-employee-distinct.ts
 import { useCallback, useState } from 'react';
 import { GetEmployeeDistinctRequest } from '@/domain/models/employee/request/get-employee-distinct-request';
-import { EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
-import { EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
+import { type EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
+import { type EmployeeUsecase } from '@/domain/usecases/employee/employee-usecase';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 
 export function useEmployeeDistinct(usecase: EmployeeUsecase | null, type: number | undefined) {
@@ -25,7 +25,6 @@ export function useEmployeeDistinct(usecase: EmployeeUsecase | null, type: numbe
       setItems(result);
       setLoaded(true);
     } catch (error) {
-      console.error('Failed to load employee distinct', error);
       setItems([]);
     } finally {
       setLoading(false);

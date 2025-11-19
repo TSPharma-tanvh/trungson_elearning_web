@@ -87,17 +87,14 @@ export function CustomSelectFilter<T extends string | number | boolean>({
           },
         }}
       >
-        {loading && (
-          <MenuItem disabled>
+        {loading ? <MenuItem disabled>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <CircularProgress size={16} />
               {t('loading')}...
             </Box>
-          </MenuItem>
-        )}
+          </MenuItem> : null}
 
-        {withAllOption && !loading && (
-          <MenuItem
+        {withAllOption && !loading ? <MenuItem
             value=""
             sx={{
               color: 'var(--mui-palette-primary-main)',
@@ -105,8 +102,7 @@ export function CustomSelectFilter<T extends string | number | boolean>({
             }}
           >
             {t(allLabel)}
-          </MenuItem>
-        )}
+          </MenuItem> : null}
 
         {!loading &&
           options.map((opt) => (
@@ -122,11 +118,9 @@ export function CustomSelectFilter<T extends string | number | boolean>({
             </MenuItem>
           ))}
 
-        {!loading && options.length === 0 && withAllOption && (
-          <MenuItem disabled value="">
+        {!loading && options.length === 0 && withAllOption ? <MenuItem disabled value="">
             <em>{t('noData')}</em>
-          </MenuItem>
-        )}
+          </MenuItem> : null}
       </Select>
     </FormControl>
   );

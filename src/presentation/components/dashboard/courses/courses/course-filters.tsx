@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
-import { CoreEnumUtils, LearningModeEnum, ScheduleStatusEnum } from '@/utils/enum/core-enum';
+import { CoreEnumUtils, type LearningModeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { StatusEnum, type DisplayTypeEnum } from '@/utils/enum/path-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -18,8 +18,8 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
   const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
   const [displayType, setDisplayType] = React.useState<DisplayTypeEnum | undefined>(undefined);
-  const [courseType, setCourseType] = React.useState<LearningModeEnum | undefined>(undefined);
-  const [scheduleStatus, setScheduleStatus] = React.useState<ScheduleStatusEnum | undefined>(undefined);
+  const [courseType, _setCourseType] = React.useState<LearningModeEnum | undefined>(undefined);
+  const [scheduleStatus, _setScheduleStatus] = React.useState<ScheduleStatusEnum | undefined>(undefined);
   const [positionCode, setPositionCode] = React.useState<string | undefined>(undefined);
   const [positionStateCode, setPositionStateCode] = React.useState<string | undefined>(undefined);
   const [departmentTypeCode, setDepartmentTypeCode] = React.useState<string | undefined>(undefined);
@@ -139,21 +139,21 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
 
         {/* Employee Distinct Filters */}
         <CustomEmployeeDistinctFilter
-          label={t('positionCode')}
+          label={t('position')}
           type={DepartmentFilterType.Position} // Position
           value={positionCode}
           onChange={setPositionCode}
         />
 
         <CustomEmployeeDistinctFilter
-          label={t('positionStateCode')}
+          label={t('positionState')}
           type={DepartmentFilterType.PositionState} // PositionState
           value={positionStateCode}
           onChange={setPositionStateCode}
         />
 
         <CustomEmployeeDistinctFilter
-          label={t('departmentTypeCode')}
+          label={t('departmentType')}
           type={DepartmentFilterType.DepartmentType} // Department
           value={departmentTypeCode}
           onChange={setDepartmentTypeCode}

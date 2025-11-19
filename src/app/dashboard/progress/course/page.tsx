@@ -18,14 +18,14 @@ export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
   const { userCourseProgressUsecase, enrollUsecase, courseUsecase } = useDI();
 
-  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  // const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserCourseProgressRequest>(
     new GetUserCourseProgressRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [userCourseProgress, setUserCourseProgress] = React.useState<UserCourseProgressResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
-  const [createLoading, setCreateLoading] = React.useState(false);
+  // const [createLoading, setCreateLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

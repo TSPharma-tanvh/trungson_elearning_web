@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { type FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
+import { FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import { type FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import { useResourceSelectLoader } from '@/presentation/hooks/file/file-resouce-select-loader';
 import { type StatusEnum } from '@/utils/enum/core-enum';
@@ -59,7 +59,7 @@ export function FileResourceSelect({
 }: FileResourceSelectProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<FileResourcesResponse | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileResourcesResponseForAdmin | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [previewImageOpen, setPreviewImageOpen] = useState(false);
@@ -75,10 +75,10 @@ export function FileResourceSelect({
     if (value && !selectedFile) {
       fileUsecase
         .getFileResourceById(value)
-        .then(setSelectedFile)
-        .catch(() => {
-          undefined;
-        });
+        .then((res) => {
+          setSelectedFile(FileResourcesResponseForAdmin.fromJson(res));
+        })
+        .catch(() => undefined);
     }
   }, [value]);
 
@@ -105,7 +105,7 @@ export function FileResourceSelect({
     }
   };
 
-  const handleViewFile = (file: FileResourcesResponse) => {
+  const handleViewFile = (file: FileResourcesResponseForAdmin) => {
     if (!file.resourceUrl) return;
     if (file.type?.startsWith('image/')) {
       setSelectedFile(file);

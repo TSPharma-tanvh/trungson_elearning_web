@@ -43,7 +43,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-import { CustomEmployeeDistinctSelect } from '@/presentation/components/core/drop-down/custom-employee-distinct-select';
+import { CustomEmployeeDistinctSelectFilter } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-filter';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import CourseDetailForm from '@/presentation/components/dashboard/courses/courses/course-detail-form';
@@ -54,7 +54,6 @@ interface CourseMultiSelectDialogProps extends Omit<SelectProps<string[]>, 'valu
   onChange: (value: string[]) => void;
   label?: string;
   disabled?: boolean;
-  pathID?: string;
 }
 
 const filterOptions = {
@@ -71,7 +70,6 @@ export function CourseMultiSelectDialog({
   onChange,
   label = 'courses',
   disabled = false,
-  pathID,
   ...selectProps
 }: CourseMultiSelectDialogProps) {
   const theme = useTheme();
@@ -274,21 +272,21 @@ export function CourseMultiSelectDialog({
               </Select>
             </FormControl>
 
-            <CustomEmployeeDistinctSelect
+            <CustomEmployeeDistinctSelectFilter
               label={t('departmentType')}
               value={departmentTypeCode}
               type={DepartmentFilterType.DepartmentType}
               onChange={setDepartmentTypeCode}
             />
 
-            <CustomEmployeeDistinctSelect
+            <CustomEmployeeDistinctSelectFilter
               label={t('position')}
               value={positionCode}
               type={DepartmentFilterType.Position}
               onChange={setPositionCode}
             />
 
-            <CustomEmployeeDistinctSelect
+            <CustomEmployeeDistinctSelectFilter
               label={t('currentPositionStateName')}
               value={positionStateCode}
               type={DepartmentFilterType.PositionState}

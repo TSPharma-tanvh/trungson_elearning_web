@@ -903,5 +903,11 @@
   "fileRequired": "File Required",
   "fileTooLarge": "File Too Large",
   "invalidFileFormat": "Invalid File Format",
-  "positionStateCode": "Position State Code"
+  "positionStateCode": "Position State Code",
+  "selectLesson": "Select Lesson",
+  "addLesson": "Add Lesson",
+  "noLessonsAddedYet": "No Lessons Added Yet",
+  "noLessonsSelected": "No Lessons Selected",
+  "courseDurationInDays": "Course Duration In Days",
+  "noLessons": "No Lessons"
 }

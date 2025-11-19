@@ -3,19 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
-import { EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
 import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
 import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
-import { useDI } from '@/presentation/hooks/use-dependency-container';
-import {
-  DisplayTypeDisplayNames,
-  DisplayTypeEnum,
-  LearningModeDisplayNames,
-  LearningModeEnum,
-  StatusDisplayNames,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
+import { DisplayTypeEnum, LearningModeEnum, StatusDisplayNames, StatusEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -30,7 +21,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  Grid,
   IconButton,
   InputLabel,
   ListItemText,
@@ -46,8 +36,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-import { CustomEmployeeDistinctSelect } from '@/presentation/components/core/drop-down/custom-employee-distinct-select';
-import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
+import { CustomEmployeeDistinctSelectFilter } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-filter';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import CourseDetailForm from '@/presentation/components/dashboard/courses/courses/course-detail-form';
@@ -96,14 +85,12 @@ export function CourseSelectDialog({
     pageNumber,
     totalPages,
     setSearchText,
-    courseType,
     setCourseType,
     setDisplayType,
     setDisableStatus,
     listRef,
     loadCourses,
     disableStatus,
-    displayType,
     setPositionCode,
     setPositionStateCode,
     setDepartmentTypeCode,
@@ -265,21 +252,21 @@ export function CourseSelectDialog({
                 ))}
               </Select>
             </FormControl> */}
-            <CustomEmployeeDistinctSelect
+            <CustomEmployeeDistinctSelectFilter
               label={t('departmentType')}
               value={departmentTypeCode}
               type={DepartmentFilterType.DepartmentType}
               onChange={setDepartmentTypeCode}
             />
 
-            <CustomEmployeeDistinctSelect
+            <CustomEmployeeDistinctSelectFilter
               label={t('position')}
               value={positionCode}
               type={DepartmentFilterType.Position}
               onChange={setPositionCode}
             />
 
-            <CustomEmployeeDistinctSelect
+            <CustomEmployeeDistinctSelectFilter
               label={t('currentPositionStateName')}
               value={positionStateCode}
               type={DepartmentFilterType.PositionState}

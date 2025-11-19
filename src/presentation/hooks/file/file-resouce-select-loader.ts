@@ -1,8 +1,8 @@
 import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GetFileResourcesRequest } from '@/domain/models/file/request/get-file-resource-request';
-import type { FileResourceListResult } from '@/domain/models/file/response/file-resource-result';
-import type { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
+import { type FileResourceListForAdminResult } from '@/domain/models/file/response/file-resource-for-admin-result';
+import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import type { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import type { StatusEnum } from '@/utils/enum/core-enum';
 import { FileResourceEnumUtils, type FileResourceEnum } from '@/utils/enum/file-resource-enum';
@@ -18,7 +18,7 @@ interface FileResourceSelectLoaderProps {
 }
 
 interface FileResourceSelectLoaderState {
-  files: FileResourcesResponse[];
+  files: FileResourcesResponseForAdmin[];
   loadingFiles: boolean;
   hasMore: boolean;
   pageNumber: number;
@@ -36,7 +36,7 @@ export function useResourceSelectLoader({
   searchText = '',
   type,
 }: FileResourceSelectLoaderProps): FileResourceSelectLoaderState {
-  const [files, setFiles] = useState<FileResourcesResponse[]>([]);
+  const [files, setFiles] = useState<FileResourcesResponseForAdmin[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -60,7 +60,7 @@ export function useResourceSelectLoader({
         pageSize: 10,
       });
 
-      const result: FileResourceListResult = await fileUsecase.getFileResourceList(request);
+      const result: FileResourceListForAdminResult = await fileUsecase.getFileResourceList(request);
 
       if (isOpen) {
         setFiles((prev) => (reset || page === 1 ? result.files : [...prev, ...result.files]));

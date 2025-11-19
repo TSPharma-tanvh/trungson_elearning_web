@@ -210,11 +210,11 @@ export function CreateLessonDialog({
   //   { value: LearningModeEnum.Offline, label: 'offline' },
   // ];
 
-  const statusTypeOptions = [
-    { value: StatusEnum.Enable, label: 'enable' },
-    { value: StatusEnum.Disable, label: 'disable' },
-    { value: StatusEnum.Deleted, label: 'deleted' },
-  ];
+  // const statusTypeOptions = [
+  //   { value: StatusEnum.Enable, label: 'enable' },
+  //   { value: StatusEnum.Disable, label: 'disable' },
+  //   { value: StatusEnum.Deleted, label: 'deleted' },
+  // ];
 
   const booleanOptions = [
     { value: 'true', label: 'yes' },

@@ -72,9 +72,6 @@ export function useCourseSelectLoader({
   positionStateCode: initialPositionStateCode,
   departmentTypeCode: initialDepartmentTypeCode,
   isFixedCourse: initialIsFixedCourse,
-  positionCode: position,
-  positionStateCode: positionState,
-  departmentTypeCode: deptType,
 }: UseCourseSelectLoaderProps): CourseSelectLoaderState {
   const [courses, setCourses] = useState<CourseDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);

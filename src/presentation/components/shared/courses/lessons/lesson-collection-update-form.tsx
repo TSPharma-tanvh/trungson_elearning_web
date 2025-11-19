@@ -97,7 +97,9 @@ export function LessonCollectionUpdateEditor({
                 <Grid item>
                   <IconButton
                     color="error"
-                    onClick={() => handleDelete(item.order)}
+                    onClick={() => {
+                      handleDelete(item.order);
+                    }}
                     disabled={items.length === 1}
                     size="small"
                   >
@@ -111,7 +113,9 @@ export function LessonCollectionUpdateEditor({
                 <CustomTextField
                   label={t('collectionName')}
                   value={item.name}
-                  onChange={(val) => handleChange(item.order, 'name', val)}
+                  onChange={(val) => {
+                    handleChange(item.order, 'name', val);
+                  }}
                   required
                 />
               </Box>
@@ -121,7 +125,9 @@ export function LessonCollectionUpdateEditor({
                 <LessonMultiSelectAndCreateDialog
                   lessonUsecase={lessonUsecase}
                   value={item.lessonIds}
-                  onChange={(ids) => handleChange(item.order, 'lessonIds', ids)}
+                  onChange={(ids) => {
+                    handleChange(item.order, 'lessonIds', ids);
+                  }}
                   label={t('lessonsInCollection')}
                 />
               </Box>
@@ -133,7 +139,9 @@ export function LessonCollectionUpdateEditor({
                     <CustomDateTimePicker
                       label={t('startDate')}
                       value={item.startDate ? item.startDate.toISOString() : undefined}
-                      onChange={(iso) => handleChange(item.order, 'startDate', iso ? new Date(iso) : undefined)}
+                      onChange={(iso) => {
+                        handleChange(item.order, 'startDate', iso ? new Date(iso) : undefined);
+                      }}
                       allowClear
                     />
                   </Grid>
@@ -141,21 +149,27 @@ export function LessonCollectionUpdateEditor({
                     <CustomDateTimePicker
                       label={t('endDate')}
                       value={item.endDate ? item.endDate.toISOString() : undefined}
-                      onChange={(iso) => handleChange(item.order, 'endDate', iso ? new Date(iso) : undefined)}
+                      onChange={(iso) => {
+                        handleChange(item.order, 'endDate', iso ? new Date(iso) : undefined);
+                      }}
                       allowClear
                     />
                   </Grid>
                 </Grid>
               )}
 
-              {fixedCourse && (
+              {fixedCourse ? (
                 <Box mt={2}>
                   <CustomTextField
                     label={t('courseDuration')}
                     value={item.fixedCourseDayDuration?.toString() ?? ''}
-                    onChange={(value) => {
+                    onChange={(valueData) => {
                       const numericValue =
-                        value === '' ? undefined : /^\d+$/.test(value) ? Number(value) : item.fixedCourseDayDuration;
+                        valueData === ''
+                          ? undefined
+                          : /^\d+$/.test(valueData)
+                            ? Number(valueData)
+                            : item.fixedCourseDayDuration;
                       handleChange(item.order, 'fixedCourseDayDuration', numericValue);
                     }}
                     required
@@ -163,7 +177,7 @@ export function LessonCollectionUpdateEditor({
                     patternError={t('onlyPositiveIntegerError')}
                   />
                 </Box>
-              )}
+              ) : null}
             </CardContent>
           </Card>
         ))}

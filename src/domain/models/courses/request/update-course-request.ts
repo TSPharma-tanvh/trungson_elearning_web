@@ -112,7 +112,7 @@ export class UpdateCourseRequest {
     fd.append('Id', this.id);
     if (this.pathId) fd.append('PathID', this.pathId);
     if (this.detail) fd.append('Detail', this.detail);
-    if (this.isRequired != null) fd.append('IsRequired', String(this.isRequired));
+    if (this.isRequired !== null) fd.append('IsRequired', String(this.isRequired));
     if (this.name) fd.append('Name', this.name);
     if (this.disableStatus) fd.append('DisableStatus', this.disableStatus);
 
@@ -137,7 +137,10 @@ export class UpdateCourseRequest {
             StartDate: c.startDate ? c.startDate.toISOString() : undefined,
             EndDate: c.endDate ? c.endDate.toISOString() : undefined,
             FixedCourseDayDuration: c.fixedCourseDayDuration,
-            LessonIds: c.lessonIds,
+            Collection: c.collection.map((item) => ({
+              LessonId: item.lessonId,
+              Order: item.order,
+            })),
           }))
         )
       );
@@ -149,7 +152,9 @@ export class UpdateCourseRequest {
     if (this.resourceIds) fd.append('ResourceIDs', this.resourceIds);
 
     if (this.resources) {
-      this.resources.forEach((file) => fd.append('Resources', file));
+      this.resources.forEach((file) => {
+        fd.append('Resources', file);
+      });
     }
 
     if (this.resourceDocumentNo) fd.append('ResourceDocumentNo', this.resourceDocumentNo);
@@ -160,7 +165,7 @@ export class UpdateCourseRequest {
     if (this.thumbDocumentNo) fd.append('ThumbDocumentNo', this.thumbDocumentNo);
     if (this.thumbPrefixName) fd.append('ThumbPrefixName', this.thumbPrefixName);
 
-    if (this.isDeleteOldThumbnail != null) {
+    if (this.isDeleteOldThumbnail !== null) {
       fd.append('IsDeleteOldThumbnail', String(this.isDeleteOldThumbnail));
     }
 

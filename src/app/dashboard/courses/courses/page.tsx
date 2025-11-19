@@ -128,7 +128,6 @@ export default function Page(): React.JSX.Element {
       [t('courseType')]: row.courseType ? t(row.courseType.toLowerCase()) : '',
       [t('scheduleStatus')]: row.scheduleStatus ? t(row.scheduleStatus.toLowerCase()) : '',
       [t('displayType')]: row.displayType ? t(row.displayType.toLowerCase()) : '',
-      [t('lessons')]: row.lessons?.length ?? 0,
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);

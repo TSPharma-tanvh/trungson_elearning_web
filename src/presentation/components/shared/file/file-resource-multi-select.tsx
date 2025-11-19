@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { type FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
+import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import { type FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import { useResourceSelectLoader } from '@/presentation/hooks/file/file-resouce-select-loader';
 import { type StatusEnum } from '@/utils/enum/core-enum';
@@ -68,12 +68,12 @@ export function FileResourceMultiSelect({
 }: FileResourcesMultiSelectProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<FileResourcesResponse[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<FileResourcesResponseForAdmin[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [fullscreen, setFullscreen] = useState(false);
   const [previewImageOpen, setPreviewImageOpen] = useState(false);
   const [previewVideoOpen, setPreviewVideoOpen] = useState(false);
-  const [previewFile, setPreviewFile] = useState<FileResourcesResponse | null>(null);
+  const [previewFile, setPreviewFile] = useState<FileResourcesResponseForAdmin | null>(null);
 
   const [selectedType, setSelectedType] = useState<FileResourceEnum | undefined>(allowAllTypes ? defaultType : type);
   const [filterTypeEnabled, setFilterTypeEnabled] = useState<boolean>(!allowAllTypes);
@@ -107,7 +107,7 @@ export function FileResourceMultiSelect({
           })
         )
       ).then((newFiles) => {
-        const validNewFiles = newFiles.filter((f): f is FileResourcesResponse => Boolean(f));
+        const validNewFiles = newFiles.filter((f) => f !== undefined && f !== null);
         setSelectedFiles((prev) => {
           const all = [...prev, ...validNewFiles];
           const unique = Array.from(new Map(all.map((f) => [f.id, f])).values());
@@ -148,7 +148,7 @@ export function FileResourceMultiSelect({
     if (listRef.current) listRef.current.scrollTop = 0;
   };
 
-  const handleViewFile = (file: FileResourcesResponse) => {
+  const handleViewFile = (file: FileResourcesResponseForAdmin) => {
     if (!file.resourceUrl) return;
     setPreviewFile(file);
     if (file.type?.startsWith('image/')) setPreviewImageOpen(true);

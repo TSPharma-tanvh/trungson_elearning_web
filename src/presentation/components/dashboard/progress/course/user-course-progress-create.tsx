@@ -3,14 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
-import {
-  ApproveStatusEnum,
-  CategoryEnum,
-  ProgressEnrollmentTypeEnum,
-  StatusEnum,
-  UserProgressEnum,
-} from '@/utils/enum/core-enum';
+import { ProgressEnrollmentTypeEnum, StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -21,9 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CourseSelectDialog } from '@/presentation/components/shared/courses/courses/courses-select';
-import { EnrollmentSingleSelect } from '@/presentation/components/shared/enrollment/enrollment-single-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
 interface UserCourseProgressCreateProps {
@@ -42,7 +33,7 @@ export function CreateUserCourseProgressDialog({
   onClose,
 }: UserCourseProgressCreateProps) {
   const { t } = useTranslation();
-  const { userUsecase, courseUsecase, enrollUsecase } = useDI();
+  const { userUsecase, courseUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [_detailRows, setDetailRows] = useState(3);
@@ -52,13 +43,13 @@ export function CreateUserCourseProgressDialog({
     new EnrollUserListToCourseRequest({
       courseID: '',
       progress: 0,
-      startDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      endDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
+      // startDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      // endDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
       status: UserProgressEnum.NotStarted,
       // enrollStatus: ApproveStatusEnum.Approve,
       activeStatus: StatusEnum.Enable,
       enrollType: ProgressEnrollmentTypeEnum.AllUsers,
-      isAutoEnroll: true,
+      // isAutoEnroll: true,
       isUpdateOldProgress: false,
     })
   );

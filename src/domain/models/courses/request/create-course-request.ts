@@ -1,12 +1,12 @@
 import {
-  CategoryEnum,
   DisplayTypeEnum,
   LearningModeEnum,
   ScheduleStatusEnum,
   StatusEnum,
+  type CategoryEnum,
 } from '@/utils/enum/core-enum';
 
-import { CreateLessonCollectionRequest } from './create-course-lesson-collection-request';
+import { type CreateLessonCollectionRequest } from './create-course-lesson-collection-request';
 
 export class CreateCourseRequest {
   pathID?: string;
@@ -16,7 +16,7 @@ export class CreateCourseRequest {
 
   disableStatus: StatusEnum = StatusEnum.Enable;
   positionStateCode?: string;
-  isFixedCourse: boolean = false;
+  isFixedCourse = false;
   teacherID?: string;
 
   courseType: LearningModeEnum = LearningModeEnum.Online;
@@ -44,6 +44,9 @@ export class CreateCourseRequest {
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
 
+  departmentTypeCode?: string;
+  positionCode?: string;
+
   constructor(init?: Partial<CreateCourseRequest>) {
     Object.assign(this, init);
   }
@@ -66,33 +69,42 @@ export class CreateCourseRequest {
     if (this.categoryID) formData.append('CategoryID', this.categoryID);
     if (this.thumbnailID) formData.append('ThumbnailID', this.thumbnailID);
     if (this.resourceIDs) formData.append('ResourceIDs', this.resourceIDs);
-    if (this.resources) this.resources.forEach((file) => formData.append('Resources', file));
+    if (this.departmentTypeCode) formData.append('DepartmentTypeCode', this.departmentTypeCode); // new
+    if (this.positionCode) formData.append('PositionCode', this.positionCode); // new
+
+    if (this.resources)
+      this.resources.forEach((file) => {
+        formData.append('Resources', file);
+      });
     if (this.resourceDocumentNo) formData.append('ResourceDocumentNo', this.resourceDocumentNo);
     if (this.resourcePrefixName) formData.append('ResourcePrefixName', this.resourcePrefixName);
+
     if (this.thumbnail) formData.append('Thumbnail', this.thumbnail);
     if (this.thumbDocumentNo) formData.append('ThumbDocumentNo', this.thumbDocumentNo);
     if (this.thumbPrefixName) formData.append('ThumbPrefixName', this.thumbPrefixName);
+
     if (this.isDeleteOldResource !== undefined)
       formData.append('IsDeleteOldResource', this.isDeleteOldResource.toString());
+
     if (this.isDeleteOldThumbnail !== undefined)
       formData.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
+
     if (this.categoryEnum !== undefined) formData.append('CategoryEnum', this.categoryEnum.toString());
 
-    // Collections => append as JSON string
     if (this.collections && this.collections.length > 0) {
-      formData.append(
-        'Collections',
-        JSON.stringify(
-          this.collections.map((c) => ({
-            Name: c.name,
-            Order: c.order,
-            StartDate: c.startDate ? c.startDate.toISOString() : undefined,
-            EndDate: c.endDate ? c.endDate.toISOString() : undefined,
-            FixedCourseDayDuration: c.fixedCourseDayDuration,
-            LessonIds: c.lessonIds,
-          }))
-        )
-      );
+      const collectionsForApi = this.collections.map((col) => ({
+        Name: col.name,
+        Order: col.order,
+        StartDate: col.startDate ? col.startDate.toISOString() : undefined,
+        EndDate: col.endDate ? col.endDate.toISOString() : undefined,
+        FixedCourseDayDuration: col.fixedCourseDayDuration,
+        Collection: col.collection.map((item) => ({
+          LessonId: item.lessonId,
+          Order: item.order,
+        })),
+      }));
+
+      formData.append('Collections', JSON.stringify(collectionsForApi));
     }
 
     return formData;

@@ -29,9 +29,9 @@ export function AccountInfo({ user, onUpload, thumbnailPreview }: AccountInfoPro
             <Typography variant="h5">
               {user?.firstName ?? '...'} {user?.lastName ?? ''}
             </Typography>
-            <Typography color="text.secondary" variant="body2">
+            {/* <Typography color="text.secondary" variant="body2">
               {user?.employee?.city ?? ''}, {user?.employee?.country ?? ''}
-            </Typography>
+            </Typography> */}
           </Stack>
         </Stack>
       </CardContent>
