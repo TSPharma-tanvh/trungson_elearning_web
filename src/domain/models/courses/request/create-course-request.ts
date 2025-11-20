@@ -69,8 +69,8 @@ export class CreateCourseRequest {
     if (this.categoryID) formData.append('CategoryID', this.categoryID);
     if (this.thumbnailID) formData.append('ThumbnailID', this.thumbnailID);
     if (this.resourceIDs) formData.append('ResourceIDs', this.resourceIDs);
-    if (this.departmentTypeCode) formData.append('DepartmentTypeCode', this.departmentTypeCode); // new
-    if (this.positionCode) formData.append('PositionCode', this.positionCode); // new
+    if (this.departmentTypeCode) formData.append('DepartmentTypeCode', this.departmentTypeCode);
+    if (this.positionCode) formData.append('PositionCode', this.positionCode);
 
     if (this.resources)
       this.resources.forEach((file) => {

@@ -1,8 +1,9 @@
 import React from 'react';
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
-import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { Avatar, Box, CircularProgress, Dialog, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
@@ -35,11 +36,16 @@ export default function CourseTable({
   onDeleteCoursePermanently,
 }: CourseTableProps) {
   const { t } = useTranslation();
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [editCourseData, setEditCourseData] = React.useState<CourseDetailResponse | null>(null);
+  const { courseUsecase } = useDI();
+
   const [viewOpen, setViewOpen] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
   const [pendingDeleteIdPermanently, setPendingDeleteIdPermanently] = React.useState<string | null>(null);
+
+  //edit
+  const [editOpen, setEditOpen] = React.useState(false);
+  const [editCourseData, setEditCourseData] = React.useState<CourseDetailResponse | null>(null);
+  const [loadingEdit, setLoadingEdit] = React.useState(false);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [dialogDeletePermanentOpen, setDialogDeletePermanentOpen] = React.useState(false);
@@ -101,9 +107,17 @@ export default function CourseTable({
           },
           {
             label: t('edit'),
-            onClick: (row) => {
-              setEditCourseData(row);
-              setEditOpen(true);
+            onClick: async (row) => {
+              if (!row.id) return;
+
+              setLoadingEdit(true);
+              try {
+                const detail = await courseUsecase.getCourseById(row.id);
+                setEditCourseData(detail);
+                setEditOpen(true);
+              } finally {
+                setLoadingEdit(false);
+              }
             },
           },
           {
@@ -131,6 +145,7 @@ export default function CourseTable({
             {/* <TableCell>{t('displayType')}</TableCell> */}
             <TableCell>{t('parts')}</TableCell>
             {/* <TableCell>{t('lessons')}</TableCell> */}
+            <TableCell>{t('category')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -200,6 +215,7 @@ export default function CourseTable({
               {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + row.displayType.slice(1)) : ''}
             </TableCell> */}
             <TableCell>{row.collections ? row.collections.length : 0}</TableCell>
+            <TableCell>{row.category?.categoryName}</TableCell>
 
             <TableCell align="right">
               <IconButton
@@ -214,13 +230,19 @@ export default function CourseTable({
         )}
       />
 
+      {loadingEdit && (
+        <Dialog open>
+          <Box p={4} display="flex" justifyContent="center">
+            <CircularProgress />
+          </Box>
+        </Dialog>
+      )}
+
       {editCourseData ? (
         <UpdateCourseFormDialog
           open={editOpen}
           data={editCourseData}
-          onClose={() => {
-            setEditOpen(false);
-          }}
+          onClose={() => setEditOpen(false)}
           onSubmit={async (updatedData) => {
             await onEditCourse(updatedData);
             setEditOpen(false);

@@ -909,5 +909,6 @@
   "noLessonsAddedYet": "No Lessons Added Yet",
   "noLessonsSelected": "No Lessons Selected",
   "courseDurationInDays": "Course Duration In Days",
-  "noLessons": "No Lessons"
+  "noLessons": "No Lessons",
+  "durationInDaysForThisPart": "Duration In Days For This Part"
 }

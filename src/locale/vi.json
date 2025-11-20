@@ -909,5 +909,6 @@
   "noLessonsAddedYet": "Chưa có bài học nào được thêm vào",
   "noLessonsSelected": "Không có bài học nào được chọn",
   "courseDurationInDays": "Thời lượng khóa học tính theo ngày",
-  "noLessons": "Không có bài học"
+  "noLessons": "Không có bài học",
+  "durationInDaysForThisPart": "Thời lượng tính bằng ngày cho phần này"
 }

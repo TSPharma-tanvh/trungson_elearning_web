@@ -186,7 +186,9 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                 }
                 action={
                   <IconButton
-                    onClick={() => { toggleExpand(colId); }}
+                    onClick={() => {
+                      toggleExpand(colId);
+                    }}
                     sx={{
                       transform: colExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
@@ -219,12 +221,18 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                             title={lesson.name ?? `Lesson ${idx + 1}`}
                             action={
                               <Stack direction="row" spacing={1}>
-                                <IconButton onClick={() => { handleViewLessonDetail(lesson.id ?? ''); }}>
+                                <IconButton
+                                  onClick={() => {
+                                    handleViewLessonDetail(lesson.id ?? '');
+                                  }}
+                                >
                                   <InfoOutlined />
                                 </IconButton>
 
                                 <IconButton
-                                  onClick={() => { toggleExpand(lessonId); }}
+                                  onClick={() => {
+                                    toggleExpand(lessonId);
+                                  }}
                                   sx={{
                                     transform: lessonExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                                     transition: 'transform 0.2s',
@@ -243,6 +251,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                               <Grid container spacing={2}>
                                 {renderField('id', lesson.id)}
                                 {renderField('detail', lesson.detail)}
+                                {renderField('order', lesson.order)}
                                 {renderField('enableAutoPlay', lesson.enablePlay ? t('yes') : t('no'))}
                                 {renderField('status', lesson.status)}
                                 {renderField('categoryID', lesson.categoryID)}
@@ -269,7 +278,9 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
         <LessonDetailForm
           open={Boolean(openLessonDetailId)}
           lessonId={openLessonDetailId ?? ''}
-          onClose={() => { setOpenLessonDetailId(null); }}
+          onClose={() => {
+            setOpenLessonDetailId(null);
+          }}
         />
       </Box>
     );
@@ -487,6 +498,10 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {/* {renderField('enrollmentCriteriaId', course.enrollmentCriteria.id)} */}
             {renderField('categoryId', course.categoryId)}
             {renderField('thumbnailId', course.thumbnailId)}
+            {renderField('isFixedCourse', course.isFixedCourse ? t('yes') : t('no'))}
+            {renderField('positionName', course.positionName)}
+            {renderField('positionStateName', course.positionStateName)}
+            {renderField('departmentTypeName', course.departmentTypeName)}
           </Grid>
         </CardContent>
       </Card>

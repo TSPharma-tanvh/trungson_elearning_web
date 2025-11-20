@@ -13,25 +13,21 @@ import { LessonOrderEditor } from './lesson-collection-create-detail-form';
 
 interface LessonCollectionItemCardProps {
   item: CreateLessonCollectionRequest;
-  fixedCourse: boolean;
-  fixedDuration?: number;
+  isFixedCourse: boolean;
   canDelete: boolean;
   onDelete: () => void;
   onChangeField: <K extends keyof CreateLessonCollectionRequest>(
     field: K,
     val: CreateLessonCollectionRequest[K]
   ) => void;
-  onUpdateFixedDuration: (num: number | undefined) => void;
 }
 
 function LessonCollectionItemCard({
   item,
-  fixedCourse,
-  fixedDuration,
+  isFixedCourse,
   canDelete,
   onDelete,
   onChangeField,
-  onUpdateFixedDuration,
 }: LessonCollectionItemCardProps) {
   const { t } = useTranslation();
 
@@ -56,33 +52,27 @@ function LessonCollectionItemCard({
         <Box mb={3}>
           <CustomTextField
             label={t('collectionName')}
-            value={item.name}
-            onChange={(val) => {
-              onChangeField('name', val);
-            }}
+            value={item.name || ''}
+            onChange={(val) => onChangeField('name', val)}
             required
           />
         </Box>
 
-        {/* Danh sách lesson có thứ tự */}
+        {/* Danh sách lesson */}
         <LessonOrderEditor
-          value={item.collection}
-          onChange={(newCollection) => {
-            onChangeField('collection', newCollection);
-          }}
+          value={item.collection || []}
+          onChange={(newCollection) => onChangeField('collection', newCollection)}
           label={t('lessonsInCollection')}
         />
 
-        {/* Ngày bắt đầu / kết thúc (nếu không fixed) */}
-        {!fixedCourse && (
+        {/* Trường hợp KHÔNG fixed course hiển thị StartDate / EndDate */}
+        {!isFixedCourse && (
           <Grid container spacing={2} mt={3}>
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startDate')}
                 value={item.startDate ? item.startDate.toISOString() : undefined}
-                onChange={(iso) => {
-                  onChangeField('startDate', iso ? new Date(iso) : undefined);
-                }}
+                onChange={(iso) => onChangeField('startDate', iso ? new Date(iso) : undefined)}
                 allowClear
               />
             </Grid>
@@ -90,31 +80,28 @@ function LessonCollectionItemCard({
               <CustomDateTimePicker
                 label={t('endDate')}
                 value={item.endDate ? item.endDate.toISOString() : undefined}
-                onChange={(iso) => {
-                  onChangeField('endDate', iso ? new Date(iso) : undefined);
-                }}
+                onChange={(iso) => onChangeField('endDate', iso ? new Date(iso) : undefined)}
                 allowClear
               />
             </Grid>
           </Grid>
         )}
 
-        {/* Thời lượng cố định (nếu là fixed course) */}
-        {fixedCourse ? (
+        {isFixedCourse && (
           <Box mt={3}>
             <CustomTextField
-              label={t('courseDurationInDays')}
-              value={fixedDuration?.toString() ?? ''}
+              label={t('durationInDaysForThisPart')}
+              value={item.fixedCourseDayDuration?.toString() ?? ''}
               onChange={(val) => {
-                const num = val === '' ? undefined : /^\d+$/.test(val) ? Number(val) : fixedDuration;
-                onUpdateFixedDuration(num);
+                const num = val === '' ? undefined : /^\d+$/.test(val) ? Number(val) : item.fixedCourseDayDuration;
+                onChangeField('fixedCourseDayDuration', num);
               }}
               required
               inputMode="numeric"
               patternError={t('onlyPositiveIntegerError')}
             />
           </Box>
-        ) : null}
+        )}
       </CardContent>
     </Card>
   );
@@ -144,41 +131,16 @@ export function LessonCollectionCreateEditor({ fixedCourse = false, value, onCha
         ]
   );
 
-  const [fixedDuration, setFixedDuration] = useState<number | undefined>(
-    fixedCourse && value.length > 0 ? value[0]?.fixedCourseDayDuration ?? undefined : undefined
-  );
-
-  // sync
+  //sync value
   useEffect(() => {
     if (value.length > 0) {
-      const normalized = normalize(value);
-      setItems(normalized);
-      if (fixedCourse) setFixedDuration(value[0]?.fixedCourseDayDuration ?? undefined);
+      setItems(normalize(value));
     }
-  }, [value, fixedCourse]);
-
-  // delete fixed course
-  useEffect(() => {
-    if (!fixedCourse) setFixedDuration(undefined);
-  }, [fixedCourse]);
+  }, [value]);
 
   const updateItems = (newItems: CreateLessonCollectionRequest[]) => {
     setItems(newItems);
     onChange(newItems);
-  };
-
-  const updateFixedDuration = (num: number | undefined) => {
-    setFixedDuration(num);
-    const updated = items.map(
-      (item) =>
-        new CreateLessonCollectionRequest({
-          ...item,
-          fixedCourseDayDuration: num,
-          startDate: fixedCourse ? undefined : item.startDate,
-          endDate: fixedCourse ? undefined : item.endDate,
-        })
-    );
-    updateItems(updated);
   };
 
   const handleAdd = () => {
@@ -187,6 +149,9 @@ export function LessonCollectionCreateEditor({ fixedCourse = false, value, onCha
       name: '',
       order: nextOrder,
       collection: [],
+      startDate: fixedCourse ? undefined : undefined,
+      endDate: fixedCourse ? undefined : undefined,
+      fixedCourseDayDuration: fixedCourse ? undefined : undefined,
     });
     updateItems([...items, newItem]);
   };
@@ -202,19 +167,9 @@ export function LessonCollectionCreateEditor({ fixedCourse = false, value, onCha
     field: K,
     val: CreateLessonCollectionRequest[K]
   ) => {
-    const updated = items.map((item) => {
-      if (item.order === order) {
-        // Khi update 'collection', merge với dữ liệu cũ thay vì ghi đè
-        if (field === 'collection') {
-          return new CreateLessonCollectionRequest({
-            ...item,
-            [field]: val,
-          });
-        }
-        return new CreateLessonCollectionRequest({ ...item, [field]: val });
-      }
-      return item;
-    });
+    const updated = items.map((item) =>
+      item.order === order ? new CreateLessonCollectionRequest({ ...item, [field]: val }) : item
+    );
     updateItems(updated);
   };
 
@@ -229,21 +184,14 @@ export function LessonCollectionCreateEditor({ fixedCourse = false, value, onCha
           <LessonCollectionItemCard
             key={item.order}
             item={item}
-            fixedCourse={fixedCourse}
-            fixedDuration={fixedDuration}
-            onDelete={() => {
-              handleDelete(item.order);
-            }}
-            onChangeField={(field, val) => {
-              handleChange(item.order, field, val);
-            }}
-            onUpdateFixedDuration={updateFixedDuration}
+            isFixedCourse={fixedCourse}
             canDelete={items.length > 1}
+            onDelete={() => handleDelete(item.order)}
+            onChangeField={(field, val) => handleChange(item.order, field, val)}
           />
         ))}
       </Stack>
 
-      {/* Nút thêm collection mới */}
       <Box mt={4}>
         <Button variant="outlined" startIcon={<Add />} onClick={handleAdd}>
           {t('addCollection')}

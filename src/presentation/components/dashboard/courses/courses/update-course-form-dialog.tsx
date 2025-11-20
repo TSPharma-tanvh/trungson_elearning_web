@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
-import { LessonsCollectionUpdateRequest } from '@/domain/models/lessons/request/lesson-collection-update-request';
+import {
+  LessonsCollectionUpdateDetailRequest,
+  LessonsCollectionUpdateRequest,
+} from '@/domain/models/lessons/request/lesson-collection-update-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -29,6 +33,7 @@ import {
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
+import { CustomEmployeeDistinctSelectInForm } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-in-form';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
@@ -70,12 +75,36 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
   useEffect(() => {
     if (course && open) {
+      const mappedCollections =
+        course.collections?.map(
+          (c) =>
+            new LessonsCollectionUpdateRequest({
+              id: c.id,
+              name: c.name,
+              order: c.order,
+              startDate: c.startDate ? new Date(c.startDate) : undefined,
+              endDate: c.endDate ? new Date(c.endDate) : undefined,
+              fixedCourseDayDuration: c.fixedCourseDayDuration,
+
+              collection:
+                c.lessons
+                  ?.map(
+                    (lesson) =>
+                      new LessonsCollectionUpdateDetailRequest({
+                        lessonId: lesson.id,
+                        order: lesson.order ?? 0,
+                      })
+                  )
+                  .sort((a, b) => a.order - b.order) ?? [],
+            })
+        ) ?? [];
+
       const newFormData = new UpdateCourseRequest({
         id: course.id || '',
         name: course.name || '',
         detail: course.detail || undefined,
         isRequired: course.isRequired || false,
-        disableStatus: course.disableStatus !== undefined ? course.disableStatus : undefined,
+        disableStatus: course.disableStatus,
         meetingLink: course.meetingLink || undefined,
         teacherId: course.teacherId || undefined,
         isFixedCourse: course.isFixedCourse ?? false,
@@ -88,18 +117,11 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
             ?.map((item) => item.fileResources?.id)
             .filter((id): id is string => Boolean(id))
             .join(',') || undefined,
-        collections:
-          course.collections?.map((c) =>
-            LessonsCollectionUpdateRequest.fromJson({
-              id: c.id,
-              name: c.name,
-              order: c.order,
-              startDate: c.startDate,
-              endDate: c.endDate,
-              fixedCourseDayDuration: c.fixedCourseDayDuration,
-              lessonIds: c.lessons?.map((l) => l.id) ?? [],
-            })
-          ) ?? [],
+
+        collections: mappedCollections,
+        positionCode: course.positionCode,
+        positionStateCode: course.positionStateCode,
+        departmentTypeCode: course.departmentTypeCode,
       });
 
       setFormData(newFormData);
@@ -108,7 +130,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         course.fileCourseRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ?? []
       );
     }
-  }, [course, open, fileUsecase]);
+  }, [course, open]);
 
   const handleChange = <K extends keyof UpdateCourseRequest>(field: K, value: UpdateCourseRequest[K]) => {
     setFormData((prev) => new UpdateCourseRequest({ ...prev, [field]: value }));
@@ -262,7 +284,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
             </Grid>
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label={t('disableStatus')}
+                label={t('status')}
                 value={formData.disableStatus ?? ''}
                 onChange={(value) => {
                   handleChange('disableStatus', value);
@@ -316,6 +338,42 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                   handleChange('teacherId', value);
                 }}
                 disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label={'departmentType'}
+                value={formData.departmentTypeCode}
+                type={DepartmentFilterType.DepartmentType}
+                onChange={(value) => {
+                  handleChange('departmentTypeCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label={'position'}
+                value={formData.positionCode}
+                type={DepartmentFilterType.Position}
+                onChange={(value) => {
+                  handleChange('positionCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label={'currentPositionStateName'}
+                value={formData.positionStateCode}
+                type={DepartmentFilterType.PositionState}
+                onChange={(value) => {
+                  handleChange('positionStateCode', value);
+                }}
+                loadOnMount
               />
             </Grid>
 

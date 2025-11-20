@@ -45,6 +45,13 @@ export class CourseDetailResponse {
 
   isFixedCourse!: boolean;
 
+  departmentTypeCode?: string;
+  positionCode?: string;
+
+  positionStateName?: string;
+  departmentTypeName?: string;
+  positionName?: string;
+
   constructor(init?: Partial<CourseDetailResponse>) {
     Object.assign(this, init);
   }
@@ -76,6 +83,12 @@ export class CourseDetailResponse {
 
       positionStateCode: json.positionStateCode,
       isFixedCourse: json.isFixedCourse,
+      positionCode: json.positionCode,
+      departmentTypeCode: json.departmentTypeCode,
+
+      positionStateName: json.positionStateName,
+      positionName: json.positionName,
+      departmentTypeName: json.departmentTypeName,
     });
   }
 
@@ -106,6 +119,12 @@ export class CourseDetailResponse {
 
       positionStateCode: this.positionStateCode,
       isFixedCourse: this.isFixedCourse,
+      positionCode: this.positionCode,
+      departmentTypeCode: this.departmentTypeCode,
+
+      positionStateName: this.positionStateName,
+      positionName: this.positionName,
+      departmentTypeName: this.departmentTypeName,
     };
   }
 }

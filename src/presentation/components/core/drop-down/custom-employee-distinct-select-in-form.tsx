@@ -6,16 +6,7 @@ import { useEmployeeDistinct } from '@/presentation/hooks/employee/use-employee-
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { Animation, Apartment, Badge, Domain, Person, School, Work } from '@mui/icons-material';
-import {
-  Checkbox,
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Typography,
-} from '@mui/material';
+import { FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 interface CustomEmployeeDistinctSelectProps {
@@ -50,21 +41,29 @@ export function CustomEmployeeDistinctSelectInForm({
   const { employeeUsecase } = useDI();
   const { items, load, loaded, loading } = useEmployeeDistinct(employeeUsecase, type);
 
-  const [localValue, setLocalValue] = useState<string | undefined>(value);
+  const [localValue, setLocalValue] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
+  /** Load data ngay khi mở form */
   useEffect(() => {
     if (loadOnMount && !loaded && !loading && type !== undefined) {
       void load();
     }
-  }, [loadOnMount, loaded, loading, load, type]);
+  }, [loadOnMount, loaded, loading, type, load]);
+
+  /** Sync localValue khi data đã load */
+  useEffect(() => {
+    if (!loaded) return;
+
+    if (value && items.some((x) => x.code === value)) {
+      setLocalValue(value);
+    } else {
+      setLocalValue(undefined);
+    }
+  }, [loaded, items, value]);
 
   const handleChange = (val: string) => {
     setLocalValue(val);
-    onChange?.(val);
+    onChange?.(val || undefined);
   };
 
   const handleOpen = () => {
@@ -75,7 +74,7 @@ export function CustomEmployeeDistinctSelectInForm({
 
   const IconComponent = type !== undefined ? typeIconMap[type] || School : School;
 
-  const options: { value?: string; label: string }[] = [
+  const options = [
     { value: undefined, label: t('all') },
     ...items.map((x: EmployeeDistinctResponse) => ({
       value: x.code,
@@ -86,24 +85,21 @@ export function CustomEmployeeDistinctSelectInForm({
   return (
     <FormControl fullWidth disabled={disabled}>
       <InputLabel id={`${label}-select-label`}>{t(label)}</InputLabel>
+
       <Select
         labelId={`${label}-select-label`}
         value={localValue ?? ''}
         onOpen={handleOpen}
-        input={
-          <OutlinedInput
-            label={t(label)}
-            startAdornment={<IconComponent sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />}
-          />
-        }
+        input={<OutlinedInput label={t(label)} startAdornment={<IconComponent sx={{ mr: 1, opacity: 0.7 }} />} />}
+        /** Hiển thị đúng theo trạng thái load */
         renderValue={() => {
+          if (!loaded) return t('loading');
+
           const selected = items.find((x) => x.code === localValue);
           return selected ? `${selected.name} (${selected.code})` : t('all');
         }}
         onChange={(e) => handleChange(e.target.value)}
-        MenuProps={{
-          PaperProps: { style: { maxHeight } },
-        }}
+        MenuProps={{ PaperProps: { style: { maxHeight } } }}
       >
         {loading ? (
           <MenuItem disabled>
@@ -112,7 +108,6 @@ export function CustomEmployeeDistinctSelectInForm({
         ) : (
           options.map((opt) => (
             <MenuItem key={opt.value ?? 'all'} value={opt.value ?? ''}>
-              {opt.value !== undefined}
               <ListItemText primary={opt.label} />
             </MenuItem>
           ))

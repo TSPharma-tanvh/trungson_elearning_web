@@ -264,6 +264,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                 onChange={(value) => {
                   handleChange('departmentTypeCode', value);
                 }}
+                loadOnMount={true}
               />
             </Grid>
 
@@ -275,6 +276,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                 onChange={(value) => {
                   handleChange('positionCode', value);
                 }}
+                loadOnMount={true}
               />
             </Grid>
 
@@ -286,6 +288,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                 onChange={(value) => {
                   handleChange('positionStateCode', value);
                 }}
+                loadOnMount={true}
               />
             </Grid>
 

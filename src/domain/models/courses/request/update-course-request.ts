@@ -33,6 +33,9 @@ export class UpdateCourseRequest {
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: string;
 
+  departmentTypeCode?: string;
+  positionCode?: string;
+
   constructor(init?: Partial<UpdateCourseRequest>) {
     Object.assign(this, init);
   }
@@ -170,7 +173,8 @@ export class UpdateCourseRequest {
     }
 
     if (this.categoryEnum) fd.append('CategoryEnum', this.categoryEnum);
-
+    if (this.departmentTypeCode) fd.append('DepartmentTypeCode', this.departmentTypeCode);
+    if (this.positionCode) fd.append('PositionCode', this.positionCode);
     return fd;
   }
 }
