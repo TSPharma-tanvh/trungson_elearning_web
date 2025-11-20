@@ -40,11 +40,11 @@ export class QuizUsecase {
     return userResponse;
   }
 
-  async importFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
-    const response = await this.courseRepo.createQuizFromExcel(request);
+  // async importFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
+  //   const response = await this.courseRepo.createQuizFromExcel(request);
 
-    return response;
-  }
+  //   return response;
+  // }
 
   async createQuiz(request: CreateQuizRequest): Promise<ApiResponse> {
     const response = await this.courseRepo.createQuiz(request);

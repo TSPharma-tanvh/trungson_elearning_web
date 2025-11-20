@@ -910,5 +910,8 @@
   "noLessonsSelected": "Không có bài học nào được chọn",
   "courseDurationInDays": "Thời lượng khóa học tính theo ngày",
   "noLessons": "Không có bài học",
-  "durationInDaysForThisPart": "Thời lượng tính bằng ngày cho phần này"
+  "durationInDaysForThisPart": "Thời lượng tính bằng ngày cho phần này",
+  "importQuestionsFromExcel": "Nhập câu hỏi từ Excel",
+  "uploadExcelFile": "Tải lên tệp Excel",
+  "questionBank": "Ngân hàng câu hỏi"
 }

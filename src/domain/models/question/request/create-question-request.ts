@@ -44,7 +44,9 @@ export class CreateQuestionRequest {
     if (this.resourceIDs !== undefined) form.append('ResourceIDs', this.resourceIDs);
     if (this.status !== undefined) form.append('Status', this.status.toString());
 
-    this.resources?.forEach((file) => { form.append('Resources', file); });
+    this.resources?.forEach((file) => {
+      form.append('Resources', file);
+    });
     if (this.resourceDocumentNo) form.append('ResourceDocumentNo', this.resourceDocumentNo);
     if (this.resourcePrefixName) form.append('ResourcePrefixName', this.resourcePrefixName);
 

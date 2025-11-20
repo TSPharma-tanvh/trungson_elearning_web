@@ -64,26 +64,26 @@ export class QuizRepoImpl implements QuizRepository {
     }
   }
 
-  async createQuizFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
-    try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.createByExcel, request.toFormData(), {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        timeout: 3600000,
-      });
+  // async createQuizFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
+  //   try {
+  //     const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.createByExcel, request.toFormData(), {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //       timeout: 3600000,
+  //     });
 
-      const apiResponse = response.data;
+  //     const apiResponse = response.data;
 
-      if (!apiResponse?.isSuccessStatusCode) {
-        throw new Error(apiResponse?.message || 'Unknown API error');
-      }
+  //     if (!apiResponse?.isSuccessStatusCode) {
+  //       throw new Error(apiResponse?.message || 'Unknown API error');
+  //     }
 
-      return apiResponse;
-    } catch (error: any) {
-      throw new Error(error?.message || 'Failed to create quiz');
-    }
-  }
+  //     return apiResponse;
+  //   } catch (error: any) {
+  //     throw new Error(error?.message || 'Failed to create quiz');
+  //   }
+  // }
 
   async updateQuiz(request: UpdateQuizRequest): Promise<ApiResponse> {
     try {

@@ -32,6 +32,7 @@ export const navItems = [
     icon: 'test',
     items: [
       { key: 'quiz', title: 'quiz', href: paths.dashboard.quiz, icon: 'quiz' },
+      { key: 'category', title: 'questionBank', href: paths.dashboard.questionCategory, icon: 'questionCategory' },
       { key: 'question', title: 'question', href: paths.dashboard.question, icon: 'question' },
       { key: 'answers', title: 'answers', href: paths.dashboard.answers, icon: 'answer' },
       // { key: 'form', title: 'form', href: paths.dashboard.form, icon: 'form' },

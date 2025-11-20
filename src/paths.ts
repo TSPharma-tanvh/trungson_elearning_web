@@ -18,6 +18,7 @@ export const paths = {
     attendance: '/dashboard/class/attendance',
     quiz: '/dashboard/quiz/quiz',
     question: '/dashboard/quiz/questions',
+    questionCategory: '/dashboard/quiz/category',
     answers: '/dashboard/quiz/answers',
     form: '/dashboard/management/form',
     system: '/dashboard/system/system',

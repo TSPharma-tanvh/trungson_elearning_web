@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
-import { CategoryFilterEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
+import { CategoryEnum, CategoryFilterEnum, CoreEnumUtils } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -12,12 +12,11 @@ import { CustomSearchFilter } from '@/presentation/components/core/text-field/cu
 export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryRequest) => void }): React.JSX.Element {
   const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
-  const [categoryValue, setCategoryValue] = React.useState<CategoryFilterEnum | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetCategoryRequest({
       searchText: searchText || undefined,
-      category: categoryValue !== undefined ? CategoryFilterEnum[categoryValue] : undefined,
+      category: CategoryEnum[CategoryEnum.Question],
       pageNumber: 1,
       pageSize: 10,
     });
@@ -27,8 +26,7 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
 
   const handleClear = () => {
     setSearchText('');
-    setCategoryValue(undefined);
-    onFilter(new GetCategoryRequest({ pageNumber: 1, pageSize: 10 }));
+    onFilter(new GetCategoryRequest({ pageNumber: 1, pageSize: 10, category: CategoryEnum[CategoryEnum.Question] }));
   };
 
   return (
@@ -48,18 +46,18 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
           onEnter={() => {
             handleFilter();
           }}
-          placeholder={t('searchCategory')}
+          placeholder={t('search')}
         />
 
         {/* Status */}
-        <CustomSelectFilter<CategoryFilterEnum>
+        {/* <CustomSelectFilter<CategoryFilterEnum>
           label={t('category')}
           value={categoryValue}
           onChange={(val) => {
             setCategoryValue(val);
           }}
           options={CoreEnumUtils.getEnumOptions(CategoryFilterEnum)}
-        />
+        /> */}
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
           {t('filter')}

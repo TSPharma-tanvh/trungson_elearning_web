@@ -910,5 +910,8 @@
   "noLessonsSelected": "No Lessons Selected",
   "courseDurationInDays": "Course Duration In Days",
   "noLessons": "No Lessons",
-  "durationInDaysForThisPart": "Duration In Days For This Part"
+  "durationInDaysForThisPart": "Duration In Days For This Part",
+  "importQuestionsFromExcel": "Import Questions From Excel",
+  "uploadExcelFile": "Upload Excel File",
+  "questionBank": "Question Bank"
 }

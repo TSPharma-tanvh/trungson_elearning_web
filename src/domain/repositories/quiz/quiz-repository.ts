@@ -12,7 +12,7 @@ export interface QuizRepository {
 
   createQuiz: (request: CreateQuizRequest) => Promise<ApiResponse>;
 
-  createQuizFromExcel: (request: CreateQuizFromExcelRequest) => Promise<ApiResponse>;
+  // createQuizFromExcel: (request: CreateQuizFromExcelRequest) => Promise<ApiResponse>;
 
   updateQuiz: (request: UpdateQuizRequest) => Promise<ApiResponse>;
 }
