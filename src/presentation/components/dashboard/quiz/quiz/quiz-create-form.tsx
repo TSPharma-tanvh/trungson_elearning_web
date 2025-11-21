@@ -222,7 +222,6 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
           status: StatusEnum.Enable,
           type: QuizTypeEnum.LessonQuiz,
           categoryEnum: CategoryEnum.Quiz,
-          inputMethod: QuizInputMethodEnum.Excel,
           questionCategoryEnum: CategoryEnum.Question,
           answerCategoryEnum: CategoryEnum.Answer,
           canShuffle: false,
@@ -240,10 +239,10 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
     }
   }, [open]);
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
+  // const booleanOptions = [
+  //   { value: 'true', label: 'yes' },
+  //   { value: 'false', label: 'no' },
+  // ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -396,14 +395,16 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
+              <CustomSelectDropDown<boolean>
                 label={t('canStartOver')}
-                value={String(form.canStartOver ?? '')}
-                onChange={(value) => {
-                  handleChange('canStartOver', value === 'true');
+                value={form.canStartOver}
+                onChange={(v) => {
+                  handleChange('canStartOver', v);
                 }}
-                disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
 
@@ -436,155 +437,18 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
-                label={t('required')}
-                value={String(form.isRequired ?? '')}
-                onChange={(value) => {
-                  handleChange('isRequired', value === 'true');
+              <CustomSelectDropDown<boolean>
+                label={t('isRequired')}
+                value={form.isRequired}
+                onChange={(v) => {
+                  handleChange('isRequired', v);
                 }}
-                disabled={isSubmitting}
-                options={booleanOptions}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<QuizInputMethodEnum>
-                label={t('inputMethod')}
-                value={form.inputMethod}
-                onChange={(val) => {
-                  handleChange('inputMethod', val);
-                }}
-                disabled={disabled}
                 options={[
-                  { value: QuizInputMethodEnum.Excel, label: 'excel' },
-                  { value: QuizInputMethodEnum.Manual, label: 'manual' },
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
                 ]}
               />
             </Grid>
-
-            {form.inputMethod === QuizInputMethodEnum.Manual ? (
-              <Grid item xs={12}>
-                <QuestionMultiSelect
-                  questionUsecase={questionUsecase}
-                  value={form.questionIDs ? form.questionIDs.split(',').filter((id) => id) : []}
-                  onChange={(value: string[]) => {
-                    handleChange('questionIDs', value.join(','));
-                  }}
-                  disabled={isSubmitting}
-                  required
-                />
-              </Grid>
-            ) : (
-              <div />
-            )}
-
-            {form.inputMethod === QuizInputMethodEnum.Excel && (
-              <>
-                <Grid item xs={12} sm={6}>
-                  <CategorySelect
-                    categoryUsecase={categoryUsecase}
-                    value={form.questionCategoryID}
-                    label={t('questionCategory')}
-                    onChange={(value) => {
-                      handleChange('questionCategoryID', value);
-                    }}
-                    categoryEnum={CategoryEnum.Question}
-                    disabled={isSubmitting}
-                    required
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <CategorySelect
-                    categoryUsecase={categoryUsecase}
-                    value={form.answerCategoryID}
-                    label={t('answerCategory')}
-                    onChange={(value) => {
-                      handleChange('answerCategoryID', value);
-                    }}
-                    categoryEnum={CategoryEnum.Answer}
-                    disabled={isSubmitting}
-                    required
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <CustomSelectDropDown
-                    label={t('canAnswersShuffle')}
-                    value={String(form.canShuffle)}
-                    onChange={(value) => {
-                      handleChange('canShuffle', value === 'true');
-                    }}
-                    disabled={isSubmitting}
-                    options={booleanOptions}
-                  />
-                </Grid>
-
-                {/* upload file */}
-                <Grid item xs={12}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    {t('importQuestions')}
-                  </Typography>
-
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    fullWidth
-                    disabled={isSubmitting}
-                    startIcon={<Image {...iconStyle} />}
-                  >
-                    {t('uploadFile')}
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(e) => {
-                        handleExcelUpload(e.target.files?.[0] || null);
-                      }}
-                    />
-                  </Button>
-                </Grid>
-
-                {form.excelFile ? (
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle2" gutterBottom>
-                      {t('uploadedFiles')}
-                    </Typography>
-
-                    <Grid container spacing={1}>
-                      <Grid item xs={12}>
-                        <Button
-                          variant="text"
-                          fullWidth
-                          onClick={() => {
-                            if (!form.excelFile) return;
-                            handleFilePreview(
-                              URL.createObjectURL(form.excelFile),
-                              form.excelFile.name,
-                              form.excelFile.type
-                            );
-                          }}
-                          sx={{
-                            justifyContent: 'flex-start',
-                            textAlign: 'left',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          {form.excelFile.name}
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                ) : (
-                  <Grid item xs={12}>
-                    <Typography variant="body2" color="text.secondary">
-                      {t('noFileUploadedYet')}
-                    </Typography>
-                  </Grid>
-                )}
-              </>
-            )}
 
             {/* upload thumbnail */}
             <Grid item xs={12}>

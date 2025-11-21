@@ -216,10 +216,10 @@ export function CreateLessonDialog({
   //   { value: StatusEnum.Deleted, label: 'deleted' },
   // ];
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
+  // const booleanOptions = [
+  //   { value: 'true', label: 'yes' },
+  //   { value: 'false', label: 'no' },
+  // ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -279,14 +279,16 @@ export function CreateLessonDialog({
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <CustomSelectDropDown
-              label={t('required')}
-              value={String(form.isRequired ?? '')}
-              onChange={(value) => {
-                handleChange('isRequired', value === 'true');
+            <CustomSelectDropDown<boolean>
+              label={t('isRequired')}
+              value={form.isRequired}
+              onChange={(v) => {
+                handleChange('isRequired', v);
               }}
-              disabled={false}
-              options={booleanOptions}
+              options={[
+                { value: true, label: 'yes' },
+                { value: false, label: 'no' },
+              ]}
             />
           </Grid>
 

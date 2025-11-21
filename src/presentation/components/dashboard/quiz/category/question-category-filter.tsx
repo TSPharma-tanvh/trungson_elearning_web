@@ -8,7 +8,11 @@ import { useTranslation } from 'react-i18next';
 
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
-export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryRequest) => void }): React.JSX.Element {
+export function QuestionCategoryFilters({
+  onFilter,
+}: {
+  onFilter: (filters: GetCategoryRequest) => void;
+}): React.JSX.Element {
   const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
 

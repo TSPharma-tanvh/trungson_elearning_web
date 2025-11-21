@@ -2,7 +2,7 @@ import React from 'react';
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
+import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, CircularProgress, Dialog, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -230,19 +230,21 @@ export default function CourseTable({
         )}
       />
 
-      {loadingEdit && (
+      {loadingEdit ? (
         <Dialog open>
           <Box p={4} display="flex" justifyContent="center">
             <CircularProgress />
           </Box>
         </Dialog>
-      )}
+      ) : null}
 
       {editCourseData ? (
         <UpdateCourseFormDialog
           open={editOpen}
           data={editCourseData}
-          onClose={() => setEditOpen(false)}
+          onClose={() => {
+            setEditOpen(false);
+          }}
           onSubmit={async (updatedData) => {
             await onEditCourse(updatedData);
             setEditOpen(false);

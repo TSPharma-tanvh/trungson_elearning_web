@@ -1,11 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import {
-  LessonsCollectionUpdateDetailRequest,
-  LessonsCollectionUpdateRequest,
-} from '@/domain/models/lessons/request/lesson-collection-update-request';
-import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { LessonsCollectionUpdateRequest } from '@/domain/models/lessons/request/lesson-collection-update-request';
 import { Add, Delete } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -61,7 +57,9 @@ function LessonCollectionUpdateItemCard({
           <CustomTextField
             label={t('collectionName')}
             value={item.name}
-            onChange={(val) => onChangeField('name', val)}
+            onChange={(val) => {
+              onChangeField('name', val);
+            }}
             required
           />
         </Box>
@@ -69,7 +67,9 @@ function LessonCollectionUpdateItemCard({
         {/* Ordered Lessons */}
         <LessonOrderEditor
           value={item.collection}
-          onChange={(newCollection) => onChangeField('collection', newCollection)}
+          onChange={(newCollection) => {
+            onChangeField('collection', newCollection);
+          }}
           label={t('lessonsInCollection')}
         />
 
@@ -80,7 +80,9 @@ function LessonCollectionUpdateItemCard({
               <CustomDateTimePicker
                 label={t('startDate')}
                 value={item.startDate ? item.startDate.toISOString() : undefined}
-                onChange={(iso) => onChangeField('startDate', iso ? new Date(iso) : undefined)}
+                onChange={(iso) => {
+                  onChangeField('startDate', iso ? new Date(iso) : undefined);
+                }}
                 allowClear
               />
             </Grid>
@@ -88,7 +90,9 @@ function LessonCollectionUpdateItemCard({
               <CustomDateTimePicker
                 label={t('endDate')}
                 value={item.endDate ? item.endDate.toISOString() : undefined}
-                onChange={(iso) => onChangeField('endDate', iso ? new Date(iso) : undefined)}
+                onChange={(iso) => {
+                  onChangeField('endDate', iso ? new Date(iso) : undefined);
+                }}
                 allowClear
               />
             </Grid>
@@ -96,7 +100,7 @@ function LessonCollectionUpdateItemCard({
         )}
 
         {/* Fixed Duration (shared across all collections) */}
-        {fixedCourse && (
+        {fixedCourse ? (
           <Box mt={3}>
             <CustomTextField
               label={t('courseDurationInDays')}
@@ -110,7 +114,7 @@ function LessonCollectionUpdateItemCard({
               patternError={t('onlyPositiveIntegerError')}
             />
           </Box>
-        )}
+        ) : null}
       </CardContent>
     </Card>
   );
@@ -128,7 +132,7 @@ export function LessonCollectionUpdateEditor({
   onChange,
 }: LessonCollectionUpdateEditorProps) {
   const { t } = useTranslation();
-  const { lessonUsecase } = useDI();
+  // const { lessonUsecase } = useDI();
 
   const normalize = (arr: LessonsCollectionUpdateRequest[]) =>
     arr.map((item) => new LessonsCollectionUpdateRequest(item));
@@ -228,8 +232,12 @@ export function LessonCollectionUpdateEditor({
             fixedCourse={fixedCourse}
             sharedFixedDuration={sharedFixedDuration}
             canDelete={items.length > 1}
-            onDelete={() => handleDelete(item.order)}
-            onChangeField={(field, val) => handleChange(item.order, field, val)}
+            onDelete={() => {
+              handleDelete(item.order);
+            }}
+            onChangeField={(field, val) => {
+              handleChange(item.order, field, val);
+            }}
             onUpdateSharedDuration={updateSharedFixedDuration}
           />
         ))}

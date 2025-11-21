@@ -343,7 +343,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
             <Grid item xs={12} sm={6}>
               <CustomEmployeeDistinctSelectInForm
-                label={'departmentType'}
+                label="departmentType"
                 value={formData.departmentTypeCode}
                 type={DepartmentFilterType.DepartmentType}
                 onChange={(value) => {
@@ -355,7 +355,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
             <Grid item xs={12} sm={6}>
               <CustomEmployeeDistinctSelectInForm
-                label={'position'}
+                label="position"
                 value={formData.positionCode}
                 type={DepartmentFilterType.Position}
                 onChange={(value) => {
@@ -367,7 +367,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
             <Grid item xs={12} sm={6}>
               <CustomEmployeeDistinctSelectInForm
-                label={'currentPositionStateName'}
+                label="currentPositionStateName"
                 value={formData.positionStateCode}
                 type={DepartmentFilterType.PositionState}
                 onChange={(value) => {

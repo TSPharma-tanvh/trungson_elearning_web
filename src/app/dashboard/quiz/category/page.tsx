@@ -5,19 +5,21 @@ import { type CreateCategoryRequest } from '@/domain/models/category/request/cre
 import { GetCategoryRequest } from '@/domain/models/category/request/get-category-request';
 import { type UpdateCategoryRequest } from '@/domain/models/category/request/update-category-request';
 import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
+import { type CreateQuestionsFromExcelDto } from '@/domain/models/question/request/create-question-from-excel-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
-import { CreateCategoryDialog } from '@/presentation/components/dashboard/management/category/category-create-form';
-import { CategoryFilters } from '@/presentation/components/dashboard/management/category/category-filter';
-import CategoryTable from '@/presentation/components/dashboard/management/category/category-table';
+import { CreateQuestionCategoryDialog } from '@/presentation/components/dashboard/quiz/category/question-category-create-form';
+import { QuestionCategoryFilters } from '@/presentation/components/dashboard/quiz/category/question-category-filter';
+import QuestionCategoryTable from '@/presentation/components/dashboard/quiz/category/question-category-table';
+import { CreateQuestionsFromExcelDialog } from '@/presentation/components/dashboard/quiz/question/question-create-by-excel-form';
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { categoryUsecase } = useDI();
+  const { categoryUsecase, questionUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetCategoryRequest>(
@@ -26,6 +28,10 @@ export default function Page(): React.JSX.Element {
   const [categorys, setCategories] = React.useState<CategoryDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
+
+  //import
+  const [showImportDialog, setShowImportDialog] = React.useState(false);
+  const [excelImportLoading, setExcelImportLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -66,6 +72,7 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
+  //create
   const handleCreateCategory = async (request: CreateCategoryRequest) => {
     try {
       await categoryUsecase.createCategory(request);
@@ -73,6 +80,20 @@ export default function Page(): React.JSX.Element {
       await fetchCategories();
     } catch (error) {
       return undefined;
+    }
+  };
+
+  //import question
+  const handleImportExcel = async (request: CreateQuestionsFromExcelDto) => {
+    try {
+      setExcelImportLoading(true);
+      await questionUsecase.createQuestionByExcel(request);
+      setShowImportDialog(false);
+      await fetchCategories();
+    } catch (error) {
+      return undefined;
+    } finally {
+      setExcelImportLoading(false);
     }
   };
 
@@ -110,18 +131,38 @@ export default function Page(): React.JSX.Element {
             {t('questionBank')}
           </Typography>
         </Stack>
-        <Button
-          startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-          variant="contained"
-          onClick={() => {
-            setShowCreateDialog(true);
-          }}
-        >
-          {t('add')}
-        </Button>
+        
+        <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
+          <Button
+            startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowImportDialog(true);
+            }}
+            sx={{
+              backgroundColor: 'var(--mui-palette-secondary-main)',
+              '&:hover': {
+                backgroundColor: 'var(--mui-palette-secondary-dark)',
+                color: 'var(--mui-palette-common-white)',
+                borderColor: 'var(--mui-palette-secondary-dark)',
+              },
+            }}
+          >
+            {t('updateQuestions')}
+          </Button>
+          <Button
+            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+            variant="contained"
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
+            {t('addQuestionBank')}
+          </Button>
+        </Stack>
       </Stack>
-      <CategoryFilters onFilter={handleFilter} />
-      <CategoryTable
+      <QuestionCategoryFilters onFilter={handleFilter} />
+      <QuestionCategoryTable
         rows={categorys}
         count={totalCount}
         page={page}
@@ -132,7 +173,7 @@ export default function Page(): React.JSX.Element {
         onEditCategory={handleEditCategory}
       />
 
-      <CreateCategoryDialog
+      <CreateQuestionCategoryDialog
         onSubmit={handleCreateCategory}
         disabled={false}
         loading={false}
@@ -140,6 +181,15 @@ export default function Page(): React.JSX.Element {
         onClose={() => {
           setShowCreateDialog(false);
         }}
+      />
+
+      <CreateQuestionsFromExcelDialog
+        open={showImportDialog}
+        loading={excelImportLoading}
+        onClose={() => {
+          setShowImportDialog(false);
+        }}
+        onSubmit={handleImportExcel}
       />
     </Stack>
   );

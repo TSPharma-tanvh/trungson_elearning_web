@@ -10,10 +10,9 @@ import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography }
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
-import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
-interface CategoryCreateProps {
+interface QuestionCategoryCreateProps {
   disabled?: boolean;
   onSubmit: (data: CreateCategoryRequest) => void;
   loading?: boolean;
@@ -21,13 +20,13 @@ interface CategoryCreateProps {
   onClose: () => void;
 }
 
-export function CreateCategoryDialog({
+export function CreateQuestionCategoryDialog({
   disabled = false,
   onSubmit,
   loading = false,
   open,
   onClose,
-}: CategoryCreateProps) {
+}: QuestionCategoryCreateProps) {
   const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
@@ -36,7 +35,7 @@ export function CreateCategoryDialog({
     new CreateCategoryRequest({
       categoryName: '',
       description: '',
-      category: CategoryEnum.Path,
+      category: CategoryEnum.Question,
     })
   );
 
@@ -75,7 +74,7 @@ export function CreateCategoryDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          {t('createCategory')}
+          {t('questionBankCreate')}
         </Typography>
         <Box>
           <IconButton
@@ -118,7 +117,7 @@ export function CreateCategoryDialog({
           >
             <Grid item xs={12}>
               <CustomTextField
-                label={t('categoryName')}
+                label={t('questionBankName')}
                 value={form.categoryName}
                 onChange={(val) => {
                   handleChange('categoryName', val);
@@ -129,7 +128,7 @@ export function CreateCategoryDialog({
 
             <Grid item xs={12}>
               <CustomTextField
-                label={t('description')}
+                label={t('questionBankDesc')}
                 value={form.description ?? ''}
                 onChange={(val) => {
                   handleChange('description', val);
@@ -142,26 +141,6 @@ export function CreateCategoryDialog({
                     height: fullScreen ? '100%' : 'auto',
                   },
                 }}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <CustomSelectDropDown<CategoryEnum>
-                label={t('categoryType')}
-                value={form.category ?? CategoryEnum.Path}
-                onChange={(val) => {
-                  handleChange('category', val);
-                }}
-                disabled={disabled}
-                options={[
-                  { value: CategoryEnum.Course, label: 'course' },
-                  // { value: CategoryEnum.Lesson, label: 'lesson' },
-                  { value: CategoryEnum.Class, label: 'class' },
-                  { value: CategoryEnum.Quiz, label: 'quiz' },
-                  // { value: CategoryEnum.Question, label: 'question' },
-                  // { value: CategoryEnum.Answer, label: 'answer' },
-                  { value: CategoryEnum.Resource, label: 'resource' },
-                ]}
               />
             </Grid>
 

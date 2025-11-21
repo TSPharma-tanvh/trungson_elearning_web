@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { type CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
 import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
@@ -14,13 +13,11 @@ import Typography from '@mui/material/Typography';
 import { FileXls } from '@phosphor-icons/react';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
-import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
 import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
-import { ImportQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-import-form';
 import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
 const excelLink = process.env.NEXT_PUBLIC_IMPORT_QUIZ_FORM;
@@ -30,7 +27,7 @@ export default function Page(): React.JSX.Element {
   const { quizUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showImportDialog, setShowImportDialog] = React.useState(false);
+  // const [showImportDialog, setShowImportDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetQuizRequest>(new GetQuizRequest({ pageNumber: 1, pageSize: 10 }));
   const [quizzes, setQuizzes] = React.useState<QuizResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
@@ -83,15 +80,15 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleImportQuiz = async (request: CreateQuizFromExcelRequest) => {
-    try {
-      await quizUsecase.importFromExcel(request);
-      setShowImportDialog(false);
-      await fetchQuizzes();
-    } catch (error) {
-      return undefined;
-    }
-  };
+  // const handleImportQuiz = async (request: CreateQuizFromExcelRequest) => {
+  //   try {
+  //     await quizUsecase.importFromExcel(request);
+  //     setShowImportDialog(false);
+  //     await fetchQuizzes();
+  //   } catch (error) {
+  //     return undefined;
+  //   }
+  // };
 
   const handleEditQuiz = async (request: UpdateQuizRequest) => {
     try {
@@ -150,7 +147,7 @@ export default function Page(): React.JSX.Element {
             {t('quizzes')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Button
+            {/* <Button
               color="inherit"
               startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}
               onClick={() => {
@@ -158,7 +155,7 @@ export default function Page(): React.JSX.Element {
               }}
             >
               {t('importQuestionsToQuiz')}
-            </Button>
+            </Button> */}
             <Button
               color="inherit"
               startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}
@@ -211,7 +208,7 @@ export default function Page(): React.JSX.Element {
         }}
       />
 
-      <ImportQuizDialog
+      {/* <ImportQuizDialog
         onSubmit={handleImportQuiz}
         disabled={false}
         loading={false}
@@ -219,7 +216,7 @@ export default function Page(): React.JSX.Element {
         onClose={() => {
           setShowImportDialog(false);
         }}
-      />
+      /> */}
     </Stack>
   );
 }

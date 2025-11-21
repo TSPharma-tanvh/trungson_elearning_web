@@ -4,6 +4,7 @@ export class CategoryResponseNoThumbnail {
   description?: string;
   category?: string;
   thumbnailId?: string;
+  totalScore?: number;
 
   static fromJson(json: any): CategoryResponseNoThumbnail {
     const obj = new CategoryResponseNoThumbnail();
@@ -12,6 +13,7 @@ export class CategoryResponseNoThumbnail {
     obj.description = json.description;
     obj.category = json.category;
     obj.thumbnailId = json.thumbnailId;
+    obj.totalScore = json.totalScore;
     return obj;
   }
 
@@ -22,6 +24,7 @@ export class CategoryResponseNoThumbnail {
       description: this.description,
       category: this.category,
       thumbnailId: this.thumbnailId,
+      totalScore: this.totalScore,
     };
   }
 }

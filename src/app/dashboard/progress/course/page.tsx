@@ -16,7 +16,7 @@ import UserCourseProgressTable from '@/presentation/components/dashboard/progres
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { userCourseProgressUsecase, enrollUsecase, courseUsecase } = useDI();
+  const { userCourseProgressUsecase, courseUsecase } = useDI();
 
   // const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserCourseProgressRequest>(
@@ -161,7 +161,7 @@ export default function Page(): React.JSX.Element {
           </Button>
         </div> */}
       </Stack>
-      <UserCourseProgressFilters onFilter={handleFilter} enrollUsecase={enrollUsecase} courseUsecase={courseUsecase} />
+      <UserCourseProgressFilters onFilter={handleFilter} courseUsecase={courseUsecase} />
       <UserCourseProgressTable
         rows={userCourseProgress}
         count={totalCount}

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
+import { type EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
 import { useEmployeeDistinct } from '@/presentation/hooks/employee/use-employee-distinct';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
@@ -98,7 +98,7 @@ export function CustomEmployeeDistinctSelectInForm({
           const selected = items.find((x) => x.code === localValue);
           return selected ? `${selected.name} (${selected.code})` : t('all');
         }}
-        onChange={(e) => handleChange(e.target.value)}
+        onChange={(e) => { handleChange(e.target.value); }}
         MenuProps={{ PaperProps: { style: { maxHeight } } }}
       >
         {loading ? (

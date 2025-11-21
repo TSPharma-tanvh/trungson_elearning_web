@@ -913,5 +913,14 @@
   "durationInDaysForThisPart": "Duration In Days For This Part",
   "importQuestionsFromExcel": "Import Questions From Excel",
   "uploadExcelFile": "Upload Excel File",
-  "questionBank": "Question Bank"
+  "questionBank": "Question Bank",
+  "questionBankName": "Question Bank Name",
+  "questionBankDesc": "Question Bank Description",
+  "questionBankDetail": "Question Bank Detail",
+  "questionBankCreate": "Create Question Bank",
+  "questionBankUpdate": "Update Question Bank",
+  "questionDetail": "Question Detail",
+  "selectQuestionBank": "Select Question Bank",
+  "updateQuestions": "Update Questions",
+  "addQuestionBank": "Add Question Bank"
 }

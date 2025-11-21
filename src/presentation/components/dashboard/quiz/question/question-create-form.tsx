@@ -167,10 +167,10 @@ export function QuestionCreateForm({
     }
   }, [open]);
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
+  // const booleanOptions = [
+  //   { value: 'true', label: 'yes' },
+  //   { value: 'false', label: 'no' },
+  // ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -302,14 +302,16 @@ export function QuestionCreateForm({
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
+              <CustomSelectDropDown<boolean>
                 label={t('canShuffle')}
-                value={String(form.canShuffle ?? '')}
-                onChange={(value) => {
-                  handleChange('canShuffle', value === 'true');
+                value={form.canShuffle}
+                onChange={(v) => {
+                  handleChange('canShuffle', v);
                 }}
-                disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
             {/* Upload file resources */}

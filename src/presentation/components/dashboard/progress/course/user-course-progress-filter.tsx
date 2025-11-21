@@ -3,23 +3,19 @@
 import * as React from 'react';
 import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
 import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
-import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
-import { CategoryEnum, CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
+import { CoreEnumUtils, UserProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 import { CourseSingleFilter } from '@/presentation/components/shared/courses/courses/course-single-filter';
-import { EnrollmentSingleFilter } from '@/presentation/components/shared/enrollment/enrollment-single-filter';
 
 export function UserCourseProgressFilters({
   onFilter,
-  enrollUsecase,
   courseUsecase,
 }: {
   onFilter: (filters: GetUserCourseProgressRequest) => void;
-  enrollUsecase: EnrollmentUsecase;
   courseUsecase: CourseUsecase;
 }): React.JSX.Element {
   const { t } = useTranslation();
@@ -29,8 +25,6 @@ export function UserCourseProgressFilters({
     status: undefined,
     enrollmentCriteriaId: undefined,
   });
-
-  const [category, setCategory] = React.useState<CategoryEnum>(CategoryEnum.Path);
 
   const handleChange = <K extends keyof GetUserCourseProgressRequest>(
     key: K,
@@ -54,7 +48,6 @@ export function UserCourseProgressFilters({
       status: undefined,
       enrollmentCriteriaId: undefined,
     });
-    setCategory(CategoryEnum.Path);
     onFilter(new GetUserCourseProgressRequest({ pageNumber: 1, pageSize: 10 }));
   };
 
@@ -74,7 +67,9 @@ export function UserCourseProgressFilters({
           onChange={(val) => {
             handleChange('searchText', val);
           }}
-          onEnter={() => { handleFilter(); }}
+          onEnter={() => {
+            handleFilter();
+          }}
           placeholder={t('searchProgress')}
         />
 
@@ -91,7 +86,7 @@ export function UserCourseProgressFilters({
           }))}
         />
 
-        {/* Quiz */}
+        {/* Course */}
         <CourseSingleFilter
           courseUsecase={courseUsecase}
           value={form.courseID ?? ''}
@@ -102,7 +97,7 @@ export function UserCourseProgressFilters({
         />
 
         {/* Enrollment Criteria */}
-        <EnrollmentSingleFilter
+        {/* <EnrollmentSingleFilter
           enrollmentUsecase={enrollUsecase}
           value={form.enrollmentCriteriaId ?? ''}
           onChange={(value: string) => {
@@ -110,9 +105,9 @@ export function UserCourseProgressFilters({
           }}
           disabled={false}
           categoryEnum={category}
-        />
+        /> */}
 
-        <CustomSelectFilter<boolean>
+        {/* <CustomSelectFilter<boolean>
           label={t('hasPath')}
           value={form.hasPath}
           onChange={(val) => {
@@ -124,7 +119,7 @@ export function UserCourseProgressFilters({
           ]}
           withAllOption
           allLabel="all"
-        />
+        /> */}
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
           {t('filter')}

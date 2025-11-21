@@ -1,16 +1,13 @@
 'use client';
 
 import React from 'react';
-import { CreateQuestionsFromExcelDto } from '@/domain/models/question/request/create-question-from-excel-request';
 import { GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
 import { type UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
 import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { CreateQuestionsFromExcelDialog } from '@/presentation/components/dashboard/quiz/question/question-create-by-excel-form';
 import { QuestionFilters } from '@/presentation/components/dashboard/quiz/question/question-filter';
 import QuestionTable from '@/presentation/components/dashboard/quiz/question/question-table';
 
@@ -18,15 +15,15 @@ export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
   const { questionUsecase } = useDI();
 
-  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  // const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetQuestionRequest>(
     new GetQuestionRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [questions, setQuestions] = React.useState<QuestionResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
-  const [showImportDialog, setShowImportDialog] = React.useState(false);
-  const [excelImportLoading, setExcelImportLoading] = React.useState(false);
+  // const [showImportDialog, setShowImportDialog] = React.useState(false);
+  // const [excelImportLoading, setExcelImportLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -75,18 +72,18 @@ export default function Page(): React.JSX.Element {
   //   }
   // };
 
-  const handleImportExcel = async (request: CreateQuestionsFromExcelDto) => {
-    try {
-      setExcelImportLoading(true);
-      await questionUsecase.createQuestionByExcel(request);
-      setShowImportDialog(false);
-      await fetchQuestions();
-    } catch (error) {
-      return undefined;
-    } finally {
-      setExcelImportLoading(false);
-    }
-  };
+  // const handleImportExcel = async (request: CreateQuestionsFromExcelDto) => {
+  //   try {
+  //     setExcelImportLoading(true);
+  //     await questionUsecase.createQuestionByExcel(request);
+  //     setShowImportDialog(false);
+  //     await fetchQuestions();
+  //   } catch (error) {
+  //     return undefined;
+  //   } finally {
+  //     setExcelImportLoading(false);
+  //   }
+  // };
 
   const handleEditQuestion = async (request: UpdateQuestionRequest) => {
     try {
@@ -122,7 +119,7 @@ export default function Page(): React.JSX.Element {
             {t('questions')}
           </Typography>
         </Stack>
-        <Button
+        {/* <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
           onClick={() => {
@@ -130,7 +127,7 @@ export default function Page(): React.JSX.Element {
           }}
         >
           {t('add')}
-        </Button>
+        </Button> */}
       </Stack>
 
       <QuestionFilters onFilter={handleFilter} />
@@ -156,12 +153,12 @@ export default function Page(): React.JSX.Element {
         }}
       /> */}
 
-      <CreateQuestionsFromExcelDialog
+      {/* <CreateQuestionsFromExcelDialog
         open={showImportDialog}
         loading={excelImportLoading}
         onClose={() => setShowImportDialog(false)}
         onSubmit={handleImportExcel}
-      />
+      /> */}
     </Stack>
   );
 }

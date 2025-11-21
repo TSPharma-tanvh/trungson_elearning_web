@@ -258,37 +258,37 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
 
             <Grid item xs={12} sm={6}>
               <CustomEmployeeDistinctSelectInForm
-                label={'departmentType'}
+                label="departmentType"
                 value={form.departmentTypeCode}
                 type={DepartmentFilterType.DepartmentType}
                 onChange={(value) => {
                   handleChange('departmentTypeCode', value);
                 }}
-                loadOnMount={true}
+                loadOnMount
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomEmployeeDistinctSelectInForm
-                label={'position'}
+                label="position"
                 value={form.positionCode}
                 type={DepartmentFilterType.Position}
                 onChange={(value) => {
                   handleChange('positionCode', value);
                 }}
-                loadOnMount={true}
+                loadOnMount
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomEmployeeDistinctSelectInForm
-                label={'currentPositionStateName'}
+                label="currentPositionStateName"
                 value={form.positionStateCode}
                 type={DepartmentFilterType.PositionState}
                 onChange={(value) => {
                   handleChange('positionStateCode', value);
                 }}
-                loadOnMount={true}
+                loadOnMount
               />
             </Grid>
 

@@ -13,16 +13,21 @@ import { useTranslation } from 'react-i18next';
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
 
-interface Props {
+interface CreateQuestionFromExcelProps {
   open: boolean;
   loading?: boolean;
   onClose: () => void;
   onSubmit: (data: CreateQuestionsFromExcelDto) => void;
 }
 
-export function CreateQuestionsFromExcelDialog({ open, loading = false, onClose, onSubmit }: Props) {
+export function CreateQuestionsFromExcelDialog({
+  open,
+  loading = false,
+  onClose,
+  onSubmit,
+}: CreateQuestionFromExcelProps) {
   const { t } = useTranslation();
   const { categoryUsecase } = useDI();
 
@@ -59,10 +64,10 @@ export function CreateQuestionsFromExcelDialog({ open, loading = false, onClose,
     if (!open) resetForm();
   }, [open]);
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
+  // const booleanOptions = [
+  //   { value: 'true', label: 'yes' },
+  //   { value: 'false', label: 'no' },
+  // ];
 
   const handleSave = () => {
     if (!form.excelFile) {
@@ -84,7 +89,11 @@ export function CreateQuestionsFromExcelDialog({ open, loading = false, onClose,
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">{t('importQuestionsFromExcel')}</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -97,11 +106,13 @@ export function CreateQuestionsFromExcelDialog({ open, loading = false, onClose,
         <Grid container spacing={3}>
           {/* Question category */}
           <Grid item xs={12} mt={1}>
-            <CategorySelect
+            <QuestionCategorySelect
               categoryUsecase={categoryUsecase}
               value={form.questionCategoryID}
-              label={t('questionCategory')}
-              onChange={(value) => handleChange('questionCategoryID', value)}
+              label={t('questionBank')}
+              onChange={(value) => {
+                handleChange('questionCategoryID', value);
+              }}
               categoryEnum={CategoryEnum.Question}
               required
             />
@@ -122,11 +133,16 @@ export function CreateQuestionsFromExcelDialog({ open, loading = false, onClose,
 
           {/* Shuffle */}
           <Grid item xs={12}>
-            <CustomSelectDropDown
+            <CustomSelectDropDown<boolean>
               label={t('canShuffle')}
-              value={String(form.canShuffle)}
-              onChange={(v) => handleChange('canShuffle', v === 'true')}
-              options={booleanOptions}
+              value={form.canShuffle}
+              onChange={(v) => {
+                handleChange('canShuffle', v);
+              }}
+              options={[
+                { value: true, label: 'yes' },
+                { value: false, label: 'no' },
+              ]}
             />
           </Grid>
 
@@ -140,19 +156,21 @@ export function CreateQuestionsFromExcelDialog({ open, loading = false, onClose,
                 hidden
                 type="file"
                 accept=".xlsx,.xls"
-                onChange={(e) => handleExcelUpload(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  handleExcelUpload(e.target.files?.[0] || null);
+                }}
               />
             </Button>
           </Grid>
 
-          {form.excelFile && (
+          {form.excelFile ? (
             <Grid item xs={12}>
               <Typography variant="subtitle2">{t('uploadedFiles')}</Typography>
               <Button variant="text" fullWidth sx={{ justifyContent: 'flex-start' }}>
                 {form.excelFile.name}
               </Button>
             </Grid>
-          )}
+          ) : null}
 
           <Grid item xs={12}>
             <CustomButton label={t('create')} onClick={handleSave} loading={loading} />

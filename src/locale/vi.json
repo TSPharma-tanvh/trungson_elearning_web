@@ -913,5 +913,14 @@
   "durationInDaysForThisPart": "Thời lượng tính bằng ngày cho phần này",
   "importQuestionsFromExcel": "Nhập câu hỏi từ Excel",
   "uploadExcelFile": "Tải lên tệp Excel",
-  "questionBank": "Ngân hàng câu hỏi"
+  "questionBank": "Ngân hàng câu hỏi",
+  "questionBankName": "Tên ngân hàng câu hỏi",
+  "questionBankDesc": "Mô tả ngân hàng câu hỏi",
+  "questionBankDetail": "Chi tiết ngân hàng câu hỏi",
+  "questionBankCreate": "Tạo ngân hàng câu hỏi",
+  "questionBankUpdate": "Cập nhật ngân hàng câu hỏi",
+  "questionDetail": "Chi tiết câu hỏi",
+  "selectQuestionBank": "Chọn ngân hàng câu hỏi",
+  "updateQuestions": "Cập nhật các câu hỏi",
+  "addQuestionBank": "Thêm ngân hàng câu hỏi"
 }
