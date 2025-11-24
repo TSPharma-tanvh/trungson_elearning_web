@@ -7,6 +7,7 @@ import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
@@ -16,10 +17,9 @@ import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
-import { CreateQuizForLessonDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-for-lesson-form';
-import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
-import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
-import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
+import { CreateExamDialog } from '@/presentation/components/dashboard/quiz/exam/exam-create-form';
+import { ExamFilters } from '@/presentation/components/dashboard/quiz/exam/exam-filter';
+import ExamTable from '@/presentation/components/dashboard/quiz/exam/exam-table';
 
 const excelLink = process.env.NEXT_PUBLIC_IMPORT_QUIZ_FORM;
 
@@ -30,7 +30,6 @@ export default function Page(): React.JSX.Element {
   const { quizUsecase } = useDI();
 
   const [showCreateQuizExamDialog, setShowCreateQuizExamDialog] = React.useState(false);
-  const [showCreateQuizLessonDialog, setShowCreateQuizLessonDialog] = React.useState(false);
 
   // const [showImportDialog, setShowImportDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetQuizRequest>(new GetQuizRequest({ pageNumber: 1, pageSize: 10 }));
@@ -47,6 +46,7 @@ export default function Page(): React.JSX.Element {
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
+        type: QuizTypeEnum.ExamQuiz,
       });
       const { quizzes: quiz, totalRecords } = await quizUsecase.getQuizListInfo(request);
       setQuizzes(quiz);
@@ -114,23 +114,6 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleDeleteQuizzes = async (ids: string[]) => {
-    try {
-      setDeleteLoading(true);
-      for (const id of ids) {
-        const response = await quizUsecase.deleteQuiz(id);
-        if (!response) {
-          throw new Error(`Failed to delete path with ID: ${id}`);
-        }
-      }
-      await fetchQuizzes();
-    } catch (error) {
-      return undefined;
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
-
   const handleDeleteQuizzesPermanent = async (ids: string[]) => {
     try {
       setDeleteLoading(true);
@@ -176,7 +159,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            {t('quizzes')}
+            {t('exam')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             {/* <Button
@@ -212,23 +195,6 @@ export default function Page(): React.JSX.Element {
               startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
               variant="contained"
               onClick={() => {
-              setShowCreateQuizLessonDialog(true);
-              }}
-              color="success"
-              sx={{
-              textTransform: 'none',
-              bgcolor: theme.palette.secondary.main,
-              '&:hover': {
-                bgcolor: theme.palette.secondary.dark,
-              },
-              }}
-            >
-              {t('quizLessonCreate')}
-            </Button>
-            <Button
-              startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-              variant="contained"
-              onClick={() => {
                 setShowCreateQuizExamDialog(true);
               }}
             >
@@ -237,8 +203,8 @@ export default function Page(): React.JSX.Element {
           </Stack>
         </div>
       </Stack>
-      <QuizFilters onFilter={handleFilter} />
-      <QuizTable
+      <ExamFilters onFilter={handleFilter} />
+      <ExamTable
         rows={quizzes}
         count={totalCount}
         page={page}
@@ -250,23 +216,13 @@ export default function Page(): React.JSX.Element {
         onEditQuiz={handleEditQuiz}
       />
 
-      <CreateQuizDialog
+      <CreateExamDialog
         onSubmit={handleCreateQuizExam}
         disabled={false}
         loading={false}
         open={showCreateQuizExamDialog}
         onClose={() => {
           setShowCreateQuizExamDialog(false);
-        }}
-      />
-
-      <CreateQuizForLessonDialog
-        onSubmit={handleCreateQuizLesson}
-        disabled={false}
-        loading={false}
-        open={showCreateQuizLessonDialog}
-        onClose={() => {
-          setShowCreateQuizLessonDialog(false);
         }}
       />
 

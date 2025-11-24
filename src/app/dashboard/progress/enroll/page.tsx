@@ -88,7 +88,7 @@ export default function EnrollUsersToCoursePage() {
     try {
       setLoading(true);
       await userCourseProgressUsecase.enrollUserCourseProgress(form);
-      router.push('/dashboard/progress/course');
+      // router.push('/dashboard/progress/course');
     } catch (error: any) {
       return null;
     } finally {

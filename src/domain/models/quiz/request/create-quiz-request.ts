@@ -1,23 +1,25 @@
-import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { QuizTypeEnum, StatusEnum, type CategoryEnum } from '@/utils/enum/core-enum';
 
 export class CreateQuizRequest {
   levelID?: string;
 
-  canStartOver: boolean = false;
-  canShuffle: boolean = true;
-  isRequired: boolean = false;
+  canStartOver = false;
+  canShuffle = true;
+  isRequired = false;
+  hasLesson = false;
+  lessonID?: string;
 
   displayedQuestionCount!: number;
 
   type: QuizTypeEnum = QuizTypeEnum.LessonQuiz;
-  time!: string; // TimeSpan to string (HH:mm:ss)
+  time!: string; // HH:mm:ss
 
-  isRestrictAttempts: boolean = false;
+  isRestrictAttempts = false;
 
-  maxAttempts!: number;
+  maxAttempts?: number;
   scoreToPass!: number;
 
-  title: string = '';
+  title = '';
   description?: string;
 
   positionStateCode?: string;
@@ -27,7 +29,6 @@ export class CreateQuizRequest {
   status: StatusEnum = StatusEnum.Enable;
 
   thumbnailID?: string;
-
   resourceIDs?: string;
 
   resources?: File[];
@@ -41,26 +42,27 @@ export class CreateQuizRequest {
   categoryEnum?: CategoryEnum;
   isDeleteOldThumbnail?: boolean;
 
-  isAutoSubmitted: boolean = true;
+  isAutoSubmitted = true;
 
-  questionCategoryIDs?: string;
-
-  isFixedQuiz: boolean = false;
+  isFixedQuiz = false;
 
   startDate?: Date;
   endDate?: Date;
 
   fixedQuizDayDuration?: number;
-
   positionCode?: string;
 
-  //new logic
-  inputMethod?: string;
-  excelFile?: File;
-  questionCategoryID?: string;
-  questionCategoryEnum?: CategoryEnum;
-  answerCategoryID?: string;
-  answerCategoryEnum?: CategoryEnum;
+  // new logic
+  // inputMethod?: string;
+  // excelFile?: File;
+
+  // questionCategoryEnum?: CategoryEnum;
+  // answerCategoryEnum?: CategoryEnum;
+
+  // NEW FIELDS ADDED
+  // questionCategoryID?: string;
+  // answerCategoryID?: string;
+  questionCategoryIDs?: string;
 
   constructor(init?: Partial<CreateQuizRequest>) {
     Object.assign(this, init);
@@ -80,15 +82,26 @@ export class CreateQuizRequest {
     Object.entries(this).forEach(([key, value]: [string, any]) => {
       if (value === undefined || value === null) return;
 
+      // Skip enums when uploading
+      if (key.endsWith('Enum')) return;
+
       if (value instanceof Date) {
         formData.append(key, value.toISOString());
-      } else if (value instanceof File) {
-        formData.append(key, value);
-      } else if (Array.isArray(value) && value.length > 0 && value[0] instanceof File) {
-        value.forEach((file) => formData.append('resources', file));
-      } else {
-        formData.append(key, String(value));
+        return;
       }
+
+      if (value instanceof File) {
+        formData.append(key, value);
+        return;
+      }
+
+      // resources array
+      if (Array.isArray(value) && value.length > 0 && value[0] instanceof File) {
+        value.forEach((f) => formData.append('resources', f));
+        return;
+      }
+
+      formData.append(key, String(value));
     });
 
     return formData;

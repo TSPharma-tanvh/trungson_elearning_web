@@ -37,7 +37,7 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import QuizDetailForm from '@/presentation/components/dashboard/quiz/quiz/quiz-detail-form';
 
-interface QuizSingleFilterProps {
+interface QuizSingleFilterCanChangeTypeProps {
   quizUsecase: QuizUsecase;
   value: string;
   onChange: (value: string) => void;
@@ -46,14 +46,14 @@ interface QuizSingleFilterProps {
   maxWidth?: number;
 }
 
-export function QuizSingleFilter({
+export function QuizSingleCanChangeTypeFilter({
   quizUsecase,
   value,
   onChange,
   label = 'quiz',
   disabled = false,
   maxWidth = 200,
-}: QuizSingleFilterProps) {
+}: QuizSingleFilterCanChangeTypeProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();

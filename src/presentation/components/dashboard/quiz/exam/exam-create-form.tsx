@@ -37,7 +37,7 @@ import { QuestionCategorySelect } from '@/presentation/components/shared/categor
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
-interface CreateQuizProps {
+interface CreateExamProps {
   disabled?: boolean;
   onSubmit: (data: CreateQuizRequest) => void;
   loading?: boolean;
@@ -45,7 +45,7 @@ interface CreateQuizProps {
   onClose: () => void;
 }
 
-export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateQuizProps) {
+export function CreateExamDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateExamProps) {
   const { t } = useTranslation();
   const { categoryUsecase, fileUsecase } = useDI();
 
@@ -252,7 +252,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          {t('createQuiz')}
+          {t('createExam')}
         </Typography>
 
         <Box>
@@ -360,7 +360,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
 
             <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>
-                {t('quizSettings')}
+                {t('examSettings')}
               </Typography>
             </Grid>
 
@@ -571,7 +571,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
 
             <Grid item xs={12} sm={6}>
               <CategorySelect
-                label={t('quizCategory')}
+                label={t('examCategory')}
                 categoryUsecase={categoryUsecase}
                 value={form.categoryID}
                 onChange={(value) => {

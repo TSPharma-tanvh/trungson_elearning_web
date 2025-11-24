@@ -146,11 +146,14 @@ export default function CourseTable({
             <TableCell>{t('parts')}</TableCell>
             {/* <TableCell>{t('lessons')}</TableCell> */}
             <TableCell>{t('category')}</TableCell>
+            <TableCell>{t('positionName')}</TableCell>
+            <TableCell>{t('positionStateName')}</TableCell>
+            <TableCell>{t('departmentTypeName')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
           <>
-            <TableCell>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar src={row.thumbnail?.resourceUrl}>{row.name?.[0]}</Avatar>
                 <Box>
@@ -160,7 +163,7 @@ export default function CourseTable({
                 </Box>
               </Stack>
             </TableCell>
-            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
+            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 150 }}>
               <Typography variant="body2">{row.detail}</Typography>
             </TableCell>
             <TableCell>{row.isFixedCourse ? t('yes') : t('no')}</TableCell>
@@ -179,7 +182,7 @@ export default function CourseTable({
             </TableCell> */}
             <TableCell
               sx={{
-                minWidth: 150,
+                minWidth: 120,
                 whiteSpace: 'normal',
                 wordBreak: 'break-word',
               }}
@@ -216,6 +219,9 @@ export default function CourseTable({
             </TableCell> */}
             <TableCell>{row.collections ? row.collections.length : 0}</TableCell>
             <TableCell>{row.category?.categoryName}</TableCell>
+            <TableCell>{row.positionName}</TableCell>
+            <TableCell>{row.positionStateName}</TableCell>
+            <TableCell>{row.departmentTypeName}</TableCell>
 
             <TableCell align="right">
               <IconButton

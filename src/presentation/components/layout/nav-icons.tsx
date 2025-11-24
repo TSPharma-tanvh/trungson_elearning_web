@@ -1,4 +1,35 @@
-import { AddressBook, ArticleNyTimes, Book, BookmarkSimple, BookOpenText, BookOpenUser, Books, Chalkboard, ChalkboardTeacher, ChatCircleText, CircleNotch, DeviceMobile, Exam, Faders, File, GearSix, GraduationCap, IdentificationCard, LineSegments, ListChecks, ListMagnifyingGlass, Notification, QuestionMark, SealQuestion, Student, UserGear, UsersThree, Video } from '@phosphor-icons/react';
+import {
+  AddressBook,
+  ArticleNyTimes,
+  Book,
+  BookmarkSimple,
+  BookOpenText,
+  BookOpenUser,
+  Books,
+  Chalkboard,
+  ChalkboardTeacher,
+  ChatCircleText,
+  CircleNotch,
+  DeviceMobile,
+  Exam,
+  Faders,
+  File,
+  GearSix,
+  GraduationCap,
+  IdentificationCard,
+  LineSegments,
+  ListChecks,
+  ListMagnifyingGlass,
+  Notification,
+  Pen,
+  QuestionMark,
+  SealQuestion,
+  Student,
+  UserGear,
+  UserPlus,
+  UsersThree,
+  Video,
+} from '@phosphor-icons/react';
 import type { Icon } from '@phosphor-icons/react/dist/lib/types';
 import { At, ChalkboardSimple, Path, Table } from '@phosphor-icons/react/dist/ssr';
 import { ChartPie as ChartPieIcon } from '@phosphor-icons/react/dist/ssr/ChartPie';
@@ -7,10 +38,6 @@ import { PlugsConnected as PlugsConnectedIcon } from '@phosphor-icons/react/dist
 import { User as UserIcon } from '@phosphor-icons/react/dist/ssr/User';
 import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
 import { XSquare } from '@phosphor-icons/react/dist/ssr/XSquare';
-
-
-
-
 
 export const navIcons = {
   'chart-pie': ChartPieIcon,
@@ -53,4 +80,6 @@ export const navIcons = {
   files: File,
   bookUser: BookOpenUser,
   questionCategory: SealQuestion,
+  examEnroll: UserPlus,
+  exam: Pen,
 } as Record<string, Icon>;

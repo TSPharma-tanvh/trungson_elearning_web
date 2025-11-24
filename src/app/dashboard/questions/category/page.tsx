@@ -44,7 +44,7 @@ export default function Page(): React.JSX.Element {
         pageSize: rowsPerPage,
         category: CategoryEnum[CategoryEnum.Question],
       });
-      const { categories, totalRecords } = await categoryUsecase.getCategoryList(request);
+      const { categories, totalRecords } = await categoryUsecase.getCategoryQuestionList(request);
       setCategories(categories);
       setTotalCount(totalRecords);
     } catch (error) {
@@ -131,7 +131,7 @@ export default function Page(): React.JSX.Element {
             {t('questionBank')}
           </Typography>
         </Stack>
-        
+
         <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
           <Button
             startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}

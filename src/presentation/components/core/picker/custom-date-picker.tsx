@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { IconButton, InputAdornment, Popper } from '@mui/material';
+import { FormHelperText, IconButton, InputAdornment, Popper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -24,6 +24,7 @@ interface CustomDateTimePickerProps {
   onChange: (value: string | undefined) => void;
   disabled?: boolean;
   allowClear?: boolean;
+  required?: boolean;
 }
 
 const StyledPopper = styled(Popper)(({ theme }) => ({
@@ -56,6 +57,7 @@ export function CustomDateTimePicker({
   onChange,
   disabled = false,
   allowClear = false,
+  required = false,
 }: CustomDateTimePickerProps) {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -77,7 +79,7 @@ export function CustomDateTimePicker({
       }}
     >
       <DateTimePicker
-        label={t(label)} // Translate label
+        label={t(label)}
         value={value ? dayjs(value) : null}
         format="DD/MM/YYYY hh:mm A"
         onChange={(newValue) => {
@@ -104,6 +106,7 @@ export function CustomDateTimePicker({
             onClick: () => {
               if (!disabled) setOpen(true);
             },
+            required: required,
             InputProps: {
               startAdornment: (
                 <InputAdornment position="start">
@@ -144,6 +147,7 @@ export function CustomDateTimePicker({
         }}
         ampm
       />
+      {required === true ? <FormHelperText error>{t('thisFieldIsRequired')}</FormHelperText> : null}
     </LocalizationProvider>
   );
 }

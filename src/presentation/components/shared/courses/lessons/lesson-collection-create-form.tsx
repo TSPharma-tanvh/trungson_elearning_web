@@ -53,7 +53,9 @@ function LessonCollectionItemCard({
           <CustomTextField
             label={t('collectionName')}
             value={item.name || ''}
-            onChange={(val) => { onChangeField('name', val); }}
+            onChange={(val) => {
+              onChangeField('name', val);
+            }}
             required
           />
         </Box>
@@ -61,7 +63,9 @@ function LessonCollectionItemCard({
         {/* Danh sách lesson */}
         <LessonOrderEditor
           value={item.collection || []}
-          onChange={(newCollection) => { onChangeField('collection', newCollection); }}
+          onChange={(newCollection) => {
+            onChangeField('collection', newCollection);
+          }}
           label={t('lessonsInCollection')}
         />
 
@@ -72,7 +76,9 @@ function LessonCollectionItemCard({
               <CustomDateTimePicker
                 label={t('startDate')}
                 value={item.startDate ? item.startDate.toISOString() : undefined}
-                onChange={(iso) => { onChangeField('startDate', iso ? new Date(iso) : undefined); }}
+                onChange={(iso) => {
+                  onChangeField('startDate', iso ? new Date(iso) : undefined);
+                }}
                 allowClear
               />
             </Grid>
@@ -80,14 +86,17 @@ function LessonCollectionItemCard({
               <CustomDateTimePicker
                 label={t('endDate')}
                 value={item.endDate ? item.endDate.toISOString() : undefined}
-                onChange={(iso) => { onChangeField('endDate', iso ? new Date(iso) : undefined); }}
+                onChange={(iso) => {
+                  onChangeField('endDate', iso ? new Date(iso) : undefined);
+                }}
                 allowClear
               />
             </Grid>
           </Grid>
         )}
 
-        {isFixedCourse ? <Box mt={3}>
+        {isFixedCourse ? (
+          <Box mt={3}>
             <CustomTextField
               label={t('durationInDaysForThisPart')}
               value={item.fixedCourseDayDuration?.toString() ?? ''}
@@ -99,7 +108,8 @@ function LessonCollectionItemCard({
               inputMode="numeric"
               patternError={t('onlyPositiveIntegerError')}
             />
-          </Box> : null}
+          </Box>
+        ) : null}
       </CardContent>
     </Card>
   );
@@ -184,8 +194,12 @@ export function LessonCollectionCreateEditor({ fixedCourse = false, value, onCha
             item={item}
             isFixedCourse={fixedCourse}
             canDelete={items.length > 1}
-            onDelete={() => { handleDelete(item.order); }}
-            onChangeField={(field, val) => { handleChange(item.order, field, val); }}
+            onDelete={() => {
+              handleDelete(item.order);
+            }}
+            onChangeField={(field, val) => {
+              handleChange(item.order, field, val);
+            }}
           />
         ))}
       </Stack>

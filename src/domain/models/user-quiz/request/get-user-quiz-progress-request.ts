@@ -13,6 +13,7 @@ export class GetUserQuizProgressRequest {
   progressStatus?: UserQuizProgressEnum;
   activeStatus?: StatusEnum;
   searchText?: string;
+  quizType?: string;
   pageNumber = 1;
   pageSize = 10;
 
@@ -34,6 +35,7 @@ export class GetUserQuizProgressRequest {
     dto.progressStatus = json.progressStatus;
     dto.activeStatus = json.activeStatus;
     dto.searchText = json.searchText;
+    dto.quizType = json.quizType;
     dto.pageNumber = json.pageNumber ?? 1;
     dto.pageSize = json.pageSize ?? 10;
     return dto;
@@ -53,6 +55,7 @@ export class GetUserQuizProgressRequest {
       progressStatus: this.progressStatus,
       activeStatus: this.activeStatus,
       searchText: this.searchText,
+      quizType: this.quizType,
       pageNumber: this.pageNumber,
       pageSize: this.pageSize,
     };
@@ -72,6 +75,7 @@ export class GetUserQuizProgressRequest {
     if (this.progressStatus !== undefined) form.append('progressStatus', this.progressStatus.toString());
     if (this.activeStatus !== undefined) form.append('activeStatus', this.activeStatus.toString());
     if (this.searchText) form.append('searchText', this.searchText);
+    if (this.quizType) form.append('quizType', this.quizType);
     form.append('pageNumber', this.pageNumber.toString());
     form.append('pageSize', this.pageSize.toString());
     return form;

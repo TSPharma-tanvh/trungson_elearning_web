@@ -14,7 +14,7 @@ import { EnrollmentSingleFilter } from '@/presentation/components/shared/enrollm
 import { ExamSingleFilter } from '@/presentation/components/shared/quiz/quiz/exam-single-filter';
 import { QuizSingleFilter } from '@/presentation/components/shared/quiz/quiz/quiz-single-filter';
 
-export function UserQuizProgressFilters({
+export function UserExamProgressFilters({
   onFilter,
   // enrollUsecase,
   quizUsecase,
@@ -31,7 +31,7 @@ export function UserQuizProgressFilters({
     progressStatus: undefined,
     quizId: undefined,
     enrollmentCriteriaId: undefined,
-    quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz],
+    quizType: QuizTypeEnum[QuizTypeEnum.ExamQuiz],
   });
 
   // const [selectedCategory, setSelectedCategory] = React.useState<CategoryEnum>(CategoryEnum.Path);
@@ -45,7 +45,7 @@ export function UserQuizProgressFilters({
       ...form,
       pageNumber: 1,
       pageSize: 10,
-      quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz],
+      quizType: QuizTypeEnum[QuizTypeEnum.ExamQuiz],
     });
     onFilter(request);
   };
@@ -56,11 +56,11 @@ export function UserQuizProgressFilters({
       progressStatus: undefined,
       quizId: undefined,
       enrollmentCriteriaId: undefined,
-      quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz],
+      quizType: QuizTypeEnum[QuizTypeEnum.ExamQuiz],
     });
     // setSelectedCategory(CategoryEnum.Path);
     onFilter(
-      new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10, quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz] })
+      new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10, quizType: QuizTypeEnum[QuizTypeEnum.ExamQuiz] })
     );
   };
 

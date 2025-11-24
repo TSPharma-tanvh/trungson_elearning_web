@@ -18,16 +18,16 @@ import UserQuizProgressTable from '@/presentation/components/dashboard/progress/
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { userQuizProgressUsecase, enrollUsecase, quizUsecase } = useDI();
+  const { userQuizProgressUsecase, quizUsecase } = useDI();
 
-  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  // const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserQuizProgressRequest>(
     new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [userQuizProgress, setUserQuizProgress] = React.useState<UserQuizProgressDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
-  const [createLoading, setCreateLoading] = React.useState(false);
+  // const [createLoading, setCreateLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -67,19 +67,19 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateUserQuizProgress = async (request: CreateUserQuizRequest) => {
-    try {
-      setCreateLoading(true);
+  // const handleCreateUserQuizProgress = async (request: CreateUserQuizRequest) => {
+  //   try {
+  //     setCreateLoading(true);
 
-      await userQuizProgressUsecase.createUserQuizProgress(request);
-      setShowCreateDialog(false);
-      await fetchUserQuizProgress();
-    } catch (error) {
-      return undefined;
-    } finally {
-      setCreateLoading(false);
-    }
-  };
+  //     await userQuizProgressUsecase.createUserQuizProgress(request);
+  //     setShowCreateDialog(false);
+  //     await fetchUserQuizProgress();
+  //   } catch (error) {
+  //     return undefined;
+  //   } finally {
+  //     setCreateLoading(false);
+  //   }
+  // };
 
   const handleEditUserQuizProgress = async (request: UpdateUserQuizRequest) => {
     try {
@@ -160,7 +160,7 @@ export default function Page(): React.JSX.Element {
             </Button>
           </Stack>
         </Stack>
-        <div>
+        {/* <div>
           <Button
             startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
@@ -170,7 +170,7 @@ export default function Page(): React.JSX.Element {
           >
             {t('enrollUsers')}
           </Button>
-        </div>
+        </div> */}
       </Stack>
       <UserQuizProgressFilters onFilter={handleFilter} quizUsecase={quizUsecase} />
       <UserQuizProgressTable
@@ -185,7 +185,7 @@ export default function Page(): React.JSX.Element {
         onRefresh={fetchUserQuizProgress}
       />
 
-      <CreateUserQuizProgressDialog
+      {/* <CreateUserQuizProgressDialog
         onSubmit={handleCreateUserQuizProgress}
         disabled={false}
         loading={createLoading}
@@ -193,7 +193,7 @@ export default function Page(): React.JSX.Element {
         onClose={() => {
           setShowCreateDialog(false);
         }}
-      />
+      /> */}
     </Stack>
   );
 }

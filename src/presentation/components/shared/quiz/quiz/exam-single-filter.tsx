@@ -37,7 +37,7 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import QuizDetailForm from '@/presentation/components/dashboard/quiz/quiz/quiz-detail-form';
 
-interface QuizSingleFilterProps {
+interface ExamSingleFilterProps {
   quizUsecase: QuizUsecase;
   value: string;
   onChange: (value: string) => void;
@@ -46,14 +46,14 @@ interface QuizSingleFilterProps {
   maxWidth?: number;
 }
 
-export function QuizSingleFilter({
+export function ExamSingleFilter({
   quizUsecase,
   value,
   onChange,
-  label = 'quiz',
+  label = 'exam',
   disabled = false,
   maxWidth = 200,
-}: QuizSingleFilterProps) {
+}: ExamSingleFilterProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
@@ -69,16 +69,15 @@ export function QuizSingleFilter({
   const [canStartOver, setCanStartOver] = useState<boolean | undefined>(undefined);
   const [isRequired, setIsRequired] = useState<boolean | undefined>(undefined);
   const [hasLesson, setHasLesson] = useState<boolean | undefined>(undefined);
-  const [quizType, setQuizType] = useState<QuizTypeEnum | undefined>(undefined);
 
   const filters = useMemo(
     (): Partial<GetQuizRequest> => ({
       canStartOver,
       isRequired,
       hasLesson,
-      type: quizType,
+      type: QuizTypeEnum.ExamQuiz,
     }),
-    [canStartOver, isRequired, hasLesson, quizType]
+    [canStartOver, isRequired, hasLesson]
   );
 
   const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, listRef, loadQuizzes } = useQuizSelectLoader({
@@ -132,7 +131,6 @@ export function QuizSingleFilter({
     setCanStartOver(undefined);
     setIsRequired(undefined);
     setHasLesson(undefined);
-    setQuizType(undefined);
   };
 
   return (
@@ -165,7 +163,7 @@ export function QuizSingleFilter({
           }}
         >
           <MenuItem value="" disabled>
-            {t('selectQuiz')}
+            {t('selectExam')}
           </MenuItem>
         </Select>
       </FormControl>
@@ -180,7 +178,7 @@ export function QuizSingleFilter({
       >
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">{t('selectQuiz')}</Typography>
+            <Typography variant="h6">{t('selectExam')}</Typography>
             <Box>
               <IconButton
                 onClick={() => {
@@ -202,11 +200,11 @@ export function QuizSingleFilter({
               setLocalSearchText(val);
               setSearchText(val);
             }}
-            placeholder={t('searchQuizzes')}
+            placeholder={t('search')}
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <CustomSelectDropDownDialog
+            {/* <CustomSelectDropDownDialog
               label="canStartOver"
               value={canStartOver}
               onChange={(val) => {
@@ -217,7 +215,7 @@ export function QuizSingleFilter({
                 { value: true, label: t('yes') },
                 { value: false, label: t('no') },
               ]}
-            />
+            /> */}
 
             <CustomSelectDropDownDialog
               label="isRequired"
@@ -232,7 +230,7 @@ export function QuizSingleFilter({
               ]}
             />
 
-            <CustomSelectDropDownDialog
+            {/* <CustomSelectDropDownDialog
               label="hasLesson"
               value={hasLesson}
               onChange={(val) => {
@@ -243,33 +241,7 @@ export function QuizSingleFilter({
                 { value: true, label: t('yes') },
                 { value: false, label: t('no') },
               ]}
-            />
-
-            <CustomSelectDropDownDialog<QuizTypeEnum>
-              label="quizType"
-              value={quizType}
-              onChange={setQuizType}
-              minWidth={160}
-              options={[
-                { value: undefined, label: t('all') },
-                {
-                  value: QuizTypeEnum.LessonQuiz,
-                  label: t(
-                    (QuizTypeEnumUtils.getStatusKeyFromValue(QuizTypeEnum.LessonQuiz) ?? '').replace(/^\w/, (c) =>
-                      c.toLowerCase()
-                    )
-                  ),
-                },
-                {
-                  value: QuizTypeEnum.ExamQuiz,
-                  label: t(
-                    (QuizTypeEnumUtils.getStatusKeyFromValue(QuizTypeEnum.ExamQuiz) ?? '').replace(/^\w/, (c) =>
-                      c.toLowerCase()
-                    )
-                  ),
-                },
-              ]}
-            />
+            /> */}
 
             <Button size="small" onClick={handleClearFilters} variant="outlined">
               {t('clearFilters')}
@@ -281,10 +253,6 @@ export function QuizSingleFilter({
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
             {quizzes.map((item) => {
               const isSelected = localValue === item.id;
-              const textColor =
-                item.type === QuizTypeEnum.LessonQuiz || item.type?.toString() === 'LessonQuiz'
-                  ? 'var(--mui-palette-primary-main)'
-                  : 'var(--mui-palette-secondary-main)';
 
               return (
                 <MenuItem
@@ -296,13 +264,7 @@ export function QuizSingleFilter({
                   }}
                 >
                   <Checkbox checked={isSelected} />
-                  <ListItemText
-                    primary={
-                      <Typography variant="body1" sx={{ color: textColor }}>
-                        {item.title}
-                      </Typography>
-                    }
-                  />
+                  <ListItemText primary={<Typography variant="body1">{item.title}</Typography>} />
                   <IconButton
                     size="small"
                     onClick={(e) => {

@@ -26,10 +26,10 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
-import QuizDetailForm from './quiz-detail-form';
-import { UpdateQuizFormDialog } from './quiz-update-form';
+import QuizDetailForm from './exam-detail-form';
+import { UpdateExamFormDialog } from './exam-update-form';
 
-interface QuizTableProps {
+interface ExamTableProps {
   rows: QuizResponse[];
   count: number;
   page: number;
@@ -41,7 +41,7 @@ interface QuizTableProps {
   onEditQuiz: (data: UpdateQuizRequest) => Promise<void>;
 }
 
-export default function QuizTable({
+export default function ExamTable({
   rows,
   count,
   page,
@@ -51,7 +51,7 @@ export default function QuizTable({
   // onDeleteQuizzes,
   onDeleteQuizPermanent,
   onEditQuiz,
-}: QuizTableProps) {
+}: ExamTableProps) {
   const { t } = useTranslation();
 
   const rowIds = React.useMemo(() => rows.map((r) => r.id!), [rows]);
@@ -194,7 +194,7 @@ export default function QuizTable({
                 <TableCell>{t('detail')}</TableCell>
                 <TableCell>{t('time')}</TableCell>
                 <TableCell>{t('lessonName')}</TableCell>
-                <TableCell>{t('type')}</TableCell>
+                {/* <TableCell>{t('type')}</TableCell> */}
                 <TableCell>{t('totalQuestion')}</TableCell>
                 <TableCell>{t('totalScore')}</TableCell>
                 <TableCell>{t('scoreToPass')}</TableCell>
@@ -250,10 +250,10 @@ export default function QuizTable({
                     <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
                       <Typography variant="body2">{row.lesson?.name}</Typography>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {' '}
                       {row.type ? t(row.type.toString().charAt(0).toLowerCase() + t(row.type.toString()).slice(1)) : ''}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>{row.totalQuestion}</TableCell>
                     <TableCell>{row.totalScore}</TableCell>
                     <TableCell>{row.scoreToPass}</TableCell>
@@ -371,7 +371,7 @@ export default function QuizTable({
       </Popover>
 
       {editQuizData ? (
-        <UpdateQuizFormDialog
+        <UpdateExamFormDialog
           open={editOpen}
           data={editQuizData}
           onClose={() => {

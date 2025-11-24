@@ -25,6 +25,23 @@ export class CategoryUsecase {
     };
   }
 
+  async getCategoryQuestionList(request: GetCategoryRequest): Promise<CategoryListResult> {
+    const result = await this.categoryRepo.getQuestionCategoryListInfo(request);
+
+    if (!result || !Array.isArray(result.result)) {
+      throw new Error('Failed to load user list.');
+    }
+
+    const data = result.result.map((x) => CategoryDetailResponse.fromJson(x));
+
+    return {
+      categories: data,
+      totalRecords: result.totalRecords ?? result.result.length,
+      pageSize: result.pageSize ?? request.pageSize,
+      pageNumber: result.pageNumber ?? request.pageNumber,
+    };
+  }
+
   async getCategoryById(id: string): Promise<CategoryDetailResponse> {
     const result = await this.categoryRepo.getCategoryById(id);
 

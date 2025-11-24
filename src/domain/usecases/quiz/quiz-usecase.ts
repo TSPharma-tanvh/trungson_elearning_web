@@ -67,4 +67,10 @@ export class QuizUsecase {
 
     return result;
   }
+
+  async deleteQuizPermanent(id: string): Promise<ApiResponse> {
+    const response = await this.courseRepo.deleteQuiz(id);
+
+    return response;
+  }
 }

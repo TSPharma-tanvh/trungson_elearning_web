@@ -50,6 +50,7 @@ interface PathEnpoints {
 
 interface CategoryEndpoints {
   getAll: StaticEndpoint;
+  getAllQuestion: StaticEndpoint;
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
@@ -96,9 +97,10 @@ interface QuizEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
   create: StaticEndpoint;
-  createDetail: StaticEndpoint;
+  // createDetail: StaticEndpoint;
   // createByExcel: StaticEndpoint;
   update: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 interface QuestionEndpoints {
   getAll: StaticEndpoint;
@@ -271,6 +273,7 @@ const endpoints: EndpointDefinitions = {
   },
   category: {
     getAll: 'Category/GetCategories',
+    getAllQuestion: 'Category/GetCategoryQuestions',
     getById: (id: string) => `Category/GetCategory/${id}`,
     create: 'Category/CreateCategory',
     update: 'Category/UpdateCategory',
@@ -311,9 +314,10 @@ const endpoints: EndpointDefinitions = {
     getAll: 'Quiz/GetQuizzes',
     getById: (id: string) => `Quiz/GetQuizById/${id}`,
     create: 'Quiz/CreateQuiz',
-    createDetail: 'Quiz/CreateQuizDetail',
+    // createDetail: 'Quiz/CreateQuizDetail',
     // createByExcel: 'Quiz/CreateQuizFromExcel',
     update: 'Quiz/UpdateQuiz',
+    delete: (id: string) => `Quiz/DeleteQuiz/${id}`,
   },
   questions: {
     getAll: 'Question/GetQuestion',

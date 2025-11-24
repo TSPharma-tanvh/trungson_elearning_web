@@ -19,9 +19,9 @@ import { useTranslation } from 'react-i18next';
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
-import UserQuizProgressDetailForm from './user-quiz-progress-detail';
-import { UpdateUserQuizProgressFormDialog } from './user-quiz-update-form';
-import { UpdateUserQuizScoreFormDialog } from './user-quiz-update-score-form';
+import UserQuizProgressDetailForm from './user-exam-progress-detail';
+import { UpdateUserQuizProgressFormDialog } from './user-exam-update-form';
+import { UpdateUserQuizScoreFormDialog } from './user-exam-update-score-form';
 
 interface UserQuizProgressTableProps {
   rows: UserQuizProgressDetailResponse[];

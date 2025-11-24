@@ -7,6 +7,7 @@ import { type CategoryResponse } from '@/domain/models/category/response/categor
 import { type CategoryUsecase } from '@/domain/usecases/category/category-usecase';
 import { useCategorySelectDebounce } from '@/presentation/hooks/category/use-category-select-debounce';
 import { useCategoryLoader } from '@/presentation/hooks/use-category-loader';
+import { useCategoryQuestionLoader } from '@/presentation/hooks/use-category-question-loader';
 import { CategoryEnumUtils, type CategoryEnum } from '@/utils/enum/core-enum';
 import { CategoryOutlined, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -39,6 +40,8 @@ import { useTranslation } from 'react-i18next';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import CategoryDetailForm from '@/presentation/components/dashboard/management/category/category-detail-form';
+
+import QuestionCategoryDetailForm from '../../dashboard/quiz/category/question-category-detail-form';
 
 interface QuestionCategorySelectDialogProps extends Omit<SelectProps<string>, 'value' | 'onChange'> {
   categoryUsecase: CategoryUsecase | null;
@@ -73,7 +76,7 @@ export function CategorySelectDialog({
   const [selectedCategory, setSelectedCategory] = useState<CategoryDetailResponse | null>(null);
 
   const { categories, loadingCategories, pageNumber, totalPages, setSearchText, listRef, loadCategories } =
-    useCategoryLoader({
+    useCategoryQuestionLoader({
       categoryUsecase,
       isOpen: dialogOpen,
       categoryEnum,
@@ -184,7 +187,7 @@ export function CategorySelectDialog({
             />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedCategoryMap[selected]?.categoryName || t('noCategorySelected')}
+          renderValue={(selected) => selectedCategoryMap[selected]?.categoryName || t('noItemSelected')}
           open={false}
           {...selectProps}
           sx={{
@@ -244,7 +247,10 @@ export function CategorySelectDialog({
                 }}
               >
                 <Checkbox checked={localValue === category.id} />
-                <ListItemText primary={category.categoryName} />
+                <ListItemText
+                  primary={category.categoryName}
+                  secondary={`${t('totalScore')}: ${category.totalScore}`}
+                />
                 <IconButton
                   size="small"
                   onClick={(e) => {
@@ -292,7 +298,7 @@ export function CategorySelectDialog({
         </DialogActions>
 
         {selectedCategory ? (
-          <CategoryDetailForm
+          <QuestionCategoryDetailForm
             open={viewOpen}
             categoryId={selectedCategory.id ?? null}
             onClose={() => {

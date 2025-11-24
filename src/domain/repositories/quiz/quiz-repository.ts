@@ -14,4 +14,6 @@ export interface QuizRepository {
   // createQuizFromExcel: (request: CreateQuizFromExcelRequest) => Promise<ApiResponse>;
 
   updateQuiz: (request: UpdateQuizRequest) => Promise<ApiResponse>;
+
+  deleteQuiz: (id: string) => Promise<ApiResponse>;
 }

@@ -31,23 +31,46 @@ export class QuizResponse {
   quizEnrollments?: QuizEnrollmentCriteriaRelationResponse[];
 
   fileQuizRelation?: FileQuizRelationResponse[];
+
   lessonID?: string;
   levelID?: string;
-  lesson?: QuizLessonResponse;
-  categoryID?: string;
-  category?: CategoryResponse;
-  userQuizProgress?: UserQuizProgressionResponse[];
-  userAnswer?: UserAnswerResponse[];
-  attendanceRecords?: AttendanceRecordResponse[];
+
+  // NEW
   canStartOver?: boolean;
   canShuffle?: boolean;
   isRequired?: boolean;
   isAutoSubmitted?: boolean;
-  type?: QuizTypeEnum;
+
+  type?: QuizTypeEnum | string;
   time?: string;
   scoreToPass?: number;
   totalQuestion?: number;
   maxAttempts?: number;
+
+  lesson?: QuizLessonResponse;
+  categoryID?: string;
+  category?: CategoryResponse;
+
+  userQuizProgress?: UserQuizProgressionResponse[];
+  userAnswer?: UserAnswerResponse[];
+
+  attendanceRecords?: AttendanceRecordResponse[];
+
+  // NEW FIELDS (not in your old TS class)
+  positionCode?: string;
+  positionName?: string;
+  positionStateCode?: string;
+  positionStateName?: string;
+
+  departmentTypeCode?: string;
+  departmentTypeName?: string;
+
+  isFixedQuiz?: boolean;
+
+  startDate?: Date;
+  endDate?: Date;
+
+  fixedQuizDayDuration?: number;
 
   constructor(init?: Partial<QuizResponse>) {
     Object.assign(this, init);
@@ -87,6 +110,7 @@ export class QuizResponse {
 
     dto.lessonID = json.lessonID;
     dto.levelID = json.levelID;
+
     dto.lesson = json.lesson ? QuizLessonResponse.fromJson(json.lesson) : undefined;
 
     dto.categoryID = json.categoryID;
@@ -114,6 +138,23 @@ export class QuizResponse {
     dto.scoreToPass = json.scoreToPass;
     dto.totalQuestion = json.totalQuestion;
     dto.maxAttempts = json.maxAttempts;
+
+    // --------- NEW MAPPINGS ----------
+    dto.positionCode = json.positionCode;
+    dto.positionName = json.positionName;
+
+    dto.positionStateCode = json.positionStateCode;
+    dto.positionStateName = json.positionStateName;
+
+    dto.departmentTypeCode = json.departmentTypeCode;
+    dto.departmentTypeName = json.departmentTypeName;
+
+    dto.isFixedQuiz = json.isFixedQuiz;
+
+    dto.startDate = json.startDate ? new Date(json.startDate) : undefined;
+    dto.endDate = json.endDate ? new Date(json.endDate) : undefined;
+
+    dto.fixedQuizDayDuration = json.fixedQuizDayDuration;
 
     return dto;
   }
@@ -160,6 +201,21 @@ export class QuizResponse {
       scoreToPass: this.scoreToPass,
       totalQuestion: this.totalQuestion,
       maxAttempts: this.maxAttempts,
+
+      // NEW FIELDS
+      positionCode: this.positionCode,
+      positionName: this.positionName,
+
+      positionStateCode: this.positionStateCode,
+      positionStateName: this.positionStateName,
+
+      departmentTypeCode: this.departmentTypeCode,
+      departmentTypeName: this.departmentTypeName,
+
+      isFixedQuiz: this.isFixedQuiz,
+      startDate: this.startDate?.toISOString(),
+      endDate: this.endDate?.toISOString(),
+      fixedQuizDayDuration: this.fixedQuizDayDuration,
     };
   }
 }

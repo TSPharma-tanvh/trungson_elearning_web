@@ -32,11 +32,27 @@ export const navItems = [
     icon: 'test',
     items: [
       { key: 'quiz', title: 'quiz', href: paths.dashboard.quiz, icon: 'quiz' },
+      { key: 'quizProgress', title: 'quizProgress', href: paths.dashboard.userQuizProgress, icon: 'userQuiz' },
+    ],
+  },
+  {
+    key: 'exam',
+    title: 'exam',
+    icon: 'exam',
+    items: [
+      { key: 'exam', title: 'exam', href: paths.dashboard.exam, icon: 'exam' },
+      { key: 'userExamProgress', title: 'userExamProgress', href: paths.dashboard.userExamProgress, icon: 'userQuiz' },
+      { key: 'examEnroll', title: 'examEnroll', href: paths.dashboard.examEnroll, icon: 'examEnroll' },
+    ],
+  },
+  {
+    key: 'questions',
+    title: 'questions',
+    icon: 'question',
+    items: [
       { key: 'category', title: 'questionBank', href: paths.dashboard.questionCategory, icon: 'questionCategory' },
       { key: 'question', title: 'question', href: paths.dashboard.question, icon: 'question' },
       { key: 'answers', title: 'answers', href: paths.dashboard.answers, icon: 'answer' },
-      // { key: 'form', title: 'form', href: paths.dashboard.form, icon: 'form' },
-      { key: 'quizProgress', title: 'quizEnrollments', href: paths.dashboard.userQuizProgress, icon: 'userQuiz' },
     ],
   },
   // {

@@ -12,14 +12,12 @@ import { CustomEmployeeDistinctFilter } from '@/presentation/components/core/dro
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
-export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) => void }): React.JSX.Element {
+export function ExamFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) => void }): React.JSX.Element {
   const { t } = useTranslation();
 
   const [searchText, setSearchText] = React.useState('');
   const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
-  const [displayType, setDisplayType] = React.useState<DisplayTypeEnum | undefined>(undefined);
-  const [quizType, setQuizType] = React.useState<QuizTypeEnum | undefined>(undefined);
   const [positionCode, setPositionCode] = React.useState<string | undefined>(undefined);
   const [positionStateCode, setPositionStateCode] = React.useState<string | undefined>(undefined);
   const [departmentTypeCode, setDepartmentTypeCode] = React.useState<string | undefined>(undefined);
@@ -29,7 +27,7 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
     const request = new GetQuizRequest({
       searchText: searchText || undefined,
       isRequired,
-      type: quizType || undefined,
+      type: QuizTypeEnum.ExamQuiz,
       pageNumber: 1,
       pageSize: 10,
       positionCode,
@@ -45,7 +43,6 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
     setSearchText('');
     setIsRequired(undefined);
     setStatus(undefined);
-    setDisplayType(undefined);
     setPositionCode(undefined);
     setPositionStateCode(undefined);
     setDepartmentTypeCode(undefined);
@@ -69,7 +66,7 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
           onEnter={() => {
             handleFilter();
           }}
-          placeholder={t('searchQuiz')}
+          placeholder={t('search')}
         />
 
         {/* Is Required */}
@@ -82,16 +79,6 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
             { value: true, label: 'required' },
             { value: false, label: 'optional' },
           ]}
-        />
-
-        {/* Quiz Type */}
-        <CustomSelectFilter<QuizTypeEnum>
-          label={t('type')}
-          value={quizType}
-          onChange={(val) => {
-            setQuizType(val);
-          }}
-          options={CoreEnumUtils.getEnumOptions(QuizTypeEnum)}
         />
 
         {/* Status */}

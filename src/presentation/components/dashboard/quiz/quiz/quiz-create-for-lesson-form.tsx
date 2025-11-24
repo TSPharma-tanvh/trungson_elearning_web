@@ -34,10 +34,10 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
-import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
+import { LessonSingleSelectAndCreateDialog } from '@/presentation/components/shared/courses/lessons/lesson-single-select-and-create-form';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
-interface CreateQuizProps {
+interface CreateQuizForLessonProps {
   disabled?: boolean;
   onSubmit: (data: CreateQuizRequest) => void;
   loading?: boolean;
@@ -45,9 +45,15 @@ interface CreateQuizProps {
   onClose: () => void;
 }
 
-export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateQuizProps) {
+export function CreateQuizForLessonDialog({
+  disabled = false,
+  onSubmit,
+  loading = false,
+  open,
+  onClose,
+}: CreateQuizForLessonProps) {
   const { t } = useTranslation();
-  const { categoryUsecase, fileUsecase } = useDI();
+  const { categoryUsecase, fileUsecase, lessonUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
@@ -221,10 +227,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
           title: '',
           description: '',
           isRequired: true,
-          hasLesson: false,
-          maxAttempts: 5,
+          hasLesson: true,
           status: StatusEnum.Enable,
-          type: QuizTypeEnum.ExamQuiz,
+          type: QuizTypeEnum.LessonQuiz,
           categoryEnum: CategoryEnum.Quiz,
           // questionCategoryEnum: CategoryEnum.Question,
           // answerCategoryEnum: CategoryEnum.Answer,
@@ -359,12 +364,23 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
 
             <Grid item xs={12}>
+              <LessonSingleSelectAndCreateDialog
+                lessonUsecase={lessonUsecase}
+                value={form.lessonID ?? ''}
+                onChange={(value) => {
+                  handleChange('lessonID', value);
+                }}
+                required
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('quizSettings')}
               </Typography>
             </Grid>
 
-            {/* <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<QuizTypeEnum>
                 label={t('quizType')}
                 value={form.type}
@@ -377,7 +393,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                   { value: QuizTypeEnum.ExamQuiz, label: 'examQuiz' },
                 ]}
               />
-            </Grid> */}
+            </Grid>
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
@@ -393,7 +409,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               />
             </Grid>
 
-            {form.type === QuizTypeEnum.ExamQuiz ? (
+            {/* {form.type === QuizTypeEnum.ExamQuiz ? (
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   label={t('maxAttempts')}
@@ -410,7 +426,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               </Grid>
             ) : (
               <div></div>
-            )}
+            )} */}
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
@@ -426,7 +442,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('isFixedQuiz')}
                 value={form.isFixedQuiz}
@@ -438,7 +454,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                   { value: false, label: 'no' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
@@ -471,7 +487,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('timeSchedule')}
               </Typography>
@@ -519,9 +535,9 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
                   required={form.isFixedQuiz === false ? true : false}
                 />
               </Grid>
-            ) : null}
+            ) : null} */}
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('employeeFilters')}
               </Typography>
@@ -567,7 +583,7 @@ export function CreateQuizDialog({ disabled = false, onSubmit, loading = false, 
               <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('categoryAndClassification')}
               </Typography>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CategorySelect

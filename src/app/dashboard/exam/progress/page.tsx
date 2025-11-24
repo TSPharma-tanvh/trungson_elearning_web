@@ -7,27 +7,30 @@ import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/up
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
+import { UserExamProgressFilters } from '@/presentation/components/dashboard/progress/exam/user-exam-progress-filter';
+import UserExamProgressTable from '@/presentation/components/dashboard/progress/exam/user-exam-progress-table';
 import { CreateUserQuizProgressDialog } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-create';
 import { UserQuizProgressFilters } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-filter';
 import UserQuizProgressTable from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-table';
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { userQuizProgressUsecase, enrollUsecase, quizUsecase } = useDI();
+  const { userQuizProgressUsecase, quizUsecase } = useDI();
 
-  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  // const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserQuizProgressRequest>(
     new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [userQuizProgress, setUserQuizProgress] = React.useState<UserQuizProgressDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
-  const [createLoading, setCreateLoading] = React.useState(false);
+  // const [createLoading, setCreateLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -38,6 +41,7 @@ export default function Page(): React.JSX.Element {
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
+        quizType: QuizTypeEnum[QuizTypeEnum.ExamQuiz],
       });
       const { progress, totalRecords } = await userQuizProgressUsecase.getUserQuizProgressListInfo(request);
       setUserQuizProgress(progress);
@@ -67,19 +71,19 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateUserQuizProgress = async (request: CreateUserQuizRequest) => {
-    try {
-      setCreateLoading(true);
+  // const handleCreateUserQuizProgress = async (request: CreateUserQuizRequest) => {
+  //   try {
+  //     setCreateLoading(true);
 
-      await userQuizProgressUsecase.createUserQuizProgress(request);
-      setShowCreateDialog(false);
-      await fetchUserQuizProgress();
-    } catch (error) {
-      return undefined;
-    } finally {
-      setCreateLoading(false);
-    }
-  };
+  //     await userQuizProgressUsecase.createUserQuizProgress(request);
+  //     setShowCreateDialog(false);
+  //     await fetchUserQuizProgress();
+  //   } catch (error) {
+  //     return undefined;
+  //   } finally {
+  //     setCreateLoading(false);
+  //   }
+  // };
 
   const handleEditUserQuizProgress = async (request: UpdateUserQuizRequest) => {
     try {
@@ -146,7 +150,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            {t('quizEnrollments')}
+            {t('userExamProgress')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button
@@ -160,7 +164,7 @@ export default function Page(): React.JSX.Element {
             </Button>
           </Stack>
         </Stack>
-        <div>
+        {/* <div>
           <Button
             startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
@@ -170,10 +174,10 @@ export default function Page(): React.JSX.Element {
           >
             {t('enrollUsers')}
           </Button>
-        </div>
+        </div> */}
       </Stack>
-      <UserQuizProgressFilters onFilter={handleFilter} quizUsecase={quizUsecase} />
-      <UserQuizProgressTable
+      <UserExamProgressFilters onFilter={handleFilter} quizUsecase={quizUsecase} />
+      <UserExamProgressTable
         rows={userQuizProgress}
         count={totalCount}
         page={page}
@@ -185,7 +189,7 @@ export default function Page(): React.JSX.Element {
         onRefresh={fetchUserQuizProgress}
       />
 
-      <CreateUserQuizProgressDialog
+      {/* <CreateUserQuizProgressDialog
         onSubmit={handleCreateUserQuizProgress}
         disabled={false}
         loading={createLoading}
@@ -193,7 +197,7 @@ export default function Page(): React.JSX.Element {
         onClose={() => {
           setShowCreateDialog(false);
         }}
-      />
+      /> */}
     </Stack>
   );
 }
