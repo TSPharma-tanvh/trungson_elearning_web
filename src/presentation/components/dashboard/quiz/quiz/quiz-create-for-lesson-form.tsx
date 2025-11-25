@@ -5,7 +5,7 @@ import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-requ
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -83,7 +83,9 @@ export function CreateQuizForLessonDialog({
   };
 
   const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailID', newId);
     if (id) {
       try {
         const file = await fileUsecase.getFileResourceById(id);
@@ -363,7 +365,7 @@ export function CreateQuizForLessonDialog({
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <LessonSingleSelectAndCreateDialog
                 lessonUsecase={lessonUsecase}
                 value={form.lessonID ?? ''}
@@ -372,7 +374,7 @@ export function CreateQuizForLessonDialog({
                 }}
                 required
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>
@@ -380,7 +382,7 @@ export function CreateQuizForLessonDialog({
               </Typography>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<QuizTypeEnum>
                 label={t('quizType')}
                 value={form.type}
@@ -393,7 +395,7 @@ export function CreateQuizForLessonDialog({
                   { value: QuizTypeEnum.ExamQuiz, label: 'examQuiz' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
@@ -624,7 +626,7 @@ export function CreateQuizForLessonDialog({
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={form.thumbnailID}
                   onChange={handleFileSelectChange}

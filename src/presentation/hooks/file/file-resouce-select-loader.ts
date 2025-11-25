@@ -5,7 +5,7 @@ import { type FileResourceListForAdminResult } from '@/domain/models/file/respon
 import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import type { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import type { StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnumUtils, type FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum, FileTypeEnumUtils } from '@/utils/enum/file-resource-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
@@ -13,7 +13,7 @@ interface FileResourceSelectLoaderProps {
   fileUsecase: FileResourcesUsecase;
   isOpen: boolean;
   status?: StatusEnum;
-  type?: FileResourceEnum;
+  type?: FileTypeEnum;
   searchText?: string;
 }
 
@@ -53,7 +53,7 @@ export function useResourceSelectLoader({
 
     try {
       const request = new GetFileResourcesRequest({
-        type: type !== undefined ? FileResourceEnumUtils.getContentTypeByEnum(type) : undefined,
+        type: type !== undefined ? FileTypeEnum[type] : undefined,
         status,
         searchText: searchTextState,
         pageNumber: page,

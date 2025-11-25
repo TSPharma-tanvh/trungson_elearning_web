@@ -7,6 +7,7 @@ import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/up
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +23,7 @@ export default function Page(): React.JSX.Element {
 
   // const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserQuizProgressRequest>(
-    new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10 })
+    new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10, quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz] })
   );
   const [userQuizProgress, setUserQuizProgress] = React.useState<UserQuizProgressDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
@@ -38,6 +39,7 @@ export default function Page(): React.JSX.Element {
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
+        quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz],
       });
       const { progress, totalRecords } = await userQuizProgressUsecase.getUserQuizProgressListInfo(request);
       setUserQuizProgress(progress);
@@ -146,7 +148,7 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            {t('quizEnrollments')}
+            {t('userQuizProgress')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button

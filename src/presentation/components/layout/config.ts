@@ -113,7 +113,7 @@ export const navItems = [
       // { key: 'system', title: 'system', href: paths.dashboard.system, icon: 'system' },
       // { key: 'account', title: 'account', href: paths.dashboard.account, icon: 'user' },
       { key: 'category', title: 'category', href: paths.dashboard.category, icon: 'category' },
-      { key: 'criteria', title: 'criteria', href: paths.dashboard.criteria, icon: 'criteria' },
+      // { key: 'criteria', title: 'criteria', href: paths.dashboard.criteria, icon: 'criteria' },
       // { key: 'email', title: 'email', href: paths.dashboard.email, icon: 'email' },
       // { key: 'notification', title: 'notification', href: paths.dashboard.notification, icon: 'notification' },
       { key: 'resources', title: 'resources', href: paths.dashboard.resources, icon: 'files' },

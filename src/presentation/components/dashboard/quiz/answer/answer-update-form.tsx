@@ -4,7 +4,7 @@ import { UpdateAnswerRequest } from '@/domain/models/answer/request/update-answe
 import { type AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -112,7 +112,9 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
   };
 
   const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailID', newId);
     if (id) {
       try {
         const file = await fileUsecase.getFileResourceById(id);
@@ -304,7 +306,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
                   onChange={handleFileSelectChange}

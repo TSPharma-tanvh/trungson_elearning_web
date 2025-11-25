@@ -203,36 +203,6 @@ export default function UserQuizProgressTable({
             <TableCell>{t('completedAt')}</TableCell>
             <TableCell>{t('lastAccess')}</TableCell>
             <TableCell>{t('activeStatus')}</TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('currentPositionName')}
-            </TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('currentPositionStateName')}
-            </TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('currentDepartmentName')}
-            </TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => {
@@ -307,9 +277,6 @@ export default function UserQuizProgressTable({
               <TableCell align="center">
                 {row.activeStatus !== undefined ? renderActiveStatus(row.activeStatus) : ''}
               </TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionStateName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.departmentName ?? ''}</TableCell>
 
               <TableCell align="right">
                 <IconButton

@@ -41,7 +41,7 @@ export class QuizResponse {
   isRequired?: boolean;
   isAutoSubmitted?: boolean;
 
-  type?: QuizTypeEnum | string;
+  type?: string;
   time?: string;
   scoreToPass?: number;
   totalQuestion?: number;

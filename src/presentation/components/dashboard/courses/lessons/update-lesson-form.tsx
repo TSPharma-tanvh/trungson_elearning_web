@@ -4,7 +4,7 @@ import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-less
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileResourceEnum, FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -37,6 +37,8 @@ import { FileResourceSelect } from '@/presentation/components/shared/file/file-r
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 import { QuizMultiSelect } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select';
+import { QuizMultiSelectAndCreateDialog } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select-and-create-form';
+import { QuizMultiSelectLesson } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select-lesson';
 
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
@@ -249,7 +251,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   };
 
   const handleThumbnailSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailID', newId);
     if (id) {
       try {
         const file = await fileUsecase.getFileResourceById(id);
@@ -263,7 +267,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   };
 
   const handleVideoSelectChange = async (id: string) => {
-    handleChange('videoID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('videoID', newId);
     if (id) {
       try {
         const file = await fileUsecase.getFileResourceById(id);
@@ -519,7 +525,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             </Grid>
 
             <Grid item xs={12}>
-              <QuizMultiSelect
+              <QuizMultiSelectAndCreateDialog
                 quizUsecase={quizUsecase}
                 value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
                 onChange={(val) => {
@@ -611,7 +617,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
                   onChange={handleThumbnailSelectChange}
@@ -730,7 +736,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               {resourceSource === 'select' ? (
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Document}
+                  // type={FileTypeEnum.PDF}
                   status={StatusEnum.Enable}
                   value={selectedResourceIds}
                   onChange={(val) => {
@@ -738,6 +744,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   }}
                   label={t('resources')}
                   disabled={isSubmitting}
+                  showTypeSwitcher={true}
+                  allowAllTypes={true}
                 />
               ) : (
                 <Grid container spacing={2}>
@@ -881,7 +889,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   {videoSource === 'select' ? (
                     <FileResourceSelect
                       fileUsecase={fileUsecase}
-                      type={FileResourceEnum.Video}
+                      type={FileTypeEnum.Video}
                       status={StatusEnum.Enable}
                       value={formData.videoID}
                       onChange={handleVideoSelectChange}

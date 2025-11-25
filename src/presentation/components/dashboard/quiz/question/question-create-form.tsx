@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import { Image } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -338,15 +338,15 @@ export function QuestionCreateForm({
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  // type={FileTypeEnum.Image}
                   value={form.resourceIDs?.split(',').filter(Boolean) ?? []}
                   onChange={(ids) => {
                     handleChange('resourceIDs', ids.join(','));
                   }}
                   label={t('selectFiles')}
                   disabled={false}
-                  showTypeSwitcher
-                  allowAllTypes
+                  showTypeSwitcher={true}
+                  allowAllTypes={true}
                 />
               </Grid>
             ) : (
@@ -420,11 +420,13 @@ export function QuestionCreateForm({
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={form.thumbnailID}
-                  onChange={(ids) => {
-                    handleChange('thumbnailID', ids);
+                  onChange={(id) => {
+                    const newId = id === '' ? undefined : id;
+
+                    handleChange('thumbnailID', newId);
                   }}
                   label={t('thumbnail')}
                   disabled={isSubmitting}

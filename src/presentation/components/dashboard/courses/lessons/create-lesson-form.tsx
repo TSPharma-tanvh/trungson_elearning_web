@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -369,7 +369,7 @@ export function CreateLessonDialog({
             {thumbnailSource === 'select' ? (
               <FileResourceSelect
                 fileUsecase={fileUsecase}
-                type={FileResourceEnum.Image}
+                type={FileTypeEnum.Image}
                 status={StatusEnum.Enable}
                 value={form.thumbnailID}
                 onChange={handleThumbnailSelectChange}
@@ -488,7 +488,7 @@ export function CreateLessonDialog({
             {resourceSource === 'select' ? (
               <FileResourceMultiSelect
                 fileUsecase={fileUsecase}
-                type={FileResourceEnum.Document}
+                // type={FileTypeEnum.Document}
                 status={StatusEnum.Enable}
                 value={selectedResourceIds}
                 onChange={(val) => {
@@ -496,6 +496,8 @@ export function CreateLessonDialog({
                 }}
                 label={t('resources')}
                 disabled={isSubmitting}
+                showTypeSwitcher={true}
+                allowAllTypes={true}
               />
             ) : (
               <Grid container spacing={2}>
@@ -582,7 +584,7 @@ export function CreateLessonDialog({
               <Grid item xs={12} sm={12}>
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Video}
+                  type={FileTypeEnum.Video}
                   status={StatusEnum.Enable}
                   value={form.videoID}
                   onChange={handleVideoSelectChange}

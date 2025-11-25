@@ -948,5 +948,9 @@
   "userExamProgress": "Tiến trình bài thi",
   "examSettings": "Cài đặt bài thi",
   "examCategory": "Danh mục bài thi",
-  "createExam": "Tạo bài thi"
+  "createExam": "Tạo bài thi",
+  "isFixedExam": "Bài thi cố định",
+  "updateExam": "Cập nhật bài thi",
+  "ppt": "PowerPoint",
+  "exams": "Các bài kiểm tra"
 }

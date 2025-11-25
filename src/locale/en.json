@@ -948,5 +948,9 @@
   "userExamProgress": "User Exam Progress",
   "examSettings": "Exam Settings",
   "examCategory": "Exam Category",
-  "createExam": "Create Exam"
+  "createExam": "Create Exam",
+  "isFixedExam": "Is Fixed Exam",
+  "updateExam": "Update Exam",
+  "ppt": "PowerPoint",
+  "exams": "Exams"
 }

@@ -3,7 +3,7 @@ import { UpdateCategoryRequest } from '@/domain/models/category/request/update-c
 import { type CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -107,7 +107,9 @@ export function QuestionUpdateCategoryFormDialog({
   };
 
   const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailID', newId);
     if (id) {
       try {
         const file = await fileUsecase.getFileResourceById(id);
@@ -270,7 +272,7 @@ export function QuestionUpdateCategoryFormDialog({
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID ?? ''}
                   onChange={handleFileSelectChange}

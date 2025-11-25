@@ -27,7 +27,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 import QuizDetailForm from './quiz-detail-form';
-import { UpdateQuizFormDialog } from './quiz-update-form';
+import { UpdateQuizForLessonDialog } from './quiz-update-form';
 
 interface QuizTableProps {
   rows: QuizResponse[];
@@ -194,20 +194,17 @@ export default function QuizTable({
                 <TableCell>{t('detail')}</TableCell>
                 <TableCell>{t('time')}</TableCell>
                 <TableCell>{t('lessonName')}</TableCell>
-                <TableCell>{t('type')}</TableCell>
+                {/* <TableCell>{t('type')}</TableCell> */}
                 <TableCell>{t('totalQuestion')}</TableCell>
+                <TableCell>{t('displayedQuestionCount')}</TableCell>
                 <TableCell>{t('totalScore')}</TableCell>
                 <TableCell>{t('scoreToPass')}</TableCell>
-                <TableCell>{t('displayedQuestionCount')}</TableCell>
                 {/* <TableCell>{t('canStartOver')}</TableCell> */}
                 <TableCell>{t('canShuffle')}</TableCell>
                 <TableCell>{t('isRequired')}</TableCell>
                 <TableCell>{t('isFixedQuiz')}</TableCell>
-                <TableCell>{t('duration')}</TableCell>
                 <TableCell>{t('category')}</TableCell>
-                <TableCell>{t('positionName')}</TableCell>
-                <TableCell>{t('positionStateName')}</TableCell>
-                <TableCell>{t('departmentTypeName')}</TableCell>
+
                 <TableCell>{t('status')}</TableCell>
                 {/* <TableCell>{t('isAutoSubmitted')}</TableCell> */}
                 <TableCell align="right">{t('actions')}</TableCell>
@@ -250,27 +247,19 @@ export default function QuizTable({
                     <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
                       <Typography variant="body2">{row.lesson?.name}</Typography>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {' '}
                       {row.type ? t(row.type.toString().charAt(0).toLowerCase() + t(row.type.toString()).slice(1)) : ''}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>{row.totalQuestion}</TableCell>
+                    <TableCell>{row.displayedQuestionCount}</TableCell>
                     <TableCell>{row.totalScore}</TableCell>
                     <TableCell>{row.scoreToPass}</TableCell>
-                    <TableCell>{row.displayedQuestionCount}</TableCell>
                     {/* <TableCell>{row.canStartOver ? t('yes') : t('no')}</TableCell> */}
                     <TableCell>{row.canShuffle ? t('yes') : t('no')}</TableCell>
                     <TableCell>{row.isRequired ? t('yes') : t('no')}</TableCell>{' '}
                     <TableCell>{row.isFixedQuiz ? t('yes') : t('no')}</TableCell>
-                    <TableCell>
-                      {row.isFixedQuiz
-                        ? `${row.fixedQuizDayDuration} ${t('days')}`
-                        : `${DateTimeUtils.formatDateTimeToDateString(row.startDate)} - ${DateTimeUtils.formatDateTimeToDateString(row.endDate)}`}
-                    </TableCell>
                     <TableCell>{row.category?.categoryName}</TableCell>
-                    <TableCell>{row.positionName}</TableCell>
-                    <TableCell>{row.positionStateName}</TableCell>
-                    <TableCell>{row.departmentTypeName}</TableCell>
                     <TableCell>
                       {' '}
                       {row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}
@@ -371,9 +360,20 @@ export default function QuizTable({
       </Popover>
 
       {editQuizData ? (
-        <UpdateQuizFormDialog
+        // <UpdateQuizFormDialog
+        //   open={editOpen}
+        //   data={editQuizData}
+        //   onClose={() => {
+        //     setEditOpen(false);
+        //   }}
+        //   onSubmit={async (updatedData) => {
+        //     await onEditQuiz(updatedData);
+        //     setEditOpen(false);
+        //   }}
+        // />
+        <UpdateQuizForLessonDialog
           open={editOpen}
-          data={editQuizData}
+          quiz={editQuizData} // pass full quiz object with IDs and current values
           onClose={() => {
             setEditOpen(false);
           }}

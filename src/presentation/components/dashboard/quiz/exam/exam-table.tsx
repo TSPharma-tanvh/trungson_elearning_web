@@ -193,12 +193,12 @@ export default function ExamTable({
                 <TableCell>{t('title')}</TableCell>
                 <TableCell>{t('detail')}</TableCell>
                 <TableCell>{t('time')}</TableCell>
-                <TableCell>{t('lessonName')}</TableCell>
+                {/* <TableCell>{t('lessonName')}</TableCell> */}
                 {/* <TableCell>{t('type')}</TableCell> */}
                 <TableCell>{t('totalQuestion')}</TableCell>
+                <TableCell>{t('displayedQuestionCount')}</TableCell>
                 <TableCell>{t('totalScore')}</TableCell>
                 <TableCell>{t('scoreToPass')}</TableCell>
-                <TableCell>{t('displayedQuestionCount')}</TableCell>
                 {/* <TableCell>{t('canStartOver')}</TableCell> */}
                 <TableCell>{t('canShuffle')}</TableCell>
                 <TableCell>{t('isRequired')}</TableCell>
@@ -247,17 +247,14 @@ export default function ExamTable({
                       <Typography variant="body2">{row.description}</Typography>
                     </TableCell>
                     <TableCell>{row.time}</TableCell>
-                    <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
-                      <Typography variant="body2">{row.lesson?.name}</Typography>
-                    </TableCell>
                     {/* <TableCell>
                       {' '}
                       {row.type ? t(row.type.toString().charAt(0).toLowerCase() + t(row.type.toString()).slice(1)) : ''}
                     </TableCell> */}
                     <TableCell>{row.totalQuestion}</TableCell>
+                    <TableCell>{row.displayedQuestionCount}</TableCell>
                     <TableCell>{row.totalScore}</TableCell>
                     <TableCell>{row.scoreToPass}</TableCell>
-                    <TableCell>{row.displayedQuestionCount}</TableCell>
                     {/* <TableCell>{row.canStartOver ? t('yes') : t('no')}</TableCell> */}
                     <TableCell>{row.canShuffle ? t('yes') : t('no')}</TableCell>
                     <TableCell>{row.isRequired ? t('yes') : t('no')}</TableCell>{' '}
@@ -373,7 +370,7 @@ export default function ExamTable({
       {editQuizData ? (
         <UpdateExamFormDialog
           open={editOpen}
-          data={editQuizData}
+          quiz={editQuizData}
           onClose={() => {
             setEditOpen(false);
           }}

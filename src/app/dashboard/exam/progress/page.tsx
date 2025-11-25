@@ -132,10 +132,6 @@ export default function Page(): React.JSX.Element {
       [t('completedAt')]: row.completedAt ? DateTimeUtils.formatDateTimeToDateString(row.completedAt) : '',
       [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatDateTimeToDateString(row.lastAccess) : '',
       [t('activeStatus')]: row.activeStatus ? t(row.activeStatus.toLowerCase()) : '',
-      // [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
-      // [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
-      // [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
-      // [t('cityName')]: row.user?.employee?.cityName ?? '',
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);

@@ -7,6 +7,7 @@ import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
@@ -17,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
 import { CreateQuizForLessonDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-for-lesson-form';
-import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
 import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
@@ -33,7 +33,9 @@ export default function Page(): React.JSX.Element {
   const [showCreateQuizLessonDialog, setShowCreateQuizLessonDialog] = React.useState(false);
 
   // const [showImportDialog, setShowImportDialog] = React.useState(false);
-  const [filters, setFilters] = React.useState<GetQuizRequest>(new GetQuizRequest({ pageNumber: 1, pageSize: 10 }));
+  const [filters, setFilters] = React.useState<GetQuizRequest>(
+    new GetQuizRequest({ pageNumber: 1, pageSize: 10, type: QuizTypeEnum.LessonQuiz })
+  );
   const [quizzes, setQuizzes] = React.useState<QuizResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
@@ -47,6 +49,7 @@ export default function Page(): React.JSX.Element {
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
+        type: QuizTypeEnum.LessonQuiz,
       });
       const { quizzes: quiz, totalRecords } = await quizUsecase.getQuizListInfo(request);
       setQuizzes(quiz);
@@ -208,7 +211,7 @@ export default function Page(): React.JSX.Element {
         </Stack>
         <div>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Button
+            {/* <Button
               startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
               variant="contained"
               onClick={() => {
@@ -224,15 +227,15 @@ export default function Page(): React.JSX.Element {
               }}
             >
               {t('quizLessonCreate')}
-            </Button>
+            </Button> */}
             <Button
               startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
               variant="contained"
               onClick={() => {
-                setShowCreateQuizExamDialog(true);
+                setShowCreateQuizLessonDialog(true);
               }}
             >
-              {t('quizExamCreate')}
+              {t('createQuiz')}
             </Button>
           </Stack>
         </div>
@@ -248,16 +251,6 @@ export default function Page(): React.JSX.Element {
         // onDeleteQuizzes={handleDeleteQuizzes}
         onDeleteQuizPermanent={handleDeleteQuizzesPermanent}
         onEditQuiz={handleEditQuiz}
-      />
-
-      <CreateQuizDialog
-        onSubmit={handleCreateQuizExam}
-        disabled={false}
-        loading={false}
-        open={showCreateQuizExamDialog}
-        onClose={() => {
-          setShowCreateQuizExamDialog(false);
-        }}
       />
 
       <CreateQuizForLessonDialog

@@ -264,7 +264,7 @@ export function QuizMultiSelect({
             {quizzes.map((item) => {
               const isSelected = localValue.includes(item.id ?? '');
               const textColor =
-                item.type === QuizTypeEnum.LessonQuiz || item.type?.toString() === 'LessonQuiz'
+                item.type === QuizTypeEnum.LessonQuiz.toString() || item.type?.toString() === 'LessonQuiz'
                   ? 'var(--mui-palette-primary-main)'
                   : 'var(--mui-palette-secondary-main)';
               return (

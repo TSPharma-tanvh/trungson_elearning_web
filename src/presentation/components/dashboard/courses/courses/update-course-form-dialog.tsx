@@ -8,7 +8,7 @@ import {
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -155,7 +155,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
   };
 
   const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailId', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailId', newId);
     if (id) {
       try {
         const file = await fileUsecase.getFileResourceById(id);
@@ -397,7 +399,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailId}
                   onChange={handleFileSelectChange}
@@ -527,12 +529,12 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  // type={FileTypeEnum.Image}
                   value={selectedResourceIDs}
                   onChange={setSelectedResourceIDs}
                   disabled={isSubmitting}
-                  showTypeSwitcher
-                  allowAllTypes
+                  showTypeSwitcher={true}
+                  allowAllTypes={true}
                 />
               </Grid>
             ) : (

@@ -92,7 +92,7 @@ export function ExamFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
         />
 
         <CustomSelectFilter<boolean>
-          label={t('isFixedQuiz')}
+          label={t('isFixedExam')}
           value={isFixedQuiz}
           onChange={setIsFixedQuiz}
           options={[

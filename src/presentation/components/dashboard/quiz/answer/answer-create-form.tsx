@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -242,11 +242,12 @@ export function CreateAnswerForm({ open, onClose, onSubmit }: EditAnswerDialogPr
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
-                  onChange={(ids) => {
-                    handleChange('thumbnailID', ids);
+                  onChange={(id) => {
+                    const newId = id === '' ? undefined : id;
+                    handleChange('thumbnailID', newId);
                   }}
                   label={t('thumbnail')}
                   disabled={isSubmitting}

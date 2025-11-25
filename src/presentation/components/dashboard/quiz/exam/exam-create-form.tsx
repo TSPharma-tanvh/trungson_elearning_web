@@ -5,7 +5,7 @@ import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-requ
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -77,7 +77,9 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
   };
 
   const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailID', newId);
     if (id) {
       try {
         const file = await fileUsecase.getFileResourceById(id);
@@ -427,20 +429,6 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<boolean>
-                label={t('isFixedQuiz')}
-                value={form.isFixedQuiz}
-                onChange={(v) => {
-                  handleChange('isFixedQuiz', v);
-                }}
-                options={[
-                  { value: true, label: 'yes' },
-                  { value: false, label: 'no' },
-                ]}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('time')}
                 value={form.time}
@@ -468,6 +456,20 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
                 inputMode="numeric"
                 required
                 icon={<NumberCircleNine {...iconStyle} />}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isFixedQuiz')}
+                value={form.isFixedQuiz}
+                onChange={(v) => {
+                  handleChange('isFixedQuiz', v);
+                }}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
 
@@ -608,7 +610,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={form.thumbnailID}
                   onChange={handleFileSelectChange}
