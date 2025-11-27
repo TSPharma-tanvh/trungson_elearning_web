@@ -2,17 +2,14 @@
 
 import * as React from 'react';
 import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
-import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
-import { CategoryEnum, CoreEnumUtils, QuizTypeEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { CoreEnumUtils, QuizTypeEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
-import { EnrollmentSingleFilter } from '@/presentation/components/shared/enrollment/enrollment-single-filter';
 import { ExamSingleFilter } from '@/presentation/components/shared/quiz/quiz/exam-single-filter';
-import { QuizSingleFilter } from '@/presentation/components/shared/quiz/quiz/quiz-single-filter';
 
 export function UserQuizProgressFilters({
   onFilter,

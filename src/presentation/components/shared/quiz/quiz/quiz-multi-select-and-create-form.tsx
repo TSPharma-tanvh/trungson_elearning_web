@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
@@ -81,7 +82,7 @@ export function QuizMultiSelectAndCreateDialog({
     canStartOver: undefined as boolean | undefined,
     isRequired: undefined as boolean | undefined,
     hasLesson: undefined as boolean | undefined,
-    type: undefined as QuizTypeEnum | undefined,
+    type: QuizTypeEnum.LessonQuiz,
     isFixedQuiz: undefined as boolean | undefined,
     positionCode: undefined as string | undefined,
     positionStateCode: undefined as string | undefined,
@@ -97,7 +98,6 @@ export function QuizMultiSelectAndCreateDialog({
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Load tên quiz đã chọn để hiển thị
   const fetchSelectedQuizzes = useCallback(async () => {
     const idsToFetch = value.filter((id) => !selectedQuizMap[id]);
     if (idsToFetch.length === 0) return;
@@ -123,10 +123,19 @@ export function QuizMultiSelectAndCreateDialog({
   }, [fetchSelectedQuizzes]);
 
   // Handlers
-  const handleCreateQuiz = async () => {
-    setShowCreateDialog(false);
-    CustomSnackBar.showSnackbar(t('quizCreatedSuccessfully'), 'success');
-    await loadQuizzes(1, true);
+  // const handleCreateQuiz = async () => {
+  //   setShowCreateDialog(false);
+  //   await loadQuizzes(1, true);
+  // };
+
+  const handleCreateQuizLesson = async (request: CreateQuizRequest) => {
+    try {
+      await quizUsecase.createQuiz(request);
+      setShowCreateDialog(false);
+      await loadQuizzes(1, true);
+    } catch (error) {
+      return undefined;
+    }
   };
 
   const handleEditQuiz = async () => {
@@ -175,7 +184,9 @@ export function QuizMultiSelectAndCreateDialog({
         <Select
           multiple
           value={value}
-          onClick={() => setDialogOpen(true)}
+          onClick={() => {
+            setDialogOpen(true);
+          }}
           input={<OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, opacity: 0.7 }} />} />}
           renderValue={(selected) =>
             selected.map((id) => selectedQuizMap[id]?.title || id).join(', ') || t('noQuizzesSelected')
@@ -189,7 +200,11 @@ export function QuizMultiSelectAndCreateDialog({
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6">{t('selectQuizzes')}</Typography>
           <Box>
-            <IconButton onClick={() => setIsFullscreen(!isFullscreen)}>
+            <IconButton
+              onClick={() => {
+                setIsFullscreen(!isFullscreen);
+              }}
+            >
               {isFull ? <FullscreenExit /> : <Fullscreen />}
             </IconButton>
             <IconButton onClick={handleClose}>
@@ -207,10 +222,24 @@ export function QuizMultiSelectAndCreateDialog({
             }}
             placeholder={t('searchQuizzes')}
           />
-          <Button variant="outlined" size="small" startIcon={<FilterList />} onClick={() => setFilterOpen(true)}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<FilterList />}
+            onClick={() => {
+              setFilterOpen(true);
+            }}
+          >
             {t('filter')}
           </Button>
-          <Button variant="contained" size="small" startIcon={<Add />} onClick={() => setShowCreateDialog(true)}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<Add />}
+            onClick={() => {
+              setShowCreateDialog(true);
+            }}
+          >
             {t('createQuiz')}
           </Button>
         </Box>
@@ -222,7 +251,9 @@ export function QuizMultiSelectAndCreateDialog({
                 key={quiz.id}
                 quiz={quiz}
                 selected={localValue.includes(quiz.id ?? '')}
-                onToggle={() => toggleQuiz(quiz.id ?? '')}
+                onToggle={() => {
+                  toggleQuiz(quiz.id ?? '');
+                }}
                 onView={() => {
                   setSelectedQuiz(quiz);
                   setViewOpen(true);
@@ -231,14 +262,18 @@ export function QuizMultiSelectAndCreateDialog({
                   setSelectedQuiz(quiz);
                   setShowEditDialog(true);
                 }}
-                onDelete={() => quiz.id && handleRequestDelete(quiz.id)}
+                onDelete={() => {
+                  if (quiz.id) {
+                    handleRequestDelete(quiz.id);
+                  }
+                }}
               />
             ))}
-            {loadingQuizzes && (
+            {loadingQuizzes ? (
               <Typography textAlign="center" py={2}>
                 {t('loading')}...
               </Typography>
-            )}
+            ) : null}
             {!loadingQuizzes && quizzes.length === 0 && (
               <Typography textAlign="center" py={4} color="text.secondary">
                 {t('noQuizzesFound')}
@@ -269,7 +304,9 @@ export function QuizMultiSelectAndCreateDialog({
       {/* Các dialog phụ */}
       <QuizSelectFilterDialog
         open={filterOpen}
-        onClose={() => setFilterOpen(false)}
+        onClose={() => {
+          setFilterOpen(false);
+        }}
         onConfirm={(newFilters) => {
           setFilters(newFilters);
           setFilterOpen(false);
@@ -279,11 +316,15 @@ export function QuizMultiSelectAndCreateDialog({
 
       <CreateQuizForLessonDialog
         open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
-        onSubmit={handleCreateQuiz}
+        disabled={false}
+        loading={false}
+        onClose={() => {
+          setShowCreateDialog(false);
+        }}
+        onSubmit={handleCreateQuizLesson}
       />
 
-      {selectedQuiz && (
+      {selectedQuiz ? (
         <UpdateQuizForLessonDialog
           open={showEditDialog}
           quiz={selectedQuiz}
@@ -293,9 +334,9 @@ export function QuizMultiSelectAndCreateDialog({
           }}
           onSubmit={handleEditQuiz}
         />
-      )}
+      ) : null}
 
-      {selectedQuiz && (
+      {selectedQuiz ? (
         <QuizDetailForm
           open={viewOpen}
           quizId={selectedQuiz.id ?? null}
@@ -304,12 +345,14 @@ export function QuizMultiSelectAndCreateDialog({
             setSelectedQuiz(null);
           }}
         />
-      )}
+      ) : null}
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}
         selectedCount={1}
-        onCancel={() => setDeleteDialogOpen(false)}
+        onCancel={() => {
+          setDeleteDialogOpen(false);
+        }}
         onConfirm={handleConfirmDelete}
         loading={deleteLoading}
       />
@@ -349,7 +392,13 @@ function QuizListItem({
       >
         <MoreVert />
       </IconButton>
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
+      >
         <MenuItem
           onClick={() => {
             onView();

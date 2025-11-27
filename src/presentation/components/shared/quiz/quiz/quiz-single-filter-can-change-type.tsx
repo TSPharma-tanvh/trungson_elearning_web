@@ -282,7 +282,7 @@ export function QuizSingleCanChangeTypeFilter({
             {quizzes.map((item) => {
               const isSelected = localValue === item.id;
               const textColor =
-                item.type === QuizTypeEnum.LessonQuiz || item.type?.toString() === 'LessonQuiz'
+                item.type === QuizTypeEnum[QuizTypeEnum.LessonQuiz] || item.type?.toString() === 'LessonQuiz'
                   ? 'var(--mui-palette-primary-main)'
                   : 'var(--mui-palette-secondary-main)';
 

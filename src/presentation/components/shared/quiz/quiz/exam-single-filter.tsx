@@ -5,7 +5,7 @@ import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-reque
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
-import { QuizTypeEnum, QuizTypeEnumUtils } from '@/utils/enum/core-enum';
+import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import { InfoOutlined, Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';

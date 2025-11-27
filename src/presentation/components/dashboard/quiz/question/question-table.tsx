@@ -1,12 +1,11 @@
 import React from 'react';
 import { type UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
 import { type QuestionResponse } from '@/domain/models/question/response/question-response';
-import { CancelOutlined, CheckCircleOutline, MoreVert } from '@mui/icons-material';
+import { MoreVert } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
-import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
 import QuestionDetailForm from './question-detail';
 import { UpdateQuestionFormDialog } from './question-update-form';
@@ -36,27 +35,27 @@ export default function QuestionTable({
   const [editOpen, setEditOpen] = React.useState(false);
   const [editQuestionData, setEditQuestionData] = React.useState<QuestionResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
-  const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
+  // const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  // const [dialogOpen, setDialogOpen] = React.useState(false);
 
-  const handleRequestDelete = (id: string) => {
-    setPendingDeleteId(id);
-    setDialogOpen(true);
-  };
+  // const handleRequestDelete = (id: string) => {
+  //   setPendingDeleteId(id);
+  //   setDialogOpen(true);
+  // };
 
-  const handleConfirmDelete = async () => {
-    if (pendingDeleteId) {
-      await onDeleteQuestions([pendingDeleteId]);
-      setPendingDeleteId(null);
-    }
-    setDialogOpen(false);
-  };
+  // const handleConfirmDelete = async () => {
+  //   if (pendingDeleteId) {
+  //     await onDeleteQuestions([pendingDeleteId]);
+  //     setPendingDeleteId(null);
+  //   }
+  //   setDialogOpen(false);
+  // };
 
-  const handleCancelDelete = () => {
-    setPendingDeleteId(null);
-    setDialogOpen(false);
-  };
+  // const handleCancelDelete = () => {
+  //   setPendingDeleteId(null);
+  //   setDialogOpen(false);
+  // };
 
   return (
     <>
@@ -69,6 +68,7 @@ export default function QuestionTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteQuestions}
+        showDeleteHeader={false}
         actionMenuItems={[
           {
             label: t('viewDetails'),
@@ -84,21 +84,22 @@ export default function QuestionTable({
               setEditOpen(true);
             },
           },
-          {
-            label: t('delete'),
-            onClick: (row) => {
-              if (row.id) handleRequestDelete(row.id);
-            },
-          },
+          // {
+          //   label: t('delete'),
+          //   onClick: (row) => {
+          //     if (row.id) handleRequestDelete(row.id);
+          //   },
+          // },
         ]}
         renderHeader={() => (
           <>
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('type')}</TableCell>
-            <TableCell>{t('canShuffle')}</TableCell>
+            {/* <TableCell>{t('canShuffle')}</TableCell> */}
             <TableCell>{t('point')}</TableCell>
             <TableCell>{t('status')}</TableCell>
             <TableCell>{t('totalAnswers')}</TableCell>
+            <TableCell>{t('questionBank')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -118,19 +119,21 @@ export default function QuestionTable({
                 {row.questionType ? t(row.questionType.charAt(0).toLowerCase() + t(row.questionType).slice(1)) : ''}
               </Typography>
             </TableCell>
-            <TableCell>
+            {/* <TableCell>
               {row.canShuffle ? (
                 <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
               ) : (
                 <CancelOutlined sx={{ color: 'var(--mui-palette-error-main)' }} />
               )}
-            </TableCell>
+            </TableCell> */}
 
             <TableCell>{row.point}</TableCell>
 
             <TableCell>{row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}</TableCell>
 
             <TableCell>{row.totalAnswer}</TableCell>
+
+            <TableCell>{row.category?.categoryName}</TableCell>
 
             <TableCell align="right">
               <IconButton
@@ -169,12 +172,12 @@ export default function QuestionTable({
         />
       ) : null}
 
-      <ConfirmDeleteDialog
+      {/* <ConfirmDeleteDialog
         open={dialogOpen}
         selectedCount={1}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
-      />
+      /> */}
     </>
   );
 }

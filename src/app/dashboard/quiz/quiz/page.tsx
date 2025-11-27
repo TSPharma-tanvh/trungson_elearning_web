@@ -10,7 +10,6 @@ import { DateTimeUtils } from '@/utils/date-time-utils';
 import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { FileXls } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
@@ -21,15 +20,15 @@ import { CreateQuizForLessonDialog } from '@/presentation/components/dashboard/q
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
 import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
-const excelLink = process.env.NEXT_PUBLIC_IMPORT_QUIZ_FORM;
+// const excelLink = process.env.NEXT_PUBLIC_IMPORT_QUIZ_FORM;
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const { quizUsecase } = useDI();
 
-  const [showCreateQuizExamDialog, setShowCreateQuizExamDialog] = React.useState(false);
+  // const [showCreateQuizExamDialog, setShowCreateQuizExamDialog] = React.useState(false);
   const [showCreateQuizLessonDialog, setShowCreateQuizLessonDialog] = React.useState(false);
 
   // const [showImportDialog, setShowImportDialog] = React.useState(false);
@@ -78,20 +77,21 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateQuizExam = async (request: CreateQuizRequest) => {
-    try {
-      await quizUsecase.createQuiz(request);
-      setShowCreateQuizExamDialog(false);
-      await fetchQuizzes();
-    } catch (error) {
-      return undefined;
-    }
-  };
+  // const handleCreateQuizExam = async (request: CreateQuizRequest) => {
+  //   try {
+  //     await quizUsecase.createQuiz(request);
+  //     setShowCreateQuizExamDialog(false);
+  //     await fetchQuizzes();
+  //   } catch (error) {
+  //     return undefined;
+  //   }
+  // };
 
   const handleCreateQuizLesson = async (request: CreateQuizRequest) => {
     try {
       await quizUsecase.createQuiz(request);
-      setShowCreateQuizExamDialog(false);
+      setShowCreateQuizLessonDialog(false);
+      // setShowCreateQuizExamDialog(false);
       await fetchQuizzes();
     } catch (error) {
       return undefined;
@@ -117,22 +117,22 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleDeleteQuizzes = async (ids: string[]) => {
-    try {
-      setDeleteLoading(true);
-      for (const id of ids) {
-        const response = await quizUsecase.deleteQuiz(id);
-        if (!response) {
-          throw new Error(`Failed to delete path with ID: ${id}`);
-        }
-      }
-      await fetchQuizzes();
-    } catch (error) {
-      return undefined;
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
+  // const handleDeleteQuizzes = async (ids: string[]) => {
+  //   try {
+  //     setDeleteLoading(true);
+  //     for (const id of ids) {
+  //       const response = await quizUsecase.deleteQuiz(id);
+  //       if (!response) {
+  //         throw new Error(`Failed to delete path with ID: ${id}`);
+  //       }
+  //     }
+  //     await fetchQuizzes();
+  //   } catch (error) {
+  //     return undefined;
+  //   } finally {
+  //     setDeleteLoading(false);
+  //   }
+  // };
 
   const handleDeleteQuizzesPermanent = async (ids: string[]) => {
     try {

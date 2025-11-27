@@ -97,7 +97,9 @@ export class CreateQuizRequest {
 
       // resources array
       if (Array.isArray(value) && value.length > 0 && value[0] instanceof File) {
-        value.forEach((f) => formData.append('resources', f));
+        value.forEach((f) => {
+          formData.append('resources', f);
+        });
         return;
       }
 

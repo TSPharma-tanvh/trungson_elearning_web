@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { type CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
 import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
 import { type UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
@@ -9,11 +8,10 @@ import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
-import { FileXls, Plus } from '@phosphor-icons/react';
+import { FileXls } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
-import { CreateUserQuizProgressDialog } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-create';
 import { UserQuizProgressFilters } from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-filter';
 import UserQuizProgressTable from '@/presentation/components/dashboard/progress/quiz/user-quiz-progress-table';
 

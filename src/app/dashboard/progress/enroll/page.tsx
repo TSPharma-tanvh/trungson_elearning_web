@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -20,7 +19,7 @@ import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi
 
 export default function EnrollUsersToCoursePage() {
   const { t } = useTranslation();
-  const router = useRouter();
+  // const router = useRouter();
   const { userCourseProgressUsecase, courseUsecase, userUsecase } = useDI();
 
   const [loading, setLoading] = useState(false);

@@ -1,8 +1,5 @@
-// core/drop-down/custom-select-drop-down.tsx
-
 'use client';
 
-import { useEffect, useState } from 'react';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -27,7 +24,7 @@ export function CustomSelectDropDownNullable<T>({
 }: CustomFormControlSelectNullableProps<T>) {
   const { t } = useTranslation();
 
-  const displayValue = value == null ? '' : String(value);
+  const displayValue = value === null ? '' : String(value);
 
   const handleChange = (event: SelectChangeEvent) => {
     const raw = event.target.value;
@@ -47,17 +44,17 @@ export function CustomSelectDropDownNullable<T>({
     <FormControl fullWidth disabled={disabled}>
       <InputLabel shrink>
         {t(label)}
-        {isRequired && <span style={{ color: 'error.main' }}> *</span>}
+        {isRequired ? <span style={{ color: 'error.main' }}> *</span> : null}
       </InputLabel>
       <Select value={displayValue} label={t(label)} onChange={handleChange} displayEmpty={allowEmpty}>
-        {allowEmpty && <MenuItem value="">{t('all')}</MenuItem>}
+        {allowEmpty ? <MenuItem value="">{t('all')}</MenuItem> : null}
         {options.map((option) => (
           <MenuItem key={String(option.value ?? '')} value={String(option.value ?? '')}>
             {t(option.label)}
           </MenuItem>
         ))}
       </Select>
-      {isRequired && !value && <FormHelperText error>{t('thisFieldIsRequired')}</FormHelperText>}
+      {isRequired && !value ? <FormHelperText error>{t('thisFieldIsRequired')}</FormHelperText> : null}
     </FormControl>
   );
 }

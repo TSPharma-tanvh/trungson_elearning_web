@@ -69,7 +69,11 @@ function UserQuizProgressDetails({
         <CardHeader
           title={t('quizDetails')}
           action={
-            <IconButton onClick={() => { handleViewQuizDetail(quiz.id ?? ''); }}>
+            <IconButton
+              onClick={() => {
+                handleViewQuizDetail(quiz.id ?? '');
+              }}
+            >
               <InfoOutlined />
             </IconButton>
           }

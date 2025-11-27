@@ -104,11 +104,11 @@ export function FileResourceSelect({
     setOpen(false);
   };
 
-  const handleClear = () => {
-    setSelectedFile(null);
-    setSelectedId(null);
-    onChange('');
-  };
+  // const handleClear = () => {
+  //   setSelectedFile(null);
+  //   setSelectedId(null);
+  //   onChange('');
+  // };
 
   const handlePageChange = async (_: unknown, page: number) => {
     await loadFileResources(page, true);
@@ -282,11 +282,11 @@ export function FileResourceSelect({
               );
             })}
 
-            {loadingFiles && (
+            {loadingFiles ? (
               <Box textAlign="center" py={2}>
                 <CircularProgress size={24} />
               </Box>
-            )}
+            ) : null}
           </List>
         </DialogContent>
 

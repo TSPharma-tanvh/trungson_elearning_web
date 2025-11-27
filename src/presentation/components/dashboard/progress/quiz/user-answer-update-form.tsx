@@ -76,9 +76,7 @@ export function AnswerDetailDialog({ open, answer, questionId, onClose, onSaved 
       questionUsecase
         .getQuestionById(questionId)
         .then(setQuestion)
-        .catch(() => {
-          
-        })
+        .catch(() => {})
         .finally(() => {
           setIsLoadingQuestion(false);
         });

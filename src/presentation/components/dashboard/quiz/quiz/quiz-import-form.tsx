@@ -260,7 +260,9 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
               <CustomSelectDropDown<boolean>
                 label={t('canShuffle')}
                 value={form.canShuffle}
-                onChange={(v) => { handleChange('canShuffle', v); }}
+                onChange={(v) => {
+                  handleChange('canShuffle', v);
+                }}
                 options={[
                   { value: true, label: 'yes' },
                   { value: false, label: 'no' },

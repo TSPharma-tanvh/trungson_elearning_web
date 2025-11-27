@@ -8,7 +8,6 @@ export enum AppSettingCategoryEnum {
 
 export enum SelectableAppSettingCategoryEnum {
   Class = 2,
-
 }
 
 export enum AppSettingDataType {

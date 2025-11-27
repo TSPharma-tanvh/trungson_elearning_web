@@ -10,7 +10,6 @@ import { DateTimeUtils } from '@/utils/date-time-utils';
 import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { FileXls } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
@@ -21,11 +20,11 @@ import { CreateExamDialog } from '@/presentation/components/dashboard/quiz/exam/
 import { ExamFilters } from '@/presentation/components/dashboard/quiz/exam/exam-filter';
 import ExamTable from '@/presentation/components/dashboard/quiz/exam/exam-table';
 
-const excelLink = process.env.NEXT_PUBLIC_IMPORT_QUIZ_FORM;
+// const excelLink = process.env.NEXT_PUBLIC_IMPORT_QUIZ_FORM;
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const { quizUsecase } = useDI();
 
@@ -85,15 +84,15 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleCreateQuizLesson = async (request: CreateQuizRequest) => {
-    try {
-      await quizUsecase.createQuiz(request);
-      setShowCreateQuizExamDialog(false);
-      await fetchQuizzes();
-    } catch (error) {
-      return undefined;
-    }
-  };
+  // const handleCreateQuizLesson = async (request: CreateQuizRequest) => {
+  //   try {
+  //     await quizUsecase.createQuiz(request);
+  //     setShowCreateQuizExamDialog(false);
+  //     await fetchQuizzes();
+  //   } catch (error) {
+  //     return undefined;
+  //   }
+  // };
 
   // const handleImportQuiz = async (request: CreateQuizFromExcelRequest) => {
   //   try {

@@ -1,4 +1,3 @@
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
   StatusEnum,
   UserQuizProgressEnum,
@@ -18,8 +17,8 @@ export class CreateUserQuizRequest {
 
   enrollmentCriteriaID?: string;
 
-  isAutoEnroll: boolean = true;
-  isUpdateOldProgress: boolean = false;
+  isAutoEnroll = true;
+  isUpdateOldProgress = false;
 
   userID?: string;
   enrollStatus?: ApproveStatusEnum;

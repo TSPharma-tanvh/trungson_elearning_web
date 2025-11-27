@@ -1,16 +1,13 @@
 'use client';
 
 import React from 'react';
-import { type CreateAnswerRequest } from '@/domain/models/answer/request/create-answer-request';
 import { GetAnswerRequest } from '@/domain/models/answer/request/get-answer-request';
 import { type UpdateAnswerRequest } from '@/domain/models/answer/request/update-answer-request';
 import { type AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { Button, Stack, Typography } from '@mui/material';
-import { Plus } from '@phosphor-icons/react';
+import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { CreateAnswerForm } from '@/presentation/components/dashboard/quiz/answer/answer-create-form';
 import { AnswerFilters } from '@/presentation/components/dashboard/quiz/answer/answer-filter';
 import AnswerTable from '@/presentation/components/dashboard/quiz/answer/answer-table';
 
@@ -18,7 +15,7 @@ export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
   const { answerUsecase } = useDI();
 
-  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  // const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetAnswerRequest>(new GetAnswerRequest({ pageNumber: 1, pageSize: 10 }));
   const [answers, setAnswers] = React.useState<AnswerDetailResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
@@ -61,15 +58,15 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateAnswer = async (request: CreateAnswerRequest) => {
-    try {
-      await answerUsecase.createAnswer(request);
-      setShowCreateDialog(false);
-      await fetchAnswers();
-    } catch (error) {
-      return undefined;
-    }
-  };
+  // const handleCreateAnswer = async (request: CreateAnswerRequest) => {
+  //   try {
+  //     await answerUsecase.createAnswer(request);
+  //     setShowCreateDialog(false);
+  //     await fetchAnswers();
+  //   } catch (error) {
+  //     return undefined;
+  //   }
+  // };
 
   const handleEditAnswer = async (request: UpdateAnswerRequest) => {
     try {
@@ -105,7 +102,7 @@ export default function Page(): React.JSX.Element {
             {t('answers')}
           </Typography>
         </Stack>
-        <Button
+        {/* <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
           onClick={() => {
@@ -113,7 +110,7 @@ export default function Page(): React.JSX.Element {
           }}
         >
           {t('add')}
-        </Button>
+        </Button> */}
       </Stack>
       <AnswerFilters onFilter={handleFilter} />
 
@@ -128,13 +125,13 @@ export default function Page(): React.JSX.Element {
         onEditAnswer={handleEditAnswer}
       />
 
-      <CreateAnswerForm
+      {/* <CreateAnswerForm
         onSubmit={handleCreateAnswer}
         open={showCreateDialog}
         onClose={() => {
           setShowCreateDialog(false);
         }}
-      />
+      /> */}
     </Stack>
   );
 }

@@ -1,5 +1,3 @@
-import { type QuizTypeEnum } from '@/utils/enum/core-enum';
-
 import { AttendanceRecordResponse } from '../../attendance/response/attendance-record-response';
 import { CategoryResponse } from '../../category/response/category-response';
 import { EnrollmentCriteriaResponse } from '../../criteria/response/enrollment-criteria-response';

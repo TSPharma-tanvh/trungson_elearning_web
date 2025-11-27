@@ -56,7 +56,9 @@ export function EnrollmentFilters({
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => { handleFilter(); }}
+          onEnter={() => {
+            handleFilter();
+          }}
           placeholder={t('searchEnrollment')}
         />
 

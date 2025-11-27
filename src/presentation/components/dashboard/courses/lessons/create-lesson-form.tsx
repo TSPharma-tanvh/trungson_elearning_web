@@ -496,8 +496,8 @@ export function CreateLessonDialog({
                 }}
                 label={t('resources')}
                 disabled={isSubmitting}
-                showTypeSwitcher={true}
-                allowAllTypes={true}
+                showTypeSwitcher
+                allowAllTypes
               />
             ) : (
               <Grid container spacing={2}>

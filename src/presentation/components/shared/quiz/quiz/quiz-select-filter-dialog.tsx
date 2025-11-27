@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { DepartmentFilterType } from '@/utils/enum/employee-enum';
+import { StatusEnum } from '@/utils/enum/core-enum';
 import { Close, Fullscreen, FullscreenExit } from '@mui/icons-material';
 import {
   Box,
@@ -21,8 +20,6 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-
-import { CustomEmployeeDistinctSelectFilter } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-filter';
 
 interface QuizSelectFilterDialogProps {
   open: boolean;
@@ -74,7 +71,12 @@ export function QuizSelectFilterDialog({ open, onClose, onConfirm, initialFilter
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6">{t('filter')}</Typography>
         <Box>
-          <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+          <IconButton
+            onClick={() => {
+              setIsFullscreen(!isFullscreen);
+            }}
+            size="small"
+          >
             {isFull ? <FullscreenExit /> : <Fullscreen />}
           </IconButton>
           <IconButton onClick={onClose} size="small">
@@ -117,7 +119,7 @@ export function QuizSelectFilterDialog({ open, onClose, onConfirm, initialFilter
                 .filter((v) => typeof v === 'number')
                 .map((val) => (
                   <MenuItem key={val} value={val}>
-                    {t(`${StatusEnum[val]}`) || StatusEnum[val]}
+                    {t(StatusEnum[val]) || StatusEnum[val]}
                   </MenuItem>
                 ))}
             </Select>

@@ -345,8 +345,8 @@ export function QuestionCreateForm({
                   }}
                   label={t('selectFiles')}
                   disabled={false}
-                  showTypeSwitcher={true}
-                  allowAllTypes={true}
+                  showTypeSwitcher
+                  allowAllTypes
                 />
               </Grid>
             ) : (

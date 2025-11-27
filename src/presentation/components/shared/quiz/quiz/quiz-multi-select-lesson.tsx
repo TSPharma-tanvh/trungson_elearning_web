@@ -5,7 +5,6 @@ import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
 import { QuizTypeEnum } from '@/utils/enum/core-enum';
-import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { InfoOutlined, Tag } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -19,7 +18,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   ListItemText,
@@ -31,10 +29,8 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'react-i18next';
 
-import { CustomEmployeeDistinctSelectFilter } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-filter';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import QuizDetailForm from '@/presentation/components/dashboard/quiz/quiz/quiz-detail-form';
@@ -47,9 +43,9 @@ interface QuizMultiSelectLessonProps {
   disabled?: boolean;
 }
 
-const filterOptions = {
-  hasPath: [undefined, true, false] as const,
-};
+// const filterOptions = {
+//   hasPath: [undefined, true, false] as const,
+// };
 
 export function QuizMultiSelectLesson({
   quizUsecase,
@@ -138,7 +134,12 @@ export function QuizMultiSelectLesson({
     void fetchQuizDetails();
   }, [fetchQuizDetails]);
 
-  const handleOpen = () => !disabled && setDialogOpen(true);
+  const handleOpen = () => {
+    if (!disabled) {
+      setDialogOpen(true);
+    }
+  };
+
   const handleClose = () => {
     setDialogOpen(false);
     setLocalValue(value); // reset nếu cancel
@@ -203,7 +204,12 @@ export function QuizMultiSelectLesson({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectQuizzes')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((v) => !v)} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((v) => !v);
+                }}
+                size="small"
+              >
                 {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -264,13 +270,15 @@ export function QuizMultiSelectLesson({
           <Box component="ul" ref={listRef} sx={{ p: 0, m: 0, listStyle: 'none' }}>
             {quizzes.map((item) => {
               const isSelected = localValue.includes(item.id ?? '');
-              const textColor = item.type === QuizTypeEnum.LessonQuiz.toString() ? 'primary.main' : 'secondary.main';
+              const textColor = item.type === QuizTypeEnum[QuizTypeEnum.LessonQuiz] ? 'primary.main' : 'secondary.main';
 
               return (
                 <MenuItem
                   key={item.id}
                   selected={isSelected}
-                  onClick={() => toggleQuiz(item.id ?? '')}
+                  onClick={() => {
+                    toggleQuiz(item.id ?? '');
+                  }}
                   sx={{ py: 1.5 }}
                 >
                   <Checkbox checked={isSelected} />
@@ -293,11 +301,11 @@ export function QuizMultiSelectLesson({
             })}
           </Box>
 
-          {loadingQuizzes && (
+          {loadingQuizzes ? (
             <Typography textAlign="center" py={2}>
               {t('loading')}...
             </Typography>
-          )}
+          ) : null}
           {!loadingQuizzes && quizzes.length === 0 && (
             <Typography textAlign="center" py={4} color="text.secondary">
               {t('noQuizzesFound')}
@@ -317,7 +325,13 @@ export function QuizMultiSelectLesson({
       </Dialog>
 
       {/* Preview chi tiết */}
-      <QuizDetailForm open={viewOpen} quizId={selectedQuiz?.id ?? null} onClose={() => setViewOpen(false)} />
+      <QuizDetailForm
+        open={viewOpen}
+        quizId={selectedQuiz?.id ?? null}
+        onClose={() => {
+          setViewOpen(false);
+        }}
+      />
     </>
   );
 }

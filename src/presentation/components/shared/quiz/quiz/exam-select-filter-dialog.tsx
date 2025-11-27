@@ -74,7 +74,12 @@ export function ExamSelectFilterDialog({ open, onClose, onConfirm, initialFilter
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6">{t('filter')}</Typography>
         <Box>
-          <IconButton onClick={() => setIsFullscreen(!isFullscreen)} size="small">
+          <IconButton
+            onClick={() => {
+              setIsFullscreen(!isFullscreen);
+            }}
+            size="small"
+          >
             {isFull ? <FullscreenExit /> : <Fullscreen />}
           </IconButton>
           <IconButton onClick={onClose} size="small">
@@ -197,7 +202,9 @@ export function ExamSelectFilterDialog({ open, onClose, onConfirm, initialFilter
             label={t('position')}
             value={filters.positionCode}
             type={DepartmentFilterType.Position}
-            onChange={(val) => handleChange('positionCode', val)}
+            onChange={(val) => {
+              handleChange('positionCode', val);
+            }}
           />
 
           {/* Position State */}
@@ -205,7 +212,9 @@ export function ExamSelectFilterDialog({ open, onClose, onConfirm, initialFilter
             label={t('currentPositionStateName')}
             value={filters.positionStateCode}
             type={DepartmentFilterType.PositionState}
-            onChange={(val) => handleChange('positionStateCode', val)}
+            onChange={(val) => {
+              handleChange('positionStateCode', val);
+            }}
           />
 
           {/* Department Type */}
@@ -213,7 +222,9 @@ export function ExamSelectFilterDialog({ open, onClose, onConfirm, initialFilter
             label={t('departmentType')}
             value={filters.departmentTypeCode}
             type={DepartmentFilterType.DepartmentType}
-            onChange={(val) => handleChange('departmentTypeCode', val)}
+            onChange={(val) => {
+              handleChange('departmentTypeCode', val);
+            }}
           />
         </Box>
       </DialogContent>

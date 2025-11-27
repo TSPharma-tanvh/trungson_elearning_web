@@ -39,7 +39,7 @@ export default function CourseTable({
   const { courseUsecase } = useDI();
 
   const [viewOpen, setViewOpen] = React.useState(false);
-  const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
+  // const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
   const [pendingDeleteIdPermanently, setPendingDeleteIdPermanently] = React.useState<string | null>(null);
 
   //edit
@@ -47,13 +47,13 @@ export default function CourseTable({
   const [editCourseData, setEditCourseData] = React.useState<CourseDetailResponse | null>(null);
   const [loadingEdit, setLoadingEdit] = React.useState(false);
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  // const [dialogOpen, setDialogOpen] = React.useState(false);
   const [dialogDeletePermanentOpen, setDialogDeletePermanentOpen] = React.useState(false);
 
-  const handleRequestDelete = (id: string) => {
-    setPendingDeleteId(id);
-    setDialogOpen(true);
-  };
+  // const handleRequestDelete = (id: string) => {
+  //   setPendingDeleteId(id);
+  //   setDialogOpen(true);
+  // };
 
   const handleRequestDeletePermanently = (id: string) => {
     setPendingDeleteIdPermanently(id);
@@ -73,18 +73,18 @@ export default function CourseTable({
     setDialogDeletePermanentOpen(false);
   };
 
-  const handleConfirmDelete = async () => {
-    if (pendingDeleteId) {
-      await onDeleteCourses([pendingDeleteId]);
-      setPendingDeleteId(null);
-    }
-    setDialogOpen(false);
-  };
+  // const handleConfirmDelete = async () => {
+  //   if (pendingDeleteId) {
+  //     await onDeleteCourses([pendingDeleteId]);
+  //     setPendingDeleteId(null);
+  //   }
+  //   setDialogOpen(false);
+  // };
 
-  const handleCancelDelete = () => {
-    setPendingDeleteId(null);
-    setDialogOpen(false);
-  };
+  // const handleCancelDelete = () => {
+  //   setPendingDeleteId(null);
+  //   setDialogOpen(false);
+  // };
 
   return (
     <>
@@ -120,12 +120,12 @@ export default function CourseTable({
               }
             },
           },
-          {
-            label: t('delete'),
-            onClick: (row) => {
-              if (row.id) handleRequestDelete(row.id);
-            },
-          },
+          // {
+          //   label: t('delete'),
+          //   onClick: (row) => {
+          //     if (row.id) handleRequestDelete(row.id);
+          //   },
+          // },
           {
             label: t('deletePermanently'),
             onClick: (row) => {
@@ -268,12 +268,12 @@ export default function CourseTable({
         />
       ) : null}
 
-      <ConfirmDeleteDialog
+      {/* <ConfirmDeleteDialog
         open={dialogOpen}
         selectedCount={1}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
-      />
+      /> */}
 
       <ConfirmDeleteDialog
         open={dialogDeletePermanentOpen}

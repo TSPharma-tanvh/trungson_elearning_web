@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
-import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
@@ -92,8 +92,12 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
     } else if (form.thumbnailID) {
       fileUsecase
         .getFileResourceById(form.thumbnailID)
-        .then((f) => setPreviewUrl(f.resourceUrl || null))
-        .catch(() => setPreviewUrl(null));
+        .then((f) => {
+          setPreviewUrl(f.resourceUrl || null);
+        })
+        .catch(() => {
+          setPreviewUrl(null);
+        });
     } else {
       setPreviewUrl(null);
     }
@@ -117,7 +121,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
       onSubmit(form);
       onClose();
     } catch (error) {
-      console.error('Update exam failed:', error);
+      return null;
     } finally {
       setIsSubmitting(false);
     }
@@ -144,9 +148,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
 
         questionCategoryIDs:
           quiz.quizQuestions.length > 0
-            ? Array.from(new Set(quiz.quizQuestions.map((q) => q.categoryID).filter((id): id is string => !!id))).join(
-                ','
-              )
+            ? Array.from(
+                new Set(quiz.quizQuestions.map((q) => q.categoryID).filter((id): id is string => Boolean(id)))
+              ).join(',')
             : undefined,
 
         categoryID: quiz.categoryID,
@@ -171,8 +175,12 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
         setThumbnailSource('select');
         fileUsecase
           .getFileResourceById(quiz.thumbnailID)
-          .then((f) => setPreviewUrl(f.resourceUrl || null))
-          .catch(() => setPreviewUrl(null));
+          .then((f) => {
+            setPreviewUrl(f.resourceUrl || null);
+          })
+          .catch(() => {
+            setPreviewUrl(null);
+          });
       } else if (quiz.thumbnail?.resourceUrl) {
         setThumbnailSource('select');
         setPreviewUrl(quiz.thumbnail.resourceUrl);
@@ -197,7 +205,11 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">{t('updateExam')}</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -220,7 +232,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomTextField
                 label={t('title')}
                 value={form.title || ''}
-                onChange={(v) => handleChange('title', v)}
+                onChange={(v) => {
+                  handleChange('title', v);
+                }}
                 disabled={isSubmitting}
                 required
               />
@@ -230,7 +244,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomTextField
                 label={t('description')}
                 value={form.description || ''}
-                onChange={(v) => handleChange('description', v)}
+                onChange={(v) => {
+                  handleChange('description', v);
+                }}
                 disabled={isSubmitting}
                 multiline
                 rows={3}
@@ -242,7 +258,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 categoryUsecase={categoryUsecase}
                 value={form.questionCategoryIDs}
                 label={t('questionBank')}
-                onChange={(v) => handleChange('questionCategoryIDs', v)}
+                onChange={(v) => {
+                  handleChange('questionCategoryIDs', v);
+                }}
                 categoryEnum={CategoryEnum.Question}
                 required
                 disabled={isSubmitting}
@@ -260,7 +278,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomTextField
                 label={t('time')}
                 value={form.time || ''}
-                onChange={(v) => handleChange('time', v)}
+                onChange={(v) => {
+                  handleChange('time', v);
+                }}
                 disabled={isSubmitting}
                 pattern="^[0-2]?[0-9]:[0-5][0-9]:[0-5][0-9]$"
                 patternError="HH:mm:ss"
@@ -273,7 +293,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomTextField
                 label={t('scoreToPass')}
                 value={form.scoreToPass?.toString() ?? ''}
-                onChange={(v) => handleChange('scoreToPass', v ? Number(v) : undefined)}
+                onChange={(v) => {
+                  handleChange('scoreToPass', v ? Number(v) : undefined);
+                }}
                 inputMode="numeric"
                 disabled={isSubmitting}
                 required
@@ -285,7 +307,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomTextField
                 label={t('displayedQuestionCount')}
                 value={form.displayedQuestionCount?.toString() ?? ''}
-                onChange={(v) => handleChange('displayedQuestionCount', v ? Number(v) : undefined)}
+                onChange={(v) => {
+                  handleChange('displayedQuestionCount', v ? Number(v) : undefined);
+                }}
                 inputMode="numeric"
                 disabled={isSubmitting}
                 required
@@ -297,7 +321,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomTextField
                 label={t('maxAttempts')}
                 value={form.maxAttempts?.toString() ?? ''}
-                onChange={(v) => handleChange('maxAttempts', v ? Number(v) : undefined)}
+                onChange={(v) => {
+                  handleChange('maxAttempts', v ? Number(v) : undefined);
+                }}
                 inputMode="numeric"
                 disabled={isSubmitting}
                 icon={<NumberCircleFive {...iconStyle} />}
@@ -308,7 +334,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomSelectDropDown<boolean>
                 label={t('isRequired')}
                 value={form.isRequired ?? true}
-                onChange={(v) => handleChange('isRequired', v)}
+                onChange={(v) => {
+                  handleChange('isRequired', v);
+                }}
                 options={[
                   { value: true, label: 'yes' },
                   { value: false, label: 'no' },
@@ -321,7 +349,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomSelectDropDown<boolean>
                 label={t('canShuffle')}
                 value={form.canShuffle ?? false}
-                onChange={(v) => handleChange('canShuffle', v)}
+                onChange={(v) => {
+                  handleChange('canShuffle', v);
+                }}
                 options={[
                   { value: true, label: 'yes' },
                   { value: false, label: 'no' },
@@ -334,7 +364,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomSelectDropDown<boolean>
                 label={t('canStartOver')}
                 value={form.canStartOver ?? true}
-                onChange={(v) => handleChange('canStartOver', v)}
+                onChange={(v) => {
+                  handleChange('canStartOver', v);
+                }}
                 options={[
                   { value: true, label: 'yes' },
                   { value: false, label: 'no' },
@@ -347,7 +379,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               <CustomSelectDropDown<boolean>
                 label={t('isFixedQuiz')}
                 value={form.isFixedQuiz ?? false}
-                onChange={(v) => handleChange('isFixedQuiz', v)}
+                onChange={(v) => {
+                  handleChange('isFixedQuiz', v);
+                }}
                 options={[
                   { value: true, label: 'yes' },
                   { value: false, label: 'no' },
@@ -368,7 +402,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 <CustomTextField
                   label={t('durationInDaysForThisPart')}
                   value={form.fixedQuizDayDuration?.toString() ?? ''}
-                  onChange={(v) => handleChange('fixedQuizDayDuration', v ? Number(v) : undefined)}
+                  onChange={(v) => {
+                    handleChange('fixedQuizDayDuration', v ? Number(v) : undefined);
+                  }}
                   inputMode="numeric"
                   disabled={isSubmitting}
                 />
@@ -381,7 +417,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                   <CustomDateTimePicker
                     label={t('startDate')}
                     value={form.startDate || undefined}
-                    onChange={(iso) => handleChange('startDate', iso || undefined)}
+                    onChange={(iso) => {
+                      handleChange('startDate', iso || undefined);
+                    }}
                     allowClear
                     disabled={isSubmitting}
                   />
@@ -390,7 +428,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                   <CustomDateTimePicker
                     label={t('endDate')}
                     value={form.endDate || undefined}
-                    onChange={(iso) => handleChange('endDate', iso || undefined)}
+                    onChange={(iso) => {
+                      handleChange('endDate', iso || undefined);
+                    }}
                     allowClear
                     disabled={isSubmitting}
                   />
@@ -410,7 +450,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 label="departmentType"
                 value={form.departmentTypeCode}
                 type={DepartmentFilterType.DepartmentType}
-                onChange={(v) => handleChange('departmentTypeCode', v)}
+                onChange={(v) => {
+                  handleChange('departmentTypeCode', v);
+                }}
                 loadOnMount
                 disabled={isSubmitting}
               />
@@ -421,7 +463,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 label="position"
                 value={form.positionCode}
                 type={DepartmentFilterType.Position}
-                onChange={(v) => handleChange('positionCode', v)}
+                onChange={(v) => {
+                  handleChange('positionCode', v);
+                }}
                 loadOnMount
                 disabled={isSubmitting}
               />
@@ -432,7 +476,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 label="currentPositionStateName"
                 value={form.positionStateCode}
                 type={DepartmentFilterType.PositionState}
-                onChange={(v) => handleChange('positionStateCode', v)}
+                onChange={(v) => {
+                  handleChange('positionStateCode', v);
+                }}
                 loadOnMount
                 disabled={isSubmitting}
               />
@@ -449,7 +495,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 label={t('examCategory')}
                 categoryUsecase={categoryUsecase}
                 value={form.categoryID}
-                onChange={(v) => handleChange('categoryID', v)}
+                onChange={(v) => {
+                  handleChange('categoryID', v);
+                }}
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
               />
@@ -489,7 +537,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                     <CustomTextField
                       label={t('thumbnailDocumentNo')}
                       value={form.thumbDocumentNo || ''}
-                      onChange={(v) => handleChange('thumbDocumentNo', v)}
+                      onChange={(v) => {
+                        handleChange('thumbDocumentNo', v);
+                      }}
                       disabled={isSubmitting}
                       icon={<Image {...iconStyle} />}
                     />
@@ -498,7 +548,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                     <CustomTextField
                       label={t('thumbnailPrefixName')}
                       value={form.thumbPrefixName || ''}
-                      onChange={(v) => handleChange('thumbPrefixName', v)}
+                      onChange={(v) => {
+                        handleChange('thumbPrefixName', v);
+                      }}
                       disabled={isSubmitting}
                       icon={<Image {...iconStyle} />}
                     />
@@ -516,7 +568,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -524,8 +578,10 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!form.isDeleteOldThumbnail}
-                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          checked={Boolean(form.isDeleteOldThumbnail)}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
@@ -536,7 +592,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               )}
             </Grid>
 
-            {previewUrl && (
+            {previewUrl ? (
               <Grid item xs={12}>
                 <Box
                   sx={{
@@ -556,7 +612,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                   />
                 </Box>
               </Grid>
-            )}
+            ) : null}
 
             <Grid item xs={12}>
               <CustomButton label={t('update')} onClick={handleSave} loading={loading || isSubmitting} fullWidth />

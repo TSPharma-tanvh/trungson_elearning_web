@@ -74,7 +74,9 @@ export class CreateFileResourcesRequest {
     const formData = new FormData();
 
     // append files
-    this.files?.forEach((f) => { formData.append('Files', f); });
+    this.files?.forEach((f) => {
+      formData.append('Files', f);
+    });
 
     // append video chunk
     if (this.videoChunk) formData.append('VideoChunk', this.videoChunk);

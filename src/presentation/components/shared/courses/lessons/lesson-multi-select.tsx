@@ -5,7 +5,7 @@ import { type LessonDetailResponse } from '@/domain/models/lessons/response/less
 import { type LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
-import { type LearningModeEnum, LessonContentEnum, StatusDisplayNames, StatusEnum } from '@/utils/enum/core-enum';
+import { LessonContentEnum, StatusDisplayNames, StatusEnum, type LearningModeEnum } from '@/utils/enum/core-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';

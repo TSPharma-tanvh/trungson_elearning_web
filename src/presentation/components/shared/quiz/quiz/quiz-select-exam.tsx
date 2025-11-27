@@ -32,7 +32,6 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'react-i18next';
 
 import { CustomEmployeeDistinctSelectFilter } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-filter';
@@ -228,7 +227,7 @@ export function QuizSingleSelectExam({
               </Select>
             </FormControl> */}
 
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('isRequired')}</InputLabel>
               <Select
                 value={isRequired === undefined ? '' : isRequired ? 'true' : 'false'}
@@ -248,7 +247,7 @@ export function QuizSingleSelectExam({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('isRequired')}</InputLabel>

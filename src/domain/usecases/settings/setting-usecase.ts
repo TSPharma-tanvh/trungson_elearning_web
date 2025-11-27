@@ -64,4 +64,10 @@ export class AppSettingsUsecase {
 
     return result;
   }
+
+  async syncEmployeeOrder(): Promise<ApiResponse> {
+    const result = await this.appSettingRepo.syncEmployeeOrder();
+
+    return result;
+  }
 }

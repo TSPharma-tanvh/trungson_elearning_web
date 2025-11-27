@@ -18,7 +18,7 @@ import UserQuizProgressTable from '@/presentation/components/dashboard/progress/
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { userQuizProgressUsecase, enrollUsecase, quizUsecase } = useDI();
+  const { userQuizProgressUsecase, quizUsecase } = useDI();
 
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserQuizProgressRequest>(

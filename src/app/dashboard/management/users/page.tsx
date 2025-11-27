@@ -28,7 +28,7 @@ export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const { userUsecase, departmentUsecase, employeeUsecase } = useDI();
+  const { userUsecase, departmentUsecase, employeeUsecase, settingUsecase } = useDI();
   const [users, setUsers] = React.useState<UserResponse[]>([]);
   const [showForm, setShowForm] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -109,6 +109,7 @@ export default function Page(): React.JSX.Element {
       });
       await departmentUsecase.syncDepartmentFromHrm(requestDepartment);
       await employeeUsecase.syncEmployeeFromHrm(request);
+      await settingUsecase.syncEmployeeOrder();
       await fetchUsers();
     } catch (error) {
     } finally {
@@ -175,7 +176,9 @@ export default function Page(): React.JSX.Element {
               startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
               variant="contained"
               color="primary"
-              onClick={() => { setShowForm(true); }}
+              onClick={() => {
+                setShowForm(true);
+              }}
               sx={{
                 textTransform: 'none',
                 minWidth: 120,

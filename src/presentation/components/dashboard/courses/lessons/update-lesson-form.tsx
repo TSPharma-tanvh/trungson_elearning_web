@@ -4,7 +4,7 @@ import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-less
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum, FileTypeEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -36,9 +36,7 @@ import { FileResourceMultiSelect } from '@/presentation/components/shared/file/f
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
-import { QuizMultiSelect } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select';
 import { QuizMultiSelectAndCreateDialog } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select-and-create-form';
-import { QuizMultiSelectLesson } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select-lesson';
 
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
@@ -744,8 +742,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   }}
                   label={t('resources')}
                   disabled={isSubmitting}
-                  showTypeSwitcher={true}
-                  allowAllTypes={true}
+                  showTypeSwitcher
+                  allowAllTypes
                 />
               ) : (
                 <Grid container spacing={2}>

@@ -106,6 +106,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
         isRequired: course.isRequired || false,
         disableStatus: course.disableStatus,
         meetingLink: course.meetingLink || undefined,
+        courseType: course.courseType,
         teacherId: course.teacherId || undefined,
         isFixedCourse: course.isFixedCourse ?? false,
         categoryId: course.categoryId || undefined,
@@ -533,8 +534,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                   value={selectedResourceIDs}
                   onChange={setSelectedResourceIDs}
                   disabled={isSubmitting}
-                  showTypeSwitcher={true}
-                  allowAllTypes={true}
+                  showTypeSwitcher
+                  allowAllTypes
                 />
               </Grid>
             ) : (

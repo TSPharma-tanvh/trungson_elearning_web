@@ -952,5 +952,6 @@
   "isFixedExam": "Is Fixed Exam",
   "updateExam": "Update Exam",
   "ppt": "PowerPoint",
-  "exams": "Exams"
+  "exams": "Exams",
+  "positionStateOrderDetails": "Position State Order Details"
 }

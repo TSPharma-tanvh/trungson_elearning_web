@@ -106,7 +106,7 @@ export function CustomDateTimePicker({
             onClick: () => {
               if (!disabled) setOpen(true);
             },
-            required: required,
+            required,
             InputProps: {
               startAdornment: (
                 <InputAdornment position="start">
@@ -147,7 +147,7 @@ export function CustomDateTimePicker({
         }}
         ampm
       />
-      {required === true ? <FormHelperText error>{t('thisFieldIsRequired')}</FormHelperText> : null}
+      {required ? <FormHelperText error>{t('thisFieldIsRequired')}</FormHelperText> : null}
     </LocalizationProvider>
   );
 }

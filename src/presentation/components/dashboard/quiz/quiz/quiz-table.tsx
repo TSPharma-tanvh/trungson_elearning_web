@@ -1,7 +1,6 @@
 import React from 'react';
 import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
-import { DateTimeUtils } from '@/utils/date-time-utils';
 import { MoreVert } from '@mui/icons-material';
 import {
   Avatar,
@@ -61,7 +60,7 @@ export default function QuizTable({
   const [viewOpen, setViewOpen] = React.useState(false);
   const [editQuizData, setEditPathData] = React.useState<QuizResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  // const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [deletePermanentDialogOpen, setDeletePermanentDialogOpen] = React.useState(false);
   const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
 
@@ -88,10 +87,10 @@ export default function QuizTable({
     setAnchorEl(null);
   };
 
-  const handleOpenDeleteDialog = (ids: string[]) => {
-    setIdsToDelete(ids);
-    setDeleteDialogOpen(true);
-  };
+  // const handleOpenDeleteDialog = (ids: string[]) => {
+  //   setIdsToDelete(ids);
+  //   setDeleteDialogOpen(true);
+  // };
 
   const handleOpenDeletePermanentDialog = (ids: string[]) => {
     setIdsToDelete(ids);
@@ -121,7 +120,7 @@ export default function QuizTable({
   };
 
   const handleCancelDelete = () => {
-    setDeleteDialogOpen(false);
+    // setDeleteDialogOpen(false);
     setDeletePermanentDialogOpen(false);
     setIdsToDelete([]);
   };

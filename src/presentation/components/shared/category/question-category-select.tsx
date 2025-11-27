@@ -82,7 +82,12 @@ export function CategorySelectDialog({
 
   const isFull = isSmallScreen || isFullscreen;
 
-  const handleOpen = () => !disabled && setDialogOpen(true);
+  const handleOpen = () => {
+    if (!disabled) {
+      setDialogOpen(true);
+    }
+  };
+
   const handleClose = () => {
     setDialogOpen(false);
     setLocalValue(value);
@@ -126,7 +131,7 @@ export function CategorySelectDialog({
       <FormControl fullWidth disabled={disabled}>
         <InputLabel id="category-select-label">
           {t(label)}
-          {required && !value && <span style={{ color: 'error.main', marginLeft: 4 }}>*</span>}
+          {required && !value ? <span style={{ color: 'error.main', marginLeft: 4 }}>*</span> : null}
         </InputLabel>
         <Select
           labelId="category-select-label"
@@ -139,7 +144,7 @@ export function CategorySelectDialog({
               label={
                 <span>
                   {t(label)}
-                  {required && !value && <span style={{ color: 'error.main', marginLeft: 4 }}>*</span>}
+                  {required && !value ? <span style={{ color: 'error.main', marginLeft: 4 }}>*</span> : null}
                 </span>
               }
               startAdornment={<CategoryOutlined sx={{ mr: 1, opacity: 0.7 }} />}
@@ -151,7 +156,7 @@ export function CategorySelectDialog({
             },
           }}
         />
-        {required && !value && <FormHelperText sx={{ color: 'error.main' }}>{t('requiredField')}</FormHelperText>}
+        {required && !value ? <FormHelperText sx={{ color: 'error.main' }}>{t('requiredField')}</FormHelperText> : null}
       </FormControl>
 
       <Dialog open={dialogOpen} onClose={handleClose} fullScreen={isFull} maxWidth="sm" fullWidth scroll="paper">
@@ -160,7 +165,11 @@ export function CategorySelectDialog({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectQuestionBank')}</Typography>
             <Box>
-              <IconButton onClick={() => setIsFullscreen((prev) => !prev)}>
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen((prev) => !prev);
+                }}
+              >
                 {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose}>
@@ -176,7 +185,9 @@ export function CategorySelectDialog({
               <MenuItem
                 key={category.id}
                 selected={localValue === category.id}
-                onClick={() => setLocalValue(category.id ?? '')}
+                onClick={() => {
+                  setLocalValue(category.id ?? '');
+                }}
               >
                 <Checkbox checked={localValue === category.id} />
                 <ListItemText
@@ -195,7 +206,7 @@ export function CategorySelectDialog({
                 </IconButton>
               </MenuItem>
             ))}
-            {loadingCategories && <Typography sx={{ p: 2 }}>{t('loading')}</Typography>}
+            {loadingCategories ? <Typography sx={{ p: 2 }}>{t('loading')}</Typography> : null}
             {!loadingCategories && categories.length === 0 && <Typography sx={{ p: 2 }}>{t('empty')}</Typography>}
           </Box>
         </DialogContent>
@@ -218,13 +229,15 @@ export function CategorySelectDialog({
             </Button>
           </Box>
         </DialogActions>
-        {selectedCategory && (
+        {selectedCategory ? (
           <QuestionCategoryDetailForm
             open={viewOpen}
             categoryId={selectedCategory.id ?? null}
-            onClose={() => setViewOpen(false)}
+            onClose={() => {
+              setViewOpen(false);
+            }}
           />
-        )}
+        ) : null}
       </Dialog>
     </>
   );
@@ -260,11 +273,11 @@ export function QuestionCategorySelect({
         if (detail.id) {
           setCategoryMap((prev) => ({
             ...prev,
-            [detail.id as string]: detail,
+            [detail.id!]: detail,
           }));
         }
       } catch (err) {
-        console.warn('Failed to load question category:', err);
+        return null;
       }
     };
 

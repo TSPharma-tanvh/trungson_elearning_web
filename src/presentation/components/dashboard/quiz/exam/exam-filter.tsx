@@ -4,7 +4,7 @@ import * as React from 'react';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { CoreEnumUtils, QuizTypeEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { StatusEnum } from '@/utils/enum/path-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

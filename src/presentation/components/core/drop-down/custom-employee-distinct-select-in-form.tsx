@@ -98,7 +98,9 @@ export function CustomEmployeeDistinctSelectInForm({
           const selected = items.find((x) => x.code === localValue);
           return selected ? `${selected.name} (${selected.code})` : t('all');
         }}
-        onChange={(e) => { handleChange(e.target.value); }}
+        onChange={(e) => {
+          handleChange(e.target.value);
+        }}
         MenuProps={{ PaperProps: { style: { maxHeight } } }}
       >
         {loading ? (

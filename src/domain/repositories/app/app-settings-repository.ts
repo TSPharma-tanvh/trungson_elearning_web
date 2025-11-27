@@ -16,4 +16,6 @@ export interface AppSettingsRepository {
   updateAppSetting: (request: UpdateAppSettingsRequest) => Promise<ApiResponse>;
 
   deleteAppSetting: (id: string) => Promise<ApiResponse>;
+
+  syncEmployeeOrder: () => Promise<ApiResponse>;
 }

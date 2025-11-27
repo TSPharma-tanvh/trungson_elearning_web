@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { CreateUserQuizRequest } from '@/domain/models/user-quiz/request/create-user-quiz-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
@@ -11,18 +10,16 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Box, Button, Card, Container, Grid, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { paths } from '@/paths';
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-import { QuizSingleSelect } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 import { QuizSingleSelectExam } from '@/presentation/components/shared/quiz/quiz/quiz-select-exam';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
 export default function EnrollUsersToQuizPage() {
   const { t } = useTranslation();
-  const router = useRouter();
+  // const router = useRouter();
   const { userQuizProgressUsecase, quizUsecase, userUsecase } = useDI();
 
   const [loading, setLoading] = useState(false);

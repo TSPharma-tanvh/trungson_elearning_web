@@ -61,7 +61,7 @@ export default function ExamTable({
   const [viewOpen, setViewOpen] = React.useState(false);
   const [editQuizData, setEditPathData] = React.useState<QuizResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [_deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [deletePermanentDialogOpen, setDeletePermanentDialogOpen] = React.useState(false);
   const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
 
@@ -88,10 +88,10 @@ export default function ExamTable({
     setAnchorEl(null);
   };
 
-  const handleOpenDeleteDialog = (ids: string[]) => {
-    setIdsToDelete(ids);
-    setDeleteDialogOpen(true);
-  };
+  // const handleOpenDeleteDialog = (ids: string[]) => {
+  //   setIdsToDelete(ids);
+  //   setDeleteDialogOpen(true);
+  // };
 
   const handleOpenDeletePermanentDialog = (ids: string[]) => {
     setIdsToDelete(ids);

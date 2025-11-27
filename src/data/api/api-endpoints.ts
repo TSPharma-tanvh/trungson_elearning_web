@@ -199,6 +199,7 @@ interface AppSettingsEndpoints {
   create: StaticEndpoint;
   update: StaticEndpoint;
   delete: DynamicEndpoint;
+  syncEmployeeOrder: StaticEndpoint;
 }
 
 // Main type containing all endpoint categories
@@ -408,6 +409,7 @@ const endpoints: EndpointDefinitions = {
     create: 'AppSettings/CreateAppSetting',
     update: 'AppSettings/UpdateAppSetting',
     delete: (id: string) => `AppSettings/DeleteAppSetting/${id}`,
+    syncEmployeeOrder: 'AppSettings/SyncEmployeeOrder',
   },
 };
 

@@ -1,4 +1,3 @@
-// src/presentation/components/core/drop-down/custom-select-drop-down-dialog.tsx
 'use client';
 
 import React from 'react';

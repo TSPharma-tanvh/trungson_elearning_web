@@ -21,7 +21,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   List,
@@ -37,7 +36,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { CustomSelectDropDown } from '../../core/drop-down/custom-select-drop-down';
 import { CustomSelectDropDownNullable } from '../../core/drop-down/custom-select-drop-down-nullable';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import ImagePreviewDialog from './image-preview-dialog';
@@ -217,7 +215,7 @@ export function FileResourceMultiSelect({
           <CustomSearchInput placeholder={t('search')} value={searchText} onChange={setSearchText} />
 
           <Box display="flex" gap={2} alignItems="center" mt={2} mb={2}>
-            {showTypeSwitcher && (
+            {showTypeSwitcher ? (
               <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end', width: '100%' }}>
                 <CustomSelectDropDownNullable<FileTypeEnum>
                   label="fileType"
@@ -236,7 +234,7 @@ export function FileResourceMultiSelect({
                   allowEmpty={allowAllTypes}
                 />
               </Box>
-            )}
+            ) : null}
           </Box>
 
           <List sx={{ overflow: 'auto' }} ref={listRef}>

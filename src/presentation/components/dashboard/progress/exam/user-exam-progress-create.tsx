@@ -61,8 +61,8 @@ export function CreateUserQuizProgressDialog({
       activeStatus: StatusEnum.Enable,
       enrollStatus: ApproveStatusEnum.Approve,
       approvedAt: new Date(),
-      startTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      endTime: new Date(Date.now() + 48 * 60 * 60 * 1000),
+      // startTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      // endTime: new Date(Date.now() + 48 * 60 * 60 * 1000),
       isAutoEnroll: true,
       isUpdateOldProgress: false,
     })
@@ -330,7 +330,7 @@ export function CreateUserQuizProgressDialog({
               <div />
             )}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startTime')}
                 value={form.startTime ? DateTimeUtils.formatISODateToString(form.startTime) : undefined}
@@ -350,7 +350,7 @@ export function CreateUserQuizProgressDialog({
                 }}
                 disabled={disabled}
               />
-            </Grid>
+            </Grid> */}
 
             {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<string>

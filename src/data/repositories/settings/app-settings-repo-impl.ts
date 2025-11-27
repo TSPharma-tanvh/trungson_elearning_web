@@ -108,4 +108,20 @@ export class AppSettingsRepoImpl implements AppSettingsRepository {
       throw new Error(error?.message || 'Failed to delete app setting');
     }
   }
+
+  async syncEmployeeOrder(): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.appSettings.syncEmployeeOrder);
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch app setting by id');
+    }
+  }
 }

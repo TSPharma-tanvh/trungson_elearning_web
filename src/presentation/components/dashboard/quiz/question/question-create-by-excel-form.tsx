@@ -11,7 +11,6 @@ import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typo
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
-import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
 
@@ -132,7 +131,7 @@ export function CreateQuestionsFromExcelDialog({
           </Grid> */}
 
           {/* Shuffle */}
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <CustomSelectDropDown<boolean>
               label={t('canShuffle')}
               value={form.canShuffle}
@@ -144,7 +143,7 @@ export function CreateQuestionsFromExcelDialog({
                 { value: false, label: 'no' },
               ]}
             />
-          </Grid>
+          </Grid> */}
 
           {/* Excel upload */}
           <Grid item xs={12}>

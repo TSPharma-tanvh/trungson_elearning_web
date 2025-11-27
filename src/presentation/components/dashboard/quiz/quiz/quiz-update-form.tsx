@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
-import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
+import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
@@ -55,7 +55,7 @@ export function UpdateQuizForLessonDialog({
   const { categoryUsecase, fileUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [detailRows, setDetailRows] = useState(3);
+  const [detailRows, _setDetailRows] = useState(3);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState<UpdateQuizRequest>(new UpdateQuizRequest({}));
@@ -98,8 +98,12 @@ export function UpdateQuizForLessonDialog({
     } else if (form.thumbnailID) {
       fileUsecase
         .getFileResourceById(form.thumbnailID)
-        .then((f) => setPreviewUrl(f.resourceUrl || null))
-        .catch(() => setPreviewUrl(null));
+        .then((f) => {
+          setPreviewUrl(f.resourceUrl || null);
+        })
+        .catch(() => {
+          setPreviewUrl(null);
+        });
     } else {
       setPreviewUrl(null);
     }
@@ -122,7 +126,7 @@ export function UpdateQuizForLessonDialog({
       onSubmit(form);
       onClose();
     } catch (error) {
-      console.error('Update failed:', error);
+      return null;
     } finally {
       setIsSubmitting(false);
     }
@@ -145,9 +149,9 @@ export function UpdateQuizForLessonDialog({
         categoryID: quiz.categoryID,
         questionCategoryIDs:
           quiz.quizQuestions.length > 0
-            ? Array.from(new Set(quiz.quizQuestions.map((q) => q.categoryID).filter((id): id is string => !!id))).join(
-                ','
-              )
+            ? Array.from(
+                new Set(quiz.quizQuestions.map((q) => q.categoryID).filter((id): id is string => Boolean(id)))
+              ).join(',')
             : undefined,
         thumbnailID: quiz.thumbnailID,
         // thumbDocumentNo: quiz.thumbnail?.documentNo,
@@ -164,8 +168,12 @@ export function UpdateQuizForLessonDialog({
         setThumbnailSource('select');
         fileUsecase
           .getFileResourceById(quiz.thumbnailID)
-          .then((f) => setPreviewUrl(f.resourceUrl || null))
-          .catch(() => setPreviewUrl(null));
+          .then((f) => {
+            setPreviewUrl(f.resourceUrl || null);
+          })
+          .catch(() => {
+            setPreviewUrl(null);
+          });
       } else if (quiz.thumbnail?.resourceUrl) {
         setThumbnailSource('select');
         setPreviewUrl(quiz.thumbnail.resourceUrl);
@@ -188,7 +196,11 @@ export function UpdateQuizForLessonDialog({
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6">{t('updateQuiz')}</Typography>
         <Box>
-          <IconButton onClick={() => setFullScreen((prev) => !prev)}>
+          <IconButton
+            onClick={() => {
+              setFullScreen((prev) => !prev);
+            }}
+          >
             {fullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
           <IconButton onClick={onClose}>
@@ -210,7 +222,9 @@ export function UpdateQuizForLessonDialog({
               <CustomTextField
                 label={t('title')}
                 value={form.title || ''}
-                onChange={(v) => handleChange('title', v)}
+                onChange={(v) => {
+                  handleChange('title', v);
+                }}
                 disabled={isSubmitting}
                 required
               />
@@ -220,7 +234,9 @@ export function UpdateQuizForLessonDialog({
               <CustomTextField
                 label={t('description')}
                 value={form.description || ''}
-                onChange={(v) => handleChange('description', v)}
+                onChange={(v) => {
+                  handleChange('description', v);
+                }}
                 disabled={isSubmitting}
                 multiline
                 rows={detailRows}
@@ -232,7 +248,9 @@ export function UpdateQuizForLessonDialog({
                 categoryUsecase={categoryUsecase}
                 value={form.questionCategoryIDs}
                 label={t('questionBank')}
-                onChange={(v) => handleChange('questionCategoryIDs', v)}
+                onChange={(v) => {
+                  handleChange('questionCategoryIDs', v);
+                }}
                 categoryEnum={CategoryEnum.Question}
                 required
                 disabled={isSubmitting}
@@ -249,7 +267,24 @@ export function UpdateQuizForLessonDialog({
               <CustomSelectDropDown<boolean>
                 label={t('isRequired')}
                 value={form.isRequired ?? true}
-                onChange={(v) => handleChange('isRequired', v)}
+                onChange={(v) => {
+                  handleChange('isRequired', v);
+                }}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('canShuffle')}
+                value={form.canShuffle ?? true}
+                onChange={(v) => {
+                  handleChange('canShuffle', v);
+                }}
                 options={[
                   { value: true, label: 'yes' },
                   { value: false, label: 'no' },
@@ -262,7 +297,9 @@ export function UpdateQuizForLessonDialog({
               <CustomTextField
                 label={t('displayedQuestionCount')}
                 value={form.displayedQuestionCount?.toString() ?? ''}
-                onChange={(v) => handleChange('displayedQuestionCount', v ? Number(v) : undefined)}
+                onChange={(v) => {
+                  handleChange('displayedQuestionCount', v ? Number(v) : undefined);
+                }}
                 inputMode="numeric"
                 disabled={isSubmitting}
                 icon={<NumberCircleSix {...iconStyle} />}
@@ -273,7 +310,9 @@ export function UpdateQuizForLessonDialog({
               <CustomTextField
                 label={t('time')}
                 value={form.time || ''}
-                onChange={(v) => handleChange('time', v)}
+                onChange={(v) => {
+                  handleChange('time', v);
+                }}
                 disabled={isSubmitting}
                 pattern="^[0-2]?[0-9]:[0-5][0-9]:[0-5][0-9]$"
                 patternError="HH:mm:ss"
@@ -286,7 +325,9 @@ export function UpdateQuizForLessonDialog({
               <CustomTextField
                 label={t('scoreToPass')}
                 value={form.scoreToPass?.toString() ?? ''}
-                onChange={(v) => handleChange('scoreToPass', v ? Number(v) : undefined)}
+                onChange={(v) => {
+                  handleChange('scoreToPass', v ? Number(v) : undefined);
+                }}
                 inputMode="numeric"
                 disabled={isSubmitting}
                 required
@@ -299,7 +340,9 @@ export function UpdateQuizForLessonDialog({
                 label={t('quizCategory')}
                 categoryUsecase={categoryUsecase}
                 value={form.categoryID}
-                onChange={(v) => handleChange('categoryID', v)}
+                onChange={(v) => {
+                  handleChange('categoryID', v);
+                }}
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
               />
@@ -339,7 +382,9 @@ export function UpdateQuizForLessonDialog({
                     <CustomTextField
                       label={t('thumbnailDocumentNo')}
                       value={form.thumbDocumentNo || ''}
-                      onChange={(v) => handleChange('thumbDocumentNo', v)}
+                      onChange={(v) => {
+                        handleChange('thumbDocumentNo', v);
+                      }}
                       disabled={isSubmitting}
                       icon={<Image {...iconStyle} />}
                     />
@@ -348,7 +393,9 @@ export function UpdateQuizForLessonDialog({
                     <CustomTextField
                       label={t('thumbnailPrefixName')}
                       value={form.thumbPrefixName || ''}
-                      onChange={(v) => handleChange('thumbPrefixName', v)}
+                      onChange={(v) => {
+                        handleChange('thumbPrefixName', v);
+                      }}
                       disabled={isSubmitting}
                       icon={<Image {...iconStyle} />}
                     />
@@ -366,7 +413,9 @@ export function UpdateQuizForLessonDialog({
                         type="file"
                         hidden
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files?.[0] || null);
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -374,8 +423,10 @@ export function UpdateQuizForLessonDialog({
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!form.isDeleteOldThumbnail}
-                          onChange={(e) => handleChange('isDeleteOldThumbnail', e.target.checked)}
+                          checked={Boolean(form.isDeleteOldThumbnail)}
+                          onChange={(e) => {
+                            handleChange('isDeleteOldThumbnail', e.target.checked);
+                          }}
                           disabled={isSubmitting}
                         />
                       }
@@ -386,7 +437,7 @@ export function UpdateQuizForLessonDialog({
               )}
             </Grid>
 
-            {previewUrl && (
+            {previewUrl ? (
               <Grid item xs={12}>
                 <Box
                   sx={{
@@ -406,7 +457,7 @@ export function UpdateQuizForLessonDialog({
                   />
                 </Box>
               </Grid>
-            )}
+            ) : null}
 
             <Grid item xs={12}>
               <CustomButton

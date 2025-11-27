@@ -312,7 +312,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('canShuffle')}
                 value={formData.canShuffle ?? false}
@@ -325,7 +325,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   { value: false, label: t('no') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             {/* Upload file resources */}
 

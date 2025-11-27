@@ -3,12 +3,16 @@
 import React from 'react';
 import { type UpdateAppSettingsRequest } from '@/domain/models/settings/request/update-app-setting-request';
 import { type GetAppSettingsResponse } from '@/domain/models/settings/response/get-app-settings-response';
+import { PositionStateSettingResponse } from '@/domain/models/settings/response/position-state-setting-response';
 import { MoreVert } from '@mui/icons-material';
 import {
   Box,
   Button,
   Card,
   Checkbox,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
   MenuItem,
   MenuList,
@@ -58,6 +62,10 @@ export default function AppSettingsTable({
   const [editSetting, setEditSetting] = React.useState<GetAppSettingsResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
 
+  //only for view order
+  const [openPositionDetail, setOpenPositionDetail] = React.useState(false);
+  const [positionData, setPositionData] = React.useState<PositionStateSettingResponse[]>([]);
+
   const isSelected = (id: string) => selected.has(id);
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelected(e.target.checked ? new Set(rows.map((r) => r.id!)) : new Set());
@@ -104,18 +112,18 @@ export default function AppSettingsTable({
   //   }
   // };
 
-  const renderTravelAllowanceSummary = (metadataJson: string) => {
-    try {
-      const obj = JSON.parse(metadataJson);
-      const distanceFrom = obj.DistanceFromKm ?? obj.distanceFromKm;
-      const distanceTo = obj.DistanceToKm ?? obj.distanceToKm;
-      const amount = obj.AllowanceAmount ?? obj.allowanceAmount;
+  // const renderTravelAllowanceSummary = (metadataJson: string) => {
+  //   try {
+  //     const obj = JSON.parse(metadataJson);
+  //     const distanceFrom = obj.DistanceFromKm ?? obj.distanceFromKm;
+  //     const distanceTo = obj.DistanceToKm ?? obj.distanceToKm;
+  //     const amount = obj.AllowanceAmount ?? obj.allowanceAmount;
 
-      return `${distanceFrom} → ${distanceTo} km / ${amount.toLocaleString()}₫`;
-    } catch (error) {
-      return null;
-    }
-  };
+  //     return `${distanceFrom} → ${distanceTo} km / ${amount.toLocaleString()}₫`;
+  //   } catch (error) {
+  //     return null;
+  //   }
+  // };
 
   const formatKey = (key: string): string => {
     if (!key) return '';
@@ -123,6 +131,17 @@ export default function AppSettingsTable({
     const lastPart = parts[parts.length - 1];
 
     return lastPart.charAt(0).toLowerCase() + lastPart.slice(1);
+  };
+
+  //for view order
+  const handleOpenPositionDetail = (row: GetAppSettingsResponse) => {
+    if (row.metadataJson) {
+      const parsed = PositionStateSettingResponse.sortByOrder(
+        PositionStateSettingResponse.parseArray(row.metadataJson)
+      );
+      setPositionData(parsed);
+      setOpenPositionDetail(true);
+    }
   };
 
   return (
@@ -204,10 +223,21 @@ export default function AppSettingsTable({
                       </TableCell>
                       <TableCell>{t(formatKey(row.key))}</TableCell>
                       <TableCell>
-                        {row.key.includes('TravelAllowance') && row.metadataJson
-                          ? renderTravelAllowanceSummary(row.metadataJson)
-                          : row.value}
+                        {row.key === 'General.PositionStateOrder' ? (
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => {
+                              handleOpenPositionDetail(row);
+                            }}
+                          >
+                            {t('viewDetails')}
+                          </Button>
+                        ) : (
+                          row.value
+                        )}
                       </TableCell>
+
                       <TableCell>{t(row.category?.toLowerCase() ?? '')}</TableCell>
                       <TableCell>{row.isDefault ? t('yes') : t('no')}</TableCell>
                       <TableCell>{row.description}</TableCell>
@@ -291,6 +321,48 @@ export default function AppSettingsTable({
         }}
         onConfirm={handleConfirmDelete}
       />
+
+      <Dialog
+        open={openPositionDetail}
+        onClose={() => {
+          setOpenPositionDetail(false);
+        }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{t('positionStateOrderDetails')}</DialogTitle>
+        <DialogContent>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('name')}</TableCell>
+                <TableCell>{t('code')}</TableCell>
+                <TableCell>{t('order')}</TableCell>
+                <TableCell>{t('isActive')}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {positionData.map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell>{p.name}</TableCell>
+                  <TableCell>{p.code}</TableCell>
+                  <TableCell>{p.order}</TableCell>
+                  <TableCell>{p.isActive ? t('yes') : t('no')}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <Box mt={2} display="flex" justifyContent="flex-end">
+            <Button
+              onClick={() => {
+                setOpenPositionDetail(false);
+              }}
+            >
+              {t('close')}
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -477,8 +477,8 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
                     setSelectedResourceIDs(ids);
                   }}
                   disabled={false}
-                  showTypeSwitcher={true}
-                  allowAllTypes={true}
+                  showTypeSwitcher
+                  allowAllTypes
                 />
               </Grid>
             ) : (

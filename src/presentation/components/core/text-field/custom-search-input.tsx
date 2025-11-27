@@ -19,7 +19,9 @@ export function CustomSearchInput({
       fullWidth
       size={size}
       value={value}
-      onChange={(e) => { onChange(e.target.value); }}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
       placeholder={placeholder}
       InputProps={{
         startAdornment: (

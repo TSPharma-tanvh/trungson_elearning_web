@@ -350,7 +350,7 @@ export function QuizSingleSelectLesson({
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
             {quizzes.map((item) => {
               const textColor =
-                item.type === QuizTypeEnum.LessonQuiz.toString() || item.type?.toString() === 'LessonQuiz'
+                item.type === QuizTypeEnum[QuizTypeEnum.LessonQuiz] || item.type?.toString() === 'LessonQuiz'
                   ? 'var(--mui-palette-primary-main)'
                   : 'var(--mui-palette-secondary-main)';
               return (

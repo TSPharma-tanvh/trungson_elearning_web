@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -23,18 +22,15 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { Clock, Image, NumberCircleFive, NumberCircleNine, NumberCircleSix } from '@phosphor-icons/react';
+import { Clock, Image, NumberCircleNine, NumberCircleSix } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
-import { CustomEmployeeDistinctSelectInForm } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-in-form';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
-import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
-import { LessonSingleSelectAndCreateDialog } from '@/presentation/components/shared/courses/lessons/lesson-single-select-and-create-form';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface CreateQuizForLessonProps {
@@ -53,7 +49,7 @@ export function CreateQuizForLessonDialog({
   onClose,
 }: CreateQuizForLessonProps) {
   const { t } = useTranslation();
-  const { categoryUsecase, fileUsecase, lessonUsecase } = useDI();
+  const { categoryUsecase, fileUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
@@ -408,6 +404,21 @@ export function CreateQuizForLessonDialog({
                   { value: true, label: 'yes' },
                   { value: false, label: 'no' },
                 ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('canShuffle')}
+                value={form.canShuffle ?? true}
+                onChange={(v) => {
+                  handleChange('canShuffle', v);
+                }}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+                disabled={isSubmitting}
               />
             </Grid>
 

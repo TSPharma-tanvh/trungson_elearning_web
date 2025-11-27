@@ -5,7 +5,7 @@ import { type FileResourceListForAdminResult } from '@/domain/models/file/respon
 import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import type { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import type { StatusEnum } from '@/utils/enum/core-enum';
-import { FileTypeEnum, FileTypeEnumUtils } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 

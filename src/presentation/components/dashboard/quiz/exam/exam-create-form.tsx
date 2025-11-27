@@ -34,7 +34,6 @@ import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snac
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
-import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface CreateExamProps {
@@ -411,7 +410,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
                 />
               </Grid>
             ) : (
-              <div></div>
+              <div />
             )}
 
             <Grid item xs={12} sm={6}>
@@ -479,7 +478,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               </Typography>
             </Grid>
 
-            {form.isFixedQuiz === true ? (
+            {form.isFixedQuiz ? (
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   label={t('durationInDaysForThisPart')}
@@ -495,7 +494,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               </Grid>
             ) : null}
 
-            {form.isFixedQuiz === false ? (
+            {!form.isFixedQuiz ? (
               <Grid item xs={12} sm={6}>
                 <CustomDateTimePicker
                   label={t('startDate')}
@@ -504,12 +503,12 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
                     handleChange('startDate', iso ? new Date(iso) : undefined);
                   }}
                   allowClear
-                  required={form.isFixedQuiz === false ? true : false}
+                  required={!form.isFixedQuiz}
                 />
               </Grid>
             ) : null}
 
-            {form.isFixedQuiz === false ? (
+            {!form.isFixedQuiz ? (
               <Grid item xs={12} sm={6}>
                 <CustomDateTimePicker
                   label={t('endDate')}
@@ -518,7 +517,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
                     handleChange('endDate', iso ? new Date(iso) : undefined);
                   }}
                   allowClear
-                  required={form.isFixedQuiz === false ? true : false}
+                  required={!form.isFixedQuiz}
                 />
               </Grid>
             ) : null}
