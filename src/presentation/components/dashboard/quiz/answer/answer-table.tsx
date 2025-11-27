@@ -7,7 +7,6 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
-import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
 import AnswerDetailForm from './answer-detail-form';
 import { UpdateAnswerFormDialog } from './answer-update-form';
@@ -39,27 +38,27 @@ export default function AnswerTable({
   const [editOpen, setEditOpen] = React.useState(false);
   const [editAnswerData, setEditAnswerData] = React.useState<AnswerDetailResponse | null>(null);
   const [viewOpen, setViewOpen] = React.useState(false);
-  const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
+  // const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  // const [dialogOpen, setDialogOpen] = React.useState(false);
 
-  const handleRequestDelete = (id: string) => {
-    setPendingDeleteId(id);
-    setDialogOpen(true);
-  };
+  // const handleRequestDelete = (id: string) => {
+  //   setPendingDeleteId(id);
+  //   setDialogOpen(true);
+  // };
 
-  const handleConfirmDelete = async () => {
-    if (pendingDeleteId) {
-      await onDeleteAnswers([pendingDeleteId]);
-      setPendingDeleteId(null);
-    }
-    setDialogOpen(false);
-  };
+  // const handleConfirmDelete = async () => {
+  //   if (pendingDeleteId) {
+  //     await onDeleteAnswers([pendingDeleteId]);
+  //     setPendingDeleteId(null);
+  //   }
+  //   setDialogOpen(false);
+  // };
 
-  const handleCancelDelete = () => {
-    setPendingDeleteId(null);
-    setDialogOpen(false);
-  };
+  // const handleCancelDelete = () => {
+  //   setPendingDeleteId(null);
+  //   setDialogOpen(false);
+  // };
 
   return (
     <>
@@ -72,6 +71,7 @@ export default function AnswerTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteAnswers}
+        showDeleteHeader={false}
         actionMenuItems={[
           {
             label: t('viewDetails'),
@@ -87,18 +87,18 @@ export default function AnswerTable({
               setEditOpen(true);
             },
           },
-          {
-            label: t('delete'),
-            onClick: (row) => {
-              if (row.id) handleRequestDelete(row.id);
-            },
-          },
+          // {
+          //   label: t('delete'),
+          //   onClick: (row) => {
+          //     if (row.id) handleRequestDelete(row.id);
+          //   },
+          // },
         ]}
         renderHeader={() => (
           <>
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('isCorrect')}</TableCell>
-            <TableCell>{t('category')}</TableCell>
+            <TableCell>{t('questionBank')}</TableCell>
             <TableCell>{t('status')}</TableCell>
           </>
         )}
@@ -164,12 +164,12 @@ export default function AnswerTable({
         />
       ) : null}
 
-      <ConfirmDeleteDialog
+      {/* <ConfirmDeleteDialog
         open={dialogOpen}
         selectedCount={1}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
-      />
+      /> */}
     </>
   );
 }

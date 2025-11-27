@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { CoreEnumUtils, QuizTypeEnum } from '@/utils/enum/core-enum';
-import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
+import { StatusEnum } from '@/utils/enum/path-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -16,16 +16,24 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
   const [searchText, setSearchText] = React.useState('');
   const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
-  const [displayType, setDisplayType] = React.useState<DisplayTypeEnum | undefined>(undefined);
-  const [quizType, setQuizType] = React.useState<QuizTypeEnum | undefined>(undefined);
+  // const [displayType, setDisplayType] = React.useState<DisplayTypeEnum | undefined>(undefined);
+  // const [quizType, setQuizType] = React.useState<QuizTypeEnum | undefined>(undefined);
+  // const [positionCode, setPositionCode] = React.useState<string | undefined>(undefined);
+  // const [positionStateCode, setPositionStateCode] = React.useState<string | undefined>(undefined);
+  // const [departmentTypeCode, setDepartmentTypeCode] = React.useState<string | undefined>(undefined);
+  // const [isFixedQuiz, setIsFixedQuiz] = React.useState<boolean | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetQuizRequest({
       searchText: searchText || undefined,
       isRequired,
-      type: quizType || undefined,
+      type: QuizTypeEnum.LessonQuiz,
       pageNumber: 1,
       pageSize: 10,
+      // positionCode,
+      // positionStateCode,
+      // departmentTypeCode,
+      // isFixedQuiz,
     });
 
     onFilter(request);
@@ -35,8 +43,12 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
     setSearchText('');
     setIsRequired(undefined);
     setStatus(undefined);
-    setDisplayType(undefined);
-    onFilter(new GetQuizRequest({ pageNumber: 1, pageSize: 10 }));
+    // setDisplayType(undefined);
+    // setPositionCode(undefined);
+    // setPositionStateCode(undefined);
+    // setDepartmentTypeCode(undefined);
+    // setIsFixedQuiz(undefined);
+    onFilter(new GetQuizRequest({ pageNumber: 1, pageSize: 10, type: QuizTypeEnum.LessonQuiz }));
   };
 
   return (
@@ -52,7 +64,9 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => { handleFilter(); }}
+          onEnter={() => {
+            handleFilter();
+          }}
           placeholder={t('searchQuiz')}
         />
 
@@ -69,14 +83,14 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
         />
 
         {/* Quiz Type */}
-        <CustomSelectFilter<QuizTypeEnum>
+        {/* <CustomSelectFilter<QuizTypeEnum>
           label={t('type')}
           value={quizType}
           onChange={(val) => {
             setQuizType(val);
           }}
           options={CoreEnumUtils.getEnumOptions(QuizTypeEnum)}
-        />
+        /> */}
 
         {/* Status */}
         <CustomSelectFilter<StatusEnum>
@@ -88,15 +102,46 @@ export function QuizFilters({ onFilter }: { onFilter: (filters: GetQuizRequest) 
           options={CoreEnumUtils.getEnumOptions(StatusEnum)}
         />
 
+        {/* <CustomSelectFilter<boolean>
+          label={t('isFixedQuiz')}
+          value={isFixedQuiz}
+          onChange={setIsFixedQuiz}
+          options={[
+            { value: true, label: 'yes' },
+            { value: false, label: 'no' },
+          ]}
+        /> */}
+
         {/* Display Type */}
-        <CustomSelectFilter<DisplayTypeEnum>
+        {/* <CustomSelectFilter<DisplayTypeEnum>
           label={t('displayType')}
           value={displayType}
           onChange={(val) => {
             setDisplayType(val);
           }}
           options={CoreEnumUtils.getEnumOptions(DisplayTypeEnum)}
+        /> */}
+
+        {/* <CustomEmployeeDistinctFilter
+          label={t('position')}
+          type={DepartmentFilterType.Position} // Position
+          value={positionCode}
+          onChange={setPositionCode}
         />
+
+        <CustomEmployeeDistinctFilter
+          label={t('positionState')}
+          type={DepartmentFilterType.PositionState} // PositionState
+          value={positionStateCode}
+          onChange={setPositionStateCode}
+        />
+
+        <CustomEmployeeDistinctFilter
+          label={t('departmentType')}
+          type={DepartmentFilterType.DepartmentType} // Department
+          value={departmentTypeCode}
+          onChange={setDepartmentTypeCode}
+        /> */}
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
           {t('filter')}

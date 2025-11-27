@@ -1,33 +1,31 @@
 'use client';
 
 import React from 'react';
-import { type EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { GetUserCourseProgressRequest } from '@/domain/models/user-course/request/get-user-course-progress-request';
 import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-course/request/update-user-course-progress-request';
 import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Stack, Typography } from '@mui/material';
-import { FileXls, Plus } from '@phosphor-icons/react';
+import { FileXls } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
-import { CreateUserCourseProgressDialog } from '@/presentation/components/dashboard/progress/course/user-course-progress-create';
 import { UserCourseProgressFilters } from '@/presentation/components/dashboard/progress/course/user-course-progress-filter';
 import UserCourseProgressTable from '@/presentation/components/dashboard/progress/course/user-course-progress-table';
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { userCourseProgressUsecase, enrollUsecase, courseUsecase } = useDI();
+  const { userCourseProgressUsecase, courseUsecase } = useDI();
 
-  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
+  // const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [filters, setFilters] = React.useState<GetUserCourseProgressRequest>(
     new GetUserCourseProgressRequest({ pageNumber: 1, pageSize: 10 })
   );
   const [userCourseProgress, setUserCourseProgress] = React.useState<UserCourseProgressResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
-  const [createLoading, setCreateLoading] = React.useState(false);
+  // const [createLoading, setCreateLoading] = React.useState(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -66,19 +64,19 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateUserCourseProgress = async (request: EnrollUserListToCourseRequest) => {
-    try {
-      setCreateLoading(true);
+  // const handleCreateUserCourseProgress = async (request: EnrollUserListToCourseRequest) => {
+  //   try {
+  //     setCreateLoading(true);
 
-      await userCourseProgressUsecase.enrollUserCourseProgress(request);
-      setShowCreateDialog(false);
-      await fetchUserCourseProgress();
-    } catch (error) {
-      return undefined;
-    } finally {
-      setCreateLoading(false);
-    }
-  };
+  //     await userCourseProgressUsecase.enrollUserCourseProgress(request);
+  //     setShowCreateDialog(false);
+  //     await fetchUserCourseProgress();
+  //   } catch (error) {
+  //     return undefined;
+  //   } finally {
+  //     setCreateLoading(false);
+  //   }
+  // };
 
   const handleEditUserCourseProgress = async (request: UpdateUserCourseProgressRequest) => {
     try {
@@ -121,10 +119,6 @@ export default function Page(): React.JSX.Element {
       [t('actualEndDate')]: row.actualEndDate ? DateTimeUtils.formatISODateStringToString(row.actualEndDate) : '',
       [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatISODateStringToString(row.lastAccess) : '',
       [t('progressStatus')]: row.status ? t(row.status.toLowerCase()) : '',
-      [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
-      [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
-      [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
-      [t('cityName')]: row.user?.employee?.cityName ?? '',
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);
@@ -155,7 +149,7 @@ export default function Page(): React.JSX.Element {
             </Button>
           </Stack>
         </Stack>
-        <div>
+        {/* <div>
           <Button
             startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
@@ -165,9 +159,9 @@ export default function Page(): React.JSX.Element {
           >
             {t('enrollUsers')}
           </Button>
-        </div>
+        </div> */}
       </Stack>
-      <UserCourseProgressFilters onFilter={handleFilter} enrollUsecase={enrollUsecase} courseUsecase={courseUsecase} />
+      <UserCourseProgressFilters onFilter={handleFilter} courseUsecase={courseUsecase} />
       <UserCourseProgressTable
         rows={userCourseProgress}
         count={totalCount}
@@ -179,7 +173,7 @@ export default function Page(): React.JSX.Element {
         onEditUserCourseProgress={handleEditUserCourseProgress}
       />
 
-      <CreateUserCourseProgressDialog
+      {/* <CreateUserCourseProgressDialog
         onSubmit={handleCreateUserCourseProgress}
         disabled={false}
         loading={createLoading}
@@ -187,7 +181,7 @@ export default function Page(): React.JSX.Element {
         onClose={() => {
           setShowCreateDialog(false);
         }}
-      />
+      /> */}
     </Stack>
   );
 }

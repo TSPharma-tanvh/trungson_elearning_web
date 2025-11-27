@@ -21,9 +21,12 @@ import {
   ListChecks,
   ListMagnifyingGlass,
   Notification,
+  Pen,
   QuestionMark,
+  SealQuestion,
   Student,
   UserGear,
+  UserPlus,
   UsersThree,
   Video,
 } from '@phosphor-icons/react';
@@ -74,4 +77,9 @@ export const navIcons = {
   category: BookmarkSimple,
   employee: IdentificationCard,
   devices: DeviceMobile,
+  files: File,
+  bookUser: BookOpenUser,
+  questionCategory: SealQuestion,
+  examEnroll: UserPlus,
+  exam: Pen,
 } as Record<string, Icon>;

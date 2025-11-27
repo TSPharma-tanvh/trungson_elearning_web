@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import {
+  LessonsCollectionUpdateDetailRequest,
+  LessonsCollectionUpdateRequest,
+} from '@/domain/models/lessons/request/lesson-collection-update-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { DepartmentFilterType } from '@/utils/enum/employee-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -28,11 +33,12 @@ import {
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
+import { CustomEmployeeDistinctSelectInForm } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-in-form';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
+import { LessonCollectionUpdateEditor } from '@/presentation/components/shared/courses/lessons/lesson-collection-update-form';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
@@ -49,7 +55,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
   const theme = useTheme();
   const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { categoryUsecase, lessonUsecase, fileUsecase, classTeacherUsecase } = useDI();
+  const { categoryUsecase, fileUsecase, classTeacherUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [formData, setFormData] = useState<UpdateCourseRequest>(new UpdateCourseRequest({}));
@@ -69,47 +75,63 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
   useEffect(() => {
     if (course && open) {
+      const mappedCollections =
+        course.collections?.map(
+          (c) =>
+            new LessonsCollectionUpdateRequest({
+              id: c.id,
+              name: c.name,
+              order: c.order,
+              startDate: c.startDate ? new Date(c.startDate) : undefined,
+              endDate: c.endDate ? new Date(c.endDate) : undefined,
+              fixedCourseDayDuration: c.fixedCourseDayDuration,
+
+              collection:
+                c.lessons
+                  ?.map(
+                    (lesson) =>
+                      new LessonsCollectionUpdateDetailRequest({
+                        lessonId: lesson.id,
+                        order: lesson.order ?? 0,
+                      })
+                  )
+                  .sort((a, b) => a.order - b.order) ?? [],
+            })
+        ) ?? [];
+
       const newFormData = new UpdateCourseRequest({
         id: course.id || '',
         name: course.name || '',
         detail: course.detail || undefined,
         isRequired: course.isRequired || false,
-        disableStatus:
-          course.disableStatus !== undefined ? StatusEnum[course.disableStatus as keyof typeof StatusEnum] : undefined,
-        displayType:
-          course.displayType !== undefined
-            ? DisplayTypeEnum[course.displayType as keyof typeof DisplayTypeEnum]
-            : undefined,
-        courseType:
-          course.courseType !== undefined
-            ? LearningModeEnum[course.courseType as keyof typeof LearningModeEnum]
-            : undefined,
+        disableStatus: course.disableStatus,
         meetingLink: course.meetingLink || undefined,
-        teacherID: course.teacherId || undefined,
-        enrollmentCriteriaType: course.pathId !== undefined ? undefined : CategoryEnum.Course,
-        enrollmentCriteriaIDs:
-          course.pathId === undefined
-            ? course.courseEnrollments?.map((enrollment) => enrollment.enrollmentCriteriaID).join(',') || undefined
-            : undefined,
-        categoryID: course.categoryId || undefined,
-        thumbnailID: course.thumbnailId || undefined,
-        lessonIds: course.lessons !== undefined ? course.lessons.map((lesson) => lesson.id).join(',') || '' : undefined,
-        categoryEnum: CategoryEnum.Course,
+        courseType: course.courseType,
+        teacherId: course.teacherId || undefined,
+        isFixedCourse: course.isFixedCourse ?? false,
+        categoryId: course.categoryId || undefined,
+        thumbnailId: course.thumbnailId || undefined,
+        categoryEnum: CategoryEnum[CategoryEnum.Course],
         isDeleteOldThumbnail: false,
-        resourceIDs:
+        resourceIds:
           course.fileCourseRelation
             ?.map((item) => item.fileResources?.id)
             .filter((id): id is string => Boolean(id))
             .join(',') || undefined,
+
+        collections: mappedCollections,
+        positionCode: course.positionCode,
+        positionStateCode: course.positionStateCode,
+        departmentTypeCode: course.departmentTypeCode,
       });
+
       setFormData(newFormData);
       setPreviewUrl(course.thumbnail?.resourceUrl ?? null);
-
       setSelectedResourceIDs(
         course.fileCourseRelation?.map((item) => item.fileResources?.id).filter((id): id is string => Boolean(id)) ?? []
       );
     }
-  }, [course, open, fileUsecase]);
+  }, [course, open]);
 
   const handleChange = <K extends keyof UpdateCourseRequest>(field: K, value: UpdateCourseRequest[K]) => {
     setFormData((prev) => new UpdateCourseRequest({ ...prev, [field]: value }));
@@ -118,57 +140,42 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
   const handleThumbnailSourceChange = async (_: React.MouseEvent<HTMLElement>, newSource: 'upload' | 'select') => {
     if (!newSource) return;
     setThumbnailSource(newSource);
-
     if (newSource === 'upload') {
-      // file
-      if (thumbnailFile) {
-        setPreviewUrl(URL.createObjectURL(thumbnailFile));
-      } else {
-        setPreviewUrl(null);
-      }
-    } else {
-      // thumbnail id
-      if (formData.thumbnailID) {
-        try {
-          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
-          setPreviewUrl(file.resourceUrl || null);
-        } catch {
-          setPreviewUrl(null);
-        }
-      } else {
-        setPreviewUrl(null);
-      }
-    }
-  };
-
-  const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
-    if (id) {
+      if (thumbnailFile) setPreviewUrl(URL.createObjectURL(thumbnailFile));
+      else setPreviewUrl(null);
+    } else if (formData.thumbnailId) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(formData.thumbnailId);
         setPreviewUrl(file.resourceUrl || null);
-        if (thumbnailSource === 'select') {
-          setPreviewUrl(file.resourceUrl || null);
-        }
       } catch {
         setPreviewUrl(null);
       }
     } else {
       setPreviewUrl(null);
-      if (thumbnailSource === 'select') {
+    }
+  };
+
+  const handleFileSelectChange = async (id: string) => {
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailId', newId);
+    if (id) {
+      try {
+        const file = await fileUsecase.getFileResourceById(id);
+        setPreviewUrl(file.resourceUrl || null);
+      } catch {
         setPreviewUrl(null);
       }
+    } else {
+      setPreviewUrl(null);
     }
   };
 
   const handleFileUpload = (file: File | null) => {
     setThumbnailFile(file);
     handleChange('thumbnail', file ?? undefined);
-    if (file) {
-      setPreviewUrl(URL.createObjectURL(file));
-    } else {
-      setPreviewUrl(null);
-    }
+    if (file) setPreviewUrl(URL.createObjectURL(file));
+    else setPreviewUrl(null);
   };
 
   const handleMultipleFileUpload = (files: File[]) => {
@@ -184,23 +191,21 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     setIsSubmitting(true);
     try {
       if (thumbnailSource === 'upload') {
-        formData.thumbnailID = undefined;
+        formData.thumbnailId = undefined;
       } else {
         formData.thumbnail = undefined;
       }
-
       if (fileSelectSource === 'upload') {
-        formData.resourceIDs = undefined;
+        formData.resourceIds = undefined;
         formData.resources = uploadedFiles;
       } else {
         formData.resources = undefined;
-        formData.resourceIDs = selectedResourceIDs.join(',');
+        formData.resourceIds = selectedResourceIDs.join(',');
       }
-
       onSubmit(new UpdateCourseRequest({ ...formData }));
       onClose();
     } catch (error) {
-      return undefined;
+      // ignore
     } finally {
       setIsSubmitting(false);
     }
@@ -220,22 +225,16 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
     }
   }, [open]);
 
-  const iconStyle = {
-    size: 20,
-    weight: 'fill' as const,
-    color: '#616161',
-  };
-
+  const iconStyle = { size: 20, weight: 'fill' as const, color: '#616161' };
   const statusOptions = [
-    { value: StatusEnum.Enable, label: 'enable' },
-    { value: StatusEnum.Disable, label: 'disable' },
-    { value: StatusEnum.Deleted, label: 'deleted' },
+    { value: StatusEnum[StatusEnum.Enable], label: 'enable' },
+    { value: StatusEnum[StatusEnum.Disable], label: 'disable' },
+    { value: StatusEnum[StatusEnum.Deleted], label: 'deleted' },
   ];
-
-  const displayTypeOptions = [
-    { value: DisplayTypeEnum.Public, label: 'public' },
-    { value: DisplayTypeEnum.Private, label: 'private' },
-  ];
+  // const displayTypeOptions = [
+  //   { value: DisplayTypeEnum.Public, label: 'public' },
+  //   { value: DisplayTypeEnum.Private, label: 'private' },
+  // ];
 
   if (!course) return null;
 
@@ -258,13 +257,11 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           </IconButton>
         </Box>
       </DialogTitle>
-
       <DialogContent>
         <Box mt={1}>
           <Typography variant="body2" mb={2}>
             {t('id')}: {course?.id}
           </Typography>
-
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomTextField
@@ -277,7 +274,6 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 icon={<Tag {...iconStyle} />}
               />
             </Grid>
-
             <Grid item xs={12}>
               <CustomTextField
                 label={t('detail')}
@@ -289,10 +285,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 icon={<Article {...iconStyle} />}
               />
             </Grid>
-
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
-                label={t('disableStatus')}
+                label={t('status')}
                 value={formData.disableStatus ?? ''}
                 onChange={(value) => {
                   handleChange('disableStatus', value);
@@ -301,97 +296,91 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 options={statusOptions}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('displayType')}
                 value={formData.displayType ?? ''}
-                onChange={(value) => {
-                  handleChange('displayType', value);
-                }}
+                onChange={(value) => handleChange('displayType', value)}
                 disabled={isSubmitting}
                 options={displayTypeOptions}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12}>
-              <CustomSelectDropDown<LearningModeEnum>
-                label={t('courseType')}
-                value={formData.courseType ?? ''}
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isFixedCourse')}
+                value={formData.isFixedCourse ?? false}
                 onChange={(val) => {
-                  handleChange('courseType', val);
+                  handleChange('isFixedCourse', val);
                 }}
                 disabled={isSubmitting}
                 options={[
-                  { value: LearningModeEnum.Offline, label: t('offline') },
-                  { value: LearningModeEnum.Online, label: t('online') },
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
                 ]}
               />
             </Grid>
 
-            {formData.courseType === LearningModeEnum.Online && (
-              <Grid item xs={12}>
-                <CustomTextField
-                  label={t('meetingLink')}
-                  value={formData.meetingLink}
-                  onChange={(val) => {
-                    handleChange('meetingLink', val);
-                  }}
-                  disabled={false}
-                  sx={{ '& .MuiInputBase-root': { height: fullScreen ? '100%' : 'auto' } }}
-                />
-              </Grid>
-            )}
-
-            <Grid item xs={12}>
-              <LessonMultiSelectDialog
-                lessonUsecase={lessonUsecase}
-                value={formData.lessonIds ? formData.lessonIds.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => {
-                  handleChange('lessonIds', value.join(','));
-                }}
-                disabled={isSubmitting}
-              />
-            </Grid>
-
-            {/* {course.pathId === undefined ? (
-              <Grid item xs={12}>
-                <EnrollmentMultiSelect
-                  enrollmentUsecase={enrollUsecase}
-                  categoryEnum={CategoryEnum.Course}
-                  value={
-                    formData.enrollmentCriteriaIDs ? formData.enrollmentCriteriaIDs.split(',').filter((id) => id) : []
-                  }
-                  onChange={(value: string[]) => {
-                    handleChange('enrollmentCriteriaIDs', value.join(','));
-                  }}
-                  disabled={isSubmitting}
-                />
-              </Grid>
-            ) : null} */}
-
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
-                value={formData.categoryID}
+                value={formData.categoryId}
                 onChange={(value) => {
-                  handleChange('categoryID', value);
+                  handleChange('categoryId', value);
                 }}
                 categoryEnum={CategoryEnum.Course}
                 disabled={isSubmitting}
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
-                value={formData.teacherID ?? ''}
+                value={formData.teacherId ?? ''}
                 onChange={(value) => {
-                  handleChange('teacherID', value);
+                  handleChange('teacherId', value);
                 }}
                 disabled={isSubmitting}
               />
             </Grid>
 
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label="departmentType"
+                value={formData.departmentTypeCode}
+                type={DepartmentFilterType.DepartmentType}
+                onChange={(value) => {
+                  handleChange('departmentTypeCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label="position"
+                value={formData.positionCode}
+                type={DepartmentFilterType.Position}
+                onChange={(value) => {
+                  handleChange('positionCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label="currentPositionStateName"
+                value={formData.positionStateCode}
+                type={DepartmentFilterType.PositionState}
+                onChange={(value) => {
+                  handleChange('positionStateCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            {/* Thumbnail Section */}
             <Grid item xs={12}>
               <ToggleButtonGroup
                 value={thumbnailSource}
@@ -402,21 +391,18 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 disabled={isSubmitting}
                 sx={{ mb: 2 }}
               >
-                <ToggleButton value="select" aria-label={t('selectFromResources')}>
-                  {t('selectFromResources')}
-                </ToggleButton>
-                <ToggleButton value="upload" aria-label={t('uploadFile')}>
-                  {t('uploadFile')}
-                </ToggleButton>
+                <ToggleButton value="select">{t('selectFromResources')}</ToggleButton>
+                <ToggleButton value="upload">{t('uploadFile')}</ToggleButton>
               </ToggleButtonGroup>
             </Grid>
-            <Grid item xs={12} sm={12}>
+
+            <Grid item xs={12}>
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
-                  value={formData.thumbnailID}
+                  value={formData.thumbnailId}
                   onChange={handleFileSelectChange}
                   label={t('thumbnail')}
                   disabled={isSubmitting}
@@ -520,6 +506,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               )}
             </Grid>
 
+            {/* File Resources */}
             <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
                 {t('uploadFiles')}
@@ -528,7 +515,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 value={fileSelectSource}
                 exclusive
                 onChange={(e, newValue: 'upload' | 'multi-select') => {
-                  if (newValue) setFileSelectSource(newValue);
+                  newValue && setFileSelectSource(newValue);
                 }}
                 aria-label={t('uploadFiles')}
                 fullWidth
@@ -538,16 +525,15 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 <ToggleButton value="upload">{t('uploadFiles')}</ToggleButton>
               </ToggleButtonGroup>
             </Grid>
+
             {fileSelectSource === 'multi-select' ? (
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  // type={FileTypeEnum.Image}
                   value={selectedResourceIDs}
-                  onChange={(ids) => {
-                    setSelectedResourceIDs(ids);
-                  }}
-                  disabled={false}
+                  onChange={setSelectedResourceIDs}
+                  disabled={isSubmitting}
                   showTypeSwitcher
                   allowAllTypes
                 />
@@ -575,13 +561,13 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               </Grid>
             )}
 
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && fileSelectSource === 'multi-select' ? (
+            {formData.resourceIds && fileSelectSource === 'multi-select' ? (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
                   {t('selectedFiles')}
                 </Typography>
                 <Grid container spacing={1} direction="column">
-                  {formData.resourceIDs.split(',').map((id) => {
+                  {formData.resourceIds.split(',').map((id) => {
                     const file = course?.fileCourseRelation?.find((f) => f.fileResources?.id === id)?.fileResources;
                     if (!file) return null;
                     return (
@@ -608,6 +594,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 </Grid>
               </Grid>
             ) : null}
+
             {uploadedFiles.length > 0 && fileSelectSource === 'upload' && (
               <Grid item xs={12}>
                 <Typography variant="subtitle2" mb={1}>
@@ -637,6 +624,16 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 </Grid>
               </Grid>
             )}
+
+            <Grid item xs={12}>
+              <LessonCollectionUpdateEditor
+                fixedCourse={formData.isFixedCourse}
+                value={formData.collections}
+                onChange={(collections) => {
+                  handleChange('collections', collections);
+                }}
+              />
+            </Grid>
           </Grid>
         </Box>
       </DialogContent>

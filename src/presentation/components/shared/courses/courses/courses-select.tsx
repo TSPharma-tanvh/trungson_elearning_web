@@ -6,14 +6,8 @@ import { type CourseDetailResponse } from '@/domain/models/courses/response/cour
 import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
 import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
-import {
-  DisplayTypeDisplayNames,
-  DisplayTypeEnum,
-  LearningModeDisplayNames,
-  LearningModeEnum,
-  StatusDisplayNames,
-  StatusEnum,
-} from '@/utils/enum/core-enum';
+import { DisplayTypeEnum, LearningModeEnum, StatusDisplayNames, StatusEnum } from '@/utils/enum/core-enum';
+import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -42,6 +36,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
+import { CustomEmployeeDistinctSelectFilter } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-filter';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import CourseDetailForm from '@/presentation/components/dashboard/courses/courses/course-detail-form';
@@ -83,26 +78,30 @@ export function CourseSelectDialog({
   const [selectedCourseMap, setSelectedCourseMap] = useState<Record<string, CourseDetailResponse>>({});
   const [viewOpen, setViewOpen] = React.useState(false);
   const [selectedCourse, setSelectedCourse] = React.useState<CourseDetailResponse | null>(null);
+
   const {
     courses,
     loadingCourses,
     pageNumber,
     totalPages,
     setSearchText,
-    courseType,
     setCourseType,
     setDisplayType,
     setDisableStatus,
     listRef,
     loadCourses,
     disableStatus,
-    displayType,
-    hasPath,
-    setHasPath,
+    setPositionCode,
+    setPositionStateCode,
+    setDepartmentTypeCode,
+    positionCode,
+    positionStateCode,
+    departmentTypeCode,
+    isFixedCourse,
+    setIsFixedCourse,
   } = useCourseSelectLoader({
     courseUsecase,
     isOpen: dialogOpen,
-    pathID: '',
     searchText: debouncedSearchText,
   });
 
@@ -111,6 +110,9 @@ export function CourseSelectDialog({
   // Handlers
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
+    setPositionCode(undefined);
+    setPositionStateCode(undefined);
+    setDepartmentTypeCode(undefined);
   };
 
   const handleClose = () => {
@@ -128,6 +130,10 @@ export function CourseSelectDialog({
     setCourseType(undefined);
     setDisplayType(undefined);
     setDisableStatus(undefined);
+    setPositionCode(undefined);
+    setPositionStateCode(undefined);
+    setDepartmentTypeCode(undefined);
+    setIsFixedCourse(undefined);
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
@@ -230,7 +236,7 @@ export function CourseSelectDialog({
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {/* Course Type */}
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('courseType')}</InputLabel>
               <Select
                 value={courseType !== undefined ? String(courseType) : ''}
@@ -245,10 +251,30 @@ export function CourseSelectDialog({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
+            <CustomEmployeeDistinctSelectFilter
+              label={t('departmentType')}
+              value={departmentTypeCode}
+              type={DepartmentFilterType.DepartmentType}
+              onChange={setDepartmentTypeCode}
+            />
+
+            <CustomEmployeeDistinctSelectFilter
+              label={t('position')}
+              value={positionCode}
+              type={DepartmentFilterType.Position}
+              onChange={setPositionCode}
+            />
+
+            <CustomEmployeeDistinctSelectFilter
+              label={t('currentPositionStateName')}
+              value={positionStateCode}
+              type={DepartmentFilterType.PositionState}
+              onChange={setPositionStateCode}
+            />
 
             {/* Display Type */}
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('displayType')}</InputLabel>
               <Select
                 value={displayType !== undefined ? String(displayType) : ''}
@@ -263,7 +289,7 @@ export function CourseSelectDialog({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             {/* Disable Status */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -285,18 +311,18 @@ export function CourseSelectDialog({
 
             {/* Has Path */}
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>{t('hasPath')}</InputLabel>
+              <InputLabel>{t('isFixedCourse')}</InputLabel>
               <Select
-                value={hasPath === undefined ? '' : hasPath ? 'true' : 'false'}
+                value={isFixedCourse === undefined ? '' : isFixedCourse ? 'true' : 'false'}
                 onChange={(e: SelectChangeEvent) => {
                   const newValue = e.target.value;
                   if (newValue === '') {
-                    setHasPath(undefined);
+                    setIsFixedCourse(undefined);
                   } else {
-                    setHasPath(newValue === 'true');
+                    setIsFixedCourse(newValue === 'true');
                   }
                 }}
-                label={t('hasPath')}
+                label={t('isFixedCourse')}
               >
                 {filterOptions.hasPath.map((opt) => (
                   <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>

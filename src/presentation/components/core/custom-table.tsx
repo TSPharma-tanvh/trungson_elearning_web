@@ -42,6 +42,7 @@ interface CustomTableProps<T> {
   dialogDeleteTitle?: string;
   dialogCancelTitle?: string;
   showPagination?: boolean;
+  showDeleteHeader?: boolean;
 }
 
 export function CustomTable<T>({
@@ -62,6 +63,7 @@ export function CustomTable<T>({
   dialogDeleteTitle: deleteTitle = 'delete',
   dialogCancelTitle: cancelTitle = 'cancel',
   showPagination = true,
+  showDeleteHeader = true,
 }: CustomTableProps<T>) {
   const { t } = useTranslation();
   const rowIds = React.useMemo(() => rows.map(getRowId), [rows]);
@@ -126,7 +128,7 @@ export function CustomTable<T>({
           borderRadius: '16px',
         }}
       >
-        {selected.size > 0 && (
+        {showDeleteHeader && selected.size > 0 ? (
           <Box
             display="flex"
             justifyContent="flex-end"
@@ -147,7 +149,7 @@ export function CustomTable<T>({
               {t(deleteConfirmHeaderTitle)} ({selected.size})
             </Button>
           </Box>
-        )}
+        ) : null}
 
         <TableContainer>
           <Table>

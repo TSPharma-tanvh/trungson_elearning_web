@@ -60,10 +60,10 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
             {renderField('id', answer.id)}
             {renderField('title', answer.answerText)}
             {renderField('isCorrect', answer.isCorrect ? t('yes') : t('no'))}
-            {renderField('questionID', answer.questionID)}
-            {renderField('categoryID', answer.categoryID)}
-            {renderField('thumbnailID', answer.thumbnailID)}
-            {renderField('categoryName', answer.category?.categoryName)}
+            {renderField('id', answer.questionID)}
+            {renderField('id', answer.categoryID)}
+            {renderField('id', answer.thumbnailID)}
+            {renderField('questionBank', answer.category?.categoryName)}
           </Grid>
         </CardContent>
       </Card>
@@ -89,8 +89,8 @@ function AnswerDetailContent({ answer, fullScreen }: { answer: AnswerDetailRespo
                   ? t(answer.question.status.charAt(0).toLowerCase() + t(answer.question.status).slice(1))
                   : ''
               )}
-              {renderField('categoryID', answer.question.categoryId)}
-              {renderField('thumbnailID', answer.question.thumbnailId)}
+              {renderField('id', answer.question.categoryId)}
+              {renderField('id', answer.question.thumbnailId)}
             </Grid>
           </CardContent>
         </Card>

@@ -1,7 +1,15 @@
 'use client';
 
 import React from 'react';
-import { FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  type SelectChangeEvent,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 interface FilterSelectProps<T> {
@@ -13,6 +21,10 @@ interface FilterSelectProps<T> {
   minWidth?: number;
   withAllOption?: boolean;
   allLabel?: string;
+
+  loading?: boolean;
+  onOpen?: () => void;
+  isLowerCase?: boolean;
 }
 
 export function CustomSelectFilter<T extends string | number | boolean>({
@@ -24,8 +36,12 @@ export function CustomSelectFilter<T extends string | number | boolean>({
   minWidth = 150,
   withAllOption = true,
   allLabel = 'all',
+  loading = false,
+  onOpen,
+  isLowerCase = true,
 }: FilterSelectProps<T>): React.JSX.Element {
   const { t } = useTranslation();
+
   const handleChange = (e: SelectChangeEvent) => {
     const val = e.target.value;
     if (val === '') {
@@ -33,8 +49,8 @@ export function CustomSelectFilter<T extends string | number | boolean>({
       return;
     }
 
-    const isBool = typeof options[0].value === 'boolean';
-    const isNumber = typeof options[0].value === 'number';
+    const isBool = options.length > 0 && typeof options[0].value === 'boolean';
+    const isNumber = options.length > 0 && typeof options[0].value === 'number';
 
     const castedValue = isBool ? val === 'true' : isNumber ? Number(val) : val;
 
@@ -46,18 +62,9 @@ export function CustomSelectFilter<T extends string | number | boolean>({
       size={size}
       sx={{
         minWidth,
-        '& .MuiInputLabel-root': {
-          color: 'var(--mui-palette-secondary-main)',
-        },
-        '& .MuiInputLabel-root.Mui-focused': {
-          color: 'var(--mui-palette-primary-main)',
-        },
-        '& .MuiInputLabel-shrink': {
-          color: 'var(--mui-palette-primary-main)',
-        },
-        '& .MuiInputLabel-shrink.Mui-focused': {
-          color: 'var(--mui-palette-secondary-main)',
-        },
+        '& .MuiInputLabel-root': { color: 'var(--mui-palette-secondary-main)' },
+        '& .MuiInputLabel-root.Mui-focused': { color: 'var(--mui-palette-primary-main)' },
+        '& .MuiInputLabel-shrink': { color: 'var(--mui-palette-primary-main)' },
       }}
     >
       <InputLabel>{label}</InputLabel>
@@ -65,6 +72,8 @@ export function CustomSelectFilter<T extends string | number | boolean>({
         label={label}
         value={value === undefined ? '' : value.toString()}
         onChange={handleChange}
+        onOpen={onOpen}
+        displayEmpty={loading}
         sx={{
           '& .MuiSelect-select': {
             backgroundColor: 'var(--mui-palette-common-white)',
@@ -78,23 +87,46 @@ export function CustomSelectFilter<T extends string | number | boolean>({
           },
         }}
       >
-        {withAllOption ? (
-          <MenuItem value="">
-            <span style={{ color: 'var(--mui-palette-primary-main)' }}>{t(allLabel)}</span>
+        {loading ? (
+          <MenuItem disabled>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <CircularProgress size={16} />
+              {t('loading')}...
+            </Box>
           </MenuItem>
         ) : null}
-        {options.map((opt) => (
+
+        {withAllOption && !loading ? (
           <MenuItem
-            key={String(opt.value)}
-            value={String(opt.value)}
-            style={{
+            value=""
+            sx={{
               color: 'var(--mui-palette-primary-main)',
               backgroundColor: 'var(--mui-palette-common-white)',
             }}
           >
-            {t(opt.label.charAt(0).toLowerCase() + opt.label.slice(1))}
+            {t(allLabel)}
           </MenuItem>
-        ))}
+        ) : null}
+
+        {!loading &&
+          options.map((opt) => (
+            <MenuItem
+              key={String(opt.value)}
+              value={String(opt.value)}
+              sx={{
+                color: 'var(--mui-palette-primary-main)',
+                backgroundColor: 'var(--mui-palette-common-white)',
+              }}
+            >
+              {isLowerCase ? t(opt.label.charAt(0).toLowerCase() + opt.label.slice(1)) : t(opt.label)}
+            </MenuItem>
+          ))}
+
+        {!loading && options.length === 0 && withAllOption ? (
+          <MenuItem disabled value="">
+            <em>{t('noData')}</em>
+          </MenuItem>
+        ) : null}
       </Select>
     </FormControl>
   );

@@ -4,7 +4,7 @@ import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-less
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -36,7 +36,7 @@ import { FileResourceMultiSelect } from '@/presentation/components/shared/file/f
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
-import { QuizMultiSelect } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select';
+import { QuizMultiSelectAndCreateDialog } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select-and-create-form';
 
 import { CustomSelectDropDown } from '../../../core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
@@ -67,7 +67,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [totalChunks, setTotalChunks] = useState(0);
-  const [_currentChunkIndex, setCurrentChunkIndex] = useState(0);
+  // const [_currentChunkIndex, setCurrentChunkIndex] = useState(0);
 
   //thumbnail
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -136,7 +136,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         setSelectedVideoId(lesson.video?.id ?? null);
         setUploadProgress(0);
         setTotalChunks(0);
-        setCurrentChunkIndex(0);
+        // setCurrentChunkIndex(0);
         setSelectedResourceIds(
           lesson.fileLessonRelation?.map((item) => item.fileResourceId).filter((id): id is string => Boolean(id)) ?? []
         );
@@ -177,7 +177,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       }
     } else if (formData.thumbnailID) {
       fileUsecase
-        .getFileResouceById(formData.thumbnailID)
+        .getFileResourceById(formData.thumbnailID)
         .then((file) => {
           setPreviewUrl(file.resourceUrl || null);
         })
@@ -207,7 +207,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         const chunkSize = 5 * 1024 * 1024; // 5 MB
         const calculatedTotalChunks = Math.ceil(videoFile.size / chunkSize);
         setTotalChunks(calculatedTotalChunks);
-        setCurrentChunkIndex(0);
+        // setCurrentChunkIndex(0);
         setUploadProgress(0);
       }
     } else {
@@ -218,7 +218,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
 
       if (selectedVideoId) {
         fileUsecase
-          .getFileResouceById(selectedVideoId)
+          .getFileResourceById(selectedVideoId)
           .then((file) => {
             setVideoPreviewUrl(file.resourceUrl || null);
           })
@@ -237,26 +237,26 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       const chunkSize = 5 * 1024 * 1024; // 5 MB
       const calculatedTotalChunks = Math.ceil(file.size / chunkSize);
       setTotalChunks(calculatedTotalChunks);
-      setCurrentChunkIndex(0);
+      // setCurrentChunkIndex(0);
       setUploadProgress(0);
       setVideoPreviewUrl(URL.createObjectURL(file));
     } else {
       setVideoPreviewUrl(null);
       setTotalChunks(0);
       setUploadProgress(0);
-      setCurrentChunkIndex(0);
+      // setCurrentChunkIndex(0);
     }
   };
 
   const handleThumbnailSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailID', newId);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
         setPreviewUrl(null);
       }
     } else {
@@ -265,14 +265,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   };
 
   const handleVideoSelectChange = async (id: string) => {
-    handleChange('videoID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('videoID', newId);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setVideoPreviewUrl(file.resourceUrl || null);
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'An error has occurred.';
-        CustomSnackBar.showSnackbar(message, 'error');
         setVideoPreviewUrl(null);
       }
     } else {
@@ -284,8 +284,10 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
     setThumbnailFile(file);
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
+      handleChange('thumbnail', file);
     } else {
       setPreviewUrl(null);
+      handleChange('thumbnail', undefined);
     }
   };
 
@@ -356,14 +358,14 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             suppressSuccessMessage: chunkIndex < totalChunksCount - 1,
           });
 
-          setCurrentChunkIndex(chunkIndex + 1);
+          // setCurrentChunkIndex(chunkIndex + 1);
           setUploadProgress(((chunkIndex + 1) / totalChunksCount) * 100);
           lastResponse = response;
 
           if (chunkIndex === totalChunksCount - 1 && lastResponse) {
             setUploadProgress(0);
             setTotalChunks(0);
-            setCurrentChunkIndex(0);
+            // setCurrentChunkIndex(0);
             onClose();
           }
         }
@@ -384,7 +386,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
         if (lastResponse) {
           setUploadProgress(0);
           setTotalChunks(0);
-          setCurrentChunkIndex(0);
+          // setCurrentChunkIndex(0);
           onClose();
         }
       }
@@ -417,7 +419,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
       setVideoPreviewUrl(null);
       setUploadProgress(0);
       setTotalChunks(0);
-      setCurrentChunkIndex(0);
+      // setCurrentChunkIndex(0);
       setThumbnailSource('select');
       setVideoSource('select');
       setSelectedResourceIds([]);
@@ -508,6 +510,29 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid> */}
 
+            <Grid item xs={12}>
+              <CategorySelect
+                categoryUsecase={categoryUsecase}
+                value={formData.categoryID}
+                onChange={(value) => {
+                  handleChange('categoryID', value);
+                }}
+                categoryEnum={CategoryEnum.Lesson}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <QuizMultiSelectAndCreateDialog
+                quizUsecase={quizUsecase}
+                value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
+                onChange={(val) => {
+                  handleChange('quizIDs', val.join(','));
+                }}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('status')}
@@ -517,18 +542,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                 }}
                 disabled={isSubmitting}
                 options={statusTypeOptions}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CategorySelect
-                categoryUsecase={categoryUsecase}
-                value={formData.categoryID}
-                onChange={(value) => {
-                  handleChange('categoryID', value);
-                }}
-                categoryEnum={CategoryEnum.Lesson}
-                disabled={isSubmitting}
               />
             </Grid>
 
@@ -547,7 +560,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('enablePlay')}
                 value={formData.enablePlay ?? false}
@@ -560,7 +573,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   { value: false, label: t('no') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<LessonContentEnum>
@@ -573,17 +586,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   { value: LessonContentEnum.PDF, label: 'pdf' },
                   { value: LessonContentEnum.Video, label: 'video' },
                 ]}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <QuizMultiSelect
-                quizUsecase={quizUsecase}
-                value={formData.quizIDs ? formData.quizIDs.split(',').filter((id) => id) : []}
-                onChange={(val) => {
-                  handleChange('quizIDs', val.join(','));
-                }}
-                disabled={isSubmitting}
               />
             </Grid>
 
@@ -613,7 +615,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
                   onChange={handleThumbnailSelectChange}
@@ -732,7 +734,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               {resourceSource === 'select' ? (
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Document}
+                  // type={FileTypeEnum.PDF}
                   status={StatusEnum.Enable}
                   value={selectedResourceIds}
                   onChange={(val) => {
@@ -740,6 +742,8 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   }}
                   label={t('resources')}
                   disabled={isSubmitting}
+                  showTypeSwitcher
+                  allowAllTypes
                 />
               ) : (
                 <Grid container spacing={2}>
@@ -883,7 +887,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   {videoSource === 'select' ? (
                     <FileResourceSelect
                       fileUsecase={fileUsecase}
-                      type={FileResourceEnum.Video}
+                      type={FileTypeEnum.Video}
                       status={StatusEnum.Enable}
                       value={formData.videoID}
                       onChange={handleVideoSelectChange}

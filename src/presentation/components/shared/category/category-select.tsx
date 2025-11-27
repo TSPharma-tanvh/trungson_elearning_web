@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormHelperText,
   IconButton,
   InputLabel,
   ListItemText,
@@ -46,6 +47,7 @@ interface CategorySelectDialogProps extends Omit<SelectProps<string>, 'value' | 
   categoryEnum: CategoryEnum;
   label?: string;
   disabled?: boolean;
+  required?: boolean;
 }
 
 export function CategorySelectDialog({
@@ -55,6 +57,7 @@ export function CategorySelectDialog({
   categoryEnum,
   label = 'category',
   disabled = false,
+  required = false,
   ...selectProps
 }: CategorySelectDialogProps) {
   const theme = useTheme();
@@ -161,21 +164,51 @@ export function CategorySelectDialog({
   return (
     <>
       <FormControl fullWidth disabled={disabled}>
-        <InputLabel id="category-select-label">{t(label)}</InputLabel>
+        <InputLabel id="category-select-label">
+          {t(label)}
+          {required && !value ? <span style={{ color: 'error.main', marginLeft: 4 }}>*</span> : <div />}
+        </InputLabel>
+
         <Select
           labelId="category-select-label"
           value={value}
           input={
             <OutlinedInput
-              label={t(label)}
+              label={
+                <span>
+                  {t(label)}
+                  {required && !value ? <span style={{ color: 'error.main', marginLeft: 4 }}>*</span> : <div />}
+                </span>
+              }
               startAdornment={<CategoryOutlined sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />}
             />
           }
           onClick={handleOpen}
-          renderValue={(selected) => selectedCategoryMap[selected]?.categoryName || 'No Category Selected'}
+          renderValue={(selected) => selectedCategoryMap[selected]?.categoryName || t('noCategorySelected')}
           open={false}
           {...selectProps}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: required && !value ? 'error.main' : 'inherit',
+              },
+              '&:hover fieldset': {
+                borderColor: required && !value ? 'error.dark' : 'primary.main',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: required && !value ? 'error.main' : 'primary.main',
+              },
+            },
+            '& .MuiFormLabel-root': {
+              color: required && !value ? 'error.main' : 'inherit',
+              '&.Mui-focused': { color: required && !value ? 'error.main' : 'primary.main' },
+            },
+          }}
         />
+
+        {required && !value ? (
+          <FormHelperText sx={{ color: 'error.main', mt: 0.5 }}>{t('requiredField')}</FormHelperText>
+        ) : null}
       </FormControl>
 
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="sm" scroll="paper">
@@ -280,6 +313,7 @@ interface CategorySelectProps {
   label?: string;
   disabled?: boolean;
   categories?: CategoryResponse[];
+  required?: boolean;
 }
 
 export function CategorySelect({
@@ -289,6 +323,7 @@ export function CategorySelect({
   categoryEnum,
   label = 'category',
   categories = [],
+  required = false,
 }: CategorySelectProps) {
   const [open, setOpen] = useState(false);
   const [_selectedCategory, setSelectedCategory] = useState<CategoryResponse | undefined>(undefined);
@@ -339,6 +374,7 @@ export function CategorySelect({
       categoryEnum={categoryEnum}
       value={value || ''}
       label={label}
+      required={required}
     />
   );
 }

@@ -63,15 +63,14 @@ export class LessonRepoImpl implements LessonRepository {
     }
   }
 
-  async updateLesson(
-    request: UpdateLessonRequest,
-    options?: { suppressSuccessMessage?: boolean }
-  ): Promise<ApiResponse> {
+  async updateLesson(request: UpdateLessonRequest): Promise<ApiResponse> {
     try {
       const response = await customApiClient.put<ApiResponse>(apiEndpoints.lessons.update, request.toFormData(), {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'x-suppress-success': 'true',
+        },
         timeout: 10800000,
-        suppressSuccessMessage: options?.suppressSuccessMessage ?? false,
       });
 
       const apiResponse = response.data;

@@ -16,7 +16,10 @@ export class CourseResponse {
   enrollmentCriteriaId?: string;
   categoryId?: string;
   thumbnailId?: string;
-
+  departmentTypeCode?: string;
+  positionCode?: string;
+  positionStateCode?: string;
+  isFixedCourse?: boolean;
   static fromJson(json: any): CourseResponse {
     const dto = new CourseResponse();
     dto.id = json.id;
@@ -33,6 +36,10 @@ export class CourseResponse {
     dto.enrollmentCriteriaId = json.enrollmentCriteriaId;
     dto.categoryId = json.categoryId;
     dto.thumbnailId = json.thumbnailId;
+    dto.positionStateCode = json.positionStateCode;
+    dto.isFixedCourse = json.isFixedCourse;
+    dto.positionCode = json.positionCode;
+    dto.departmentTypeCode = json.departmentTypeCode;
     return dto;
   }
 
@@ -52,6 +59,10 @@ export class CourseResponse {
       enrollmentCriteriaId: this.enrollmentCriteriaId,
       categoryId: this.categoryId,
       thumbnailId: this.thumbnailId,
+      positionStateCode: this.positionStateCode,
+      isFixedCourse: this.isFixedCourse,
+      positionCode: this.positionCode,
+      departmentTypeCode: this.departmentTypeCode,
     };
   }
 }

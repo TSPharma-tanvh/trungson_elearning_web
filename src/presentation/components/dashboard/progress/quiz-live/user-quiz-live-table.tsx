@@ -264,7 +264,7 @@ export default function UserQuizLiveTable({
               <TableCell align="center">
                 {row.activeStatus !== undefined ? renderActiveStatus(row.activeStatus) : ''}
               </TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionName ?? ''}</TableCell>
 
               <TableCell align="right">
                 <IconButton

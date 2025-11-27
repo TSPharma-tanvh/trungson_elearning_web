@@ -151,10 +151,10 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
     }
   }, [open]);
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
+  // const booleanOptions = [
+  //   { value: 'true', label: 'yes' },
+  //   { value: 'false', label: 'no' },
+  // ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -257,14 +257,16 @@ export function ImportQuizDialog({ disabled = false, onSubmit, loading = false, 
             </Grid>
 
             <Grid item xs={12}>
-              <CustomSelectDropDown
-                label={t('canAnswersShuffle')}
-                value={String(form.canShuffle)}
-                onChange={(value) => {
-                  handleChange('canShuffle', value === 'true');
+              <CustomSelectDropDown<boolean>
+                label={t('canShuffle')}
+                value={form.canShuffle}
+                onChange={(v) => {
+                  handleChange('canShuffle', v);
                 }}
-                disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
 

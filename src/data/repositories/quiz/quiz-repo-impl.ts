@@ -1,6 +1,5 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { type CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
 import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
@@ -45,7 +44,7 @@ export class QuizRepoImpl implements QuizRepository {
 
   async createQuiz(request: CreateQuizRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.createDetail, request.toFormData(), {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.create, request.toFormData(), {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -64,26 +63,26 @@ export class QuizRepoImpl implements QuizRepository {
     }
   }
 
-  async createQuizFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
-    try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.createByExcel, request.toFormData(), {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        timeout: 3600000,
-      });
+  // async createQuizFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
+  //   try {
+  //     const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.createByExcel, request.toFormData(), {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //       timeout: 3600000,
+  //     });
 
-      const apiResponse = response.data;
+  //     const apiResponse = response.data;
 
-      if (!apiResponse?.isSuccessStatusCode) {
-        throw new Error(apiResponse?.message || 'Unknown API error');
-      }
+  //     if (!apiResponse?.isSuccessStatusCode) {
+  //       throw new Error(apiResponse?.message || 'Unknown API error');
+  //     }
 
-      return apiResponse;
-    } catch (error: any) {
-      throw new Error(error?.message || 'Failed to create quiz');
-    }
-  }
+  //     return apiResponse;
+  //   } catch (error: any) {
+  //     throw new Error(error?.message || 'Failed to create quiz');
+  //   }
+  // }
 
   async updateQuiz(request: UpdateQuizRequest): Promise<ApiResponse> {
     try {
@@ -96,6 +95,21 @@ export class QuizRepoImpl implements QuizRepository {
         timeout: 3600000,
       });
 
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch quiz info');
+    }
+  }
+
+  async deleteQuiz(id: string): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.quiz.delete(id));
       const apiResponse = response.data;
 
       if (!apiResponse?.isSuccessStatusCode) {

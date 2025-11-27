@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { type FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
+import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import { type FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import { useResourceSelectLoader } from '@/presentation/hooks/file/file-resouce-select-loader';
 import { type StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import { InsertDriveFile, PlayArrow, Visibility } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -21,7 +21,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   List,
@@ -37,13 +36,14 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+import { CustomSelectDropDownNullable } from '../../core/drop-down/custom-select-drop-down-nullable';
 import { CustomSearchInput } from '../../core/text-field/custom-search-input';
 import ImagePreviewDialog from './image-preview-dialog';
 import VideoPreviewDialog from './video-preview-dialog';
 
 interface FileResourcesMultiSelectProps {
   fileUsecase: FileResourcesUsecase;
-  type?: FileResourceEnum;
+  type?: FileTypeEnum;
   status?: StatusEnum;
   value?: string[];
   onChange: (ids: string[]) => void;
@@ -51,7 +51,7 @@ interface FileResourcesMultiSelectProps {
   disabled?: boolean;
   showTypeSwitcher?: boolean;
   allowAllTypes?: boolean;
-  defaultType?: FileResourceEnum;
+  defaultType?: FileTypeEnum;
 }
 
 export function FileResourceMultiSelect({
@@ -68,14 +68,14 @@ export function FileResourceMultiSelect({
 }: FileResourcesMultiSelectProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<FileResourcesResponse[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<FileResourcesResponseForAdmin[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [fullscreen, setFullscreen] = useState(false);
   const [previewImageOpen, setPreviewImageOpen] = useState(false);
   const [previewVideoOpen, setPreviewVideoOpen] = useState(false);
-  const [previewFile, setPreviewFile] = useState<FileResourcesResponse | null>(null);
+  const [previewFile, setPreviewFile] = useState<FileResourcesResponseForAdmin | null>(null);
 
-  const [selectedType, setSelectedType] = useState<FileResourceEnum | undefined>(allowAllTypes ? defaultType : type);
+  const [selectedType, setSelectedType] = useState<FileTypeEnum | undefined>(allowAllTypes ? defaultType : type);
   const [filterTypeEnabled, setFilterTypeEnabled] = useState<boolean>(!allowAllTypes);
   const [searchText, setSearchText] = useState('');
 
@@ -102,12 +102,12 @@ export function FileResourceMultiSelect({
     if (missingIds.length > 0) {
       void Promise.all(
         missingIds.map(async (id) =>
-          fileUsecase.getFileResouceById(id).catch(() => {
+          fileUsecase.getFileResourceById(id).catch(() => {
             return undefined;
           })
         )
       ).then((newFiles) => {
-        const validNewFiles = newFiles.filter((f): f is FileResourcesResponse => Boolean(f));
+        const validNewFiles = newFiles.filter((f) => f !== undefined && f !== null);
         setSelectedFiles((prev) => {
           const all = [...prev, ...validNewFiles];
           const unique = Array.from(new Map(all.map((f) => [f.id, f])).values());
@@ -148,7 +148,7 @@ export function FileResourceMultiSelect({
     if (listRef.current) listRef.current.scrollTop = 0;
   };
 
-  const handleViewFile = (file: FileResourcesResponse) => {
+  const handleViewFile = (file: FileResourcesResponseForAdmin) => {
     if (!file.resourceUrl) return;
     setPreviewFile(file);
     if (file.type?.startsWith('image/')) setPreviewImageOpen(true);
@@ -216,40 +216,24 @@ export function FileResourceMultiSelect({
 
           <Box display="flex" gap={2} alignItems="center" mt={2} mb={2}>
             {showTypeSwitcher ? (
-              <>
-                <FormControl fullWidth>
-                  <InputLabel id="filter-type-label">{t('fileType')}</InputLabel>
-                  <Select
-                    labelId="filter-type-label"
-                    value={selectedType ?? ''}
-                    label={t('fileType')}
-                    disabled={!filterTypeEnabled}
-                    onChange={(e) => {
-                      setSelectedType(e.target.value as FileResourceEnum);
-                    }}
-                  >
-                    {Object.values(FileResourceEnum).map((fileType) => (
-                      <MenuItem key={fileType} value={fileType}>
-                        {t(fileType.charAt(0).toLowerCase() + t(fileType).slice(1))}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                {allowAllTypes ? (
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={filterTypeEnabled}
-                        onChange={(e) => {
-                          setFilterTypeEnabled(e.target.checked);
-                        }}
-                      />
-                    }
-                    label={t('enableTypeFilter')}
-                  />
-                ) : null}
-              </>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end', width: '100%' }}>
+                <CustomSelectDropDownNullable<FileTypeEnum>
+                  label="fileType"
+                  value={selectedType}
+                  onChange={(newValue) => {
+                    setSelectedType(newValue ?? undefined);
+                    setFilterTypeEnabled(newValue !== null);
+                  }}
+                  options={[
+                    { value: FileTypeEnum.Image, label: 'image' },
+                    { value: FileTypeEnum.Video, label: 'video' },
+                    { value: FileTypeEnum.PDF, label: 'pdf' },
+                    { value: FileTypeEnum.PPT, label: 'ppt' },
+                    { value: FileTypeEnum.Others, label: 'others' },
+                  ]}
+                  allowEmpty={allowAllTypes}
+                />
+              </Box>
             ) : null}
           </Box>
 

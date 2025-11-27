@@ -1,5 +1,6 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateQuestionsFromExcelDto } from '@/domain/models/question/request/create-question-from-excel-request';
 import { type CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
 import { type GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
 import { type UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
@@ -50,6 +51,31 @@ export class QuestionRepoImpl implements QuestionRepository {
         },
         timeout: 3600000,
       });
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to create question');
+    }
+  }
+
+  async createQuestionByExcel(request: CreateQuestionsFromExcelDto): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.questions.createByExcel,
+        request.toFormData(),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 3600000,
+        }
+      );
 
       const apiResponse = response.data;
 

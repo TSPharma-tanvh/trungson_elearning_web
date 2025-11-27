@@ -6,41 +6,56 @@ export class UpdateQuizRequest {
   levelID?: string;
   canStartOver?: boolean;
   canShuffle?: boolean;
+  displayedQuestionCount?: number;
   isRequired?: boolean;
   type?: QuizTypeEnum;
-  time?: string; // TimeSpan as ISO string or "HH:mm:ss"
+  time?: string; // TimeSpan as "HH:mm:ss"
+  startTime?: string; // C# DateTime? → string
+  endTime?: string;
   maxAttempts?: number;
+  scoreToPass?: number;
+
   title?: string;
   description?: string;
-  questionIDs?: string;
+
+  positionStateCode?: string;
+  departmentTypeCode?: string;
+
   categoryID?: string;
   status?: StatusEnum;
-  enrollmentCriteriaIDs?: string;
+
   thumbnailID?: string;
   resourceIDs?: string;
   resources?: File[];
+
   resourceDocumentNo?: string;
   resourcePrefixName?: string;
+
   thumbnail?: File;
   thumbDocumentNo?: string;
   thumbPrefixName?: string;
+
   isDeleteOldThumbnail?: boolean;
   categoryEnum?: CategoryEnum;
+
   isAutoSubmitted?: boolean = true;
-  enrollmentCriteriaType?: CategoryEnum;
-  enrollmentStatus?: StatusEnum;
-  totalScore?: number;
-  enrollmentCourseIDs?: string;
-  scoreToPass?: number;
+
+  isFixedQuiz?: boolean;
+  startDate?: string; // DateTime?
+  endDate?: string;
+  fixedQuizDayDuration?: number;
+
+  positionCode?: string;
+
+  isRestrictAttempts?: boolean;
+  questionCategoryIDs?: string;
 
   constructor(init?: Partial<UpdateQuizRequest>) {
     Object.assign(this, init);
   }
 
   static fromJson(json: any): UpdateQuizRequest {
-    const dto = new UpdateQuizRequest();
-    Object.assign(dto, json);
-    return dto;
+    return new UpdateQuizRequest(json);
   }
 
   toJson(): any {
@@ -50,72 +65,101 @@ export class UpdateQuizRequest {
       levelID: this.levelID,
       canStartOver: this.canStartOver,
       canShuffle: this.canShuffle,
+      displayedQuestionCount: this.displayedQuestionCount,
       isRequired: this.isRequired,
       type: this.type,
       time: this.time,
+      startTime: this.startTime,
+      endTime: this.endTime,
+      maxAttempts: this.maxAttempts,
+      scoreToPass: this.scoreToPass,
+
       title: this.title,
       description: this.description,
-      questionIDs: this.questionIDs,
+
+      positionStateCode: this.positionStateCode,
+      departmentTypeCode: this.departmentTypeCode,
+
       categoryID: this.categoryID,
       status: this.status,
-      enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
       thumbnailID: this.thumbnailID,
       resourceIDs: this.resourceIDs,
       resourceDocumentNo: this.resourceDocumentNo,
       resourcePrefixName: this.resourcePrefixName,
+
       thumbDocumentNo: this.thumbDocumentNo,
       thumbPrefixName: this.thumbPrefixName,
       isDeleteOldThumbnail: this.isDeleteOldThumbnail,
+
       categoryEnum: this.categoryEnum,
       isAutoSubmitted: this.isAutoSubmitted,
-      enrollmentCriteriaType: this.enrollmentCriteriaType,
-      enrollmentStatus: this.enrollmentStatus,
-      totalScore: this.totalScore,
-      enrollmentCourseIDs: this.enrollmentCourseIDs,
-      scoreToPass: this.scoreToPass,
 
-      // Files (thumbnail, resources) excluded here
+      isFixedQuiz: this.isFixedQuiz,
+      startDate: this.startDate,
+      endDate: this.endDate,
+      fixedQuizDayDuration: this.fixedQuizDayDuration,
+
+      positionCode: this.positionCode,
+      isRestrictAttempts: this.isRestrictAttempts,
+      questionCategoryIDs: this.questionCategoryIDs,
     };
   }
 
   toFormData(): FormData {
     const formData = new FormData();
 
-    const appendIfExists = (key: string, value: unknown) => {
+    const append = (key: string, value: any) => {
       if (value !== undefined && value !== null) {
         formData.append(key, value.toString());
       }
     };
 
-    appendIfExists('id', this.id);
-    appendIfExists('lessonID', this.lessonID);
-    appendIfExists('levelID', this.levelID);
-    appendIfExists('canStartOver', this.canStartOver);
-    appendIfExists('canShuffle', this.canShuffle);
-    appendIfExists('isRequired', this.isRequired);
-    appendIfExists('type', this.type);
-    appendIfExists('time', this.time);
-    appendIfExists('maxAttempts', this.maxAttempts);
-    appendIfExists('title', this.title);
-    appendIfExists('description', this.description);
-    appendIfExists('questionIDs', this.questionIDs);
-    appendIfExists('categoryID', this.categoryID);
-    appendIfExists('status', this.status);
-    appendIfExists('enrollmentCriteriaIDs', this.enrollmentCriteriaIDs);
-    appendIfExists('thumbnailID', this.thumbnailID);
-    appendIfExists('resourceIDs', this.resourceIDs);
-    appendIfExists('resourceDocumentNo', this.resourceDocumentNo);
-    appendIfExists('resourcePrefixName', this.resourcePrefixName);
-    appendIfExists('thumbDocumentNo', this.thumbDocumentNo);
-    appendIfExists('thumbPrefixName', this.thumbPrefixName);
-    appendIfExists('isDeleteOldThumbnail', this.isDeleteOldThumbnail);
-    appendIfExists('categoryEnum', this.categoryEnum);
-    appendIfExists('isAutoSubmitted', this.isAutoSubmitted);
-    appendIfExists('enrollmentCriteriaType', this.enrollmentCriteriaType);
-    appendIfExists('enrollmentStatus', this.enrollmentStatus);
-    appendIfExists('totalScore', this.totalScore);
-    appendIfExists('enrollmentCourseIDs', this.enrollmentCourseIDs);
-    appendIfExists('scoreToPass', this.scoreToPass);
+    append('id', this.id);
+    append('lessonID', this.lessonID);
+    append('levelID', this.levelID);
+    append('canStartOver', this.canStartOver);
+    append('canShuffle', this.canShuffle);
+    append('displayedQuestionCount', this.displayedQuestionCount);
+    append('isRequired', this.isRequired);
+    append('type', this.type);
+    append('time', this.time);
+    append('startTime', this.startTime);
+    append('endTime', this.endTime);
+    append('maxAttempts', this.maxAttempts);
+    append('scoreToPass', this.scoreToPass);
+
+    append('title', this.title);
+    append('description', this.description);
+
+    append('positionStateCode', this.positionStateCode);
+    append('departmentTypeCode', this.departmentTypeCode);
+
+    append('categoryID', this.categoryID);
+    append('status', this.status);
+
+    append('thumbnailID', this.thumbnailID);
+    append('resourceIDs', this.resourceIDs);
+
+    append('resourceDocumentNo', this.resourceDocumentNo);
+    append('resourcePrefixName', this.resourcePrefixName);
+
+    append('thumbDocumentNo', this.thumbDocumentNo);
+    append('thumbPrefixName', this.thumbPrefixName);
+
+    append('isDeleteOldThumbnail', this.isDeleteOldThumbnail);
+
+    append('categoryEnum', this.categoryEnum);
+    append('isAutoSubmitted', this.isAutoSubmitted);
+
+    append('isFixedQuiz', this.isFixedQuiz);
+    append('startDate', this.startDate);
+    append('endDate', this.endDate);
+    append('fixedQuizDayDuration', this.fixedQuizDayDuration);
+
+    append('positionCode', this.positionCode);
+
+    append('isRestrictAttempts', this.isRestrictAttempts);
+    append('questionCategoryIDs', this.questionCategoryIDs);
 
     if (this.thumbnail) {
       formData.append('thumbnail', this.thumbnail);

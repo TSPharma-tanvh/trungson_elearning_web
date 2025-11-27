@@ -1,11 +1,11 @@
 import type * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import type { FileResourceListResult } from '@/domain/models/file/response/file-resource-result';
-import type { FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
-import { GetFileResourcesRequest } from '@/domain/models/file/resquest/get-file-resource-request';
+import { GetFileResourcesRequest } from '@/domain/models/file/request/get-file-resource-request';
+import { type FileResourceListForAdminResult } from '@/domain/models/file/response/file-resource-for-admin-result';
+import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import type { FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import type { StatusEnum } from '@/utils/enum/core-enum';
-import { type FileResourceEnum, FileResourceEnumUtils } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
@@ -13,12 +13,12 @@ interface FileResourceSelectLoaderProps {
   fileUsecase: FileResourcesUsecase;
   isOpen: boolean;
   status?: StatusEnum;
-  type?: FileResourceEnum;
+  type?: FileTypeEnum;
   searchText?: string;
 }
 
 interface FileResourceSelectLoaderState {
-  files: FileResourcesResponse[];
+  files: FileResourcesResponseForAdmin[];
   loadingFiles: boolean;
   hasMore: boolean;
   pageNumber: number;
@@ -36,7 +36,7 @@ export function useResourceSelectLoader({
   searchText = '',
   type,
 }: FileResourceSelectLoaderProps): FileResourceSelectLoaderState {
-  const [files, setFiles] = useState<FileResourcesResponse[]>([]);
+  const [files, setFiles] = useState<FileResourcesResponseForAdmin[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -53,14 +53,14 @@ export function useResourceSelectLoader({
 
     try {
       const request = new GetFileResourcesRequest({
-        type: type !== undefined ? FileResourceEnumUtils.getContentTypeByEnum(type) : undefined,
+        type: type !== undefined ? FileTypeEnum[type] : undefined,
         status,
         searchText: searchTextState,
         pageNumber: page,
         pageSize: 10,
       });
 
-      const result: FileResourceListResult = await fileUsecase.getFileResourceList(request);
+      const result: FileResourceListForAdminResult = await fileUsecase.getFileResourceList(request);
 
       if (isOpen) {
         setFiles((prev) => (reset || page === 1 ? result.files : [...prev, ...result.files]));

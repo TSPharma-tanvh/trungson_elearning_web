@@ -182,7 +182,12 @@ export function QuizSingleFilter({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">{t('selectQuiz')}</Typography>
             <Box>
-              <IconButton onClick={() => { setIsFullscreen(!isFullscreen); }} size="small">
+              <IconButton
+                onClick={() => {
+                  setIsFullscreen(!isFullscreen);
+                }}
+                size="small"
+              >
                 {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
               </IconButton>
               <IconButton onClick={handleClose} size="small">
@@ -204,7 +209,9 @@ export function QuizSingleFilter({
             <CustomSelectDropDownDialog
               label="canStartOver"
               value={canStartOver}
-              onChange={(val) => { setCanStartOver(val); }}
+              onChange={(val) => {
+                setCanStartOver(val);
+              }}
               options={[
                 { value: undefined, label: t('all') },
                 { value: true, label: t('yes') },
@@ -215,7 +222,9 @@ export function QuizSingleFilter({
             <CustomSelectDropDownDialog
               label="isRequired"
               value={isRequired}
-              onChange={(val) => { setIsRequired(val); }}
+              onChange={(val) => {
+                setIsRequired(val);
+              }}
               options={[
                 { value: undefined, label: t('all') },
                 { value: true, label: t('yes') },
@@ -226,7 +235,9 @@ export function QuizSingleFilter({
             <CustomSelectDropDownDialog
               label="hasLesson"
               value={hasLesson}
-              onChange={(val) => { setHasLesson(val); }}
+              onChange={(val) => {
+                setHasLesson(val);
+              }}
               options={[
                 { value: undefined, label: t('all') },
                 { value: true, label: t('yes') },
@@ -271,7 +282,7 @@ export function QuizSingleFilter({
             {quizzes.map((item) => {
               const isSelected = localValue === item.id;
               const textColor =
-                item.type === QuizTypeEnum.LessonQuiz || item.type?.toString() === 'LessonQuiz'
+                item.type === QuizTypeEnum[QuizTypeEnum.LessonQuiz] || item.type?.toString() === 'LessonQuiz'
                   ? 'var(--mui-palette-primary-main)'
                   : 'var(--mui-palette-secondary-main)';
 
@@ -280,7 +291,9 @@ export function QuizSingleFilter({
                   key={item.id}
                   value={item.id}
                   selected={isSelected}
-                  onClick={() => { setLocalValue(item.id ?? ''); }}
+                  onClick={() => {
+                    setLocalValue(item.id ?? '');
+                  }}
                 >
                   <Checkbox checked={isSelected} />
                   <ListItemText
@@ -339,7 +352,15 @@ export function QuizSingleFilter({
         </DialogActions>
       </Dialog>
 
-      {selectedQuiz ? <QuizDetailForm open={viewOpen} quizId={selectedQuiz.id ?? null} onClose={() => { setViewOpen(false); }} /> : null}
+      {selectedQuiz ? (
+        <QuizDetailForm
+          open={viewOpen}
+          quizId={selectedQuiz.id ?? null}
+          onClose={() => {
+            setViewOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

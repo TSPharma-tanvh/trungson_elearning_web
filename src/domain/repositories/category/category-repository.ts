@@ -7,6 +7,8 @@ import { type ApiResponse } from '@/domain/models/core/api-response';
 export interface CategoryRepository {
   getCategoryListInfo: (request: GetCategoryRequest) => Promise<ApiPaginationResponse>;
 
+  getQuestionCategoryListInfo: (request: GetCategoryRequest) => Promise<ApiPaginationResponse>;
+
   getCategoryById: (id: string) => Promise<ApiResponse>;
 
   createCategory: (request: CreateCategoryRequest) => Promise<ApiResponse>;

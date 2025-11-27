@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -29,6 +30,7 @@ import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
 import CustomFieldTypography from '../../../core/text-field/custom-typhography';
+import QuizDetailForm from '../../quiz/quiz/quiz-detail-form';
 
 interface LessonDetailFormProps {
   open: boolean;
@@ -39,6 +41,8 @@ interface LessonDetailFormProps {
 function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; fullScreen: boolean }) {
   const { t } = useTranslation();
   const [quizExpandedLessons, setQuizExpandedLessons] = useState<Record<string, boolean>>({});
+  const [openQuizDetailId, setOpenQuizDetailId] = useState<string | null>(null);
+
   // const [progressExpandedLessons, setProgressExpandedLessons] = useState<Record<string, boolean>>({});
   // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
@@ -87,6 +91,10 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
       }));
     };
 
+    const handleViewQuizDetail = (quizId: string) => {
+      setOpenQuizDetailId(quizId);
+    };
+
     return (
       <Box sx={{ mb: 2 }}>
         <CardHeader title={t('quizzes')} sx={{ pl: 2, pb: 1, mb: 2 }} />
@@ -103,19 +111,28 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
               }}
             >
               <CardHeader
-                title={quiz.name ?? `${t('quiz')} ${index + 1}`}
+                title={quiz.title ?? `${t('quiz')} ${index + 1}`}
                 action={
-                  <IconButton
-                    onClick={() => {
-                      toggleExpanded(lessonId);
-                    }}
-                    sx={{
-                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.2s',
-                    }}
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
+                  <Box>
+                    <IconButton
+                      onClick={() => {
+                        handleViewQuizDetail(quiz.id ?? '');
+                      }}
+                    >
+                      <InfoOutlined />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        toggleExpanded(lessonId);
+                      }}
+                      sx={{
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  </Box>
                 }
                 sx={{ py: 1 }}
               />
@@ -123,12 +140,20 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
                 <CardContent>
                   <Grid container spacing={2}>
                     {renderField('quizId', quiz.id)}
-                    {renderField('quizName', quiz.name)}
+                    {renderField('quizName', quiz.title)}
                     {renderField('quizDetail', quiz.detail)}
                     {renderField('quizStatus', quiz.status)}
                   </Grid>
                 </CardContent>
               </Collapse>
+
+              <QuizDetailForm
+                open={openQuizDetailId === quiz.id}
+                quizId={quiz?.id ?? null}
+                onClose={() => {
+                  setOpenQuizDetailId(null);
+                }}
+              />
             </Card>
           );
         })}

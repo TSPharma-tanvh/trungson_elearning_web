@@ -3,7 +3,7 @@ import { UpdateClassRequest } from '@/domain/models/class/request/update-class-r
 import { type ClassResponse } from '@/domain/models/class/response/class-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, LearningModeEnum, ScheduleStatusEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -162,7 +162,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
       // thumbnail id
       if (formData.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(formData.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -174,10 +174,12 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
   };
 
   const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailID', newId);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
         if (thumbnailSource === 'select') {
           setPreviewUrl(file.resourceUrl || null);
@@ -469,7 +471,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   value={selectedResourceIDs}
                   onChange={(ids) => {
                     setSelectedResourceIDs(ids);
@@ -589,7 +591,7 @@ export function UpdateClassFormDialog({ open, classes, onClose, onSubmit }: Edit
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
                   onChange={handleFileSelectChange}

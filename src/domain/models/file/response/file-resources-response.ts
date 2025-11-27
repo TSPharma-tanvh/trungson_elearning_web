@@ -1,28 +1,30 @@
+import { CategoryResponseNoThumbnail } from '../../category/response/category-response-no-thumbnail-response';
+
 export class FileResourcesResponse {
-  id?: string;
+  id = '';
   type?: string;
   resourceUrl?: string;
-  deleteUrl?: string;
   status?: string;
   tagID?: string;
   name?: string;
-  size = 0;
-
-  constructor(init?: Partial<FileResourcesResponse>) {
-    Object.assign(this, init);
-  }
+  size?: number;
+  isThumbnail?: boolean;
+  categoryID?: string;
+  category?: CategoryResponseNoThumbnail;
 
   static fromJson(json: any): FileResourcesResponse {
-    const dto = new FileResourcesResponse();
-    dto.id = json.id;
-    dto.type = json.type;
-    dto.resourceUrl = json.resourceUrl;
-    dto.deleteUrl = json.deleteUrl;
-    dto.status = json.status;
-    dto.tagID = json.tagID;
-    dto.name = json.name;
-    dto.size = json.size ?? 0;
-    return dto;
+    const obj = new FileResourcesResponse();
+    obj.id = json.id ?? '';
+    obj.type = json.type;
+    obj.resourceUrl = json.resourceUrl;
+    obj.status = json.status;
+    obj.tagID = json.tagID;
+    obj.name = json.name;
+    obj.size = json.size;
+    obj.isThumbnail = json.isThumbnail;
+    obj.categoryID = json.categoryID;
+    obj.category = json.category ? CategoryResponseNoThumbnail.fromJson(json.category) : undefined;
+    return obj;
   }
 
   toJson(): any {
@@ -30,11 +32,13 @@ export class FileResourcesResponse {
       id: this.id,
       type: this.type,
       resourceUrl: this.resourceUrl,
-      deleteUrl: this.deleteUrl,
       status: this.status,
       tagID: this.tagID,
       name: this.name,
       size: this.size,
+      isThumbnail: this.isThumbnail,
+      categoryID: this.categoryID,
+      category: this.category ? this.category.toJson() : undefined,
     };
   }
 }

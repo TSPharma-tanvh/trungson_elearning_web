@@ -3,17 +3,32 @@ import { type QuizTypeEnum } from '@/utils/enum/core-enum';
 export class GetQuizRequest {
   lessonID?: string;
   levelID?: string;
+
   canStartOver?: boolean;
   isRequired?: boolean;
+
   type?: QuizTypeEnum;
-  minTime?: string; // ISO time string or "HH:mm:ss"
+
+  minTime?: string;
   maxTime?: string;
+
   title?: string;
   description?: string;
+
   hasImage?: boolean;
   hasLesson?: boolean;
+
   isAutoSubmitted?: boolean;
+
+  // NEW fields from .NET
+  positionCode?: string;
+  positionStateCode?: string;
+  departmentTypeCode?: string;
+
+  isFixedQuiz?: boolean;
+
   searchText?: string;
+
   pageNumber = 1;
   pageSize = 10;
 

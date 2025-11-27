@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { type CreateLessonCollectionRequest } from '@/domain/models/courses/request/create-course-lesson-collection-request';
 import { CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, DisplayTypeEnum, LearningModeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -11,11 +13,12 @@ import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography }
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
+import { CustomEmployeeDistinctSelectInForm } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-in-form';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
-import { LessonMultiSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-multi-select';
+import { LessonCollectionCreateEditor } from '@/presentation/components/shared/courses/lessons/lesson-collection-create-form';
 
 interface CreateCourseProps {
   disabled?: boolean;
@@ -27,7 +30,7 @@ interface CreateCourseProps {
 
 export function CreateCourseDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateCourseProps) {
   const { t } = useTranslation();
-  const { categoryUsecase, lessonUsecase, classTeacherUsecase } = useDI();
+  const { categoryUsecase, classTeacherUsecase } = useDI();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
@@ -40,9 +43,10 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
       disableStatus: StatusEnum.Enable,
       displayType: DisplayTypeEnum.Public,
       categoryEnum: CategoryEnum.Course,
-      courseType: LearningModeEnum.Offline,
+      courseType: LearningModeEnum.Online,
     })
   );
+  const [lessonCollections, setLessonCollections] = useState<CreateLessonCollectionRequest[]>([]);
 
   const handleChange = <K extends keyof CreateCourseRequest>(key: K, value: CreateCourseRequest[K]) => {
     setForm((prev) => new CreateCourseRequest({ ...prev, [key]: value }));
@@ -75,8 +79,26 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
     };
   }, [fullScreen]);
 
+  const handleClose = () => {
+    setForm(
+      new CreateCourseRequest({
+        name: '',
+        detail: '',
+        isRequired: false,
+        disableStatus: StatusEnum.Enable,
+        displayType: DisplayTypeEnum.Public,
+        categoryEnum: CategoryEnum.Course,
+        courseType: LearningModeEnum.Online,
+      })
+    );
+
+    setLessonCollections([]);
+
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
           {t('createCourse')}
@@ -149,7 +171,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<StatusEnum>
                 label={t('disableStatus')}
                 value={form.disableStatus}
@@ -177,9 +199,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                   { value: DisplayTypeEnum.Private, label: t('private') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <CustomSelectDropDown<LearningModeEnum>
                 label={t('courseType')}
                 value={form.courseType}
@@ -196,33 +218,9 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                   { value: LearningModeEnum.Online, label: t('online') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
-            {form.courseType === LearningModeEnum.Online && (
-              <Grid item xs={12}>
-                <CustomTextField
-                  label={t('meetingLink')}
-                  value={form.meetingLink}
-                  onChange={(val) => {
-                    handleChange('meetingLink', val);
-                  }}
-                  disabled={false}
-                  sx={{ '& .MuiInputBase-root': { height: fullScreen ? '100%' : 'auto' } }}
-                />
-              </Grid>
-            )}
-
-            <Grid item xs={12}>
-              <LessonMultiSelectDialog
-                lessonUsecase={lessonUsecase}
-                value={form.lessonIds ? form.lessonIds.split(',').filter((id) => id) : []}
-                onChange={(value: string[]) => {
-                  handleChange('lessonIds', value.join(','));
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.categoryID}
@@ -233,7 +231,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
                 value={form.teacherID ?? ''}
@@ -243,11 +241,75 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
 
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isFixedCourse')}
+                value={form.isFixedCourse ?? true}
+                onChange={(val) => {
+                  handleChange('isFixedCourse', val);
+                }}
+                disabled={disabled}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label="departmentType"
+                value={form.departmentTypeCode}
+                type={DepartmentFilterType.DepartmentType}
+                onChange={(value) => {
+                  handleChange('departmentTypeCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label="position"
+                value={form.positionCode}
+                type={DepartmentFilterType.Position}
+                onChange={(value) => {
+                  handleChange('positionCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label="currentPositionStateName"
+                value={form.positionStateCode}
+                type={DepartmentFilterType.PositionState}
+                onChange={(value) => {
+                  handleChange('positionStateCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <LessonCollectionCreateEditor
+                value={lessonCollections}
+                onChange={setLessonCollections}
+                fixedCourse={form.isFixedCourse}
+              />
+            </Grid>
+
             <Grid item xs={12}>
               <CustomButton
                 label={t('create')}
                 onClick={() => {
-                  onSubmit(form);
+                  onSubmit(
+                    new CreateCourseRequest({
+                      ...form,
+                      collections: lessonCollections,
+                    })
+                  );
                 }}
                 loading={loading}
                 disabled={disabled}

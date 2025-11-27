@@ -15,6 +15,7 @@ import {
   StatusDisplayNames,
   StatusEnum,
 } from '@/utils/enum/core-enum';
+import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -43,6 +44,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
+import { CustomEmployeeDistinctSelectFilter } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-filter';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomSearchInput } from '@/presentation/components/core/text-field/custom-search-input';
 import CourseDetailForm from '@/presentation/components/dashboard/courses/courses/course-detail-form';
@@ -101,14 +103,21 @@ export function CourseSingleFilter({
 
     disableStatus,
     setDisableStatus,
-    hasPath,
-    setHasPath,
+
     listRef,
     loadCourses,
+    setPositionCode,
+    setPositionStateCode,
+    setDepartmentTypeCode,
+    positionCode,
+    positionStateCode,
+    departmentTypeCode,
+    isFixedCourse,
+    setIsFixedCourse,
   } = useCourseSelectLoader({
     courseUsecase,
     isOpen: dialogOpen,
-    pathID: '',
+
     searchText: debouncedSearchText,
   });
 
@@ -117,6 +126,10 @@ export function CourseSingleFilter({
   // Handlers
   const handleOpen = () => {
     if (!disabled) setDialogOpen(true);
+    setPositionCode(undefined);
+    setPositionStateCode(undefined);
+    setDepartmentTypeCode(undefined);
+    setIsFixedCourse(undefined);
   };
 
   const handleClose = () => {
@@ -134,7 +147,10 @@ export function CourseSingleFilter({
     setCourseType(undefined);
     setDisplayType(undefined);
     setDisableStatus(undefined);
-    setHasPath(undefined);
+    setPositionCode(undefined);
+    setPositionStateCode(undefined);
+    setDepartmentTypeCode(undefined);
+    setIsFixedCourse(undefined);
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
@@ -320,8 +336,50 @@ export function CourseSingleFilter({
               </Select>
             </FormControl>
 
-            {/* Has Path */}
+            <CustomEmployeeDistinctSelectFilter
+              label={t('departmentType')}
+              value={departmentTypeCode}
+              type={DepartmentFilterType.DepartmentType}
+              onChange={setDepartmentTypeCode}
+            />
+
+            <CustomEmployeeDistinctSelectFilter
+              label={t('position')}
+              value={positionCode}
+              type={DepartmentFilterType.Position}
+              onChange={setPositionCode}
+            />
+
+            <CustomEmployeeDistinctSelectFilter
+              label={t('currentPositionStateName')}
+              value={positionStateCode}
+              type={DepartmentFilterType.PositionState}
+              onChange={setPositionStateCode}
+            />
+
             <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>{t('isFixedCourse')}</InputLabel>
+              <Select
+                value={isFixedCourse === undefined ? '' : isFixedCourse ? 'true' : 'false'}
+                onChange={(e: SelectChangeEvent) => {
+                  const newValue = e.target.value;
+                  if (newValue === '') {
+                    setIsFixedCourse(undefined);
+                  } else {
+                    setIsFixedCourse(newValue === 'true');
+                  }
+                }}
+                label={t('isFixedCourse')}
+              >
+                {filterOptions.hasPath.map((opt) => (
+                  <MenuItem key={String(opt ?? 'none')} value={opt === undefined ? '' : String(opt)}>
+                    {opt === undefined ? t('all') : opt ? t('yes') : t('no')}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {/* Has Path */}
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('hasPath')}</InputLabel>
               <Select
                 value={hasPath === undefined ? '' : String(hasPath)}
@@ -337,7 +395,7 @@ export function CourseSingleFilter({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             {/* Clear Filters */}
             <Button size="small" onClick={handleClearFilters} variant="outlined">

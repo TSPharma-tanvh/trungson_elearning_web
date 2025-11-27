@@ -76,12 +76,9 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleEditLesson = async (
-    request: UpdateLessonRequest,
-    options?: { suppressSuccessMessage?: boolean }
-  ): Promise<ApiResponse> => {
+  const handleEditLesson = async (request: UpdateLessonRequest): Promise<ApiResponse> => {
     try {
-      const response = await lessonUsecase.updateLesson(request, options);
+      const response = await lessonUsecase.updateLesson(request);
 
       return response;
     } catch (error) {

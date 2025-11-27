@@ -1,9 +1,11 @@
 import { type CreateAttendanceRecordsRequest } from '@/domain/models/attendance/request/create-attendance-records-request';
+import { type CreateAttendanceReportRequest } from '@/domain/models/attendance/request/create-attendance-report-request';
 import { type EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { type GetAttendanceRecordsRequest } from '@/domain/models/attendance/request/get-attendance-records-request';
 import { type UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';
 import { AttendanceRecordDetailResponse } from '@/domain/models/attendance/response/attendance-record-detail-response';
 import { type AttendanceRecordsListResult } from '@/domain/models/attendance/response/attendance-record-result';
+import { CreateAttendanceReportResponse } from '@/domain/models/attendance/response/create-attendance-report-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type AttendanceRecordsRepository } from '@/domain/repositories/class/attendance-repository';
 
@@ -61,5 +63,13 @@ export class AttendanceRecordsUsecase {
     const response = await this.AttendanceRecordsRepo.enrollUserListToClass(request);
 
     return response;
+  }
+
+  async createAttendanceReport(request: CreateAttendanceReportRequest): Promise<CreateAttendanceReportResponse> {
+    const response = await this.AttendanceRecordsRepo.createAttendanceReport(request);
+
+    const responseData = CreateAttendanceReportResponse.fromJson(response.result);
+
+    return responseData;
   }
 }

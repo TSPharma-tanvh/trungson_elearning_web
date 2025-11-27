@@ -5,7 +5,7 @@ import { UpdateCoursePathRequest } from '@/domain/models/path/request/update-pat
 import { type CoursePathResponse } from '@/domain/models/path/response/course-path-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, CategoryEnumUtils } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import { DisplayTypeEnum, StatusEnum } from '@/utils/enum/path-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -114,7 +114,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
       // thumbnail id
       if (courseFormData.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(courseFormData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(courseFormData.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -129,7 +129,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
     handleChange('thumbnailID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
         if (thumbnailSource === 'select') {
           setPreviewUrl(file.resourceUrl || null);
@@ -336,7 +336,7 @@ export function UpdatePathFormDialog({ open, path, onClose, onSubmit }: EditPath
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={courseFormData.thumbnailID}
                   onChange={handleFileSelectChange}

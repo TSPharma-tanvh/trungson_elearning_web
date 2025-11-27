@@ -32,7 +32,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { CheckCircle, Eye, EyeClosed, Image as ImageIcon, Person } from '@phosphor-icons/react';
+import { CheckCircle, Eye, EyeClosed, Person } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { EmployeeSelectDialog } from '@/presentation/components/shared/management/employee/employee-select';
@@ -52,7 +52,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [formData, setFormData] = useState<UpdateUserInfoRequest>(new UpdateUserInfoRequest());
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [_previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -422,7 +422,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
               />
             </Grid>
 
-            <Grid item xs={12} sm={12}>
+            {/* <Grid item xs={12} sm={12}>
               <Button
                 variant="outlined"
                 component="label"
@@ -466,7 +466,7 @@ export function EditUserDialog({ open, user, onClose, onSubmit }: EditUserDialog
                   />
                 </Box>
               ) : null}
-            </Grid>
+            </Grid> */}
           </Grid>
         </Box>
       </DialogContent>

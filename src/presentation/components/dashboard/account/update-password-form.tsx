@@ -94,9 +94,9 @@ export function UpdatePasswordForm(): React.JSX.Element {
                 <Avatar src={avatarUrl} sx={{ height: '80px', width: '80px' }} />
                 <Stack spacing={1} sx={{ textAlign: 'center' }}>
                   <Typography variant="h5">{user?.employee?.name ?? user?.userName}</Typography>
-                  <Typography color="text.secondary" variant="body2">
+                  {/* <Typography color="text.secondary" variant="body2">
                     {user?.employee?.address ?? ''}
-                  </Typography>
+                  </Typography> */}
                 </Stack>
               </Stack>
             </Grid>

@@ -241,7 +241,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('category')} />
+        <CardHeader title={t('questionBank')} />
         <CardContent>
           <Box key={question.category.id}>
             <Grid container spacing={2}>
@@ -270,7 +270,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
             {renderField('id', question.id)}
             {renderField('questionText', question.questionText)}
             {renderField('point', question.point)}
-            {renderField('canShuffle', question.canShuffle ? t('yes') : t('no'))}
+            {/* {renderField('canShuffle', question.canShuffle ? t('yes') : t('no'))} */}
             {renderField('totalAnswer', question.totalAnswer)}
             {renderField(
               'questionType',
@@ -283,8 +283,8 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
               question.status ? t(question.status.charAt(0).toLowerCase() + t(question.status).slice(1)) : ''
             )}
 
-            {renderField('categoryId', question.categoryId)}
-            {renderField('thumbnailId', question.thumbnailId)}
+            {renderField('id', question.categoryId)}
+            {renderField('id', question.thumbnailId)}
           </Grid>
         </CardContent>
       </Card>

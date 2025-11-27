@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { Chart } from '@/presentation/components/core/chart';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
@@ -14,6 +13,8 @@ import { Desktop as DesktopIcon } from '@phosphor-icons/react/dist/ssr/Desktop';
 import { DeviceTablet as DeviceTabletIcon } from '@phosphor-icons/react/dist/ssr/DeviceTablet';
 import { Phone as PhoneIcon } from '@phosphor-icons/react/dist/ssr/Phone';
 import type { ApexOptions } from 'apexcharts';
+
+import { Chart } from '@/presentation/components/core/chart';
 
 const iconMapping = { Desktop: DesktopIcon, Tablet: DeviceTabletIcon, Phone: PhoneIcon } as Record<string, Icon>;
 

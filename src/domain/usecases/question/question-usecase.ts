@@ -1,4 +1,5 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
+import { type CreateQuestionsFromExcelDto } from '@/domain/models/question/request/create-question-from-excel-request';
 import { type CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
 import { type GetQuestionRequest } from '@/domain/models/question/request/get-question-request';
 import { UpdateQuestionRequest } from '@/domain/models/question/request/update-question-request';
@@ -42,6 +43,12 @@ export class QuestionUsecase {
 
   async createQuestion(request: CreateQuestionRequest): Promise<ApiResponse> {
     const response = await this.courseRepo.createQuestion(request);
+
+    return response;
+  }
+
+  async createQuestionByExcel(request: CreateQuestionsFromExcelDto): Promise<ApiResponse> {
+    const response = await this.courseRepo.createQuestionByExcel(request);
 
     return response;
   }

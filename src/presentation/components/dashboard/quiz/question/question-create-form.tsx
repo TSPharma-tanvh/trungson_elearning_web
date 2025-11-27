@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { CreateQuestionRequest } from '@/domain/models/question/request/create-question-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import { Image } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -110,7 +110,7 @@ export function QuestionCreateForm({
         handleChange('thumbnail', undefined);
         if (form.thumbnailID) {
           fileUsecase
-            .getFileResouceById(form.thumbnailID)
+            .getFileResourceById(form.thumbnailID)
             .then((file) => {
               setPreviewUrl(file.resourceUrl || null);
             })
@@ -167,10 +167,10 @@ export function QuestionCreateForm({
     }
   }, [open]);
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
+  // const booleanOptions = [
+  //   { value: 'true', label: 'yes' },
+  //   { value: 'false', label: 'no' },
+  // ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -302,14 +302,16 @@ export function QuestionCreateForm({
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown
+              <CustomSelectDropDown<boolean>
                 label={t('canShuffle')}
-                value={String(form.canShuffle ?? '')}
-                onChange={(value) => {
-                  handleChange('canShuffle', value === 'true');
+                value={form.canShuffle}
+                onChange={(v) => {
+                  handleChange('canShuffle', v);
                 }}
-                disabled={isSubmitting}
-                options={booleanOptions}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
               />
             </Grid>
             {/* Upload file resources */}
@@ -336,7 +338,7 @@ export function QuestionCreateForm({
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  // type={FileTypeEnum.Image}
                   value={form.resourceIDs?.split(',').filter(Boolean) ?? []}
                   onChange={(ids) => {
                     handleChange('resourceIDs', ids.join(','));
@@ -418,11 +420,13 @@ export function QuestionCreateForm({
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={form.thumbnailID}
-                  onChange={(ids) => {
-                    handleChange('thumbnailID', ids);
+                  onChange={(id) => {
+                    const newId = id === '' ? undefined : id;
+
+                    handleChange('thumbnailID', newId);
                   }}
                   label={t('thumbnail')}
                   disabled={isSubmitting}

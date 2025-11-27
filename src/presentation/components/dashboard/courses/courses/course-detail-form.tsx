@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
+import { InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -21,6 +23,7 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  Stack,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +31,8 @@ import { useTranslation } from 'react-i18next';
 import CustomFieldTypography from '@/presentation/components/core/text-field/custom-typhography';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
+
+import LessonDetailForm from '../lessons/lesson-detail-form';
 
 interface CourseDetailProps {
   open: boolean;
@@ -40,6 +45,9 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
   const [courseExpandedLessons, setCourseExpandedLessons] = useState<Record<string, boolean>>({});
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
+
+  //lesson id
+  const [openLessonDetailId, setOpenLessonDetailId] = useState<string | null>(null);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -140,40 +148,49 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
     );
   };
 
-  const renderLessons = () => {
-    if (!course.lessons || course.lessons.length === 0) return null;
+  const renderCollections = () => {
+    const collections = course.collections;
+    if (!collections || collections.length === 0) return null;
 
-    const toggleExpanded = (lessonId: string) => {
+    const toggleExpand = (id: string) => {
       setCourseExpandedLessons((prev) => ({
         ...prev,
-        [lessonId]: !prev[lessonId],
+        [id]: !prev[id],
       }));
+    };
+
+    const handleViewLessonDetail = (lessonId: string) => {
+      setOpenLessonDetailId(lessonId);
     };
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title={t('lessons')} sx={{ pl: 2, pb: 1, mb: 2 }} />
-        {course.lessons.map((lesson, index) => {
-          const lessonId = lesson.id ?? `lesson-${index}`;
-          const isExpanded = courseExpandedLessons[lessonId] || false;
+        <CardHeader title={t('parts')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+
+        {collections.map((collection, colIndex) => {
+          const colId = collection.id ?? `collection-${colIndex}`;
+          const colExpanded = courseExpandedLessons[colId] || false;
 
           return (
-            <Card
-              key={lessonId}
-              sx={{
-                mb: 3,
-                mx: window.innerWidth < 600 ? 1 : 2,
-              }}
-            >
+            <Card key={colId} sx={{ mb: 3, mx: window.innerWidth < 600 ? 1 : 2 }}>
               <CardHeader
-                title={lesson.name ?? `Lesson ${index + 1}`}
+                title={`${collection.order}. ${collection.name}`}
+                subheader={
+                  course.isFixedCourse
+                    ? collection.fixedCourseDayDuration
+                      ? `${t('duration')}: ${collection.fixedCourseDayDuration} ${t('days')}`
+                      : ''
+                    : collection.startDate && collection.endDate
+                      ? `${t('from')}: ${DateTimeUtils.formatISODateStringToString(collection.startDate)}  ${t('to')}: ${DateTimeUtils.formatISODateStringToString(collection.endDate)}`
+                      : ''
+                }
                 action={
                   <IconButton
                     onClick={() => {
-                      toggleExpanded(lessonId);
+                      toggleExpand(colId);
                     }}
                     sx={{
-                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transform: colExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.2s',
                     }}
                   >
@@ -182,29 +199,89 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                 }
                 sx={{ py: 1 }}
               />
-              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+
+              <Collapse in={colExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                  <Grid container spacing={2}>
-                    {renderField('id', lesson.id)}
-                    {renderField('detail', lesson.detail)}
-                    {renderField('enableAutoPlay', lesson.enablePlay ? t('yes') : t('no'))}
-                    {renderField('status', lesson.status)}
-                    {renderField(
-                      'lessonType',
-                      lesson.lessonType
-                        ? t(lesson.lessonType?.charAt(0).toLowerCase() + t(lesson.lessonType).slice(1))
-                        : ''
-                    )}
-                    {renderField('enrollmentCriteriaID', lesson.enrollmentCriteriaID)}
-                    {renderField('categoryID', lesson.categoryID)}
-                    {renderField('thumbnailID', lesson.thumbnailID)}
-                    {renderField('videoID', lesson.videoID)}
-                  </Grid>
+                  {collection.lessons?.length ? (
+                    collection.lessons.map((lesson, idx) => {
+                      const lessonId = lesson.id ?? `lesson-${idx}`;
+                      const lessonExpanded = courseExpandedLessons[lessonId] || false;
+
+                      return (
+                        <Card
+                          key={lessonId}
+                          sx={{
+                            mb: 2,
+                            border: '1px solid #e0e0e0',
+                            borderRadius: 2,
+                            boxShadow: 'none',
+                          }}
+                        >
+                          <CardHeader
+                            title={lesson.name ?? `Lesson ${idx + 1}`}
+                            action={
+                              <Stack direction="row" spacing={1}>
+                                <IconButton
+                                  onClick={() => {
+                                    handleViewLessonDetail(lesson.id ?? '');
+                                  }}
+                                >
+                                  <InfoOutlined />
+                                </IconButton>
+
+                                <IconButton
+                                  onClick={() => {
+                                    toggleExpand(lessonId);
+                                  }}
+                                  sx={{
+                                    transform: lessonExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                    transition: 'transform 0.2s',
+                                  }}
+                                >
+                                  <ExpandMoreIcon />
+                                </IconButton>
+                              </Stack>
+                            }
+                            sx={{ py: 1 }}
+                          />
+
+                          {/* lesson content */}
+                          <Collapse in={lessonExpanded} timeout="auto" unmountOnExit>
+                            <CardContent>
+                              <Grid container spacing={2}>
+                                {renderField('id', lesson.id)}
+                                {renderField('detail', lesson.detail)}
+                                {renderField('order', lesson.order)}
+                                {renderField('enableAutoPlay', lesson.enablePlay ? t('yes') : t('no'))}
+                                {renderField('status', lesson.status)}
+                                {renderField('categoryID', lesson.categoryID)}
+                                {renderField('thumbnailID', lesson.thumbnailID)}
+                                {renderField('videoID', lesson.videoID)}
+                              </Grid>
+                            </CardContent>
+                          </Collapse>
+                        </Card>
+                      );
+                    })
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      {t('noLessons')}
+                    </Typography>
+                  )}
                 </CardContent>
               </Collapse>
             </Card>
           );
         })}
+
+        {/* lesson detail form */}
+        <LessonDetailForm
+          open={Boolean(openLessonDetailId)}
+          lessonId={openLessonDetailId ?? ''}
+          onClose={() => {
+            setOpenLessonDetailId(null);
+          }}
+        />
       </Box>
     );
   };
@@ -250,9 +327,9 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {renderField('employeeId', user?.employeeId)}
 
             {/* Employee Details */}
-            {renderField('title', employee?.title)}
+            {/* {renderField('title', employee?.title)}
             {renderField('department', employee?.currentDepartmentName)}
-            {renderField('position', employee?.currentPositionName)}
+            {renderField('position', employee?.currentPositionName)} */}
             {renderField('gender', employee?.gender)}
           </Grid>
         </CardContent>
@@ -421,12 +498,16 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {/* {renderField('enrollmentCriteriaId', course.enrollmentCriteria.id)} */}
             {renderField('categoryId', course.categoryId)}
             {renderField('thumbnailId', course.thumbnailId)}
+            {renderField('isFixedCourse', course.isFixedCourse ? t('yes') : t('no'))}
+            {renderField('positionName', course.positionName)}
+            {renderField('positionStateName', course.positionStateName)}
+            {renderField('departmentTypeName', course.departmentTypeName)}
           </Grid>
         </CardContent>
       </Card>
       {renderCoursePath()}
       {renderTeacher()}
-      {renderLessons()}
+      {renderCollections()}
       {renderFiles()}
       {renderCategory()}
       {renderEnrollmentCriteria()}

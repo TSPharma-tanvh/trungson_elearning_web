@@ -147,21 +147,20 @@ export function CreateCategoryDialog({
 
             <Grid item xs={12}>
               <CustomSelectDropDown<CategoryEnum>
-                label={t('enrollmentCriteriaType')}
+                label={t('categoryType')}
                 value={form.category ?? CategoryEnum.Path}
                 onChange={(val) => {
                   handleChange('category', val);
                 }}
                 disabled={disabled}
                 options={[
-                  { value: CategoryEnum.Path, label: 'path' },
                   { value: CategoryEnum.Course, label: 'course' },
-                  { value: CategoryEnum.Lesson, label: 'lesson' },
+                  // { value: CategoryEnum.Lesson, label: 'lesson' },
                   { value: CategoryEnum.Class, label: 'class' },
                   { value: CategoryEnum.Quiz, label: 'quiz' },
-                  { value: CategoryEnum.Question, label: 'question' },
-                  { value: CategoryEnum.Answer, label: 'answer' },
-                  { value: CategoryEnum.Criteria, label: 'criteria' },
+                  // { value: CategoryEnum.Question, label: 'question' },
+                  // { value: CategoryEnum.Answer, label: 'answer' },
+                  { value: CategoryEnum.Resource, label: 'resource' },
                 ]}
               />
             </Grid>

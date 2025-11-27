@@ -187,9 +187,9 @@ export default function UserQuizProgressTable({
         renderHeader={() => (
           <>
             <TableCell>{t('quizName')}</TableCell>
-            <TableCell>{t('lessonName')}</TableCell>
+            {/* <TableCell>{t('lessonName')}</TableCell> */}
             <TableCell>{t('fullName')}</TableCell>
-            <TableCell>{t('gender')}</TableCell>
+            {/* <TableCell>{t('gender')}</TableCell> */}
             <TableCell>{t('progressStatus')}</TableCell>
             <TableCell>{t('score')}</TableCell>
             <TableCell>{t('totalScore')}</TableCell>
@@ -203,37 +203,6 @@ export default function UserQuizProgressTable({
             <TableCell>{t('completedAt')}</TableCell>
             <TableCell>{t('lastAccess')}</TableCell>
             <TableCell>{t('activeStatus')}</TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('currentPositionName')}
-            </TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('currentPositionStateName')}
-            </TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('currentDepartmentName')}
-            </TableCell>
-            <TableCell>{t('cityName')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => {
@@ -249,7 +218,7 @@ export default function UserQuizProgressTable({
                 {row.quiz?.title}
               </TableCell>
 
-              <TableCell
+              {/* <TableCell
                 sx={{
                   minWidth: 150,
                   whiteSpace: 'normal',
@@ -257,7 +226,7 @@ export default function UserQuizProgressTable({
                 }}
               >
                 {row.quiz?.lesson?.name}
-              </TableCell>
+              </TableCell> */}
 
               <TableCell
                 sx={{
@@ -289,7 +258,7 @@ export default function UserQuizProgressTable({
                 </Stack>
               </TableCell>
 
-              <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
+              {/* <TableCell>{row.user?.employee?.gender ?? ''}</TableCell> */}
               <TableCell align="center">
                 {row.progressStatus !== undefined ? renderProgressStatus(row.progressStatus) : ''}
               </TableCell>
@@ -308,10 +277,6 @@ export default function UserQuizProgressTable({
               <TableCell align="center">
                 {row.activeStatus !== undefined ? renderActiveStatus(row.activeStatus) : ''}
               </TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentDepartmentName ?? ''}</TableCell>
-              <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
 
               <TableCell align="right">
                 <IconButton

@@ -19,9 +19,8 @@ export function useUserSelection<T = string>(initialIds: T[] = []) {
     setSelected((prev) => {
       if (prev.size === initialIds.length) {
         return new Set();
-      } 
-        return new Set(initialIds);
-      
+      }
+      return new Set(initialIds);
     });
   };
 

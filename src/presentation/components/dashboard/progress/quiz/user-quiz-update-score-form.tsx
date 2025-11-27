@@ -77,9 +77,7 @@ export function UpdateUserQuizScoreFormDialog({ open, data: userQuizProgress, on
           .then((quizResponse) => {
             setQuizData(quizResponse);
           })
-          .catch(() => {
-            
-          })
+          .catch(() => {})
           .finally(() => {
             setIsLoadingQuiz(false);
           });

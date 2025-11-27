@@ -104,9 +104,6 @@ function AttendanceRecordDetails({
             {renderField('gender', emp.gender)}
             {renderField('phoneNumber', user.phoneNumber)}
             {renderField('email', user.email)}
-            {renderField('department', emp.currentDepartmentName)}
-            {renderField('position', emp.currentPositionName)}
-            {renderField('city', emp.cityName)}
           </Grid>
         </CardContent>
       </Card>

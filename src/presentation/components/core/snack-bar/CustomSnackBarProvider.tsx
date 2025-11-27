@@ -1,4 +1,3 @@
-// src/layouts/core/CustomSnackBarProvider.tsx
 'use client';
 
 import React, { createContext, useCallback, useEffect, useState, type ReactNode } from 'react';

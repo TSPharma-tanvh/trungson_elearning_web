@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { type FileResourcesResponse } from '@/domain/models/file/response/file-resources-response';
+import { FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import { type FileResourcesUsecase } from '@/domain/usecases/file/file-usecase';
 import { useResourceSelectLoader } from '@/presentation/hooks/file/file-resouce-select-loader';
 import { type StatusEnum } from '@/utils/enum/core-enum';
-import { type FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { type FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import { Image as ImageIcon, InsertDriveFile, PlayArrow, Visibility } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -12,6 +12,7 @@ import {
   Avatar,
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -40,7 +41,7 @@ import VideoPreviewDialog from './video-preview-dialog';
 
 interface FileResourceSelectProps {
   fileUsecase: FileResourcesUsecase;
-  type: FileResourceEnum;
+  type: FileTypeEnum;
   status?: StatusEnum;
   value?: string;
   onChange: (id: string) => void;
@@ -59,7 +60,7 @@ export function FileResourceSelect({
 }: FileResourceSelectProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<FileResourcesResponse | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileResourcesResponseForAdmin | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [previewImageOpen, setPreviewImageOpen] = useState(false);
@@ -74,29 +75,40 @@ export function FileResourceSelect({
   useEffect(() => {
     if (value && !selectedFile) {
       fileUsecase
-        .getFileResouceById(value)
-        .then(setSelectedFile)
-        .catch(() => {
-          undefined;
-        });
+        .getFileResourceById(value)
+        .then((res) => {
+          setSelectedFile(FileResourcesResponseForAdmin.fromJson(res));
+        })
+        .catch(() => undefined);
     }
   }, [value]);
 
   useEffect(() => {
     if (open) {
-      setSelectedId(value ?? null);
+      setSelectedId(value || null);
       void loadFileResources(1, true);
     }
-  }, [open]);
+  }, [open, value]);
 
   const handleConfirm = () => {
-    const file = files.find((f) => f.id === selectedId);
-    if (file) {
-      onChange(file.id ?? '');
-      setSelectedFile(file);
-      setOpen(false);
+    if (selectedId) {
+      const file = files.find((f) => f.id === selectedId);
+      if (file) {
+        setSelectedFile(file);
+        onChange(file.id ?? '');
+      }
+    } else {
+      setSelectedFile(null);
+      onChange('');
     }
+    setOpen(false);
   };
+
+  // const handleClear = () => {
+  //   setSelectedFile(null);
+  //   setSelectedId(null);
+  //   onChange('');
+  // };
 
   const handlePageChange = async (_: unknown, page: number) => {
     await loadFileResources(page, true);
@@ -105,7 +117,7 @@ export function FileResourceSelect({
     }
   };
 
-  const handleViewFile = (file: FileResourcesResponse) => {
+  const handleViewFile = (file: FileResourcesResponseForAdmin) => {
     if (!file.resourceUrl) return;
     if (file.type?.startsWith('image/')) {
       setSelectedFile(file);
@@ -209,6 +221,8 @@ export function FileResourceSelect({
             {files.map((file) => {
               const isImage = file.type?.startsWith('image/');
               const isVideo = file.type?.startsWith('video/');
+              const isSelected = selectedId === file.id;
+
               const icon = isImage ? (
                 <Avatar variant="square" src={file.resourceUrl} sx={{ width: 40, height: 40 }} />
               ) : isVideo ? (
@@ -224,15 +238,17 @@ export function FileResourceSelect({
               return (
                 <ListItem
                   key={file.id}
-                  selected={file.id === selectedId}
+                  selected={isSelected}
                   onClick={() => {
-                    setSelectedId(file.id ?? null);
+                    // Toggle: nếu đang chọn thì bỏ, không chọn thì chọn
+                    setSelectedId(isSelected ? null : file.id ?? null);
                   }}
                   secondaryAction={
                     file.resourceUrl ? (
                       <IconButton
                         edge="end"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation(); // quan trọng: không trigger onClick của ListItem
                           handleViewFile(file);
                         }}
                       >
@@ -240,17 +256,22 @@ export function FileResourceSelect({
                       </IconButton>
                     ) : null
                   }
-                  button
+                  sx={{
+                    cursor: 'pointer',
+                    borderRadius: 1,
+                    '&:hover': { bgcolor: 'action.hover' },
+                  }}
                 >
+                  <Checkbox edge="start" checked={isSelected} tabIndex={-1} disableRipple sx={{ mr: 1 }} />
+
                   <ListItemAvatar>{icon}</ListItemAvatar>
+
                   <ListItemText
                     primary={file.name}
                     secondary={file.type}
-                    sx={{ flexGrow: 1 }}
                     primaryTypographyProps={{
                       noWrap: true,
                       sx: {
-                        width: '100%',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',

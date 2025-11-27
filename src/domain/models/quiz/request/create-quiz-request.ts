@@ -1,4 +1,4 @@
-import { type CategoryEnum, type QuizInputMethod, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { QuizTypeEnum, StatusEnum, type CategoryEnum } from '@/utils/enum/core-enum';
 
 export class CreateQuizRequest {
   levelID?: string;
@@ -6,26 +6,30 @@ export class CreateQuizRequest {
   canStartOver = false;
   canShuffle = true;
   isRequired = false;
+  hasLesson = false;
+  lessonID?: string;
 
   displayedQuestionCount!: number;
 
   type: QuizTypeEnum = QuizTypeEnum.LessonQuiz;
-  time!: string; // C#: TimeSpan -> "HH:mm:ss"
+  time!: string; // HH:mm:ss
 
-  maxAttempts!: number;
+  isRestrictAttempts = false;
+
+  maxAttempts?: number;
   scoreToPass!: number;
 
   title = '';
   description?: string;
-  questionIDs?: string; // comma-separated IDs
 
-  categoryID?: string;
+  positionStateCode?: string;
+  departmentTypeCode?: string;
+
+  categoryID!: string;
   status: StatusEnum = StatusEnum.Enable;
 
-  enrollmentCriteriaIDs?: string;
-
   thumbnailID?: string;
-  resourceIDs?: string; // comma-separated
+  resourceIDs?: string;
 
   resources?: File[];
   resourceDocumentNo?: string;
@@ -40,28 +44,32 @@ export class CreateQuizRequest {
 
   isAutoSubmitted = true;
 
-  enrollmentCriteriaType?: CategoryEnum;
-  enrollmentStatus?: StatusEnum;
+  isFixedQuiz = false;
 
-  maxCapacity?: number;
-  enrollmentCourseIDs?: string;
+  startDate?: Date;
+  endDate?: Date;
 
-  // New (Excel-specific properties)
-  inputMethod!: QuizInputMethod;
-  excelFile?: File;
-  questionCategoryID?: string;
-  questionCategoryEnum?: CategoryEnum;
-  answerCategoryID?: string;
-  answerCategoryEnum?: CategoryEnum;
+  fixedQuizDayDuration?: number;
+  positionCode?: string;
+
+  // new logic
+  // inputMethod?: string;
+  // excelFile?: File;
+
+  // questionCategoryEnum?: CategoryEnum;
+  // answerCategoryEnum?: CategoryEnum;
+
+  // NEW FIELDS ADDED
+  // questionCategoryID?: string;
+  // answerCategoryID?: string;
+  questionCategoryIDs?: string;
 
   constructor(init?: Partial<CreateQuizRequest>) {
     Object.assign(this, init);
   }
 
   static fromJson(json: any): CreateQuizRequest {
-    const dto = new CreateQuizRequest();
-    Object.assign(dto, json);
-    return dto;
+    return new CreateQuizRequest({ ...json });
   }
 
   toJson(): any {
@@ -70,20 +78,34 @@ export class CreateQuizRequest {
 
   toFormData(): FormData {
     const formData = new FormData();
-    for (const key in this) {
-      const value = (this as any)[key];
-      if (value === undefined || value === null) continue;
+
+    Object.entries(this).forEach(([key, value]: [string, any]) => {
+      if (value === undefined || value === null) return;
+
+      // Skip enums when uploading
+      if (key.endsWith('Enum')) return;
 
       if (value instanceof Date) {
         formData.append(key, value.toISOString());
-      } else if (value instanceof File) {
-        formData.append(key, value);
-      } else if (Array.isArray(value) && value[0] instanceof File) {
-        value.forEach((file: File) => { formData.append('resources', file); });
-      } else {
-        formData.append(key, String(value));
+        return;
       }
-    }
+
+      if (value instanceof File) {
+        formData.append(key, value);
+        return;
+      }
+
+      // resources array
+      if (Array.isArray(value) && value.length > 0 && value[0] instanceof File) {
+        value.forEach((f) => {
+          formData.append('resources', f);
+        });
+        return;
+      }
+
+      formData.append(key, String(value));
+    });
+
     return formData;
   }
 }

@@ -56,7 +56,7 @@ function UserDevicesDetails({ userDevice, fullScreen }: { userDevice: UserDevice
             {renderField(t('email'), u.email)}
             {renderField(t('phone'), u.phoneNumber)}
             {renderField(t('employeeId'), u.employeeId)}
-            {emp ? renderField(t('department'), emp.currentDepartmentName) : null}
+            {emp ? renderField(t('department'), emp.departmentName) : null}
           </Grid>
         </CardContent>
       </Card>

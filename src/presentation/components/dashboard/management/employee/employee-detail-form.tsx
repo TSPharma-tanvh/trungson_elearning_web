@@ -66,7 +66,11 @@ function EmployeeDetails({
               }
 
               if (typeof value === 'boolean') {
-                displayValue = value ? t('yes') : t('no');
+                if (key === 'gender') {
+                  displayValue = value ? t('male') : t('female');
+                } else {
+                  displayValue = value ? t('yes') : t('no');
+                }
               }
 
               return (

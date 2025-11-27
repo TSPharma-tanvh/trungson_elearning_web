@@ -7,7 +7,7 @@ import { type ClassTeacherUsecase } from '@/domain/usecases/class/class-teacher-
 import { useClassTeacherSelectLoader } from '@/presentation/hooks/teacher/use-class-teacher-loader';
 import { useClassTeacherSelectDebounce } from '@/presentation/hooks/teacher/use-teacher-select-debounce';
 import { type LearningModeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
-import { Book, InfoOutlined } from '@mui/icons-material';
+import { InfoOutlined, School } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -183,7 +183,10 @@ export function ClassTeacherSelectDialog({
           labelId="class-select-label"
           value={loading ? '' : value || ''}
           input={
-            <OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />} />
+            <OutlinedInput
+              label={t(label)}
+              startAdornment={<School sx={{ mr: 1, color: 'inherit', opacity: 0.7 }} />}
+            />
           }
           onClick={handleOpen}
           renderValue={() =>

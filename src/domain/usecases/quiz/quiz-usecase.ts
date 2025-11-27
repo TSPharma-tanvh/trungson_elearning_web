@@ -1,5 +1,4 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
-import { type CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
 import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
@@ -40,11 +39,11 @@ export class QuizUsecase {
     return userResponse;
   }
 
-  async importFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
-    const response = await this.courseRepo.createQuizFromExcel(request);
+  // async importFromExcel(request: CreateQuizFromExcelRequest): Promise<ApiResponse> {
+  //   const response = await this.courseRepo.createQuizFromExcel(request);
 
-    return response;
-  }
+  //   return response;
+  // }
 
   async createQuiz(request: CreateQuizRequest): Promise<ApiResponse> {
     const response = await this.courseRepo.createQuiz(request);
@@ -67,5 +66,11 @@ export class QuizUsecase {
     const result = await this.courseRepo.updateQuiz(newFormData);
 
     return result;
+  }
+
+  async deleteQuizPermanent(id: string): Promise<ApiResponse> {
+    const response = await this.courseRepo.deleteQuiz(id);
+
+    return response;
   }
 }

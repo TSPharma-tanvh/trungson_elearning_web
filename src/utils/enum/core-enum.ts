@@ -40,6 +40,18 @@ export enum CategoryEnum {
   Question = 5,
   Answer = 6,
   Criteria = 7,
+  Resource = 8,
+}
+
+export enum CategoryFilterEnum {
+  Course = 1,
+  Lesson = 2,
+  Class = 3,
+  Quiz = 4,
+  Question = 5,
+  Answer = 6,
+  Criteria = 7,
+  Resource = 8,
 }
 
 export enum CheckinTimeEnum {

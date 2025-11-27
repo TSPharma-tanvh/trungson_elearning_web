@@ -7,11 +7,11 @@ import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-les
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
 import {
   DisplayTypeEnum,
-  type LearningModeEnum,
   LessonContentEnum,
   ScheduleStatusEnum,
   StatusDisplayNames,
   StatusEnum,
+  type LearningModeEnum,
 } from '@/utils/enum/core-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';

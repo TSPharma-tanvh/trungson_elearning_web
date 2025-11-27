@@ -41,6 +41,23 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     }
   }
 
+  async getQuestionCategoryListInfo(request: GetCategoryRequest): Promise<ApiPaginationResponse> {
+    try {
+      const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.category.getAllQuestion, {
+        params: request.toJson(),
+      });
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch category info');
+    }
+  }
+
   async createCategory(request: CreateCategoryRequest): Promise<ApiResponse> {
     try {
       const response = await customApiClient.post<ApiResponse>(apiEndpoints.category.create, request.toFormData(), {

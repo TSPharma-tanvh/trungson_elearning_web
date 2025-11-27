@@ -10,6 +10,7 @@ export class LessonResponse {
   categoryID?: string;
   thumbnailID?: string;
   videoID?: string;
+  order?: number;
 
   constructor(init?: Partial<LessonResponse>) {
     Object.assign(this, init);
@@ -28,6 +29,7 @@ export class LessonResponse {
       categoryID: json.categoryID,
       thumbnailID: json.thumbnailID,
       videoID: json.videoID,
+      order: json.order,
     });
   }
 
@@ -44,6 +46,7 @@ export class LessonResponse {
       categoryID: this.categoryID,
       thumbnailID: this.thumbnailID,
       videoID: this.videoID,
+      order: this.order,
     };
   }
 }

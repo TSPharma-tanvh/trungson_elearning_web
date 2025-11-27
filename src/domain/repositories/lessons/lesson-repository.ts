@@ -11,5 +11,5 @@ export interface LessonRepository {
 
   createLesson: (request: CreateLessonRequest) => Promise<ApiResponse>;
 
-  updateLesson: (request: UpdateLessonRequest, options?: { suppressSuccessMessage?: boolean }) => Promise<ApiResponse>;
+  updateLesson: (request: UpdateLessonRequest) => Promise<ApiResponse>;
 }

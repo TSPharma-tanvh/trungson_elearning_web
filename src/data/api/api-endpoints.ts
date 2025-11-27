@@ -50,6 +50,7 @@ interface PathEnpoints {
 
 interface CategoryEndpoints {
   getAll: StaticEndpoint;
+  getAllQuestion: StaticEndpoint;
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
@@ -68,6 +69,7 @@ interface CoursesEndpoints {
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 
 interface LessonsEndpoints {
@@ -95,14 +97,16 @@ interface QuizEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
   create: StaticEndpoint;
-  createDetail: StaticEndpoint;
-  createByExcel: StaticEndpoint;
+  // createDetail: StaticEndpoint;
+  // createByExcel: StaticEndpoint;
   update: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 interface QuestionEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
   create: StaticEndpoint;
+  createByExcel: StaticEndpoint;
   update: StaticEndpoint;
 }
 
@@ -115,12 +119,24 @@ interface AnswerEndpoints {
 interface FileResourcesEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 
 interface EmployeeEndpoints {
   getAll: StaticEndpoint;
   getById: DynamicEndpoint;
+  getDistinct: StaticEndpoint;
   getHrm: StaticEndpoint;
+  syncHrm: StaticEndpoint;
+  delete: DynamicEndpoint;
+}
+
+interface DepartmentEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  update: StaticEndpoint;
   syncHrm: StaticEndpoint;
   delete: DynamicEndpoint;
 }
@@ -166,6 +182,7 @@ interface AttendanceRecordsEndpoints {
   update: StaticEndpoint;
   delete: DynamicEndpoint;
   enroll: StaticEndpoint;
+  createReport: StaticEndpoint;
 }
 
 interface UserDevicesEndpoints {
@@ -173,6 +190,16 @@ interface UserDevicesEndpoints {
   getById: DynamicEndpoint;
   update: StaticEndpoint;
   delete: StaticEndpoint;
+}
+
+interface AppSettingsEndpoints {
+  getAll: StaticEndpoint;
+  getById: DynamicEndpoint;
+  getAllKey: StaticEndpoint;
+  create: StaticEndpoint;
+  update: StaticEndpoint;
+  delete: DynamicEndpoint;
+  syncEmployeeOrder: StaticEndpoint;
 }
 
 // Main type containing all endpoint categories
@@ -194,6 +221,7 @@ interface EndpointDefinitions {
   answers: AnswerEndpoints;
   fileResources: FileResourcesEndpoints;
   employee: EmployeeEndpoints;
+  department: DepartmentEndpoints;
   userPathProgress: UserPathProgressEndpoints;
   userCourseProgress: UserCourseProgressEndpoints;
   userLessonProgress: UserLessonProgressEndpoints;
@@ -201,6 +229,7 @@ interface EndpointDefinitions {
   userAnswerProgress: UserAnswerProgressEndpoints;
   attendanceRecords: AttendanceRecordsEndpoints;
   userDevices: UserDevicesEndpoints;
+  appSettings: AppSettingsEndpoints;
 }
 
 //endpoint values
@@ -245,6 +274,7 @@ const endpoints: EndpointDefinitions = {
   },
   category: {
     getAll: 'Category/GetCategories',
+    getAllQuestion: 'Category/GetCategoryQuestions',
     getById: (id: string) => `Category/GetCategory/${id}`,
     create: 'Category/CreateCategory',
     update: 'Category/UpdateCategory',
@@ -261,6 +291,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `Course/GetCourseById/${id}`,
     create: 'Course/CreateCourse',
     update: 'Course/UpdateCourse',
+    delete: (id: string) => `Course/DeleteCourse/${id}`,
   },
   lessons: {
     getAll: 'Lesson/GetLesson',
@@ -284,14 +315,16 @@ const endpoints: EndpointDefinitions = {
     getAll: 'Quiz/GetQuizzes',
     getById: (id: string) => `Quiz/GetQuizById/${id}`,
     create: 'Quiz/CreateQuiz',
-    createDetail: 'Quiz/CreateQuizDetail',
-    createByExcel: 'Quiz/CreateQuizFromExcel',
+    // createDetail: 'Quiz/CreateQuizDetail',
+    // createByExcel: 'Quiz/CreateQuizFromExcel',
     update: 'Quiz/UpdateQuiz',
+    delete: (id: string) => `Quiz/DeleteQuiz/${id}`,
   },
   questions: {
     getAll: 'Question/GetQuestion',
     getById: (id: string) => `Question/GetQuestionById/${id}`,
     create: 'Question/CreateQuestion',
+    createByExcel: 'Question/CreateQuestionsFromExcel',
     update: 'Question/UpdateQuestion',
   },
   answers: {
@@ -303,13 +336,24 @@ const endpoints: EndpointDefinitions = {
   fileResources: {
     getAll: 'Resource/GetFileResources',
     getById: (id: string) => `Resource/GetFileResourcesById/${id}`,
+    create: 'Resource/CreateFileResources',
+    update: 'Resource/UpdateFileResources',
+    delete: (id: string) => `Resource/DeleteFileResources/${id}`,
   },
   employee: {
     getAll: 'Employee/GetEmployees',
     getById: (id: string) => `Employee/GetEmployeeInfoById/${id}`,
+    getDistinct: 'Employee/GetDistinct',
     getHrm: 'Employee/GetEmployeeFromHrm',
     syncHrm: 'Employee/SaveEmployeeFromHrm',
     delete: (id: string) => `Employee/DeleteEmployee/${id}`,
+  },
+  department: {
+    getAll: 'Department/GetDepartments',
+    getById: (id: string) => `Department/GetDepartmentInfoById/${id}`,
+    update: 'Department/UpdateDepartment',
+    syncHrm: 'Department/SaveDepartmentFromHrm',
+    delete: (id: string) => `Department/DeleteDepartment/${id}`,
   },
   userPathProgress: {
     getAll: 'UserPathProgress/GetUserPathProgress',
@@ -350,12 +394,22 @@ const endpoints: EndpointDefinitions = {
     update: 'AttendanceRecords/UpdateAttendanceRecords',
     delete: (id: string) => `AttendanceRecords/DeleteAttendanceRecords/${id}`,
     enroll: 'Class/EnrollUserListToClass',
+    createReport: 'AttendanceRecords/CreateAttendanceReport',
   },
   userDevices: {
     getAll: 'UserDevices/GetUserDevices',
     getById: (id: string) => `UserDevices/GetUserDevicesById/${id}`,
     update: 'UserDevices/UpdateUserDevices',
     delete: 'UserDevices/DeleteUserDevices',
+  },
+  appSettings: {
+    getAll: 'AppSettings/GetAppSettings',
+    getById: (id: string) => `AppSettings/GetAppSettingById/${id}`,
+    getAllKey: 'AppSettings/GetAllAppSettingKeys',
+    create: 'AppSettings/CreateAppSetting',
+    update: 'AppSettings/UpdateAppSetting',
+    delete: (id: string) => `AppSettings/DeleteAppSetting/${id}`,
+    syncEmployeeOrder: 'AppSettings/SyncEmployeeOrder',
   },
 };
 

@@ -87,7 +87,9 @@ export class EnrollUserListToClassRequest {
     const formData = new FormData();
 
     if (this.userIDs?.length) {
-      this.userIDs.forEach((id) => { formData.append('UserIDs', id); });
+      this.userIDs.forEach((id) => {
+        formData.append('UserIDs', id);
+      });
     }
 
     if (this.userFile) formData.append('UserFile', this.userFile);

@@ -133,7 +133,7 @@ export default function UserLessonProgressTable({
             <TableCell>{t('actualEndDate')}</TableCell>
             <TableCell>{t('lastAccess')}</TableCell>
             <TableCell>{t('status')}</TableCell>
-            <TableCell
+            {/* <TableCell
               sx={{
                 minWidth: 100,
                 whiteSpace: 'normal',
@@ -174,7 +174,7 @@ export default function UserLessonProgressTable({
               {t('currentPositionStateName')}
             </TableCell>
 
-            <TableCell>{t('cityName')}</TableCell>
+            <TableCell>{t('cityName')}</TableCell> */}
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => {
@@ -233,11 +233,11 @@ export default function UserLessonProgressTable({
               <TableCell>{DateTimeUtils.formatISODateStringToString(row.lastAccess ?? '')}</TableCell>
 
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
+              {/* <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentDepartmentName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
-              <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
+              <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell> */}
 
               <TableCell align="right">
                 <IconButton

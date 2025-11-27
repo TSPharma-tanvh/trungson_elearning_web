@@ -55,10 +55,16 @@ export class CourseUsecase {
   async deleteCourse(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateCourseRequest({
       id: id ?? '',
-      disableStatus: StatusEnum.Deleted,
+      disableStatus: StatusEnum[StatusEnum.Deleted],
     });
 
     const result = await this.courseRepo.updateCourse(newFormData);
+
+    return result;
+  }
+
+  async deleteCoursePermanently(id: string): Promise<ApiResponse> {
+    const result = await this.courseRepo.deleteCourse(id);
 
     return result;
   }

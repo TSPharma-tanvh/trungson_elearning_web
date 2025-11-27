@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { Chart } from '@/presentation/components/core/chart';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -13,6 +12,8 @@ import type { SxProps } from '@mui/material/styles';
 import { ArrowClockwise as ArrowClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowClockwise';
 import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowRight';
 import type { ApexOptions } from 'apexcharts';
+
+import { Chart } from '@/presentation/components/core/chart';
 
 export interface SalesProps {
   chartSeries: { name: string; data: number[] }[];

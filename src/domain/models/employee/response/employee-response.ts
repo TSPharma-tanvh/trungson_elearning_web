@@ -1,50 +1,25 @@
 export class EmployeeResponse {
   id?: string;
-  lastName?: string;
-  firstName?: string;
-  title?: string;
-  titleOfCourtesy?: string;
-  birthDate?: string;
-  hireDate?: string;
-  address?: string;
-  city?: string;
-  region?: string;
-  postalCode?: string;
-  country?: string;
-  homePhone?: string;
-  extension?: string;
-  photo?: number[]; // assuming byte[] maps to number[]
-  notes?: string;
-  reportsTo?: number;
-  photoPath?: string;
-  userId?: string;
-  levelId?: string;
   code?: string;
   name?: string;
-  gender?: string;
   avatar?: string;
-  birthDay?: string;
-  currentEmployeeTypeName?: string;
-  currentDepartmentTypeName?: string;
-  currentDepartmentName?: string;
-  currentPositionName?: string;
-  currentPositionStateName?: string;
-  asm?: string;
-  cityName?: string;
-  districtName?: string;
-  wardName?: string;
-  createdAt?: string;
-  bank?: string;
-  bankNumber?: string;
-  isDraft?: boolean;
-  isQuit?: boolean;
-  isPregnant?: boolean;
-  isSuspend?: boolean;
-  status?: string;
+  phoneNumber?: string;
   mail?: string;
-  employeeReturn?: number;
-  teamName?: string;
-  teamCode?: string;
+  birthDay?: string;
+  gender?: boolean;
+  positionCode?: string;
+  positionName?: string;
+  positionStateCode?: string;
+  positionStateName?: string;
+  departmentTypeCode?: string;
+  departmentTypeName?: string;
+  departmentCode?: string;
+  departmentName?: string;
+  asmCode?: string;
+  asmName?: string;
+  statusValue?: number;
+  status?: string;
+  userId?: string;
 
   constructor(init?: Partial<EmployeeResponse>) {
     Object.assign(this, init);
@@ -52,15 +27,53 @@ export class EmployeeResponse {
 
   static fromJson(json: any): EmployeeResponse {
     return new EmployeeResponse({
-      ...json,
-      photo: Array.isArray(json.photo) ? json.photo : undefined,
+      id: json.id,
+      code: json.code,
+      name: json.name,
+      avatar: json.avatar,
+      phoneNumber: json.phoneNumber,
+      mail: json.mail,
+      birthDay: json.birthDay,
+      gender: json.gender,
+      positionCode: json.positionCode,
+      positionName: json.positionName,
+      positionStateCode: json.positionStateCode,
+      positionStateName: json.positionStateName,
+      departmentTypeCode: json.departmentTypeCode,
+      departmentTypeName: json.departmentTypeName,
+      departmentCode: json.departmentCode,
+      departmentName: json.departmentName,
+      asmCode: json.asmCode,
+      asmName: json.asmName,
+      statusValue: json.statusValue,
+      status: json.status,
+      userId: json.userId,
     });
   }
 
   toJson(): any {
     return {
-      ...this,
-      photo: this.photo,
+      id: this.id,
+      code: this.code,
+      name: this.name,
+      avatar: this.avatar,
+      phoneNumber: this.phoneNumber,
+      mail: this.mail,
+      birthDay: this.birthDay,
+      gender: this.gender,
+      positionCode: this.positionCode,
+      positionName: this.positionName,
+      positionStateCode: this.positionStateCode,
+      positionStateName: this.positionStateName,
+      departmentTypeCode: this.departmentTypeCode,
+      departmentTypeName: this.departmentTypeName,
+      departmentCode: this.departmentCode,
+      departmentName: this.departmentName,
+      asmCode: this.asmCode,
+      asmName: this.asmName,
+      statusValue: this.statusValue,
+      status: this.status,
+      userId: this.userId,
     };
   }
 }

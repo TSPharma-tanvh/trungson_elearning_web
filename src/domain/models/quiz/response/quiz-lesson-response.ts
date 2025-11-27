@@ -1,7 +1,8 @@
 export class QuizLessonResponse {
   id?: string;
   courseID?: string;
-  name!: string;
+  name?: string;
+  title?: string;
   detail?: string;
   enablePlay?: boolean;
   isRequired?: boolean;
@@ -22,6 +23,7 @@ export class QuizLessonResponse {
       id: json.id,
       courseID: json.courseID,
       name: json.name,
+      title: json.title,
       detail: json.detail,
       enablePlay: json.enablePlay,
       isRequired: json.isRequired,
@@ -40,6 +42,7 @@ export class QuizLessonResponse {
       id: this.id,
       courseID: this.courseID,
       name: this.name,
+      title: this.title,
       detail: this.detail,
       enablePlay: this.enablePlay,
       isRequired: this.isRequired,

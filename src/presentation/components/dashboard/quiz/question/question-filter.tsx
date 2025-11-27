@@ -50,7 +50,9 @@ export function QuestionFilters({ onFilter }: { onFilter: (filters: GetQuestionR
         <CustomSearchFilter
           value={searchText}
           onChange={setSearchText}
-          onEnter={() => { handleFilter(); }}
+          onEnter={() => {
+            handleFilter();
+          }}
           placeholder={t('searchQuestions')}
         />
 

@@ -4,7 +4,7 @@ import { UpdateQuestionRequest } from '@/domain/models/question/request/update-q
 import { type QuestionResponse } from '@/domain/models/question/response/question-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, QuestionEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -137,7 +137,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
       // thumbnail id
       if (formData.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(formData.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -312,7 +312,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('canShuffle')}
                 value={formData.canShuffle ?? false}
@@ -325,7 +325,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
                   { value: false, label: t('no') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             {/* Upload file resources */}
 
@@ -351,7 +351,7 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   value={selectedResourceIDs}
                   onChange={(ids) => {
                     setSelectedResourceIDs(ids);
@@ -474,11 +474,13 @@ export function UpdateQuestionFormDialog({ open, data: question, onClose, onSubm
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
-                  onChange={(ids) => {
-                    handleChange('thumbnailID', ids);
+                  onChange={(id) => {
+                    const newId = id === '' ? undefined : id;
+
+                    handleChange('thumbnailID', newId);
                   }}
                   label={t('thumbnail')}
                   disabled={isSubmitting}

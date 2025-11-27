@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ConfirmDeleteDialog } from '../../../core/dialog/confirm-delete-dialog';
 import QuizDetailForm from './quiz-detail-form';
-import { UpdateQuizFormDialog } from './quiz-update-form';
+import { UpdateQuizForLessonDialog } from './quiz-update-form';
 
 interface QuizTableProps {
   rows: QuizResponse[];
@@ -35,7 +35,8 @@ interface QuizTableProps {
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDeleteQuizs: (ids: string[]) => Promise<void>;
+  // onDeleteQuizzes: (ids: string[]) => Promise<void>;
+  onDeleteQuizPermanent: (ids: string[]) => Promise<void>;
   onEditQuiz: (data: UpdateQuizRequest) => Promise<void>;
 }
 
@@ -46,7 +47,8 @@ export default function QuizTable({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  onDeleteQuizs,
+  // onDeleteQuizzes,
+  onDeleteQuizPermanent,
   onEditQuiz,
 }: QuizTableProps) {
   const { t } = useTranslation();
@@ -58,7 +60,8 @@ export default function QuizTable({
   const [viewOpen, setViewOpen] = React.useState(false);
   const [editQuizData, setEditPathData] = React.useState<QuizResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  // const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [deletePermanentDialogOpen, setDeletePermanentDialogOpen] = React.useState(false);
   const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
 
   const isSelected = (id: string) => selected.has(id);
@@ -84,24 +87,41 @@ export default function QuizTable({
     setAnchorEl(null);
   };
 
-  const handleOpenDeleteDialog = (ids: string[]) => {
+  // const handleOpenDeleteDialog = (ids: string[]) => {
+  //   setIdsToDelete(ids);
+  //   setDeleteDialogOpen(true);
+  // };
+
+  const handleOpenDeletePermanentDialog = (ids: string[]) => {
     setIdsToDelete(ids);
-    setDeleteDialogOpen(true);
+    setDeletePermanentDialogOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
-    await onDeleteQuizs(idsToDelete);
+  // const handleConfirmDelete = async () => {
+  //   await onDeleteQuizzes(idsToDelete);
+  //   setSelected((prev) => {
+  //     const next = new Set(prev);
+  //     idsToDelete.forEach((id) => next.delete(id));
+  //     return next;
+  //   });
+  //   setDeleteDialogOpen(false);
+  //   setIdsToDelete([]);
+  // };
+
+  const handleConfirmDeletePermanent = async () => {
+    await onDeleteQuizPermanent(idsToDelete);
     setSelected((prev) => {
       const next = new Set(prev);
       idsToDelete.forEach((id) => next.delete(id));
       return next;
     });
-    setDeleteDialogOpen(false);
+    setDeletePermanentDialogOpen(false);
     setIdsToDelete([]);
   };
 
   const handleCancelDelete = () => {
-    setDeleteDialogOpen(false);
+    // setDeleteDialogOpen(false);
+    setDeletePermanentDialogOpen(false);
     setIdsToDelete([]);
   };
 
@@ -131,7 +151,7 @@ export default function QuizTable({
               }}
               variant="outlined"
               onClick={() => {
-                handleOpenDeleteDialog(Array.from(selected));
+                handleOpenDeletePermanentDialog(Array.from(selected));
               }}
             >
               {t('deleteSelectedItems')} ({selected.size}){' '}
@@ -171,17 +191,21 @@ export default function QuizTable({
                 </TableCell>
                 <TableCell>{t('title')}</TableCell>
                 <TableCell>{t('detail')}</TableCell>
+                <TableCell>{t('time')}</TableCell>
                 <TableCell>{t('lessonName')}</TableCell>
-                <TableCell>{t('status')}</TableCell>
-                <TableCell>{t('type')}</TableCell>
+                {/* <TableCell>{t('type')}</TableCell> */}
                 <TableCell>{t('totalQuestion')}</TableCell>
+                <TableCell>{t('displayedQuestionCount')}</TableCell>
                 <TableCell>{t('totalScore')}</TableCell>
                 <TableCell>{t('scoreToPass')}</TableCell>
-                <TableCell>{t('canStartOver')}</TableCell>
+                {/* <TableCell>{t('canStartOver')}</TableCell> */}
                 <TableCell>{t('canShuffle')}</TableCell>
                 <TableCell>{t('isRequired')}</TableCell>
-                <TableCell>{t('isAutoSubmitted')}</TableCell>
+                <TableCell>{t('isFixedQuiz')}</TableCell>
+                <TableCell>{t('category')}</TableCell>
 
+                <TableCell>{t('status')}</TableCell>
+                {/* <TableCell>{t('isAutoSubmitted')}</TableCell> */}
                 <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
@@ -218,25 +242,28 @@ export default function QuizTable({
                     <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 100 }}>
                       <Typography variant="body2">{row.description}</Typography>
                     </TableCell>
+                    <TableCell>{row.time}</TableCell>
                     <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
                       <Typography variant="body2">{row.lesson?.name}</Typography>
                     </TableCell>
+                    {/* <TableCell>
+                      {' '}
+                      {row.type ? t(row.type.toString().charAt(0).toLowerCase() + t(row.type.toString()).slice(1)) : ''}
+                    </TableCell> */}
+                    <TableCell>{row.totalQuestion}</TableCell>
+                    <TableCell>{row.displayedQuestionCount}</TableCell>
+                    <TableCell>{row.totalScore}</TableCell>
+                    <TableCell>{row.scoreToPass}</TableCell>
+                    {/* <TableCell>{row.canStartOver ? t('yes') : t('no')}</TableCell> */}
+                    <TableCell>{row.canShuffle ? t('yes') : t('no')}</TableCell>
+                    <TableCell>{row.isRequired ? t('yes') : t('no')}</TableCell>{' '}
+                    <TableCell>{row.isFixedQuiz ? t('yes') : t('no')}</TableCell>
+                    <TableCell>{row.category?.categoryName}</TableCell>
                     <TableCell>
                       {' '}
                       {row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}
                     </TableCell>
-                    <TableCell>
-                      {' '}
-                      {row.type ? t(row.type.toString().charAt(0).toLowerCase() + t(row.type.toString()).slice(1)) : ''}
-                    </TableCell>
-                    <TableCell>{row.totalQuestion}</TableCell>
-                    <TableCell>{row.totalScore}</TableCell>
-                    <TableCell>{row.scoreToPass}</TableCell>
-                    <TableCell>{row.canStartOver ? t('yes') : t('no')}</TableCell>
-                    <TableCell>{row.canShuffle ? t('yes') : t('no')}</TableCell>
-                    <TableCell>{row.isRequired ? t('yes') : t('no')}</TableCell>
-                    <TableCell>{row.isAutoSubmitted ? t('yes') : t('no')}</TableCell>
-
+                    {/* <TableCell>{row.isAutoSubmitted ? t('yes') : t('no')}</TableCell> */}
                     <TableCell align="right">
                       <IconButton
                         onClick={(event) => {
@@ -311,21 +338,41 @@ export default function QuizTable({
           >
             {t('edit')}
           </MenuItem>
-          <MenuItem
+          {/* <MenuItem
             onClick={() => {
               if (selectedRow?.id) handleOpenDeleteDialog([selectedRow.id]);
               handleMenuClose();
             }}
           >
             {t('delete')}
+          </MenuItem> */}
+
+          <MenuItem
+            onClick={() => {
+              if (selectedRow?.id) handleOpenDeletePermanentDialog([selectedRow.id]);
+              handleMenuClose();
+            }}
+          >
+            {t('deletePermanent')}
           </MenuItem>
         </MenuList>
       </Popover>
 
       {editQuizData ? (
-        <UpdateQuizFormDialog
+        // <UpdateQuizFormDialog
+        //   open={editOpen}
+        //   data={editQuizData}
+        //   onClose={() => {
+        //     setEditOpen(false);
+        //   }}
+        //   onSubmit={async (updatedData) => {
+        //     await onEditQuiz(updatedData);
+        //     setEditOpen(false);
+        //   }}
+        // />
+        <UpdateQuizForLessonDialog
           open={editOpen}
-          data={editQuizData}
+          quiz={editQuizData} // pass full quiz object with IDs and current values
           onClose={() => {
             setEditOpen(false);
           }}
@@ -345,12 +392,23 @@ export default function QuizTable({
           }}
         />
       ) : null}
-
+      {/* 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}
         selectedCount={idsToDelete.length}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
+        title="confirmDeleteTemporary"
+        content="confirmDeleteItemTemporary"
+      /> */}
+
+      <ConfirmDeleteDialog
+        open={deletePermanentDialogOpen}
+        selectedCount={idsToDelete.length}
+        onCancel={handleCancelDelete}
+        onConfirm={handleConfirmDeletePermanent}
+        title="confirmDeletePermanent"
+        content="confirmDeleteItemPermanent"
       />
     </>
   );

@@ -104,10 +104,6 @@ export default function Page(): React.JSX.Element {
       [t('actualEndDate')]: row.actualEndDate ? DateTimeUtils.formatISODateStringToString(row.actualEndDate) : '',
       [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatISODateStringToString(row.lastAccess) : '',
       [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
-      [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
-      [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
-      [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
-      [t('cityName')]: row.user?.employee?.cityName ?? '',
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);

@@ -12,7 +12,7 @@ export class CourseRepoImpl implements CourseRepository {
   async getCourseListInfo(request: GetCourseRequest): Promise<ApiPaginationResponse> {
     try {
       const response = await customApiClient.get<ApiPaginationResponse>(apiEndpoints.courses.getAll, {
-        params: request.toJson(),
+        params: request.toQueryParams(),
       });
 
       const apiResponse = response.data;
@@ -83,6 +83,22 @@ export class CourseRepoImpl implements CourseRepository {
       return apiResponse;
     } catch (error: any) {
       throw new Error(error?.message || 'Failed to fetch course info');
+    }
+  }
+
+  async deleteCourse(id: string): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.courses.delete(id));
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch AttendanceRecords info');
     }
   }
 }

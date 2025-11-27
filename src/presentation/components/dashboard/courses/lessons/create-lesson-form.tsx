@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -130,7 +130,7 @@ export function CreateLessonDialog({
       }
     } else if (form.thumbnailID) {
       fileUsecase
-        .getFileResouceById(form.thumbnailID)
+        .getFileResourceById(form.thumbnailID)
         .then((file) => {
           setPreviewUrl(file.resourceUrl || null);
         })
@@ -146,7 +146,7 @@ export function CreateLessonDialog({
     handleChange('thumbnailID', id);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'An error has occurred.';
@@ -210,16 +210,16 @@ export function CreateLessonDialog({
   //   { value: LearningModeEnum.Offline, label: 'offline' },
   // ];
 
-  const statusTypeOptions = [
-    { value: StatusEnum.Enable, label: 'enable' },
-    { value: StatusEnum.Disable, label: 'disable' },
-    { value: StatusEnum.Deleted, label: 'deleted' },
-  ];
+  // const statusTypeOptions = [
+  //   { value: StatusEnum.Enable, label: 'enable' },
+  //   { value: StatusEnum.Disable, label: 'disable' },
+  //   { value: StatusEnum.Deleted, label: 'deleted' },
+  // ];
 
-  const booleanOptions = [
-    { value: 'true', label: 'yes' },
-    { value: 'false', label: 'no' },
-  ];
+  // const booleanOptions = [
+  //   { value: 'true', label: 'yes' },
+  //   { value: 'false', label: 'no' },
+  // ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -266,15 +266,29 @@ export function CreateLessonDialog({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <CustomSelectDropDown
-              label={t('required')}
-              value={String(form.isRequired ?? '')}
+          <Grid item xs={12}>
+            <CategorySelect
+              categoryUsecase={categoryUsecase}
+              value={form.categoryID}
               onChange={(value) => {
-                handleChange('isRequired', value === 'true');
+                handleChange('categoryID', value);
               }}
-              disabled={false}
-              options={booleanOptions}
+              categoryEnum={CategoryEnum.Lesson}
+              disabled={isSubmitting}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDown<boolean>
+              label={t('isRequired')}
+              value={form.isRequired}
+              onChange={(v) => {
+                handleChange('isRequired', v);
+              }}
+              options={[
+                { value: true, label: 'yes' },
+                { value: false, label: 'no' },
+              ]}
             />
           </Grid>
 
@@ -290,7 +304,7 @@ export function CreateLessonDialog({
             />
           </Grid> */}
 
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <CustomSelectDropDown
               label={t('status')}
               value={form.status ?? ''}
@@ -300,21 +314,9 @@ export function CreateLessonDialog({
               disabled={isSubmitting}
               options={statusTypeOptions}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} sm={6}>
-            <CategorySelect
-              categoryUsecase={categoryUsecase}
-              value={form.categoryID}
-              onChange={(value) => {
-                handleChange('categoryID', value);
-              }}
-              categoryEnum={CategoryEnum.Lesson}
-              disabled={isSubmitting}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <CustomSelectDropDown
               label={t('enablePlay')}
               value={String(form.enablePlay ?? '')}
@@ -324,7 +326,7 @@ export function CreateLessonDialog({
               disabled={false}
               options={booleanOptions}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<LessonContentEnum>
@@ -367,7 +369,7 @@ export function CreateLessonDialog({
             {thumbnailSource === 'select' ? (
               <FileResourceSelect
                 fileUsecase={fileUsecase}
-                type={FileResourceEnum.Image}
+                type={FileTypeEnum.Image}
                 status={StatusEnum.Enable}
                 value={form.thumbnailID}
                 onChange={handleThumbnailSelectChange}
@@ -486,7 +488,7 @@ export function CreateLessonDialog({
             {resourceSource === 'select' ? (
               <FileResourceMultiSelect
                 fileUsecase={fileUsecase}
-                type={FileResourceEnum.Document}
+                // type={FileTypeEnum.Document}
                 status={StatusEnum.Enable}
                 value={selectedResourceIds}
                 onChange={(val) => {
@@ -494,6 +496,8 @@ export function CreateLessonDialog({
                 }}
                 label={t('resources')}
                 disabled={isSubmitting}
+                showTypeSwitcher
+                allowAllTypes
               />
             ) : (
               <Grid container spacing={2}>
@@ -580,7 +584,7 @@ export function CreateLessonDialog({
               <Grid item xs={12} sm={12}>
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Video}
+                  type={FileTypeEnum.Video}
                   status={StatusEnum.Enable}
                   value={form.videoID}
                   onChange={handleVideoSelectChange}

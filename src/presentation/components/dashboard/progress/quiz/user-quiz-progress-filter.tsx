@@ -2,24 +2,22 @@
 
 import * as React from 'react';
 import { GetUserQuizProgressRequest } from '@/domain/models/user-quiz/request/get-user-quiz-progress-request';
-import { type EnrollmentUsecase } from '@/domain/usecases/enrollment/enrollment-usecase';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
-import { CategoryEnum, CoreEnumUtils, UserQuizProgressEnum } from '@/utils/enum/core-enum';
+import { CoreEnumUtils, QuizTypeEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
-import { EnrollmentSingleFilter } from '@/presentation/components/shared/enrollment/enrollment-single-filter';
-import { QuizSingleFilter } from '@/presentation/components/shared/quiz/quiz/quiz-single-filter';
+import { ExamSingleFilter } from '@/presentation/components/shared/quiz/quiz/exam-single-filter';
 
 export function UserQuizProgressFilters({
   onFilter,
-  enrollUsecase,
+  // enrollUsecase,
   quizUsecase,
 }: {
   onFilter: (filters: GetUserQuizProgressRequest) => void;
-  enrollUsecase: EnrollmentUsecase;
+  // enrollUsecase: EnrollmentUsecase;
   quizUsecase: QuizUsecase;
 }): React.JSX.Element {
   const { t } = useTranslation();
@@ -30,9 +28,10 @@ export function UserQuizProgressFilters({
     progressStatus: undefined,
     quizId: undefined,
     enrollmentCriteriaId: undefined,
+    quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz],
   });
 
-  const [selectedCategory, setSelectedCategory] = React.useState<CategoryEnum>(CategoryEnum.Path);
+  // const [selectedCategory, setSelectedCategory] = React.useState<CategoryEnum>(CategoryEnum.Path);
 
   const handleChange = <K extends keyof GetUserQuizProgressRequest>(key: K, value: GetUserQuizProgressRequest[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -43,6 +42,7 @@ export function UserQuizProgressFilters({
       ...form,
       pageNumber: 1,
       pageSize: 10,
+      quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz],
     });
     onFilter(request);
   };
@@ -53,9 +53,12 @@ export function UserQuizProgressFilters({
       progressStatus: undefined,
       quizId: undefined,
       enrollmentCriteriaId: undefined,
+      quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz],
     });
-    setSelectedCategory(CategoryEnum.Path);
-    onFilter(new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10 }));
+    // setSelectedCategory(CategoryEnum.Path);
+    onFilter(
+      new GetUserQuizProgressRequest({ pageNumber: 1, pageSize: 10, quizType: QuizTypeEnum[QuizTypeEnum.LessonQuiz] })
+    );
   };
 
   return (
@@ -74,7 +77,9 @@ export function UserQuizProgressFilters({
           onChange={(val) => {
             handleChange('searchText', val);
           }}
-          onEnter={() => { handleFilter(); }}
+          onEnter={() => {
+            handleFilter();
+          }}
           placeholder={t('searchProgress')}
         />
 
@@ -89,7 +94,7 @@ export function UserQuizProgressFilters({
         />
 
         {/* Quiz */}
-        <QuizSingleFilter
+        <ExamSingleFilter
           quizUsecase={quizUsecase}
           value={form.quizId ?? ''}
           onChange={(value) => {
@@ -99,7 +104,7 @@ export function UserQuizProgressFilters({
         />
 
         {/* Enrollment */}
-        <CustomSelectFilter<CategoryEnum>
+        {/* <CustomSelectFilter<CategoryEnum>
           label={t('enrollmentType')}
           value={selectedCategory}
           onChange={(val) => {
@@ -113,9 +118,9 @@ export function UserQuizProgressFilters({
             { label: 'Quiz', value: CategoryEnum.Quiz },
           ]}
           withAllOption={false}
-        />
+        /> */}
 
-        <EnrollmentSingleFilter
+        {/* <EnrollmentSingleFilter
           enrollmentUsecase={enrollUsecase}
           value={form.enrollmentCriteriaId ?? ''}
           onChange={(value: string) => {
@@ -123,7 +128,7 @@ export function UserQuizProgressFilters({
           }}
           disabled={false}
           categoryEnum={selectedCategory}
-        />
+        /> */}
 
         {/* Buttons */}
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>

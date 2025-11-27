@@ -4,7 +4,7 @@ import { UpdateAnswerRequest } from '@/domain/models/answer/request/update-answe
 import { type AnswerDetailResponse } from '@/domain/models/answer/response/answer-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
-import { FileResourceEnum } from '@/utils/enum/file-resource-enum';
+import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -29,7 +29,6 @@ import {
 import { Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
-import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
@@ -100,7 +99,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
       // thumbnail id
       if (formData.thumbnailID) {
         try {
-          const file = await fileUsecase.getFileResouceById(formData.thumbnailID);
+          const file = await fileUsecase.getFileResourceById(formData.thumbnailID);
           setPreviewUrl(file.resourceUrl || null);
         } catch {
           setPreviewUrl(null);
@@ -112,10 +111,12 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
   };
 
   const handleFileSelectChange = async (id: string) => {
-    handleChange('thumbnailID', id);
+    const newId = id === '' ? undefined : id;
+
+    handleChange('thumbnailID', newId);
     if (id) {
       try {
-        const file = await fileUsecase.getFileResouceById(id);
+        const file = await fileUsecase.getFileResourceById(id);
         setPreviewUrl(file.resourceUrl || null);
         if (thumbnailSource === 'select') {
           setPreviewUrl(file.resourceUrl || null);
@@ -181,11 +182,11 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
     color: '#616161',
   };
 
-  const statusOptions = [
-    { value: StatusEnum.Enable, label: 'enable' },
-    { value: StatusEnum.Disable, label: 'disable' },
-    { value: StatusEnum.Deleted, label: 'deleted' },
-  ];
+  // const statusOptions = [
+  //   { value: StatusEnum.Enable, label: 'enable' },
+  //   { value: StatusEnum.Disable, label: 'disable' },
+  //   { value: StatusEnum.Deleted, label: 'deleted' },
+  // ];
 
   if (!answer) return null;
 
@@ -228,7 +229,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('isCorrect')}
                 value={formData.isCorrect ?? false}
@@ -241,9 +242,9 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                   { value: false, label: t('no') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('status')}
                 value={formData.status ?? 0}
@@ -253,7 +254,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                 disabled={isSubmitting}
                 options={statusOptions}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <CategorySelect
@@ -266,6 +267,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
                 disabled={isSubmitting}
               />
             </Grid>
+
             <Grid item xs={12}>
               <QuestionSingleSelectDialog
                 questionUsecase={questionUsecase}
@@ -304,7 +306,7 @@ export function UpdateAnswerFormDialog({ open, data: answer, onClose, onSubmit }
               {thumbnailSource === 'select' ? (
                 <FileResourceSelect
                   fileUsecase={fileUsecase}
-                  type={FileResourceEnum.Image}
+                  type={FileTypeEnum.Image}
                   status={StatusEnum.Enable}
                   value={formData.thumbnailID}
                   onChange={handleFileSelectChange}

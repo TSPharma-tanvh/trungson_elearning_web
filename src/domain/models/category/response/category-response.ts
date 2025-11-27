@@ -6,6 +6,7 @@ export class CategoryResponse {
   description?: string;
   category?: string;
   thumbnail?: FileResourcesResponse;
+  totalScore?: number;
 
   constructor(init?: Partial<CategoryResponse>) {
     Object.assign(this, init);
@@ -18,6 +19,7 @@ export class CategoryResponse {
       description: json.description,
       category: json.category,
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
+      totalScore: json.totalScore,
     });
   }
 
@@ -28,6 +30,7 @@ export class CategoryResponse {
       description: this.description,
       category: this.category,
       thumbnail: this.thumbnail?.toJson(),
+      totalScore: this.totalScore,
     };
   }
 }

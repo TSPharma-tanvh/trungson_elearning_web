@@ -4,19 +4,6 @@ import React from 'react';
 
 import { ComingSoonPage } from '@/presentation/components/shared/empty/comming-soon';
 
-// const data = [
-//   { name: 'Course Assignment Added', email: true, browser: true, sms: false, push: true },
-//   { name: 'Course ExerciseFile Added', email: true, browser: true, sms: false, push: true },
-//   { name: 'Course Publish Successfully', email: true, browser: true, sms: false, push: true },
-//   { name: 'Course Unpublished', email: true, browser: true, sms: false, push: false },
-//   { name: 'New Course Chapter Added', email: true, browser: true, sms: false, push: true },
-//   { name: 'New Enroll Notification', email: true, browser: true, sms: false, push: false },
-//   { name: 'New Lesson Added', email: false, browser: false, sms: false, push: false },
-//   { name: 'New Quiz Added', email: false, browser: false, sms: false, push: false },
-//   { name: 'New Reply on Comment', email: true, browser: true, sms: false, push: false },
-//   { name: 'New Review on course', email: true, browser: true, sms: false, push: false },
-// ];
-
 export default function Page(): React.JSX.Element {
   // const [rowsPerPage, setRowsPerPage] = React.useState(10);
   // const [search, setSearch] = React.useState('');

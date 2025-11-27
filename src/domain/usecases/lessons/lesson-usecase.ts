@@ -46,11 +46,8 @@ export class LessonUsecase {
     return response;
   }
 
-  async updateLesson(
-    request: UpdateLessonRequest,
-    options?: { suppressSuccessMessage?: boolean }
-  ): Promise<ApiResponse> {
-    const result = await this.lessonRepo.updateLesson(request, options);
+  async updateLesson(request: UpdateLessonRequest): Promise<ApiResponse> {
+    const result = await this.lessonRepo.updateLesson(request);
 
     return result;
   }

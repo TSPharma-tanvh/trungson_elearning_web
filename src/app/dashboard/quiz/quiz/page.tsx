@@ -1,37 +1,40 @@
 'use client';
 
 import * as React from 'react';
-import { type CreateQuizFromExcelRequest } from '@/domain/models/quiz/request/create-quiz-from-excel-request';
 import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { FileXls } from '@phosphor-icons/react';
-import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
-import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
-import { CreateQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-form';
+import { CreateQuizForLessonDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-for-lesson-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
-import { ImportQuizDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-import-form';
 import QuizTable from '@/presentation/components/dashboard/quiz/quiz/quiz-table';
 
-const excelLink = process.env.NEXT_PUBLIC_IMPORT_QUIZ_FORM;
+// const excelLink = process.env.NEXT_PUBLIC_IMPORT_QUIZ_FORM;
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
+  // const theme = useTheme();
+
   const { quizUsecase } = useDI();
 
-  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [showImportDialog, setShowImportDialog] = React.useState(false);
-  const [filters, setFilters] = React.useState<GetQuizRequest>(new GetQuizRequest({ pageNumber: 1, pageSize: 10 }));
+  // const [showCreateQuizExamDialog, setShowCreateQuizExamDialog] = React.useState(false);
+  const [showCreateQuizLessonDialog, setShowCreateQuizLessonDialog] = React.useState(false);
+
+  // const [showImportDialog, setShowImportDialog] = React.useState(false);
+  const [filters, setFilters] = React.useState<GetQuizRequest>(
+    new GetQuizRequest({ pageNumber: 1, pageSize: 10, type: QuizTypeEnum.LessonQuiz })
+  );
   const [quizzes, setQuizzes] = React.useState<QuizResponse[]>([]);
   const [totalCount, setTotalCount] = React.useState(0);
   const [_deleteLoading, setDeleteLoading] = React.useState(false);
@@ -45,6 +48,7 @@ export default function Page(): React.JSX.Element {
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
+        type: QuizTypeEnum.LessonQuiz,
       });
       const { quizzes: quiz, totalRecords } = await quizUsecase.getQuizListInfo(request);
       setQuizzes(quiz);
@@ -73,25 +77,36 @@ export default function Page(): React.JSX.Element {
     setPage(0);
   };
 
-  const handleCreateQuiz = async (request: CreateQuizRequest) => {
+  // const handleCreateQuizExam = async (request: CreateQuizRequest) => {
+  //   try {
+  //     await quizUsecase.createQuiz(request);
+  //     setShowCreateQuizExamDialog(false);
+  //     await fetchQuizzes();
+  //   } catch (error) {
+  //     return undefined;
+  //   }
+  // };
+
+  const handleCreateQuizLesson = async (request: CreateQuizRequest) => {
     try {
       await quizUsecase.createQuiz(request);
-      setShowCreateDialog(false);
+      setShowCreateQuizLessonDialog(false);
+      // setShowCreateQuizExamDialog(false);
       await fetchQuizzes();
     } catch (error) {
       return undefined;
     }
   };
 
-  const handleImportQuiz = async (request: CreateQuizFromExcelRequest) => {
-    try {
-      await quizUsecase.importFromExcel(request);
-      setShowImportDialog(false);
-      await fetchQuizzes();
-    } catch (error) {
-      return undefined;
-    }
-  };
+  // const handleImportQuiz = async (request: CreateQuizFromExcelRequest) => {
+  //   try {
+  //     await quizUsecase.importFromExcel(request);
+  //     setShowImportDialog(false);
+  //     await fetchQuizzes();
+  //   } catch (error) {
+  //     return undefined;
+  //   }
+  // };
 
   const handleEditQuiz = async (request: UpdateQuizRequest) => {
     try {
@@ -102,11 +117,28 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleDeleteQuizs = async (ids: string[]) => {
+  // const handleDeleteQuizzes = async (ids: string[]) => {
+  //   try {
+  //     setDeleteLoading(true);
+  //     for (const id of ids) {
+  //       const response = await quizUsecase.deleteQuiz(id);
+  //       if (!response) {
+  //         throw new Error(`Failed to delete path with ID: ${id}`);
+  //       }
+  //     }
+  //     await fetchQuizzes();
+  //   } catch (error) {
+  //     return undefined;
+  //   } finally {
+  //     setDeleteLoading(false);
+  //   }
+  // };
+
+  const handleDeleteQuizzesPermanent = async (ids: string[]) => {
     try {
       setDeleteLoading(true);
       for (const id of ids) {
-        const response = await quizUsecase.deleteQuiz(id);
+        const response = await quizUsecase.deleteQuizPermanent(id);
         if (!response) {
           throw new Error(`Failed to delete path with ID: ${id}`);
         }
@@ -150,7 +182,7 @@ export default function Page(): React.JSX.Element {
             {t('quizzes')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Button
+            {/* <Button
               color="inherit"
               startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}
               onClick={() => {
@@ -158,14 +190,14 @@ export default function Page(): React.JSX.Element {
               }}
             >
               {t('importQuestionsToQuiz')}
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               color="inherit"
               startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}
               onClick={() => window.open(excelLink, '_blank', 'noopener,noreferrer')}
             >
               {t('downloadExampleFile')}
-            </Button>
+            </Button> */}
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
@@ -178,15 +210,34 @@ export default function Page(): React.JSX.Element {
           </Stack>
         </Stack>
         <div>
-          <Button
-            startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
-            variant="contained"
-            onClick={() => {
-              setShowCreateDialog(true);
-            }}
-          >
-            {t('add')}
-          </Button>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            {/* <Button
+              startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+              variant="contained"
+              onClick={() => {
+              setShowCreateQuizLessonDialog(true);
+              }}
+              color="success"
+              sx={{
+              textTransform: 'none',
+              bgcolor: theme.palette.secondary.main,
+              '&:hover': {
+                bgcolor: theme.palette.secondary.dark,
+              },
+              }}
+            >
+              {t('quizLessonCreate')}
+            </Button> */}
+            <Button
+              startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
+              variant="contained"
+              onClick={() => {
+                setShowCreateQuizLessonDialog(true);
+              }}
+            >
+              {t('createQuiz')}
+            </Button>
+          </Stack>
         </div>
       </Stack>
       <QuizFilters onFilter={handleFilter} />
@@ -197,21 +248,22 @@ export default function Page(): React.JSX.Element {
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
-        onDeleteQuizs={handleDeleteQuizs}
+        // onDeleteQuizzes={handleDeleteQuizzes}
+        onDeleteQuizPermanent={handleDeleteQuizzesPermanent}
         onEditQuiz={handleEditQuiz}
       />
 
-      <CreateQuizDialog
-        onSubmit={handleCreateQuiz}
+      <CreateQuizForLessonDialog
+        onSubmit={handleCreateQuizLesson}
         disabled={false}
         loading={false}
-        open={showCreateDialog}
+        open={showCreateQuizLessonDialog}
         onClose={() => {
-          setShowCreateDialog(false);
+          setShowCreateQuizLessonDialog(false);
         }}
       />
 
-      <ImportQuizDialog
+      {/* <ImportQuizDialog
         onSubmit={handleImportQuiz}
         disabled={false}
         loading={false}
@@ -219,7 +271,7 @@ export default function Page(): React.JSX.Element {
         onClose={() => {
           setShowImportDialog(false);
         }}
-      />
+      /> */}
     </Stack>
   );
 }

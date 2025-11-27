@@ -53,7 +53,9 @@ export function CustomersFilters(): React.JSX.Element {
         />
         <Select
           value={status}
-          onChange={(e) => { setStatus(e.target.value); }}
+          onChange={(e) => {
+            setStatus(e.target.value);
+          }}
           displayEmpty
           size="small"
           defaultValue=""
@@ -74,7 +76,9 @@ export function CustomersFilters(): React.JSX.Element {
         </Select>
         <Select
           value={role}
-          onChange={(e) => { setRole(e.target.value); }}
+          onChange={(e) => {
+            setRole(e.target.value);
+          }}
           displayEmpty
           size="small"
           defaultValue=""
@@ -129,7 +133,7 @@ export function CustomersFilters(): React.JSX.Element {
           value={multiCheckValues}
           onChange={(e) => {
             const value = e.target.value;
-            setMultiCheckValues(typeof value === 'string' ? value.split(',') : (value));
+            setMultiCheckValues(typeof value === 'string' ? value.split(',') : value);
           }}
           renderValue={(selected) => {
             const selectedArray = Array.isArray(selected) ? selected : [];

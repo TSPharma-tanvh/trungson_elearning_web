@@ -200,18 +200,6 @@ export default function UserPathProgressTable({
             >
               {t('currentDepartmentName')}
             </TableCell>
-            <TableCell
-              sx={{
-                minWidth: 100,
-                whiteSpace: 'normal',
-                wordBreak: 'break-word',
-                paddingY: 1,
-              }}
-            >
-              {t('currentPositionStateName')}
-            </TableCell>
-
-            <TableCell>{t('cityName')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => {
@@ -271,11 +259,9 @@ export default function UserPathProgressTable({
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
               <TableCell align="center">{renderActiveStatus(row.activeStatus ?? '')}</TableCell>
 
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentDepartmentName ?? ''}</TableCell>
-              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
-              <TableCell sx={{ width: '6%' }}>{row.user?.employee?.cityName}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionStateName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.departmentName ?? ''}</TableCell>
 
               <TableCell align="right">
                 <IconButton
