@@ -205,6 +205,35 @@ export function CreateLessonDialog({
     }
   };
 
+  useEffect(() => {
+    if (open) {
+      // Reset all form fields
+      setForm(
+        new CreateLessonRequest({
+          name: '',
+          detail: '',
+          enablePlay: true,
+          isRequired: true,
+          status: StatusEnum.Enable,
+          lessonType: LearningModeEnum.Online,
+          categoryEnum: CategoryEnum.Lesson,
+          contentType: LessonContentEnum.PDF,
+          resources: [],
+        })
+      );
+
+      setThumbnailFile(null);
+      setPreviewUrl(null);
+      setThumbnailSource('select');
+
+      setResourceSource('select');
+      setResourceFiles([]);
+      setSelectedResourceIds([]);
+
+      setFilePreviewData(null);
+    }
+  }, [open]);
+
   // const lessonTypeOptions = [
   //   { value: LearningModeEnum.Online, label: 'online' },
   //   { value: LearningModeEnum.Offline, label: 'offline' },
