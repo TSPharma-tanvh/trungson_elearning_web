@@ -202,7 +202,7 @@ export default function ExamTable({
                 {/* <TableCell>{t('canStartOver')}</TableCell> */}
                 <TableCell>{t('canShuffle')}</TableCell>
                 <TableCell>{t('isRequired')}</TableCell>
-                <TableCell>{t('isFixedQuiz')}</TableCell>
+                <TableCell>{t('isFixedExam')}</TableCell>
                 <TableCell>{t('duration')}</TableCell>
                 <TableCell>{t('category')}</TableCell>
                 <TableCell>{t('positionName')}</TableCell>

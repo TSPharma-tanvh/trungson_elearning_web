@@ -377,7 +377,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
-                label={t('isFixedQuiz')}
+                label={t('isFixedExam')}
                 value={form.isFixedQuiz ?? false}
                 onChange={(v) => {
                   handleChange('isFixedQuiz', v);
