@@ -499,6 +499,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             {renderField('categoryId', course.categoryId)}
             {renderField('thumbnailId', course.thumbnailId)}
             {renderField('isFixedCourse', course.isFixedCourse ? t('yes') : t('no'))}
+            {renderField('isRequired', course.isRequired ? t('yes') : t('no'))}
             {renderField('positionName', course.positionName)}
             {renderField('positionStateName', course.positionStateName)}
             {renderField('departmentTypeName', course.departmentTypeName)}

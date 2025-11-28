@@ -138,7 +138,7 @@ export default function CourseTable({
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('isFixedCourse')}</TableCell>
-            {/* <TableCell>{t('required')}</TableCell> */}
+            <TableCell>{t('required')}</TableCell>
             <TableCell>{t('status')}</TableCell>
             {/* <TableCell>{t('courseType')}</TableCell> */}
             <TableCell>{t('teacher')}</TableCell>
@@ -167,6 +167,8 @@ export default function CourseTable({
               <Typography variant="body2">{row.detail}</Typography>
             </TableCell>
             <TableCell>{row.isFixedCourse ? t('yes') : t('no')}</TableCell>
+            <TableCell>{row.isRequired ? t('yes') : t('no')}</TableCell>
+
             {/* <TableCell>
               {row.isRequired ? (
                 <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />

@@ -257,6 +257,21 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
             </Grid>
 
             <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isRequired')}
+                value={form.isRequired ?? true}
+                onChange={(val) => {
+                  handleChange('isRequired', val);
+                }}
+                disabled={disabled}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
               <CustomEmployeeDistinctSelectInForm
                 label="departmentType"
                 value={form.departmentTypeCode}

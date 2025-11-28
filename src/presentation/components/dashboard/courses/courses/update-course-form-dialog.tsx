@@ -322,6 +322,21 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
             </Grid>
 
             <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('isRequired')}
+                value={formData.isRequired ?? true}
+                onChange={(val) => {
+                  handleChange('isRequired', val);
+                }}
+                disabled={isSubmitting}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryId}
