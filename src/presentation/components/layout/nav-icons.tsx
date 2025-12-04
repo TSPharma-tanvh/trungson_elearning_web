@@ -12,6 +12,7 @@ import {
   CircleNotch,
   DeviceMobile,
   Exam,
+  Export,
   Faders,
   File,
   GearSix,
@@ -25,6 +26,7 @@ import {
   QuestionMark,
   SealQuestion,
   Student,
+  UserCirclePlus,
   UserGear,
   UserPlus,
   UsersThree,
@@ -82,4 +84,6 @@ export const navIcons = {
   questionCategory: SealQuestion,
   examEnroll: UserPlus,
   exam: Pen,
+  export: Export,
+  enroll: UserCirclePlus,
 } as Record<string, Icon>;

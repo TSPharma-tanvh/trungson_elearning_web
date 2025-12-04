@@ -1,6 +1,7 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
+import { ExportCourseProgressReportRequest } from '@/domain/models/courses/request/export-course-progress-report-request';
 import { type GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { type UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { type CourseRepository } from '@/domain/repositories/courses/course-repository';
@@ -38,7 +39,7 @@ export class CourseRepoImpl implements CourseRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to fetch course detail');
     }
   }
 
@@ -82,7 +83,7 @@ export class CourseRepoImpl implements CourseRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch course info');
+      throw new Error(error?.message || 'Failed to update course info');
     }
   }
 
@@ -98,7 +99,23 @@ export class CourseRepoImpl implements CourseRepository {
 
       return apiResponse;
     } catch (error: any) {
-      throw new Error(error?.message || 'Failed to fetch AttendanceRecords info');
+      throw new Error(error?.message || 'Failed to delete course info');
+    }
+  }
+
+  async exportCourse(request: ExportCourseProgressReportRequest): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.courses.export, request.toJson());
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to fetch course info');
     }
   }
 }

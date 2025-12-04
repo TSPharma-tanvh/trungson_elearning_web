@@ -70,6 +70,7 @@ interface CoursesEndpoints {
   create: StaticEndpoint;
   update: StaticEndpoint;
   delete: DynamicEndpoint;
+  export: StaticEndpoint;
 }
 
 interface LessonsEndpoints {
@@ -163,6 +164,7 @@ interface UserLessonProgressEndpoints {
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
+  enroll: StaticEndpoint;
 }
 interface UserQuizProgressEndpoints {
   getAll: StaticEndpoint;
@@ -292,6 +294,7 @@ const endpoints: EndpointDefinitions = {
     create: 'Course/CreateCourse',
     update: 'Course/UpdateCourse',
     delete: (id: string) => `Course/DeleteCourse/${id}`,
+    export: 'Course/ExportCourseProgressReport',
   },
   lessons: {
     getAll: 'Lesson/GetLesson',
@@ -376,6 +379,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `UserLessonProgress/GetUserLessonProgressById/${id}`,
     create: 'UserLessonProgress/CreateUserLesson',
     update: 'UserLessonProgress/UpdateUserLesson',
+    enroll: 'UserLessonProgress/EnrollUserListToLesson',
   },
   userQuizProgress: {
     getAll: 'UserQuizProgress/GetUserQuizProgress',

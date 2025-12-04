@@ -95,6 +95,8 @@ export function UserQuizProgressFilters({
 
         {/* Quiz */}
         <ExamSingleFilter
+          label="quiz"
+          header="selectQuiz"
           quizUsecase={quizUsecase}
           value={form.quizId ?? ''}
           onChange={(value) => {

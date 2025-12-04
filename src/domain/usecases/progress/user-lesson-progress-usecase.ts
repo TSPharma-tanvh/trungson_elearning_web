@@ -1,5 +1,6 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
+import { EnrollUserListToLessonRequest } from '@/domain/models/user-lesson/request/enroll-user-to-lesson-request';
 import { type GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
 import { UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
@@ -60,6 +61,12 @@ export class UserLessonProgressUsecase {
     });
 
     const result = await this.userLessonProgressRepo.updateUserLessonProgress(newFormData);
+
+    return result;
+  }
+
+  async enrollUserListToLesson(request: EnrollUserListToLessonRequest): Promise<ApiResponse> {
+    const result = await this.userLessonProgressRepo.enrollUserListToLesson(request);
 
     return result;
   }

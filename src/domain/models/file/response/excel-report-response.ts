@@ -1,15 +1,15 @@
-export class CreateAttendanceReportResponse {
+export class ExcelReportResponse {
   fileName!: string;
   contentType!: string;
   base64!: string;
 
-  constructor(init?: Partial<CreateAttendanceReportResponse>) {
+  constructor(init?: Partial<ExcelReportResponse>) {
     Object.assign(this, init);
   }
 
-  static fromJson(json: any): CreateAttendanceReportResponse {
-    if (!json) return new CreateAttendanceReportResponse();
-    return new CreateAttendanceReportResponse({
+  static fromJson(json: any): ExcelReportResponse {
+    if (!json) return new ExcelReportResponse();
+    return new ExcelReportResponse({
       fileName: json.fileName,
       contentType: json.contentType,
       base64: json.base64,

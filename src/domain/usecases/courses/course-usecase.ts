@@ -1,9 +1,11 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateCourseRequest } from '@/domain/models/courses/request/create-course-request';
+import { ExportCourseProgressReportRequest } from '@/domain/models/courses/request/export-course-progress-report-request';
 import { type GetCourseRequest } from '@/domain/models/courses/request/get-course-request';
 import { UpdateCourseRequest } from '@/domain/models/courses/request/update-course-request';
 import { CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { type CourseDetailListResult } from '@/domain/models/courses/response/course-detail-result';
+import { ExcelReportResponse } from '@/domain/models/file/response/excel-report-response';
 import { type CourseRepository } from '@/domain/repositories/courses/course-repository';
 import { StatusEnum } from '@/utils/enum/core-enum';
 
@@ -67,5 +69,12 @@ export class CourseUsecase {
     const result = await this.courseRepo.deleteCourse(id);
 
     return result;
+  }
+
+  async exportCourse(request: ExportCourseProgressReportRequest): Promise<ExcelReportResponse> {
+    const result = await this.courseRepo.exportCourse(request);
+    const responseData = ExcelReportResponse.fromJson(result.result);
+
+    return responseData;
   }
 }

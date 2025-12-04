@@ -42,6 +42,7 @@ interface ExamSingleFilterProps {
   value: string;
   onChange: (value: string) => void;
   label?: string;
+  header?: string;
   disabled?: boolean;
   maxWidth?: number;
 }
@@ -51,6 +52,7 @@ export function ExamSingleFilter({
   value,
   onChange,
   label = 'exam',
+  header = 'selectExam',
   disabled = false,
   maxWidth = 200,
 }: ExamSingleFilterProps) {
@@ -163,7 +165,7 @@ export function ExamSingleFilter({
           }}
         >
           <MenuItem value="" disabled>
-            {t('selectExam')}
+            {t(header)}
           </MenuItem>
         </Select>
       </FormControl>
@@ -178,7 +180,7 @@ export function ExamSingleFilter({
       >
         <DialogTitle sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">{t('selectExam')}</Typography>
+            <Typography variant="h6">{t(header)}</Typography>
             <Box>
               <IconButton
                 onClick={() => {

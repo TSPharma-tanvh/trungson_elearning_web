@@ -5,7 +5,7 @@ import { type GetAttendanceRecordsRequest } from '@/domain/models/attendance/req
 import { type UpdateAttendanceRecordsRequest } from '@/domain/models/attendance/request/update-attendance-records-request';
 import { AttendanceRecordDetailResponse } from '@/domain/models/attendance/response/attendance-record-detail-response';
 import { type AttendanceRecordsListResult } from '@/domain/models/attendance/response/attendance-record-result';
-import { CreateAttendanceReportResponse } from '@/domain/models/attendance/response/create-attendance-report-response';
+import { ExcelReportResponse } from '@/domain/models/file/response/excel-report-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type AttendanceRecordsRepository } from '@/domain/repositories/class/attendance-repository';
 
@@ -65,10 +65,10 @@ export class AttendanceRecordsUsecase {
     return response;
   }
 
-  async createAttendanceReport(request: CreateAttendanceReportRequest): Promise<CreateAttendanceReportResponse> {
+  async createAttendanceReport(request: CreateAttendanceReportRequest): Promise<ExcelReportResponse> {
     const response = await this.AttendanceRecordsRepo.createAttendanceReport(request);
 
-    const responseData = CreateAttendanceReportResponse.fromJson(response.result);
+    const responseData = ExcelReportResponse.fromJson(response.result);
 
     return responseData;
   }

@@ -11,7 +11,7 @@ export const navItems = [
     items: [
       // { key: 'path', title: 'path', href: paths.dashboard.path, icon: 'path' },
       { key: 'courses', title: 'courses', href: paths.dashboard.courses, icon: 'course' },
-      { key: 'lesson', title: 'lesson', href: paths.dashboard.lesson, icon: 'lesson' },
+      { key: 'courseLesson', title: 'courseLesson', href: paths.dashboard.lessonCourse, icon: 'lesson' },
       {
         key: 'courseProgress',
         title: 'userCourseProgress',
@@ -22,7 +22,28 @@ export const navItems = [
         key: 'courseProgressCreate',
         title: 'enrollCourse',
         href: paths.dashboard.userCourseProgressCreate,
-        icon: 'bookUser',
+        icon: 'enroll',
+      },
+    ],
+  },
+  {
+    key: 'lesson',
+    title: 'lesson',
+    icon: 'lesson',
+    items: [
+      // { key: 'path', title: 'path', href: paths.dashboard.path, icon: 'path' },
+      { key: 'independentLesson', title: 'independentLesson', href: paths.dashboard.lesson, icon: 'lesson' },
+      {
+        key: 'userLessonProgress',
+        title: 'userLessonProgress',
+        href: paths.dashboard.userLessonProgress,
+        icon: 'userLesson',
+      },
+      {
+        key: 'userLessonProgressCreate',
+        title: 'enrollLesson',
+        href: paths.dashboard.userLessonProgressCreate,
+        icon: 'enroll',
       },
     ],
   },
@@ -90,6 +111,15 @@ export const navItems = [
     items: [
       { key: 'class', title: 'class', href: paths.dashboard.class, icon: 'chalkboard-simple' },
       { key: 'attendance', title: 'attendance', href: paths.dashboard.attendance, icon: 'student' },
+    ],
+  },
+  {
+    key: 'report',
+    title: 'report',
+    icon: 'export',
+    items: [
+      { key: 'reportCourse', title: 'reportCourse', href: paths.dashboard.reportCourse, icon: 'course' },
+      { key: 'reportExam', title: 'reportExam', href: paths.dashboard.reportExam, icon: 'exam' },
     ],
   },
   {

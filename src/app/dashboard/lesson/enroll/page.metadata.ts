@@ -3,5 +3,5 @@ import { type Metadata } from 'next';
 import { config } from '@/config';
 
 export const metadata: Metadata = {
-  title: `Export Course | Dashboard | ${config.site.name}`,
+  title: `User Lesson Progress Create | Dashboard | ${config.site.name}`,
 };

@@ -1,6 +1,7 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateUserLessonRequest } from '@/domain/models/user-lesson/request/create-user-lesson-request';
+import { EnrollUserListToLessonRequest } from '@/domain/models/user-lesson/request/enroll-user-to-lesson-request';
 import { type GetUserLessonProgressRequest } from '@/domain/models/user-lesson/request/get-user-lesson-request';
 import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { type UserLessonProgressRepository } from '@/domain/repositories/progress/user-lesson-progress-repository';
@@ -76,6 +77,31 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
       return apiResponse;
     } catch (error: any) {
       throw new Error(error?.message || 'Failed to fetch userLessonProgress info');
+    }
+  }
+
+  async enrollUserListToLesson(request: EnrollUserListToLessonRequest): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.post<ApiResponse>(
+        apiEndpoints.userLessonProgress.enroll,
+        request.toFormData(),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 3600000,
+        }
+      );
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to create userLessonProgress');
     }
   }
 }
