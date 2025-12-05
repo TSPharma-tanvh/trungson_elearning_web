@@ -1,9 +1,4 @@
-import {
-  type CategoryEnum,
-  type LearningModeEnum,
-  type LessonContentEnum,
-  type StatusEnum,
-} from '@/utils/enum/core-enum';
+import { LessonTypeEnum, type CategoryEnum, type LessonContentEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class CreateLessonRequest {
   courseID?: string;
@@ -12,7 +7,7 @@ export class CreateLessonRequest {
 
   enablePlay!: boolean;
   status!: StatusEnum;
-  lessonType!: LearningModeEnum;
+  lessonType!: LessonTypeEnum;
   contentType!: LessonContentEnum;
   isRequired!: boolean;
 
@@ -41,6 +36,17 @@ export class CreateLessonRequest {
   resources?: File[];
   resourceDocumentNo?: string;
   resourcePrefixName?: string;
+
+  // Independent lesson logic
+  isFixedLesson?: boolean;
+  startDate?: string;
+  endDate?: string;
+  fixedLessonDayDuration?: number;
+
+  // Position & Department
+  positionCode?: string;
+  positionStateCode?: string;
+  departmentTypeCode?: string;
 
   constructor(init?: Partial<CreateLessonRequest>) {
     Object.assign(this, init);
@@ -72,6 +78,14 @@ export class CreateLessonRequest {
       resourceIDs: json.resourceIDs,
       resourceDocumentNo: json.resourceDocumentNo,
       resourcePrefixName: json.resourcePrefixName,
+      isFixedLesson: json.isFixedLesson,
+      startDate: json.startDate,
+      endDate: json.endDate,
+      fixedLessonDayDuration: json.fixedLessonDayDuration,
+
+      positionCode: json.positionCode,
+      positionStateCode: json.positionStateCode,
+      departmentTypeCode: json.departmentTypeCode,
     });
   }
 
@@ -101,6 +115,14 @@ export class CreateLessonRequest {
       resourceIDs: this.resourceIDs,
       resourceDocumentNo: this.resourceDocumentNo,
       resourcePrefixName: this.resourcePrefixName,
+      isFixedLesson: this.isFixedLesson,
+      startDate: this.startDate,
+      endDate: this.endDate,
+      fixedLessonDayDuration: this.fixedLessonDayDuration,
+
+      positionCode: this.positionCode,
+      positionStateCode: this.positionStateCode,
+      departmentTypeCode: this.departmentTypeCode,
     };
   }
 
@@ -148,6 +170,16 @@ export class CreateLessonRequest {
     }
     if (this.resourceDocumentNo) form.append('ResourceDocumentNo', this.resourceDocumentNo);
     if (this.resourcePrefixName) form.append('ResourcePrefixName', this.resourcePrefixName);
+
+    if (this.isFixedLesson !== undefined) form.append('IsFixedLesson', this.isFixedLesson.toString());
+    if (this.startDate) form.append('StartDate', this.startDate);
+    if (this.endDate) form.append('EndDate', this.endDate);
+    if (this.fixedLessonDayDuration !== undefined)
+      form.append('FixedLessonDayDuration', this.fixedLessonDayDuration.toString());
+
+    if (this.positionCode) form.append('PositionCode', this.positionCode);
+    if (this.positionStateCode) form.append('PositionStateCode', this.positionStateCode);
+    if (this.departmentTypeCode) form.append('DepartmentTypeCode', this.departmentTypeCode);
 
     return form;
   }

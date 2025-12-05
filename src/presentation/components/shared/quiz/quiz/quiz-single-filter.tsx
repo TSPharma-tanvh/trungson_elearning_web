@@ -66,19 +66,17 @@ export function QuizSingleFilter({
   const [viewOpen, setViewOpen] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<QuizResponse | null>(null);
 
-  const [canStartOver, setCanStartOver] = useState<boolean | undefined>(undefined);
+  // const [canStartOver, setCanStartOver] = useState<boolean | undefined>(undefined);
   const [isRequired, setIsRequired] = useState<boolean | undefined>(undefined);
   const [hasLesson, setHasLesson] = useState<boolean | undefined>(undefined);
-  const [quizType, setQuizType] = useState<QuizTypeEnum | undefined>(undefined);
 
   const filters = useMemo(
     (): Partial<GetQuizRequest> => ({
-      canStartOver,
       isRequired,
       hasLesson,
-      type: quizType,
+      type: QuizTypeEnum.LessonQuiz,
     }),
-    [canStartOver, isRequired, hasLesson, quizType]
+    [isRequired, hasLesson]
   );
 
   const { quizzes, loadingQuizzes, pageNumber, totalPages, setSearchText, listRef, loadQuizzes } = useQuizSelectLoader({
@@ -129,10 +127,8 @@ export function QuizSingleFilter({
 
   const handleClearFilters = () => {
     setLocalSearchText('');
-    setCanStartOver(undefined);
     setIsRequired(undefined);
     setHasLesson(undefined);
-    setQuizType(undefined);
   };
 
   return (
@@ -206,7 +202,7 @@ export function QuizSingleFilter({
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <CustomSelectDropDownDialog
+            {/* <CustomSelectDropDownDialog
               label="canStartOver"
               value={canStartOver}
               onChange={(val) => {
@@ -217,7 +213,7 @@ export function QuizSingleFilter({
                 { value: true, label: t('yes') },
                 { value: false, label: t('no') },
               ]}
-            />
+            /> */}
 
             <CustomSelectDropDownDialog
               label="isRequired"
@@ -242,32 +238,6 @@ export function QuizSingleFilter({
                 { value: undefined, label: t('all') },
                 { value: true, label: t('yes') },
                 { value: false, label: t('no') },
-              ]}
-            />
-
-            <CustomSelectDropDownDialog<QuizTypeEnum>
-              label="quizType"
-              value={quizType}
-              onChange={setQuizType}
-              minWidth={160}
-              options={[
-                { value: undefined, label: t('all') },
-                {
-                  value: QuizTypeEnum.LessonQuiz,
-                  label: t(
-                    (QuizTypeEnumUtils.getStatusKeyFromValue(QuizTypeEnum.LessonQuiz) ?? '').replace(/^\w/, (c) =>
-                      c.toLowerCase()
-                    )
-                  ),
-                },
-                {
-                  value: QuizTypeEnum.ExamQuiz,
-                  label: t(
-                    (QuizTypeEnumUtils.getStatusKeyFromValue(QuizTypeEnum.ExamQuiz) ?? '').replace(/^\w/, (c) =>
-                      c.toLowerCase()
-                    )
-                  ),
-                },
               ]}
             />
 

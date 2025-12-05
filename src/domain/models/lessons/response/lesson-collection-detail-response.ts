@@ -1,3 +1,4 @@
+import { CourseDetailResponse } from '../../courses/response/course-detail-response';
 import { LessonResponse } from './lesson-response';
 
 export class LessonsCollectionDetailResponse {
@@ -9,6 +10,7 @@ export class LessonsCollectionDetailResponse {
   fixedCourseDayDuration?: number;
   courseID?: string;
   lessons: LessonResponse[] = [];
+  course?: CourseDetailResponse;
 
   constructor(init?: Partial<LessonsCollectionDetailResponse>) {
     Object.assign(this, init);
@@ -24,6 +26,7 @@ export class LessonsCollectionDetailResponse {
       fixedCourseDayDuration: json.fixedCourseDayDuration,
       courseID: json.courseID,
       lessons: json.lessons?.map((l: any) => LessonResponse.fromJson(l)) ?? [],
+      course: json.course ? CourseDetailResponse.fromJson(json.course) : undefined,
     });
   }
 
@@ -37,6 +40,7 @@ export class LessonsCollectionDetailResponse {
       fixedCourseDayDuration: this.fixedCourseDayDuration,
       courseID: this.courseID,
       lessons: this.lessons.map((l) => l.toJson()),
+      course: this.course?.toJson(),
     };
   }
 }

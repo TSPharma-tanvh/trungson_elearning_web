@@ -5,11 +5,8 @@ import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/reques
 import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { type UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { DateTimeUtils } from '@/utils/date-time-utils';
-import { Button, Stack, Typography } from '@mui/material';
-import { FileXls } from '@phosphor-icons/react';
+import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import { UserLessonProgressFilters } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-filter';
 import UserLessonProgressTable from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-table';
@@ -89,29 +86,29 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
-    // Prepare data for export
-    const exportData = userLessonProgress.map((row) => ({
-      [t('id')]: row.id ?? '',
-      [t('lessonName')]: row.lessons?.name ?? '',
-      [t('userName')]: row.user?.userName ?? '',
-      [t('fullName')]: row.user?.employee?.name ?? '',
-      [t('gender')]: row.user?.employee?.gender ?? '',
-      [t('progress')]: row.progress ?? '',
-      [t('startDate')]: row.startDate ? DateTimeUtils.formatDateTimeToDateString(row.startDate) : '',
-      [t('endDate')]: row.endDate ? DateTimeUtils.formatDateTimeToDateString(row.endDate) : '',
-      [t('actualStartDate')]: row.actualStartDate ? DateTimeUtils.formatISODateStringToString(row.actualStartDate) : '',
-      [t('actualEndDate')]: row.actualEndDate ? DateTimeUtils.formatISODateStringToString(row.actualEndDate) : '',
-      [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatISODateStringToString(row.lastAccess) : '',
-      [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
-    }));
+  // const handleExportToExcel = () => {
+  //   // Prepare data for export
+  //   const exportData = userLessonProgress.map((row) => ({
+  //     [t('id')]: row.id ?? '',
+  //     [t('lessonName')]: row.lessons?.name ?? '',
+  //     [t('userName')]: row.user?.userName ?? '',
+  //     [t('fullName')]: row.user?.employee?.name ?? '',
+  //     [t('gender')]: row.user?.employee?.gender ?? '',
+  //     [t('progress')]: row.progress ?? '',
+  //     [t('startDate')]: row.startDate ? DateTimeUtils.formatDateTimeToDateString(row.startDate) : '',
+  //     [t('endDate')]: row.endDate ? DateTimeUtils.formatDateTimeToDateString(row.endDate) : '',
+  //     [t('actualStartDate')]: row.actualStartDate ? DateTimeUtils.formatISODateStringToString(row.actualStartDate) : '',
+  //     [t('actualEndDate')]: row.actualEndDate ? DateTimeUtils.formatISODateStringToString(row.actualEndDate) : '',
+  //     [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatISODateStringToString(row.lastAccess) : '',
+  //     [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
+  //   }));
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'UserLessonProgress');
-    const dateTimeString = DateTimeUtils.getTodayAsString();
-    XLSX.writeFile(wb, `UserLessonProgress_${dateTimeString}.xlsx`);
-  };
+  //   const ws = XLSX.utils.json_to_sheet(exportData);
+  //   const wb = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, 'UserLessonProgress');
+  //   const dateTimeString = DateTimeUtils.getTodayAsString();
+  //   XLSX.writeFile(wb, `UserLessonProgress_${dateTimeString}.xlsx`);
+  // };
 
   return (
     <Stack spacing={3}>
@@ -120,7 +117,7 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('userLessonProgress')}
           </Typography>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
@@ -130,7 +127,7 @@ export default function Page(): React.JSX.Element {
             >
               {t('exportToExcel')}
             </Button>
-          </Stack>
+          </Stack> */}
         </Stack>
         {/* <Button
           startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}

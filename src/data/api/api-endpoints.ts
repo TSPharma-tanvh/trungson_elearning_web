@@ -78,6 +78,7 @@ interface LessonsEndpoints {
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
+  export: StaticEndpoint;
 }
 
 interface ClassEndpoints {
@@ -102,6 +103,7 @@ interface QuizEndpoints {
   // createByExcel: StaticEndpoint;
   update: StaticEndpoint;
   delete: DynamicEndpoint;
+  export: StaticEndpoint;
 }
 interface QuestionEndpoints {
   getAll: StaticEndpoint;
@@ -301,6 +303,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `Lesson/GetLessonById/${id}`,
     create: 'Lesson/CreateLesson',
     update: 'Lesson/UpdateLesson',
+    export: 'Lesson/ExportLessonProgressReport',
   },
   class: {
     getAll: 'Class/GetClass',
@@ -322,6 +325,7 @@ const endpoints: EndpointDefinitions = {
     // createByExcel: 'Quiz/CreateQuizFromExcel',
     update: 'Quiz/UpdateQuiz',
     delete: (id: string) => `Quiz/DeleteQuiz/${id}`,
+    export: 'Quiz/ExportQuizProgressReport',
   },
   questions: {
     getAll: 'Question/GetQuestion',

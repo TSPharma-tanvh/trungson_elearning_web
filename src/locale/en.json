@@ -980,5 +980,9 @@
   "enrollLesson": "Enroll Lesson",
   "courseLesson": "Course lesson",
   "independentLesson": "Independent lesson",
-  "enrollUsersToLesson": "Enroll Users To Lesson"
+  "enrollUsersToLesson": "Enroll Users To Lesson",
+  "exportExamProgress": "Export Exam Progress",
+  "pleaseSelectExam": "Please Select Exam",
+  "isFixedLesson": "Is Fixed Lesson",
+  "basicInformation": "Basic Information"
 }

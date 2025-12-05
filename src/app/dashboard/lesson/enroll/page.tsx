@@ -14,6 +14,7 @@ import { CustomButton } from '@/presentation/components/core/button/custom-butto
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
+import { IndependentLessonSingleSelectDialog } from '@/presentation/components/shared/courses/lessons/independent-lesson-select';
 import { LessonSingleSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
@@ -106,7 +107,7 @@ export default function EnrollUsersToLessonPage() {
           <Grid container spacing={4}>
             {/* Lesson Selection */}
             <Grid item xs={12}>
-              <LessonSingleSelectDialog
+              <IndependentLessonSingleSelectDialog
                 lessonUsecase={lessonUsecase}
                 value={form.lessonID ?? ''}
                 onChange={async (value) => {
@@ -121,7 +122,6 @@ export default function EnrollUsersToLessonPage() {
                     const detail = await lessonUsecase.getLessonById(value);
                     setSelectedLessonDetail(detail);
                   } catch (err) {
-                    CustomSnackBar.showSnackbar(t('failedToLoadLessonDetail'), 'error');
                     setSelectedLessonDetail(null);
                   }
                 }}

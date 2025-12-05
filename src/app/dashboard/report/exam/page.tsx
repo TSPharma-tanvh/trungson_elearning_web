@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ExportCourseProgressReportRequest } from '@/domain/models/courses/request/export-course-progress-report-request';
 import { GetEmployeeDistinctRequest } from '@/domain/models/employee/request/get-employee-distinct-request';
 import { EmployeeDistinctResponse } from '@/domain/models/employee/response/employee-distinct-response';
+import { ExportQuizProgressReportRequest } from '@/domain/models/quiz/request/export-quiz-progress-report-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { Card, Container, Grid, Stack, Typography } from '@mui/material';
@@ -13,28 +13,28 @@ import { CustomButton } from '@/presentation/components/core/button/custom-butto
 import { CustomSelectDropDownListMultiple } from '@/presentation/components/core/drop-down/custom-select-drop-down-list-multiple';
 import { CustomSelectDropDownNullable } from '@/presentation/components/core/drop-down/custom-select-drop-down-nullable';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-import { CourseSelectDialog } from '@/presentation/components/shared/courses/courses/courses-select';
+import { QuizSingleSelect } from '@/presentation/components/shared/quiz/quiz/quiz-select';
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { courseUsecase, employeeUsecase } = useDI();
+  const { quizUsecase, employeeUsecase } = useDI();
 
   const [loading, setLoading] = useState(false);
 
   const [items, setItems] = useState<EmployeeDistinctResponse[]>([]);
 
   const [form, setForm] = useState(
-    new ExportCourseProgressReportRequest({
-      courseId: '',
+    new ExportQuizProgressReportRequest({
+      quizId: '',
       sortDescending: false,
     })
   );
 
-  const handleChange = <K extends keyof ExportCourseProgressReportRequest>(
+  const handleChange = <K extends keyof ExportQuizProgressReportRequest>(
     key: K,
-    value: ExportCourseProgressReportRequest[K] | null | undefined
+    value: ExportQuizProgressReportRequest[K] | null | undefined
   ) => {
-    setForm((prev) => new ExportCourseProgressReportRequest({ ...prev, [key]: value as any }));
+    setForm((prev) => new ExportQuizProgressReportRequest({ ...prev, [key]: value as any }));
   };
 
   const fetchDepartments = async () => {
@@ -50,14 +50,14 @@ export default function Page(): React.JSX.Element {
   };
 
   const handleExport = async () => {
-    if (!form.courseId) {
-      CustomSnackBar.showSnackbar(t('pleaseSelectCourse'), 'error');
+    if (!form.quizId) {
+      CustomSnackBar.showSnackbar(t('pleaseSelectExam'), 'error');
       return;
     }
 
     try {
       setLoading(true);
-      const response = await courseUsecase.exportCourse(form);
+      const response = await quizUsecase.exportQuiz(form);
 
       const byteCharacters = atob(response.base64);
       const byteNumbers = new Array(byteCharacters.length);
@@ -73,7 +73,7 @@ export default function Page(): React.JSX.Element {
 
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = response.fileName ?? 'CourseReport.xlsx';
+      link.download = response.fileName ?? 'ExamReport.xlsx';
       link.click();
 
       URL.revokeObjectURL(link.href);
@@ -88,19 +88,19 @@ export default function Page(): React.JSX.Element {
         {/* Header */}
         <Stack direction="row" alignItems="center" spacing={2}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            {t('exportCourseProgress')}
+            {t('exportExamProgress')}
           </Typography>
         </Stack>
 
         <Card elevation={3} sx={{ p: 4, borderRadius: 3 }}>
           <Grid container spacing={4}>
-            {/* Course ID */}
+            {/* Quiz ID */}
             <Grid item xs={12}>
-              <CourseSelectDialog
-                courseUsecase={courseUsecase}
-                value={form.courseId ?? ''}
+              <QuizSingleSelect
+                quizUsecase={quizUsecase}
+                value={form.quizId ?? ''}
                 onChange={(value: string) => {
-                  handleChange('courseId', value);
+                  handleChange('quizId', value);
                 }}
                 disabled={false}
               />
@@ -115,8 +115,9 @@ export default function Page(): React.JSX.Element {
                 options={[
                   { value: null, label: t('all') },
                   { value: 'NotStarted', label: t('notStarted') },
-                  { value: 'Ongoing', label: t('ongoing') },
-                  { value: 'Done', label: t('done') },
+                  { value: 'Doing', label: t('doing') },
+                  { value: 'Pass', label: t('pass') },
+                  { value: 'Fail', label: t('fail') },
                 ]}
                 disabled={loading}
               />
@@ -137,7 +138,7 @@ export default function Page(): React.JSX.Element {
             </Grid>
 
             {/* Progress Range */}
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <CustomSelectDropDownNullable<number>
                 label={t('minProgress')}
                 value={form.minProgress ?? undefined}
@@ -160,7 +161,7 @@ export default function Page(): React.JSX.Element {
                 }))}
                 disabled={loading}
               />
-            </Grid>
+            </Grid> */}
 
             {/* Date Filters */}
             {/* {[

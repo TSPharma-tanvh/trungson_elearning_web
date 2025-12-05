@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 import { ExamSingleFilter } from '@/presentation/components/shared/quiz/quiz/exam-single-filter';
+import { QuizSingleFilter } from '@/presentation/components/shared/quiz/quiz/quiz-single-filter';
 
 export function UserQuizProgressFilters({
   onFilter,
@@ -94,9 +95,8 @@ export function UserQuizProgressFilters({
         />
 
         {/* Quiz */}
-        <ExamSingleFilter
+        <QuizSingleFilter
           label="quiz"
-          header="selectQuiz"
           quizUsecase={quizUsecase}
           value={form.quizId ?? ''}
           onChange={(value) => {

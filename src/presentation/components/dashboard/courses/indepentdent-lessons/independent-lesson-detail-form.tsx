@@ -38,7 +38,7 @@ interface LessonDetailFormProps {
   onClose: () => void;
 }
 
-function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; fullScreen: boolean }) {
+function IndependentLessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; fullScreen: boolean }) {
   const { t } = useTranslation();
   const [quizExpandedLessons, setQuizExpandedLessons] = useState<Record<string, boolean>>({});
   const [openQuizDetailId, setOpenQuizDetailId] = useState<string | null>(null);
@@ -469,7 +469,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
   );
 }
 
-export default function LessonDetailForm({ open, lessonId, onClose }: LessonDetailFormProps) {
+export default function IndependentLessonDetailForm({ open, lessonId, onClose }: LessonDetailFormProps) {
   const { t } = useTranslation();
   const { lessonUsecase } = useDI();
   const [loading, setLoading] = useState(false);
@@ -516,7 +516,7 @@ export default function LessonDetailForm({ open, lessonId, onClose }: LessonDeta
             <CircularProgress />
           </Box>
         ) : (
-          <LessonDetails lesson={Lesson} fullScreen={fullScreen} />
+          <IndependentLessonDetails lesson={Lesson} fullScreen={fullScreen} />
         )}
       </DialogContent>
     </Dialog>

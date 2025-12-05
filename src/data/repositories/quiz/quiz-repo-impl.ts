@@ -1,6 +1,7 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
+import { ExportQuizProgressReportRequest } from '@/domain/models/quiz/request/export-quiz-progress-report-request';
 import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizRepository } from '@/domain/repositories/quiz/quiz-repository';
@@ -119,6 +120,22 @@ export class QuizRepoImpl implements QuizRepository {
       return apiResponse;
     } catch (error: any) {
       throw new Error(error?.message || 'Failed to fetch quiz info');
+    }
+  }
+
+  async exportQuiz(request: ExportQuizProgressReportRequest): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.quiz.export, request.toJson());
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to export quiz');
     }
   }
 }

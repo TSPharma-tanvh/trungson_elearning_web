@@ -1,6 +1,7 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
+import { ExportQuizProgressReportRequest } from '@/domain/models/quiz/request/export-quiz-progress-report-request';
 import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { type UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 
@@ -16,4 +17,6 @@ export interface QuizRepository {
   updateQuiz: (request: UpdateQuizRequest) => Promise<ApiResponse>;
 
   deleteQuiz: (id: string) => Promise<ApiResponse>;
+
+  exportQuiz: (request: ExportQuizProgressReportRequest) => Promise<ApiResponse>;
 }

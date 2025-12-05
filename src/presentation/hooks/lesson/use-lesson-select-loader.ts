@@ -79,8 +79,8 @@ export function useLessonSelectLoader({
         const result: LessonDetailListResult = await lessonUsecase.getLessonListInfo(request);
         if (isOpen) {
           setLessons((prev: LessonDetailResponse[]) => {
-            const newLessons = reset || page === 1 ? result.Lessons : [...prev, ...result.Lessons];
-            setHasMore(result.Lessons.length > 0 && result.totalRecords > newLessons.length);
+            const newLessons = reset || page === 1 ? result.lessons : [...prev, ...result.lessons];
+            setHasMore(result.lessons.length > 0 && result.totalRecords > newLessons.length);
             return newLessons;
           });
           setTotalPages(Math.ceil(result.totalRecords / 10));

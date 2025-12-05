@@ -104,31 +104,31 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
-    const exportData = userCourseProgress.map((row) => ({
-      [t('id')]: row.id ?? '',
-      [t('courseName')]: row.courses?.name ?? '',
-      [t('pathId')]: row.courses?.coursePath?.name ?? '',
-      [t('userName')]: row.user?.userName ?? '',
-      [t('fullName')]: row.user?.employee?.name ?? '',
-      [t('gender')]: row.user?.employee?.gender ?? '',
-      [t('progress')]: row.progress ?? '',
-      [t('startDate')]: row.startDate ? DateTimeUtils.formatISODateStringToString(row.startDate) : '',
-      [t('endDate')]: row.endDate ? DateTimeUtils.formatISODateStringToString(row.endDate) : '',
-      [t('actualStartDate')]: row.actualStartDate ? DateTimeUtils.formatISODateStringToString(row.actualStartDate) : '',
-      [t('actualEndDate')]: row.actualEndDate ? DateTimeUtils.formatISODateStringToString(row.actualEndDate) : '',
-      [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatISODateStringToString(row.lastAccess) : '',
-      [t('progressStatus')]: row.status ? t(row.status.toLowerCase()) : '',
-    }));
+  // const handleExportToExcel = () => {
+  //   const exportData = userCourseProgress.map((row) => ({
+  //     [t('id')]: row.id ?? '',
+  //     [t('courseName')]: row.courses?.name ?? '',
+  //     [t('pathId')]: row.courses?.coursePath?.name ?? '',
+  //     [t('userName')]: row.user?.userName ?? '',
+  //     [t('fullName')]: row.user?.employee?.name ?? '',
+  //     [t('gender')]: row.user?.employee?.gender ?? '',
+  //     [t('progress')]: row.progress ?? '',
+  //     [t('startDate')]: row.startDate ? DateTimeUtils.formatISODateStringToString(row.startDate) : '',
+  //     [t('endDate')]: row.endDate ? DateTimeUtils.formatISODateStringToString(row.endDate) : '',
+  //     [t('actualStartDate')]: row.actualStartDate ? DateTimeUtils.formatISODateStringToString(row.actualStartDate) : '',
+  //     [t('actualEndDate')]: row.actualEndDate ? DateTimeUtils.formatISODateStringToString(row.actualEndDate) : '',
+  //     [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatISODateStringToString(row.lastAccess) : '',
+  //     [t('progressStatus')]: row.status ? t(row.status.toLowerCase()) : '',
+  //   }));
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'UserCourseProgress');
+  //   const ws = XLSX.utils.json_to_sheet(exportData);
+  //   const wb = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, 'UserCourseProgress');
 
-    // Use DateTimeUtils to get the date and time string in YYYYMMDD_hhmmss format
-    const dateTimeString = DateTimeUtils.getTodayAsString();
-    XLSX.writeFile(wb, `UserCourseProgress_${dateTimeString}.xlsx`);
-  };
+  //   // Use DateTimeUtils to get the date and time string in YYYYMMDD_hhmmss format
+  //   const dateTimeString = DateTimeUtils.getTodayAsString();
+  //   XLSX.writeFile(wb, `UserCourseProgress_${dateTimeString}.xlsx`);
+  // };
 
   return (
     <Stack spacing={3}>
@@ -137,7 +137,7 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('userCourseProgress')}
           </Typography>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
@@ -147,7 +147,7 @@ export default function Page(): React.JSX.Element {
             >
               {t('exportToExcel')}
             </Button>
-          </Stack>
+          </Stack> */}
         </Stack>
         {/* <div>
           <Button

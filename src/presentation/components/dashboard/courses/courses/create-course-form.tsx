@@ -143,6 +143,12 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
             }}
           >
             <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                {t('basicInformation')}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
               <CustomTextField
                 label={t('name')}
                 value={form.name}
@@ -269,6 +275,12 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                   { value: false, label: 'no' },
                 ]}
               />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                {t('employeeFilters')}
+              </Typography>
             </Grid>
 
             <Grid item xs={12} sm={6}>

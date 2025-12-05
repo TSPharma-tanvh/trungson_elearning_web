@@ -980,5 +980,9 @@
   "enrollLesson": "Ghi danh bài học",
   "courseLesson": "Bài học theo khóa",
   "independentLesson": "Bài học độc lập",
-  "enrollUsersToLesson": "Ghi danh người dùng vào bài học"
+  "enrollUsersToLesson": "Ghi danh người dùng vào bài học",
+  "exportExamProgress": "Xuất kết quả kì thi",
+  "pleaseSelectExam": "Xin hãy chọn kì thi",
+  "isFixedLesson": "Bài học cố định",
+  "basicInformation": "Thông tin cơ bản"
 }

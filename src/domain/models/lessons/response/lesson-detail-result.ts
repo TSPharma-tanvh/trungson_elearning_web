@@ -1,7 +1,7 @@
 import { type LessonDetailResponse } from './lesson-detail-response';
 
 export interface LessonDetailListResult {
-  Lessons: LessonDetailResponse[];
+  lessons: LessonDetailResponse[];
   totalRecords: number;
   pageNumber: number;
   pageSize: number;

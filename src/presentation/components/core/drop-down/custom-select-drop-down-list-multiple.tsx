@@ -56,7 +56,10 @@ export function CustomSelectDropDownListMultiple<T>({
         multiple
         value={displayValue}
         onChange={handleChange}
-        onOpen={() => setOpen(true)}
+        onOpen={() => {
+          if (onOpen) onOpen();
+          setOpen(true);
+        }}
         open={open}
         onClose={() => setOpen(false)}
         input={<OutlinedInput label={t(label)} />}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, LearningModeEnum, LessonContentEnum, LessonTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
@@ -24,6 +25,8 @@ import { Image as ImageIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
+import { CustomSelectDropDownNullable } from '@/presentation/components/core/drop-down/custom-select-drop-down-nullable';
+import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
@@ -42,7 +45,7 @@ interface CreateLessonFormProps {
   onClose: () => void;
 }
 
-export function CreateLessonDialog({
+export function CreateIndependentLessonDialog({
   disabled = false,
   onSubmit,
   loading = false,
@@ -83,7 +86,7 @@ export function CreateLessonDialog({
       enablePlay: true,
       isRequired: true,
       status: StatusEnum.Enable,
-      lessonType: LessonTypeEnum.Course,
+      lessonType: LessonTypeEnum.Independent,
       categoryEnum: CategoryEnum.Lesson,
       contentType: LessonContentEnum.PDF,
       resources: resourceFiles ?? undefined,
@@ -215,10 +218,11 @@ export function CreateLessonDialog({
           enablePlay: true,
           isRequired: true,
           status: StatusEnum.Enable,
-          lessonType: LessonTypeEnum.Course,
+          lessonType: LessonTypeEnum.Independent,
           categoryEnum: CategoryEnum.Lesson,
           contentType: LessonContentEnum.PDF,
           resources: [],
+          isFixedLesson: false,
         })
       );
 
@@ -245,10 +249,15 @@ export function CreateLessonDialog({
   //   { value: StatusEnum.Deleted, label: 'deleted' },
   // ];
 
-  // const booleanOptions = [
-  //   { value: 'true', label: 'yes' },
-  //   { value: 'false', label: 'no' },
-  // ];
+  const booleanOptions = [
+    { value: 'true', label: 'yes' },
+    { value: 'false', label: 'no' },
+  ];
+
+  const booleanOptionsNullable: { value: boolean | null; label: string }[] = [
+    { value: true, label: 'yes' },
+    { value: false, label: 'no' },
+  ];
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
@@ -345,17 +354,57 @@ export function CreateLessonDialog({
             />
           </Grid> */}
 
-          {/* <Grid item xs={12} sm={6}>
-            <CustomSelectDropDown
-              label={t('enablePlay')}
-              value={String(form.enablePlay ?? '')}
-              onChange={(value) => {
-                handleChange('enablePlay', value === 'true');
-              }}
-              disabled={false}
-              options={booleanOptions}
+          <Grid item xs={12} sm={6}>
+            <CustomSelectDropDownNullable<boolean>
+              label={t('isFixedLesson')}
+              value={form.isFixedLesson}
+              onChange={(value) => handleChange('isFixedLesson', value ?? undefined)}
+              options={booleanOptionsNullable}
+              allowEmpty={false}
             />
-          </Grid> */}
+          </Grid>
+
+          {form.isFixedLesson === true ? (
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                label={t('durationInDaysForThisPart')}
+                value={form.fixedLessonDayDuration?.toString() ?? ''}
+                onChange={(val) => {
+                  const num = val === '' ? undefined : /^\d+$/.test(val) ? Number(val) : form.fixedLessonDayDuration;
+                  handleChange('fixedLessonDayDuration', num);
+                }}
+                required
+                inputMode="numeric"
+                patternError={t('onlyPositiveIntegerError')}
+              />
+            </Grid>
+          ) : (
+            <div></div>
+          )}
+
+          {form.isFixedLesson === false ? (
+            <>
+              <Grid item xs={12} sm={6}>
+                <CustomDateTimePicker
+                  label={t('startTime')}
+                  value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
+                  onChange={(value) => handleChange('startDate', value)}
+                  disabled={disabled}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <CustomDateTimePicker
+                  label={t('endDate')}
+                  value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
+                  onChange={(value) => handleChange('endDate', value)}
+                  disabled={disabled}
+                />
+              </Grid>
+            </>
+          ) : (
+            <div></div>
+          )}
 
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<LessonContentEnum>

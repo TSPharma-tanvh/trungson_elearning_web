@@ -1,6 +1,7 @@
 import { type ApiPaginationResponse } from '@/domain/models/core/api-pagination-response';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
+import { ExportLessonProgressReportRequest } from '@/domain/models/lessons/request/export-lesson-progress-report-request';
 import { type GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonRepository } from '@/domain/repositories/lessons/lesson-repository';
@@ -82,6 +83,22 @@ export class LessonRepoImpl implements LessonRepository {
       return apiResponse;
     } catch (error: any) {
       throw new Error(error?.message || 'Failed to update lesson');
+    }
+  }
+
+  async exportLesson(request: ExportLessonProgressReportRequest): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.lessons.create, request.toJson());
+
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to create lesson');
     }
   }
 }

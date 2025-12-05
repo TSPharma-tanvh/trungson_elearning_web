@@ -9,25 +9,29 @@ import { useTranslation } from 'react-i18next';
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
-export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequest) => void }): React.JSX.Element {
+export function IndependentLessonsFilters({
+  onFilter,
+}: {
+  onFilter: (filters: GetLessonRequest) => void;
+}): React.JSX.Element {
   const { t } = useTranslation();
 
   const [searchText, setSearchText] = React.useState('');
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
-  // const [lessonType, setLessonType] = React.useState<LearningModeEnum | undefined>(undefined);
   const [contentType, setContentType] = React.useState<LessonContentEnum | undefined>(undefined);
   const [hasVideo, setHasVideo] = React.useState<boolean | undefined>(undefined);
   const [hasFileResource, setHasFileResource] = React.useState<boolean | undefined>(undefined);
-  // const [hasCourse, setHasCourse] = React.useState<boolean | undefined>(undefined);
+  const [hasCourse, setHasCourse] = React.useState<boolean | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetLessonRequest({
       searchText: searchText || undefined,
       status,
-      lessonType: LessonTypeEnum.Course,
+      lessonType: LessonTypeEnum.Independent,
       contentType,
       hasVideo,
       hasFileResource,
+      hasCourse,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -38,12 +42,11 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
   const handleClear = () => {
     setSearchText('');
     setStatus(undefined);
-    // setLessonType(undefined);
     setContentType(undefined);
-    // setHasCourse(undefined);
+    setHasCourse(undefined);
     setHasVideo(undefined);
     setHasFileResource(undefined);
-    onFilter(new GetLessonRequest({ pageNumber: 1, pageSize: 10 }));
+    onFilter(new GetLessonRequest({ pageNumber: 1, pageSize: 10, lessonType: LessonTypeEnum.Independent }));
   };
 
   return (
@@ -103,16 +106,6 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
             value: opt.value,
             label: t(opt.label),
           }))}
-        /> */}
-
-        {/* <CustomSelectFilter<boolean>
-          label={t('hasCourse')}
-          value={hasCourse}
-          onChange={setHasCourse}
-          options={[
-            { value: true, label: 'yes' },
-            { value: false, label: 'no' },
-          ]}
         /> */}
 
         <CustomSelectFilter<boolean>

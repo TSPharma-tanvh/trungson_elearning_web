@@ -1,5 +1,7 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
+import { ExcelReportResponse } from '@/domain/models/file/response/excel-report-response';
 import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
+import { ExportQuizProgressReportRequest } from '@/domain/models/quiz/request/export-quiz-progress-report-request';
 import { type GetQuizRequest } from '@/domain/models/quiz/request/get-quiz-request';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { QuizResponse } from '@/domain/models/quiz/response/quiz-response';
@@ -72,5 +74,13 @@ export class QuizUsecase {
     const response = await this.courseRepo.deleteQuiz(id);
 
     return response;
+  }
+
+  async exportQuiz(request: ExportQuizProgressReportRequest): Promise<ExcelReportResponse> {
+    const result = await this.courseRepo.exportQuiz(request);
+
+    const responseData = ExcelReportResponse.fromJson(result.result);
+
+    return responseData;
   }
 }

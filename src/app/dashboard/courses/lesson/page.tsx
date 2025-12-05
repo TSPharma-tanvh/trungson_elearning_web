@@ -8,6 +8,7 @@ import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { LessonTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { FileXls, Plus } from '@phosphor-icons/react';
@@ -36,11 +37,12 @@ export default function Page(): React.JSX.Element {
     try {
       const request = new GetLessonRequest({
         ...filters,
+        lessonType: LessonTypeEnum.Course,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
-      const { Lessons, totalRecords } = await lessonUsecase.getLessonListInfo(request);
-      setLessons(Lessons);
+      const { lessons: lessons, totalRecords } = await lessonUsecase.getLessonListInfo(request);
+      setLessons(lessons);
       setTotalCount(totalRecords);
     } catch (error) {
       CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to fetch lessons', 'error');
@@ -87,30 +89,30 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
-    const exportData = lessons.map((row) => ({
-      [t('id')]: row.id ?? '',
-      [t('name')]: row.name ?? '',
-      [t('detail')]: row.detail ?? '',
-      [t('enableAutoPlay')]: row.enablePlay ? t('yes') : t('no'),
-      [t('required')]: row.isRequired ? t('yes') : t('no'),
-      [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
-      [t('lessonType')]: row.lessonType ? t(row.lessonType.toLowerCase()) : '',
-      [t('category')]: row.category?.categoryName ?? '',
-      [t('contentType')]: row.contentType ?? '',
-      [t('contentCount')]: row.fileLessonRelation?.length ?? 0,
-      [t('video')]: row.video?.resourceUrl ?? '',
-      [t('quiz')]: row.quizzes?.length ?? 0,
-    }));
+  //   const handleExportToExcel = () => {
+  //     const exportData = lessons.map((row) => ({
+  //       [t('id')]: row.id ?? '',
+  //       [t('name')]: row.name ?? '',
+  //       [t('detail')]: row.detail ?? '',
+  //       [t('enableAutoPlay')]: row.enablePlay ? t('yes') : t('no'),
+  //       [t('required')]: row.isRequired ? t('yes') : t('no'),
+  //       [t('status')]: row.status ? t(row.status.toLowerCase()) : '',
+  //       [t('lessonType')]: row.lessonType ? t(row.lessonType.toLowerCase()) : '',
+  //       [t('category')]: row.category?.categoryName ?? '',
+  //       [t('contentType')]: row.contentType ?? '',
+  //       [t('contentCount')]: row.fileLessonRelation?.length ?? 0,
+  //       [t('video')]: row.video?.resourceUrl ?? '',
+  //       [t('quiz')]: row.quizzes?.length ?? 0,
+  //     }));
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Lessons');
+  //     const ws = XLSX.utils.json_to_sheet(exportData);
+  //     const wb = XLSX.utils.book_new();
+  //     XLSX.utils.book_append_sheet(wb, ws, 'Lessons');
 
-    const today = DateTimeUtils.getTodayAsString();
+  //     const today = DateTimeUtils.getTodayAsString();
 
-    XLSX.writeFile(wb, `Lessons_${today}.xlsx`);
-  };
+  //     XLSX.writeFile(wb, `Lessons_${today}.xlsx`);
+  //   };
 
   return (
     <Stack spacing={3}>
@@ -119,7 +121,7 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('courseLesson')}
           </Typography>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
@@ -129,7 +131,7 @@ export default function Page(): React.JSX.Element {
             >
               {t('exportToExcel')}
             </Button>
-          </Stack>
+          </Stack> */}
         </Stack>
         <div>
           {' '}

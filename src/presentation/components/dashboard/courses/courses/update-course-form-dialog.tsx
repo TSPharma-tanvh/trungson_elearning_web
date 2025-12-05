@@ -264,6 +264,11 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                {t('basicInformation')}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
               <CustomTextField
                 label={t('name')}
                 value={formData.name}
@@ -359,6 +364,12 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               />
             </Grid>
 
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                {t('employeeFilters')}
+              </Typography>
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <CustomEmployeeDistinctSelectInForm
                 label="departmentType"
@@ -393,6 +404,12 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 }}
                 loadOnMount
               />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                {t('resources')}
+              </Typography>
             </Grid>
 
             {/* Thumbnail Section */}
@@ -465,7 +482,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       />
                     </Button>
                   </Grid>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -478,8 +495,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       }
                       label={t('isRequired')}
                     />
-                  </Grid>
-                  <Grid item xs={12}>
+                  </Grid> */}
+                  {/* <Grid item xs={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -492,7 +509,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       }
                       label={t('deleteOldThumbnail')}
                     />
-                  </Grid>
+                  </Grid> */}
                   {previewUrl ? (
                     <Grid item xs={12}>
                       <Box

@@ -1,7 +1,7 @@
 import {
   type CategoryEnum,
-  type LearningModeEnum,
   type LessonContentEnum,
+  type LessonTypeEnum,
   type StatusEnum,
 } from '@/utils/enum/core-enum';
 
@@ -12,7 +12,7 @@ export class UpdateLessonRequest {
   detail?: string;
   enablePlay?: boolean;
   status?: StatusEnum | string;
-  lessonType?: LearningModeEnum | string;
+  lessonType?: LessonTypeEnum | string;
   contentType?: LessonContentEnum | string;
   isRequired?: boolean;
   quizIDs?: string;
@@ -38,6 +38,16 @@ export class UpdateLessonRequest {
   resources?: File[];
   resourceDocumentNo?: string;
   resourcePrefixName?: string;
+
+  isFixedLesson?: boolean;
+
+  positionCode?: string;
+  positionStateCode?: string;
+  departmentTypeCode?: string;
+
+  startDate?: string;
+  endDate?: string;
+  fixedLessonDayDuration?: number;
 
   constructor(init?: Partial<UpdateLessonRequest>) {
     Object.assign(this, init);
@@ -70,6 +80,15 @@ export class UpdateLessonRequest {
       resourceIDs: json.resourceIDs,
       resourceDocumentNo: json.resourceDocumentNo,
       resourcePrefixName: json.resourcePrefixName,
+
+      isFixedLesson: json.isFixedLesson,
+      positionCode: json.positionCode,
+      positionStateCode: json.positionStateCode,
+      departmentTypeCode: json.departmentTypeCode,
+
+      startDate: json.startDate,
+      endDate: json.endDate,
+      fixedLessonDayDuration: json.fixedLessonDayDuration,
     });
   }
 
@@ -100,6 +119,15 @@ export class UpdateLessonRequest {
       resourceIDs: this.resourceIDs,
       resourceDocumentNo: this.resourceDocumentNo,
       resourcePrefixName: this.resourcePrefixName,
+
+      isFixedLesson: this.isFixedLesson,
+      positionCode: this.positionCode,
+      positionStateCode: this.positionStateCode,
+      departmentTypeCode: this.departmentTypeCode,
+
+      startDate: this.startDate,
+      endDate: this.endDate,
+      fixedLessonDayDuration: this.fixedLessonDayDuration,
     };
   }
 
@@ -147,6 +175,16 @@ export class UpdateLessonRequest {
         form.append('Resources', file);
       }
     }
+
+    if (this.isFixedLesson !== undefined) form.append('IsFixedLesson', String(this.isFixedLesson));
+    if (this.positionCode) form.append('PositionCode', this.positionCode);
+    if (this.positionStateCode) form.append('PositionStateCode', this.positionStateCode);
+    if (this.departmentTypeCode) form.append('DepartmentTypeCode', this.departmentTypeCode);
+
+    if (this.startDate) form.append('StartDate', this.startDate);
+    if (this.endDate) form.append('EndDate', this.endDate);
+    if (this.fixedLessonDayDuration !== undefined)
+      form.append('FixedLessonDayDuration', String(this.fixedLessonDayDuration));
 
     return form;
   }

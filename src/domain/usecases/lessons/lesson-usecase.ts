@@ -1,5 +1,7 @@
 import { type ApiResponse } from '@/domain/models/core/api-response';
+import { ExcelReportResponse } from '@/domain/models/file/response/excel-report-response';
 import { type CreateLessonRequest } from '@/domain/models/lessons/request/create-lesson-request';
+import { ExportLessonProgressReportRequest } from '@/domain/models/lessons/request/export-lesson-progress-report-request';
 import { type GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import { UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
@@ -21,7 +23,7 @@ export class LessonUsecase {
     const data = result.result.map((x) => LessonDetailResponse.fromJson(x));
 
     return {
-      Lessons: data,
+      lessons: data,
       totalRecords: result.totalRecords ?? result.result.length,
       pageSize: result.pageSize ?? request.pageSize,
       pageNumber: result.pageNumber ?? request.pageNumber,
@@ -61,5 +63,12 @@ export class LessonUsecase {
     const result = await this.lessonRepo.updateLesson(newFormData);
 
     return result;
+  }
+
+  async exportLesson(request: ExportLessonProgressReportRequest): Promise<ExcelReportResponse> {
+    const result = await this.lessonRepo.exportLesson(request);
+    const responseData = ExcelReportResponse.fromJson(result.result);
+
+    return responseData;
   }
 }

@@ -5,7 +5,7 @@ import { FileResourcesResponse } from '@/domain/models/file/response/file-resour
 import { QuizLessonResponse } from '@/domain/models/quiz/response/quiz-lesson-response';
 import { UserLessonResponse } from '@/domain/models/user-lesson/response/user-lesson-response';
 
-import { CourseDetailResponse } from '../../courses/response/course-detail-response';
+import { LessonsCollectionDetailResponse } from './lesson-collection-detail-response';
 
 export class LessonDetailResponse {
   id = '';
@@ -15,6 +15,7 @@ export class LessonDetailResponse {
   enablePlay = false;
   status = '';
   lessonType = '';
+  order?: number;
   contentType?: string;
   enrollmentCriteriaID?: string;
   categoryID?: string;
@@ -27,9 +28,23 @@ export class LessonDetailResponse {
   thumbnail?: FileResourcesResponse;
   video?: FileResourcesResponse;
   isRequired?: boolean;
-  course?: CourseDetailResponse;
+  // course?: CourseDetailResponse;
   fileLessonRelation?: FileLessonRelationResponse[];
+  collection?: LessonsCollectionDetailResponse;
+  isFixedLesson?: boolean;
 
+  positionCode?: string;
+  positionName?: string;
+
+  positionStateCode?: string;
+  positionStateName?: string;
+
+  departmentTypeCode?: string;
+  departmentTypeName?: string;
+
+  startDate?: Date;
+  endDate?: Date;
+  fixedLessonDayDuration?: number;
   constructor(init?: Partial<LessonDetailResponse>) {
     Object.assign(this, init);
   }
@@ -42,6 +57,8 @@ export class LessonDetailResponse {
       detail: json.detail,
       enablePlay: json.enablePlay ?? false,
       status: json.status ?? '',
+      order: json.order,
+
       lessonType: json.lessonType ?? '',
       contentType: json.contentType,
       enrollmentCriteriaID: json.enrollmentCriteriaID,
@@ -57,8 +74,23 @@ export class LessonDetailResponse {
       thumbnail: json.thumbnail ? FileResourcesResponse.fromJson(json.thumbnail) : undefined,
       video: json.video ? FileResourcesResponse.fromJson(json.video) : undefined,
       isRequired: json.isRequired,
-      course: json.course ? CourseDetailResponse.fromJson(json.course) : undefined,
+      // course: json.course ? CourseDetailResponse.fromJson(json.course) : undefined,
       fileLessonRelation: json.fileLessonRelation?.map((f: any) => FileLessonRelationResponse.fromJson(f)), // 🔹 map field mới
+      collection: json.collection ? LessonsCollectionDetailResponse.fromJson(json.collection) : undefined,
+      isFixedLesson: json.isFixedLesson,
+
+      positionCode: json.positionCode,
+      positionName: json.positionName,
+
+      positionStateCode: json.positionStateCode,
+      positionStateName: json.positionStateName,
+
+      departmentTypeCode: json.departmentTypeCode,
+      departmentTypeName: json.departmentTypeName,
+
+      startDate: json.startDate ? new Date(json.startDate) : undefined,
+      endDate: json.endDate ? new Date(json.endDate) : undefined,
+      fixedLessonDayDuration: json.fixedLessonDayDuration,
     });
   }
 
@@ -71,6 +103,8 @@ export class LessonDetailResponse {
       enablePlay: this.enablePlay,
       status: this.status,
       lessonType: this.lessonType,
+      order: this.order,
+
       contentType: this.contentType,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
       categoryID: this.categoryID,
@@ -83,8 +117,23 @@ export class LessonDetailResponse {
       thumbnail: this.thumbnail?.toJson(),
       video: this.video?.toJson(),
       isRequired: this.isRequired,
-      course: this.course?.toJson(),
-      fileLessonRelation: this.fileLessonRelation?.map((f) => f.toJson()), // 🔹 serialize
+      // course: this.course?.toJson(),
+      fileLessonRelation: this.fileLessonRelation?.map((f) => f.toJson()),
+      collection: this.collection?.toJson(),
+      isFixedLesson: this.isFixedLesson,
+
+      positionCode: this.positionCode,
+      positionName: this.positionName,
+
+      positionStateCode: this.positionStateCode,
+      positionStateName: this.positionStateName,
+
+      departmentTypeCode: this.departmentTypeCode,
+      departmentTypeName: this.departmentTypeName,
+
+      startDate: this.startDate?.toISOString(),
+      endDate: this.endDate?.toISOString(),
+      fixedLessonDayDuration: this.fixedLessonDayDuration,
     };
   }
 }

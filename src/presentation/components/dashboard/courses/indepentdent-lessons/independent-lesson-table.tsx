@@ -2,6 +2,7 @@ import React from 'react';
 import { type ApiResponse } from '@/domain/models/core/api-response';
 import { type UpdateLessonRequest } from '@/domain/models/lessons/request/update-lesson-request';
 import { type LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CancelOutlined, CheckCircleOutline, MoreVert, Visibility } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -11,10 +12,10 @@ import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confi
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 
-import LessonDetailForm from './lesson-detail-form';
-import { UpdateLessonFormDialog } from './update-lesson-form';
+import IndependentLessonDetailForm from './independent-lesson-detail-form';
+import { UpdateIndependentLessonFormDialog } from './update-independent-lesson-form';
 
-interface LessonTableProps {
+interface IndependentLessonTableProps {
   rows: LessonDetailResponse[];
   count: number;
   page: number;
@@ -26,7 +27,7 @@ interface LessonTableProps {
   onEditSuccess: () => void;
 }
 
-export default function LessonTable({
+export default function IndependentLessonTable({
   rows,
   count,
   page,
@@ -36,7 +37,7 @@ export default function LessonTable({
   onDeleteLessonPaths: onDeleteLesson,
   onEditLesson,
   onEditSuccess,
-}: LessonTableProps) {
+}: IndependentLessonTableProps) {
   const { t } = useTranslation();
   const [editLessonData, setEditLessonData] = React.useState<LessonDetailResponse | null>(null);
   const [editOpen, setEditOpen] = React.useState(false);
@@ -114,17 +115,20 @@ export default function LessonTable({
           <>
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
-            <TableCell>{t('courseName')}</TableCell>
-            <TableCell>{t('collectionName')}</TableCell>
+
             {/* <TableCell>{t('enableAutoPlay')}</TableCell> */}
             <TableCell>{t('required')}</TableCell>
             <TableCell>{t('status')}</TableCell>
-            <TableCell>{t('lessonType')}</TableCell>
             <TableCell>{t('category')}</TableCell>
             <TableCell>{t('contentType')}</TableCell>
             <TableCell>{t('contentCount')}</TableCell>
             <TableCell>{t('video')}</TableCell>
             <TableCell>{t('quiz')}</TableCell>
+            <TableCell>{t('isFixedLesson')}</TableCell>
+            <TableCell>{t('duration')}</TableCell>
+            <TableCell>{t('positionName')}</TableCell>
+            <TableCell>{t('positionStateName')}</TableCell>
+            <TableCell>{t('departmentTypeName')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -153,12 +157,6 @@ export default function LessonTable({
               <Typography variant="body2">{row.detail}</Typography>
             </TableCell>
 
-            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
-              <Typography variant="body2">{row.collection?.course?.name}</Typography>
-            </TableCell>
-            <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 120 }}>
-              <Typography variant="body2">{row.collection?.name}</Typography>
-            </TableCell>
             {/* <TableCell>
               {row.enablePlay ? (
                 <CheckCircleOutline sx={{ color: 'var(--mui-palette-primary-main)' }} />
@@ -174,9 +172,6 @@ export default function LessonTable({
               )}
             </TableCell>
             <TableCell>{row.status ? t(row.status.charAt(0).toLowerCase() + t(row.status).slice(1)) : ''}</TableCell>
-            <TableCell>
-              {row.lessonType ? t(row.lessonType.charAt(0).toLowerCase() + t(row.lessonType).slice(1)) : ''}
-            </TableCell>
 
             <TableCell>{row.category?.categoryName}</TableCell>
             <TableCell>{row.contentType}</TableCell>
@@ -196,6 +191,27 @@ export default function LessonTable({
             </TableCell>
 
             <TableCell>{row.quizzes?.length ?? 0}</TableCell>
+            <TableCell>{row.isFixedLesson ? t('yes') : t('no')}</TableCell>
+            <TableCell>
+              {row.isFixedLesson === true && row.fixedLessonDayDuration ? (
+                <Typography variant="body2">
+                  {row.fixedLessonDayDuration} {t('days')}
+                </Typography>
+              ) : row.isFixedLesson === false ? (
+                <>
+                  <Typography variant="body2">
+                    {DateTimeUtils.formatDateTimeToDateString(row.startDate)} -{' '}
+                    {DateTimeUtils.formatDateTimeToDateString(row.endDate)}
+                  </Typography>
+                </>
+              ) : (
+                ''
+              )}
+            </TableCell>
+
+            <TableCell>{row.positionName}</TableCell>
+            <TableCell>{row.positionStateName}</TableCell>
+            <TableCell>{row.departmentTypeName}</TableCell>
 
             <TableCell align="right">
               <IconButton
@@ -211,7 +227,7 @@ export default function LessonTable({
       />
 
       {editLessonData ? (
-        <UpdateLessonFormDialog
+        <UpdateIndependentLessonFormDialog
           open={editOpen}
           data={editLessonData}
           onClose={() => {
@@ -228,7 +244,7 @@ export default function LessonTable({
       ) : null}
 
       {editLessonData ? (
-        <LessonDetailForm
+        <IndependentLessonDetailForm
           open={viewOpen}
           lessonId={editLessonData.id ?? null}
           onClose={() => {

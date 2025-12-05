@@ -94,6 +94,10 @@ export enum ProgressEnrollmentTypeEnum {
   SelectedUsers = 1,
   FromFile = 2,
 }
+export enum LessonTypeEnum {
+  Course = 0,
+  Independent = 1,
+}
 
 export enum LessonContentEnum {
   PDF = 0,
