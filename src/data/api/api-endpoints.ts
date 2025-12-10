@@ -167,6 +167,7 @@ interface UserLessonProgressEndpoints {
   create: StaticEndpoint;
   update: StaticEndpoint;
   enroll: StaticEndpoint;
+  delete: DynamicEndpoint;
 }
 interface UserQuizProgressEndpoints {
   getAll: StaticEndpoint;
@@ -384,6 +385,7 @@ const endpoints: EndpointDefinitions = {
     create: 'UserLessonProgress/CreateUserLesson',
     update: 'UserLessonProgress/UpdateUserLesson',
     enroll: 'UserLessonProgress/EnrollUserListToLesson',
+    delete: (id: string) => `UserLessonProgress/DeleteUserLesson/${id}`,
   },
   userQuizProgress: {
     getAll: 'UserQuizProgress/GetUserQuizProgress',

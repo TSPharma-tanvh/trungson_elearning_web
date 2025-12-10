@@ -104,4 +104,19 @@ export class UserLessonProgressRepoImpl implements UserLessonProgressRepository 
       throw new Error(error?.message || 'Failed to create userLessonProgress');
     }
   }
+
+  async deleteUserLesson(id: string): Promise<ApiResponse> {
+    try {
+      const response = await customApiClient.delete<ApiResponse>(apiEndpoints.userLessonProgress.delete(id));
+      const apiResponse = response.data;
+
+      if (!apiResponse?.isSuccessStatusCode) {
+        throw new Error(apiResponse?.message || 'Unknown API error');
+      }
+
+      return apiResponse;
+    } catch (error: any) {
+      throw new Error(error?.message || 'Failed to delete userLessonProgress info');
+    }
+  }
 }

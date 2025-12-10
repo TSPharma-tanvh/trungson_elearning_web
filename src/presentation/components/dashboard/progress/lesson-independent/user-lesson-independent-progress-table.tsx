@@ -10,10 +10,10 @@ import { useTranslation } from 'react-i18next';
 import { CustomTable } from '@/presentation/components/core/custom-table';
 import { ConfirmDeleteDialog } from '@/presentation/components/core/dialog/confirm-delete-dialog';
 
-import UserLessonProgressDetailForm from './user-lesson-progress-detail-form';
-import { UpdateUserLessonProgressFormDialog } from './user-lesson-progress-update-form';
+import UserLessonProgressDetailForm from './user-lesson-independent-progress-detail-form';
+import { UpdateUserLessonProgressIndependentFormDialog } from './user-lesson-independent-progress-update-form';
 
-interface UserLessonProgressTableProps {
+interface UserLessonProgressIndependentTableProps {
   rows: UserLessonProgressDetailResponse[];
   count: number;
   page: number;
@@ -24,7 +24,7 @@ interface UserLessonProgressTableProps {
   onEditUserLessonProgress: (data: UpdateUserLessonRequest) => Promise<void>;
 }
 
-export default function UserLessonProgressTable({
+export default function UserLessonProgressIndependentTable({
   rows,
   count,
   page,
@@ -33,7 +33,7 @@ export default function UserLessonProgressTable({
   onRowsPerPageChange,
   onDeleteUserLessonProgresss,
   onEditUserLessonProgress,
-}: UserLessonProgressTableProps) {
+}: UserLessonProgressIndependentTableProps) {
   const { t } = useTranslation();
   const [editOpen, setEditOpen] = React.useState(false);
   const [editUserLessonProgressData, setEditUserLessonProgressData] =
@@ -96,7 +96,7 @@ export default function UserLessonProgressTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         onDelete={onDeleteUserLessonProgresss}
-        deleteConfirmHeaderTitle={t('markDone')}
+        deleteConfirmHeaderTitle={t('deletePermanently')}
         actionMenuItems={[
           {
             label: t('viewDetails'),
@@ -113,7 +113,7 @@ export default function UserLessonProgressTable({
             },
           },
           {
-            label: t('markDone'),
+            label: t('deletePermanently'),
             onClick: (row) => {
               if (row.id) handleRequestDelete(row.id);
             },
@@ -123,7 +123,6 @@ export default function UserLessonProgressTable({
           <>
             <TableCell>{t('id')}</TableCell>
             <TableCell>{t('lessonName')}</TableCell>
-            {/* <TableCell>{t('courseName')}</TableCell> */}
             <TableCell>{t('fullName')}</TableCell>
             <TableCell>{t('gender')}</TableCell>
             <TableCell>{t('progress')}</TableCell>
@@ -132,6 +131,37 @@ export default function UserLessonProgressTable({
             <TableCell>{t('actualStartDate')}</TableCell>
             <TableCell>{t('actualEndDate')}</TableCell>
             <TableCell>{t('lastAccess')}</TableCell>
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              {t('departmentName')}
+            </TableCell>
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              {t('positionName')}
+            </TableCell>
+
+            <TableCell
+              sx={{
+                minWidth: 100,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              {t('positionStateName')}
+            </TableCell>
             <TableCell>{t('status')}</TableCell>
             {/* <TableCell
               sx={{
@@ -191,7 +221,6 @@ export default function UserLessonProgressTable({
               </TableCell>
 
               <TableCell sx={{ minWidth: 150 }}>{row.lessons?.name}</TableCell>
-              {/* <TableCell sx={{ minWidth: 150 }}>{row.lessons?.course?.name}</TableCell> */}
 
               <TableCell
                 sx={{
@@ -223,7 +252,7 @@ export default function UserLessonProgressTable({
                 </Stack>
               </TableCell>
 
-              <TableCell>{row.user?.employee?.gender ?? ''}</TableCell>
+              <TableCell>{row.user?.employee?.gender === true ? t('male') : t('female')}</TableCell>
 
               <TableCell>{row.progress}</TableCell>
               <TableCell>{row.startDate ? DateTimeUtils.formatDateTimeToDateString(row.startDate) : ''}</TableCell>
@@ -231,7 +260,9 @@ export default function UserLessonProgressTable({
               <TableCell>{DateTimeUtils.formatISODateStringToString(row.actualStartDate ?? '')}</TableCell>
               <TableCell>{DateTimeUtils.formatISODateStringToString(row.actualEndDate ?? '')}</TableCell>
               <TableCell>{DateTimeUtils.formatISODateStringToString(row.lastAccess ?? '')}</TableCell>
-
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.departmentName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionName ?? ''}</TableCell>
+              <TableCell sx={{ width: '15%' }}>{row.user?.employee?.positionStateName ?? ''}</TableCell>
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
               {/* <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionName ?? ''}</TableCell>
               <TableCell sx={{ width: '15%' }}>{row.user?.employee?.currentPositionStateName ?? ''}</TableCell>
@@ -254,7 +285,7 @@ export default function UserLessonProgressTable({
       />
 
       {editUserLessonProgressData ? (
-        <UpdateUserLessonProgressFormDialog
+        <UpdateUserLessonProgressIndependentFormDialog
           open={editOpen}
           data={editUserLessonProgressData}
           onClose={() => {

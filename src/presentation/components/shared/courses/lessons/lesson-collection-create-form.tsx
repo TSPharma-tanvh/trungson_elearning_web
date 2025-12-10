@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreateLessonCollectionRequest } from '@/domain/models/courses/request/create-course-lesson-collection-request';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Add, Delete } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +76,7 @@ function LessonCollectionItemCard({
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startDate')}
-                value={item.startDate ? item.startDate.toISOString() : undefined}
+                value={item.startDate ? DateTimeUtils.formatISODateToString(item.startDate) : undefined}
                 onChange={(iso) => {
                   onChangeField('startDate', iso ? new Date(iso) : undefined);
                 }}
@@ -183,9 +184,9 @@ export function LessonCollectionCreateEditor({ fixedCourse = false, value, onCha
 
   return (
     <Box sx={{ mt: 3 }}>
-      <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+      {/* <Typography variant="subtitle1" fontWeight={600} gutterBottom>
         {t('lessonCollections')}
-      </Typography>
+      </Typography> */}
 
       <Stack spacing={3}>
         {items.map((item) => (

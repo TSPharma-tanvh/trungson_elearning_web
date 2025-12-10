@@ -107,39 +107,39 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
-    const exportData = userQuizProgress.map((row) => ({
-      [t('id')]: row.id ?? '',
-      [t('quizId')]: row.quizId ?? '',
-      [t('quizName')]: row.quiz?.title ?? '',
-      [t('fullName')]: row.user?.employee?.name || row.user?.userName || '',
-      [t('userName')]: row.user?.userName ?? '',
-      [t('gender')]: row.user?.employee?.gender ?? '',
-      [t('progressStatus')]: row.progressStatus ? t(row.progressStatus.toLowerCase()) : '',
-      [t('score')]: row.score ?? '',
-      [t('totalScore')]: row.quiz?.totalScore ?? '',
-      [t('scoreToPass')]: row.quiz?.scoreToPass ?? '',
-      [t('totalQuestion')]: row.quiz?.totalQuestion ?? '',
-      [t('attempts')]: row.attempts ?? '',
-      [t('maxAttempts')]: row.quiz?.maxAttempts ?? '',
-      [t('startDate')]: row.startTime ? DateTimeUtils.formatDateTimeToDateString(row.startTime) : '',
-      [t('endDate')]: row.endTime ? DateTimeUtils.formatDateTimeToDateString(row.endTime) : '',
-      [t('startedAt')]: row.startedAt ? DateTimeUtils.formatDateTimeToDateString(row.startedAt) : '',
-      [t('completedAt')]: row.completedAt ? DateTimeUtils.formatDateTimeToDateString(row.completedAt) : '',
-      [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatDateTimeToDateString(row.lastAccess) : '',
-      [t('activeStatus')]: row.activeStatus ? t(row.activeStatus.toLowerCase()) : '',
-      // [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
-      // [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
-      // [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
-      // [t('cityName')]: row.user?.employee?.cityName ?? '',
-    }));
+  // const handleExportToExcel = () => {
+  //   const exportData = userQuizProgress.map((row) => ({
+  //     [t('id')]: row.id ?? '',
+  //     [t('quizId')]: row.quizId ?? '',
+  //     [t('quizName')]: row.quiz?.title ?? '',
+  //     [t('fullName')]: row.user?.employee?.name || row.user?.userName || '',
+  //     [t('userName')]: row.user?.userName ?? '',
+  //     [t('gender')]: row.user?.employee?.gender ?? '',
+  //     [t('progressStatus')]: row.progressStatus ? t(row.progressStatus.toLowerCase()) : '',
+  //     [t('score')]: row.score ?? '',
+  //     [t('totalScore')]: row.quiz?.totalScore ?? '',
+  //     [t('scoreToPass')]: row.quiz?.scoreToPass ?? '',
+  //     [t('totalQuestion')]: row.quiz?.totalQuestion ?? '',
+  //     [t('attempts')]: row.attempts ?? '',
+  //     [t('maxAttempts')]: row.quiz?.maxAttempts ?? '',
+  //     [t('startDate')]: row.startTime ? DateTimeUtils.formatDateTimeToDateString(row.startTime) : '',
+  //     [t('endDate')]: row.endTime ? DateTimeUtils.formatDateTimeToDateString(row.endTime) : '',
+  //     [t('startedAt')]: row.startedAt ? DateTimeUtils.formatDateTimeToDateString(row.startedAt) : '',
+  //     [t('completedAt')]: row.completedAt ? DateTimeUtils.formatDateTimeToDateString(row.completedAt) : '',
+  //     [t('lastAccess')]: row.lastAccess ? DateTimeUtils.formatDateTimeToDateString(row.lastAccess) : '',
+  //     [t('activeStatus')]: row.activeStatus ? t(row.activeStatus.toLowerCase()) : '',
+  //     // [t('currentPositionName')]: row.user?.employee?.currentPositionName ?? '',
+  //     // [t('currentPositionStateName')]: row.user?.employee?.currentPositionStateName ?? '',
+  //     // [t('currentDepartmentName')]: row.user?.employee?.currentDepartmentName ?? '',
+  //     // [t('cityName')]: row.user?.employee?.cityName ?? '',
+  //   }));
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'UserQuizProgress');
-    const dateTimeString = DateTimeUtils.getTodayAsString();
-    XLSX.writeFile(wb, `UserQuizProgress_${dateTimeString}.xlsx`);
-  };
+  //   const ws = XLSX.utils.json_to_sheet(exportData);
+  //   const wb = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, 'UserQuizProgress');
+  //   const dateTimeString = DateTimeUtils.getTodayAsString();
+  //   XLSX.writeFile(wb, `UserQuizProgress_${dateTimeString}.xlsx`);
+  // };
 
   return (
     <Stack spacing={3}>
@@ -149,7 +149,7 @@ export default function Page(): React.JSX.Element {
             {t('userQuizProgress')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Button
+            {/* <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
               onClick={() => {
@@ -157,7 +157,7 @@ export default function Page(): React.JSX.Element {
               }}
             >
               {t('exportToExcel')}
-            </Button>
+            </Button> */}
           </Stack>
         </Stack>
         {/* <div>

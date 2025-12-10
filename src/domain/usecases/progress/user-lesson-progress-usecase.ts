@@ -70,4 +70,10 @@ export class UserLessonProgressUsecase {
 
     return result;
   }
+
+  async deleteUserLessonPermanently(id: string): Promise<ApiResponse> {
+    const result = await this.userLessonProgressRepo.deleteUserLesson(id);
+
+    return result;
+  }
 }

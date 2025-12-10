@@ -25,10 +25,12 @@ import { useTranslation } from 'react-i18next';
 
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
+import { QuizMultiSelectAndCreateDialog } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select-and-create-form';
 
 import { CustomButton } from '../../../core/button/custom-button';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
@@ -51,7 +53,7 @@ export function CreateLessonDialog({
 }: CreateLessonFormProps) {
   const { t } = useTranslation();
 
-  const { fileUsecase, categoryUsecase } = useDI();
+  const { fileUsecase, categoryUsecase, quizUsecase } = useDI();
   const [detailRows, setDetailRows] = useState(3);
 
   const [fullScreen, setFullScreen] = useState(false);
@@ -64,6 +66,9 @@ export function CreateLessonDialog({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'select'>('select');
+
+  //video
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
 
   //resource
   const [resourceSource, setResourceSource] = useState<'upload' | 'select'>('select');
@@ -155,6 +160,22 @@ export function CreateLessonDialog({
       }
     } else {
       setPreviewUrl(null);
+    }
+  };
+
+  const handleVideoSelectChange = async (id: string) => {
+    const newId = id === '' ? undefined : id;
+
+    handleChange('videoID', newId);
+    if (id) {
+      try {
+        const file = await fileUsecase.getFileResourceById(id);
+        setVideoPreviewUrl(file.resourceUrl || null);
+      } catch (error: unknown) {
+        setVideoPreviewUrl(null);
+      }
+    } else {
+      setVideoPreviewUrl(null);
     }
   };
 
@@ -307,6 +328,17 @@ export function CreateLessonDialog({
             />
           </Grid>
 
+          <Grid item xs={12}>
+            <QuizMultiSelectAndCreateDialog
+              quizUsecase={quizUsecase}
+              value={form.quizIDs ? form.quizIDs.split(',').filter((id) => id) : []}
+              onChange={(val) => {
+                handleChange('quizIDs', val.join(','));
+              }}
+              disabled={isSubmitting}
+            />
+          </Grid>
+
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<boolean>
               label={t('isRequired')}
@@ -356,20 +388,6 @@ export function CreateLessonDialog({
               options={booleanOptions}
             />
           </Grid> */}
-
-          <Grid item xs={12} sm={6}>
-            <CustomSelectDropDown<LessonContentEnum>
-              label={t('contentType')}
-              value={form.contentType ?? ''}
-              onChange={(val) => {
-                handleChange('contentType', val);
-              }}
-              options={[
-                { value: LessonContentEnum.PDF, label: 'pdf' },
-                { value: LessonContentEnum.Video, label: 'video' },
-              ]}
-            />
-          </Grid>
 
           <Grid item xs={12}>
             <Typography variant="h6">{t('updateThumbnail')}</Typography>
@@ -492,8 +510,46 @@ export function CreateLessonDialog({
           ) : null}
 
           <Grid item xs={12}>
+            <CustomSelectDropDown<LessonContentEnum>
+              label={t('contentType')}
+              value={form.contentType ?? ''}
+              onChange={(val) => {
+                handleChange('contentType', val);
+              }}
+              options={[
+                { value: LessonContentEnum.PDF, label: 'pdf' },
+                { value: LessonContentEnum.Video, label: 'video' },
+              ]}
+            />
+          </Grid>
+
+          {form.contentType === LessonContentEnum.Video ? (
+            <>
+              <Grid item xs={12} sm={12}>
+                <FileResourceSelect
+                  fileUsecase={fileUsecase}
+                  type={FileTypeEnum.Video}
+                  status={StatusEnum.Enable}
+                  value={form.videoID}
+                  onChange={handleVideoSelectChange}
+                  label={t('video')}
+                  disabled={isSubmitting}
+                />
+              </Grid>
+              {videoPreviewUrl ? (
+                <Grid item xs={12}>
+                  <CustomVideoPlayer src={videoPreviewUrl ?? ''} fullscreen />
+                </Grid>
+              ) : null}
+            </>
+          ) : (
+            <></>
+          )}
+
+          <Grid item xs={12}>
             <Typography variant="h6">{t('updateResources')}</Typography>
           </Grid>
+
           <Grid item xs={12}>
             <ToggleButtonGroup
               value={resourceSource}

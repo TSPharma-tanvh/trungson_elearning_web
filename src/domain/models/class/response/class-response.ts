@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 import { AttendanceRecordResponse } from '../../attendance/response/attendance-record-response';
 import { CategoryResponse } from '../../category/response/category-response';
 import { EnrollmentCriteriaClassRelationResponse } from '../../enrollment/response/enrollment-criteria-class-relation-response';
@@ -72,8 +74,8 @@ export class ClassResponse {
       isRequired: this.isRequired,
       locationID: this.locationID,
       teacherID: this.teacherID,
-      startAt: this.startAt?.toISOString(),
-      endAt: this.endAt?.toISOString(),
+      startAt: this.startAt ? DateTimeUtils.formatISODateToString(this.startAt) : undefined,
+      endAt: this.endAt ? DateTimeUtils.formatISODateToString(this.endAt) : undefined,
       minuteLate: this.minuteLate,
       minuteSoon: this.minuteSoon,
       classType: this.classType,

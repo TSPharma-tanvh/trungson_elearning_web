@@ -43,9 +43,9 @@ export class EnrollUserListToCourseRequest {
       enrollType: this.enrollType,
       courseID: this.courseID,
       progress: this.progress,
-      FixedCourseStartDate: DateTimeUtils.formatISODateToString(this.fixedCourseStartDate),
+      fixedCourseStartDate: DateTimeUtils.formatISODateToString(this.fixedCourseStartDate),
       isUpdateOldProgress: this.isUpdateOldProgress,
-      lastAccess: this.lastAccess?.toISOString(),
+      lastAccess: DateTimeUtils.formatISODateToString(this.lastAccess),
       status: this.status,
       activeStatus: this.activeStatus,
     };
@@ -71,7 +71,12 @@ export class EnrollUserListToCourseRequest {
     formData.append('ActiveStatus', this.activeStatus.toString());
 
     if (this.progress !== undefined) formData.append('Progress', this.progress.toString());
-    if (this.lastAccess) formData.append('LastAccess', this.lastAccess.toISOString());
+
+    const startDate = DateTimeUtils.formatISODateToString(this.fixedCourseStartDate);
+    if (startDate) {
+      formData.append('FixedCourseStartDate', startDate);
+    }
+
     if (this.userFile) formData.append('UserFile', this.userFile);
 
     return formData;

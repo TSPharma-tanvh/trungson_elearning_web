@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class CreateLessonCollectionLessonDetailRequest {
   lessonId: string;
   order: number;
@@ -54,8 +56,8 @@ export class CreateLessonCollectionRequest {
     return {
       name: this.name,
       order: this.order,
-      startDate: this.startDate?.toISOString(),
-      endDate: this.endDate?.toISOString(),
+      startDate: this.startDate ? DateTimeUtils.formatISODateToString(this.startDate) : undefined,
+      endDate: this.endDate ? DateTimeUtils.formatISODateToString(this.endDate) : undefined,
       fixedCourseDayDuration: this.fixedCourseDayDuration,
       collection: this.collection.map((c) => c.toJson()),
     };
@@ -69,10 +71,11 @@ export class CreateLessonCollectionRequest {
     formData.append(key('Order'), this.order.toString());
 
     if (this.startDate) {
-      formData.append(key('StartDate'), this.startDate.toISOString());
+      formData.append(key('StartDate'), DateTimeUtils.formatISODateToString(this.startDate) ?? '');
     }
+
     if (this.endDate) {
-      formData.append(key('EndDate'), this.endDate.toISOString());
+      formData.append(key('EndDate'), DateTimeUtils.formatISODateToString(this.endDate) ?? '');
     }
     if (this.fixedCourseDayDuration !== undefined) {
       formData.append(key('FixedCourseDayDuration'), this.fixedCourseDayDuration.toString());

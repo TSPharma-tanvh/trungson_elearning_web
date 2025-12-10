@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
   DisplayTypeEnum,
   LearningModeEnum,
@@ -95,8 +96,8 @@ export class CreateCourseRequest {
       const collectionsForApi = this.collections.map((col) => ({
         Name: col.name,
         Order: col.order,
-        StartDate: col.startDate ? col.startDate.toISOString() : undefined,
-        EndDate: col.endDate ? col.endDate.toISOString() : undefined,
+        StartDate: col.startDate ? DateTimeUtils.formatISODateToString(col.startDate) : undefined,
+        EndDate: col.endDate ? DateTimeUtils.formatISODateToString(col.endDate) : undefined,
         FixedCourseDayDuration: col.fixedCourseDayDuration,
         Collection: col.collection.map((item) => ({
           LessonId: item.lessonId,

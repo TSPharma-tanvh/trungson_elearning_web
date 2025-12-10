@@ -4,12 +4,12 @@ import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-req
 import type { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
 import type { LessonDetailListResult } from '@/domain/models/lessons/response/lesson-detail-result';
 import type { LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
-import type { LearningModeEnum, LessonContentEnum, StatusEnum } from '@/utils/enum/core-enum';
+import type { LessonContentEnum, LessonTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
 interface LessonFilters {
-  lessonType?: LearningModeEnum;
+  lessonType?: LessonTypeEnum;
   disableStatus?: StatusEnum;
   contentType?: LessonContentEnum;
   status?: StatusEnum;

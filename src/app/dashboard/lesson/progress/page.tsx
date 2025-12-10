@@ -5,15 +5,16 @@ import { GetUserLessonProgressRequest } from '@/domain/models/user-lesson/reques
 import { type UpdateUserLessonRequest } from '@/domain/models/user-lesson/request/update-user-lesson-request';
 import { type UserLessonProgressDetailResponse } from '@/domain/models/user-lesson/response/user-lesson-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { LessonTypeEnum } from '@/utils/enum/core-enum';
 import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { UserLessonProgressFilters } from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-filter';
-import UserLessonProgressTable from '@/presentation/components/dashboard/progress/lesson/user-lesson-progress-table';
+import { UserLessonProgressIndependentFilters } from '@/presentation/components/dashboard/progress/lesson-independent/user-lesson-independent-progress-filter';
+import UserLessonProgressIndependentTable from '@/presentation/components/dashboard/progress/lesson-independent/user-lesson-independent-progress-table';
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
-  const { userLessonProgressUsecase, courseUsecase, lessonUsecase } = useDI();
+  const { userLessonProgressUsecase, lessonUsecase } = useDI();
 
   const [filters, setFilters] = React.useState<GetUserLessonProgressRequest>(
     new GetUserLessonProgressRequest({ pageNumber: 1, pageSize: 10 })
@@ -29,6 +30,7 @@ export default function Page(): React.JSX.Element {
     try {
       const request = new GetUserLessonProgressRequest({
         ...filters,
+        lessonType: LessonTypeEnum.Independent,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
       });
@@ -69,11 +71,11 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleDeleteUserLessonProgresss = async (ids: string[]) => {
+  const handleDeleteUserLessonProgresses = async (ids: string[]) => {
     try {
       setDeleteLoading(true);
       for (const id of ids) {
-        const response = await userLessonProgressUsecase.deleteUserLessonProgress(id);
+        const response = await userLessonProgressUsecase.deleteUserLessonPermanently(id);
         if (!response) {
           throw new Error(`Failed to delete lesson with ID: ${id}`);
         }
@@ -139,15 +141,15 @@ export default function Page(): React.JSX.Element {
           {t('enrollUsers')}
         </Button> */}
       </Stack>
-      <UserLessonProgressFilters onFilter={handleFilter} courseUsecase={courseUsecase} lessonUsecase={lessonUsecase} />
-      <UserLessonProgressTable
+      <UserLessonProgressIndependentFilters onFilter={handleFilter} lessonUsecase={lessonUsecase} />
+      <UserLessonProgressIndependentTable
         rows={userLessonProgress}
         count={totalCount}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
-        onDeleteUserLessonProgresss={handleDeleteUserLessonProgresss}
+        onDeleteUserLessonProgresss={handleDeleteUserLessonProgresses}
         onEditUserLessonProgress={handleEditUserLessonProgress}
       />
 

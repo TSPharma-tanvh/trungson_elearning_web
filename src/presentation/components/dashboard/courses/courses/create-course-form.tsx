@@ -249,21 +249,6 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
-                label={t('isFixedCourse')}
-                value={form.isFixedCourse ?? true}
-                onChange={(val) => {
-                  handleChange('isFixedCourse', val);
-                }}
-                disabled={disabled}
-                options={[
-                  { value: true, label: 'yes' },
-                  { value: false, label: 'no' },
-                ]}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<boolean>
                 label={t('isRequired')}
                 value={form.isRequired ?? true}
                 onChange={(val) => {
@@ -316,6 +301,27 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                   handleChange('positionStateCode', value);
                 }}
                 loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                {t('lessonCollections')}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('courseType')}
+                value={form.isFixedCourse ?? true}
+                onChange={(val) => {
+                  handleChange('isFixedCourse', val);
+                }}
+                disabled={disabled}
+                options={[
+                  { value: true, label: 'duration' },
+                  { value: false, label: 'time' },
+                ]}
               />
             </Grid>
 

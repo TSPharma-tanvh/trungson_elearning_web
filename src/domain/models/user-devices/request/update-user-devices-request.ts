@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class UpdateUserDevicesRequest {
   id!: string;
   userID?: string;
@@ -38,9 +40,9 @@ export class UpdateUserDevicesRequest {
       deviceID: this.deviceID,
       deviceToken: this.deviceToken,
       ipAddress: this.ipAddress,
-      signInAt: this.signInAt?.toISOString(),
-      signOutAt: this.signOutAt?.toISOString(),
-      lastAccess: this.lastAccess?.toISOString(),
+      signInAt: this.signInAt ? DateTimeUtils.formatISODateToString(this.signInAt) : undefined,
+      signOutAt: this.signOutAt ? DateTimeUtils.formatISODateToString(this.signOutAt) : undefined,
+      lastAccess: this.lastAccess ? DateTimeUtils.formatISODateToString(this.lastAccess) : undefined,
     };
   }
 }

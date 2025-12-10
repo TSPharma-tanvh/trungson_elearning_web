@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class CreateUserLessonRequest {
   userID?: string;
   lessonID?: string;
@@ -28,9 +30,9 @@ export class CreateUserLessonRequest {
       userID: this.userID,
       lessonID: this.lessonID,
       progress: this.progress,
-      startDate: this.startDate?.toISOString(),
-      endDate: this.endDate?.toISOString(),
-      lastAccess: this.lastAccess?.toISOString(),
+      startDate: DateTimeUtils.formatISODateToString(this.startDate),
+      endDate: DateTimeUtils.formatISODateToString(this.endDate),
+      lastAccess: DateTimeUtils.formatISODateToString(this.lastAccess),
       status: this.status,
     };
   }

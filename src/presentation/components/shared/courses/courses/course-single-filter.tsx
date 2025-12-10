@@ -283,7 +283,7 @@ export function CourseSingleFilter({
           {/* Filters */}
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {/* Course Type */}
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('courseType')}</InputLabel>
               <Select
                 value={courseType !== undefined ? String(courseType) : ''}
@@ -298,10 +298,10 @@ export function CourseSingleFilter({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             {/* Display Type */}
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('displayType')}</InputLabel>
               <Select
                 value={displayType !== undefined ? String(displayType) : ''}
@@ -316,7 +316,7 @@ export function CourseSingleFilter({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             {/* Disable Status */}
             <FormControl size="small" sx={{ minWidth: 120 }}>

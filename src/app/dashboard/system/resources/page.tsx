@@ -127,18 +127,17 @@ export default function Page(): React.JSX.Element {
       </Stack>
 
       <ResourceFilters onFilter={handleFilter} />
-      <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>
-        <FileResourcesTable
-          rows={resources}
-          count={totalCount}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          onDeleteFileResources={handleDeleteResources}
-          onEditFileResources={handleEditResources}
-        />
-      </Stack>
+
+      <FileResourcesTable
+        rows={resources}
+        count={totalCount}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
+        onDeleteFileResources={handleDeleteResources}
+        onEditFileResources={handleEditResources}
+      />
 
       <CreateFileResourcesDialog
         onSubmit={handleCreateResources}

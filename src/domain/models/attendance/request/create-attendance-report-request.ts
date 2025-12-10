@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class CreateAttendanceReportRequest {
   classID!: string;
   enrollmentCriteriaID?: string;
@@ -22,7 +24,7 @@ export class CreateAttendanceReportRequest {
       classID: this.classID,
       enrollmentCriteriaID: this.enrollmentCriteriaID,
       isDefaultEnroll: this.isDefaultEnroll,
-      startAt: this.startAt?.toISOString(),
+      startAt: this.startAt ? DateTimeUtils.formatISODateToString(this.startAt) : undefined,
     };
   }
 }

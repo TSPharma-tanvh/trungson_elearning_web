@@ -2,15 +2,19 @@
 
 import * as React from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CoreEnumUtils, LearningModeEnum, LessonContentEnum, LessonTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { Button, Card, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
+import { CourseSingleFilter } from '@/presentation/components/shared/courses/courses/course-single-filter';
 
 export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequest) => void }): React.JSX.Element {
   const { t } = useTranslation();
+
+  const { courseUsecase } = useDI();
 
   const [searchText, setSearchText] = React.useState('');
   const [status, setStatus] = React.useState<StatusEnum | undefined>(undefined);
@@ -18,7 +22,8 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
   const [contentType, setContentType] = React.useState<LessonContentEnum | undefined>(undefined);
   const [hasVideo, setHasVideo] = React.useState<boolean | undefined>(undefined);
   const [hasFileResource, setHasFileResource] = React.useState<boolean | undefined>(undefined);
-  // const [hasCourse, setHasCourse] = React.useState<boolean | undefined>(undefined);
+  const [hasCourse, setHasCourse] = React.useState<boolean | undefined>(undefined);
+  const [courseId, setCourseId] = React.useState<string | undefined>(undefined);
 
   const handleFilter = () => {
     const request = new GetLessonRequest({
@@ -27,7 +32,9 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
       lessonType: LessonTypeEnum.Course,
       contentType,
       hasVideo,
+      hasCourse,
       hasFileResource,
+      courseID: courseId,
       pageNumber: 1,
       pageSize: 10,
     });
@@ -40,9 +47,10 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
     setStatus(undefined);
     // setLessonType(undefined);
     setContentType(undefined);
-    // setHasCourse(undefined);
+    setHasCourse(undefined);
     setHasVideo(undefined);
     setHasFileResource(undefined);
+    setCourseId(undefined);
     onFilter(new GetLessonRequest({ pageNumber: 1, pageSize: 10 }));
   };
 
@@ -75,6 +83,25 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
           }))}
         /> */}
 
+        <CustomSelectFilter<boolean>
+          label={t('hasCourse')}
+          value={hasCourse}
+          onChange={setHasCourse}
+          options={[
+            { value: true, label: 'yes' },
+            { value: false, label: 'no' },
+          ]}
+        />
+
+        <CourseSingleFilter
+          courseUsecase={courseUsecase}
+          value={courseId ?? ''}
+          onChange={(value) => {
+            setCourseId(value);
+          }}
+          disabled={false}
+        />
+
         <CustomSelectFilter<StatusEnum>
           label={t('status')}
           value={status}
@@ -103,16 +130,6 @@ export function LessonsFilters({ onFilter }: { onFilter: (filters: GetLessonRequ
             value: opt.value,
             label: t(opt.label),
           }))}
-        /> */}
-
-        {/* <CustomSelectFilter<boolean>
-          label={t('hasCourse')}
-          value={hasCourse}
-          onChange={setHasCourse}
-          options={[
-            { value: true, label: 'yes' },
-            { value: false, label: 'no' },
-          ]}
         /> */}
 
         <CustomSelectFilter<boolean>

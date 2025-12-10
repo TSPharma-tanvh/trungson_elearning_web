@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreateAttendanceReportRequest } from '@/domain/models/attendance/request/create-attendance-report-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -106,7 +107,7 @@ export function CreateAttendanceReportDialog({
           <Grid item xs={12} sm={6}>
             <CustomDateTimePicker
               label={t('startAt')}
-              value={form.startAt?.toISOString()}
+              value={DateTimeUtils.formatISODateToString(form.startAt)}
               onChange={(val) => {
                 handleChange('startAt', new Date(val ?? new Date()));
               }}

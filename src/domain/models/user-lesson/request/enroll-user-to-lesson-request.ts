@@ -1,11 +1,11 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { ProgressEnrollmentTypeEnum, StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
 
 export class EnrollUserListToLessonRequest {
   userIDs?: string[] | null;
   lessonID!: string;
   progress?: number | null;
-  startDate!: string;
-  endDate!: string;
+  startDate?: Date;
   lastAccess?: string | null;
   status!: string;
   activeStatus!: StatusEnum;
@@ -22,8 +22,7 @@ export class EnrollUserListToLessonRequest {
       userIDs: json.userIDs ?? null,
       lessonID: json.lessonID,
       progress: json.progress ?? null,
-      startDate: json.startDate,
-      endDate: json.endDate,
+      startDate: json.startDate ? new Date(json.startDate) : undefined,
       lastAccess: json.lastAccess ?? null,
       status: json.status,
       activeStatus: json.activeStatus,
@@ -38,13 +37,11 @@ export class EnrollUserListToLessonRequest {
       userIDs: this.userIDs,
       lessonID: this.lessonID,
       progress: this.progress,
-      startDate: this.startDate,
-      endDate: this.endDate,
+      startDate: DateTimeUtils.formatISODateToString(this.startDate),
       lastAccess: this.lastAccess,
       status: this.status,
       activeStatus: this.activeStatus,
       enrollType: this.enrollType,
-
       isUpdateOldProgress: this.isUpdateOldProgress,
     };
   }
@@ -62,8 +59,9 @@ export class EnrollUserListToLessonRequest {
       fd.append('Progress', String(this.progress));
     }
 
-    fd.append('StartDate', this.startDate);
-    fd.append('EndDate', this.endDate);
+    const startDateStr = DateTimeUtils.formatISODateToString(this.startDate);
+
+    if (startDateStr) fd.append('StartDate', startDateStr);
 
     if (this.lastAccess) {
       fd.append('LastAccess', this.lastAccess);

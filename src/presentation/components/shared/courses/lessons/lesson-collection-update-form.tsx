@@ -220,9 +220,9 @@ export function LessonCollectionUpdateEditor({
 
   return (
     <Box sx={{ mt: 3 }}>
-      <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+      {/* <Typography variant="subtitle1" fontWeight={600} gutterBottom>
         {t('lessonCollections')}
-      </Typography>
+      </Typography> */}
 
       <Stack spacing={3}>
         {items.map((item) => (

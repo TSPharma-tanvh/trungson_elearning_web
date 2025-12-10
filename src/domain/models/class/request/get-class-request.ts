@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class GetClassRequest {
   className?: string;
   locationID?: string;
@@ -42,10 +44,10 @@ export class GetClassRequest {
       teacherID: this.teacherID,
       classType: this.classType,
       scheduleStatus: this.scheduleStatus,
-      startAtFrom: this.startAtFrom?.toISOString(),
-      startAtTo: this.startAtTo?.toISOString(),
-      endAtFrom: this.endAtFrom?.toISOString(),
-      endAtTo: this.endAtTo?.toISOString(),
+      startAtFrom: this.startAtFrom ? DateTimeUtils.formatISODateToString(this.startAtFrom) : undefined,
+      startAtTo: this.startAtTo ? DateTimeUtils.formatISODateToString(this.startAtTo) : undefined,
+      endAtFrom: this.endAtFrom ? DateTimeUtils.formatISODateToString(this.endAtFrom) : undefined,
+      endAtTo: this.endAtTo ? DateTimeUtils.formatISODateToString(this.endAtTo) : undefined,
       enrollmentCriteriaIDs: this.enrollmentCriteriaIDs,
       searchText: this.searchText,
       pageNumber: this.pageNumber,

@@ -72,7 +72,7 @@ export class EnrollUserListToPathRequest {
       userID: this.userID,
       enrollStatus: this.enrollStatus,
       approvedBy: this.approvedBy,
-      approvedAt: this.approvedAt?.toISOString(),
+      approvedAt: DateTimeUtils.formatISODateToString(this.approvedAt),
       rejectedReason: this.rejectedReason,
       userFile: this.userFile,
     };

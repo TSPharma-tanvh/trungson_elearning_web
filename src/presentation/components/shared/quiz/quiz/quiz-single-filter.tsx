@@ -251,10 +251,10 @@ export function QuizSingleFilter({
           <Box component="ul" ref={listRef} sx={{ overflowY: 'auto', mb: 2, listStyle: 'none', padding: 0 }}>
             {quizzes.map((item) => {
               const isSelected = localValue === item.id;
-              const textColor =
-                item.type === QuizTypeEnum[QuizTypeEnum.LessonQuiz] || item.type?.toString() === 'LessonQuiz'
-                  ? 'var(--mui-palette-primary-main)'
-                  : 'var(--mui-palette-secondary-main)';
+              // const textColor =
+              //   item.type === QuizTypeEnum[QuizTypeEnum.LessonQuiz] || item.type?.toString() === 'LessonQuiz'
+              //     ? 'var(--mui-palette-primary-main)'
+              //     : 'var(--mui-palette-secondary-main)';
 
               return (
                 <MenuItem
@@ -266,13 +266,7 @@ export function QuizSingleFilter({
                   }}
                 >
                   <Checkbox checked={isSelected} />
-                  <ListItemText
-                    primary={
-                      <Typography variant="body1" sx={{ color: textColor }}>
-                        {item.title}
-                      </Typography>
-                    }
-                  />
+                  <ListItemText primary={<Typography variant="body1">{item.title}</Typography>} />
                   <IconButton
                     size="small"
                     onClick={(e) => {

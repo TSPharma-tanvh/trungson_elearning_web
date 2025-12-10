@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 import { LessonsCollectionUpdateRequest } from '../../lessons/request/lesson-collection-update-request';
 
 export class UpdateCourseRequest {
@@ -137,8 +139,9 @@ export class UpdateCourseRequest {
             Id: c.id,
             Name: c.name,
             Order: c.order,
-            StartDate: c.startDate ? c.startDate.toISOString() : undefined,
-            EndDate: c.endDate ? c.endDate.toISOString() : undefined,
+            StartDate: c.startDate ? DateTimeUtils.formatISODateToString(c.startDate) : undefined,
+            EndDate: c.endDate ? DateTimeUtils.formatISODateToString(c.endDate) : undefined,
+
             FixedCourseDayDuration: c.fixedCourseDayDuration,
             Collection: c.collection.map((item) => ({
               LessonId: item.lessonId,

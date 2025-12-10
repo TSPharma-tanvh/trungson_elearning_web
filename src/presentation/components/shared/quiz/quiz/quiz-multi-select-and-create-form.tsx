@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { type CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
+import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { type QuizUsecase } from '@/domain/usecases/quiz/quiz-usecase';
 import { useQuizSelectLoader } from '@/presentation/hooks/quiz/use-quiz-select-loader';
@@ -138,10 +139,16 @@ export function QuizMultiSelectAndCreateDialog({
     }
   };
 
-  const handleEditQuiz = async () => {
-    setShowEditDialog(false);
-    setSelectedQuiz(null);
-    await loadQuizzes(pageNumber, true);
+  const handleEditQuiz = async (request: UpdateQuizRequest) => {
+    try {
+      const response = quizUsecase.updateQuiz(request);
+      await loadQuizzes(pageNumber, true);
+      setShowEditDialog(false);
+      setSelectedQuiz(null);
+      return response;
+    } catch (error) {
+      return undefined;
+    }
   };
 
   const handleRequestDelete = (id: string) => {

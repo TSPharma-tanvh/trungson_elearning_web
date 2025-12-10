@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { QuizTypeEnum, StatusEnum, type CategoryEnum } from '@/utils/enum/core-enum';
 
 export class CreateQuizRequest {
@@ -86,7 +87,7 @@ export class CreateQuizRequest {
       if (key.endsWith('Enum')) return;
 
       if (value instanceof Date) {
-        formData.append(key, value.toISOString());
+        formData.append(key, DateTimeUtils.formatISODateToString(value)!);
         return;
       }
 

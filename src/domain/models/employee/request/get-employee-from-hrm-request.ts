@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class GetEmployeeFromHrmRequest {
   username?: string;
   password?: string;
@@ -24,7 +26,7 @@ export class GetEmployeeFromHrmRequest {
   toJson(): any {
     return {
       ...this,
-      staticDate: this.staticDate?.toISOString(),
+      staticDate: this.staticDate ? DateTimeUtils.formatISODateToString(this.staticDate) : undefined,
     };
   }
 }

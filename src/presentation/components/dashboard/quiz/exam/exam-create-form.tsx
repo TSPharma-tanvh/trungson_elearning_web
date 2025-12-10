@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreateQuizRequest } from '@/domain/models/quiz/request/create-quiz-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
@@ -498,7 +499,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               <Grid item xs={12} sm={6}>
                 <CustomDateTimePicker
                   label={t('startDate')}
-                  value={form.startDate ? form.startDate.toISOString() : undefined}
+                  value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
                   onChange={(iso) => {
                     handleChange('startDate', iso ? new Date(iso) : undefined);
                   }}
@@ -512,7 +513,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               <Grid item xs={12} sm={6}>
                 <CustomDateTimePicker
                   label={t('endDate')}
-                  value={form.endDate ? form.endDate.toISOString() : undefined}
+                  value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
                   onChange={(iso) => {
                     handleChange('endDate', iso ? new Date(iso) : undefined);
                   }}

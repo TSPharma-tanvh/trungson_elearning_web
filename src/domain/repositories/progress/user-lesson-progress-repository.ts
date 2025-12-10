@@ -15,4 +15,6 @@ export interface UserLessonProgressRepository {
   enrollUserListToLesson: (request: EnrollUserListToLessonRequest) => Promise<ApiResponse>;
 
   updateUserLessonProgress: (request: UpdateUserLessonRequest) => Promise<ApiResponse>;
+
+  deleteUserLesson(id: string): Promise<ApiResponse>;
 }

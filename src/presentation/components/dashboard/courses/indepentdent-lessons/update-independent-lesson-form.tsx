@@ -5,6 +5,7 @@ import { type LessonDetailResponse } from '@/domain/models/lessons/response/less
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, LessonContentEnum, LessonTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -31,6 +32,7 @@ import {
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
+import { CustomEmployeeDistinctSelectInForm } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-in-form';
 import { CustomSelectDropDownNullable } from '@/presentation/components/core/drop-down/custom-select-drop-down-nullable';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
@@ -606,6 +608,10 @@ export function UpdateIndependentLessonFormDialog({
               />
             </Grid>
 
+            <Grid item xs={12}>
+              <Typography variant="h6">{t('duration')}</Typography>
+            </Grid>
+
             {formData.isFixedLesson === true ? (
               <Grid item xs={12} sm={6}>
                 <CustomTextField
@@ -647,17 +653,45 @@ export function UpdateIndependentLessonFormDialog({
               <div></div>
             )}
 
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                {t('employeeFilters')}
+              </Typography>
+            </Grid>
+
             <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<LessonContentEnum>
-                label={t('contentType')}
-                value={(formData.contentType as LessonContentEnum) ?? ''}
-                onChange={(val) => {
-                  handleChange('contentType', val);
+              <CustomEmployeeDistinctSelectInForm
+                label="departmentType"
+                value={formData.departmentTypeCode}
+                type={DepartmentFilterType.DepartmentType}
+                onChange={(value) => {
+                  handleChange('departmentTypeCode', value);
                 }}
-                options={[
-                  { value: LessonContentEnum.PDF, label: 'pdf' },
-                  { value: LessonContentEnum.Video, label: 'video' },
-                ]}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label="position"
+                value={formData.positionCode}
+                type={DepartmentFilterType.Position}
+                onChange={(value) => {
+                  handleChange('positionCode', value);
+                }}
+                loadOnMount
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomEmployeeDistinctSelectInForm
+                label="currentPositionStateName"
+                value={formData.positionStateCode}
+                type={DepartmentFilterType.PositionState}
+                onChange={(value) => {
+                  handleChange('positionStateCode', value);
+                }}
+                loadOnMount
               />
             </Grid>
 
@@ -783,6 +817,171 @@ export function UpdateIndependentLessonFormDialog({
             <Grid item xs={12}>
               <Typography variant="h6">{t('updateResources')}</Typography>
             </Grid>
+
+            <Grid item xs={12}>
+              <CustomSelectDropDown<LessonContentEnum>
+                label={t('contentType')}
+                value={(formData.contentType as LessonContentEnum) ?? ''}
+                onChange={(val) => {
+                  handleChange('contentType', val);
+                }}
+                options={[
+                  { value: LessonContentEnum.PDF, label: 'pdf' },
+                  { value: LessonContentEnum.Video, label: 'video' },
+                ]}
+              />
+            </Grid>
+
+            {formData.contentType === LessonContentEnum.Video ? (
+              <>
+                {' '}
+                <Grid item xs={12}>
+                  <Typography variant="h6">{t('updateVideo')}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <ToggleButtonGroup
+                    value={videoSource}
+                    exclusive
+                    onChange={handleVideoSourceChange}
+                    aria-label={t('videoSource')}
+                    fullWidth
+                    disabled={isSubmitting}
+                    sx={{ mb: 2 }}
+                  >
+                    <ToggleButton value="select" aria-label={t('selectFromResources')}>
+                      {t('selectFromResources')}
+                    </ToggleButton>
+                    <ToggleButton value="upload" aria-label={t('uploadFiles')}>
+                      {t('uploadFiles')}
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  {videoSource === 'select' ? (
+                    <FileResourceSelect
+                      fileUsecase={fileUsecase}
+                      type={FileTypeEnum.Video}
+                      status={StatusEnum.Enable}
+                      value={formData.videoID}
+                      onChange={handleVideoSelectChange}
+                      label={t('video')}
+                      disabled={isSubmitting}
+                    />
+                  ) : (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <CustomTextField
+                          label={t('videoDocumentNo')}
+                          value={formData.videoDocumentNo}
+                          onChange={(value) => {
+                            handleChange('videoDocumentNo', value);
+                          }}
+                          disabled={isSubmitting}
+                          icon={<ImageIcon {...iconStyle} />}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <CustomTextField
+                          label={t('videoPrefixName')}
+                          value={formData.videoPrefixName}
+                          onChange={(value) => {
+                            handleChange('videoPrefixName', value);
+                          }}
+                          disabled={isSubmitting}
+                          icon={<ImageIcon {...iconStyle} />}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Button
+                          variant="outlined"
+                          component="label"
+                          fullWidth
+                          disabled={isSubmitting}
+                          startIcon={<ImageIcon {...iconStyle} />}
+                        >
+                          {t('uploadVideo')}
+                          <input
+                            type="file"
+                            hidden
+                            accept="video/*"
+                            onChange={(e) => {
+                              handleVideoUpload(e.target.files?.[0] || null);
+                            }}
+                          />
+                        </Button>
+                      </Grid>
+                      {totalChunks > 0 && (
+                        <Grid item xs={12}>
+                          <Box
+                            sx={{
+                              mt: 2,
+                              p: 2,
+
+                              textAlign: 'center',
+                            }}
+                          >
+                            <Box sx={{ position: 'relative', height: 24 }}>
+                              {/* Thanh progress */}
+                              <LinearProgress
+                                variant="determinate"
+                                value={uploadProgress}
+                                sx={{
+                                  height: 24,
+                                  borderRadius: 12,
+                                  [`& .MuiLinearProgress-bar`]: {
+                                    borderRadius: 12,
+                                    backgroundColor:
+                                      uploadProgress < 100 ? theme.palette.primary.main : theme.palette.secondary.main,
+                                  },
+                                  // backgroundColor: theme.palette.grey[300],
+                                }}
+                              />
+
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  position: 'absolute',
+                                  inset: 0,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontWeight: 600,
+                                  color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+                                }}
+                              >
+                                {Math.round(uploadProgress)}%
+                              </Typography>
+                            </Box>
+                          </Box>
+
+                          {/* CSS keyframes cho gradient */}
+                          <style>
+                            {`
+        @keyframes moveGradient {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 100% 50%; }
+        }
+      `}
+                          </style>
+                        </Grid>
+                      )}
+                    </Grid>
+                  )}
+                </Grid>
+                {videoPreviewUrl || lesson.video?.resourceUrl ? (
+                  <Grid item xs={12}>
+                    <CustomVideoPlayer src={videoPreviewUrl ?? lesson.video?.resourceUrl ?? ''} fullscreen />
+                  </Grid>
+                ) : null}
+              </>
+            ) : (
+              <></>
+            )}
+
+            <Grid item xs={12}>
+              <Typography variant="h6">{t('selectResources')}</Typography>
+            </Grid>
+
             <Grid item xs={12}>
               <ToggleButtonGroup
                 value={resourceSource}
@@ -929,152 +1128,6 @@ export function UpdateIndependentLessonFormDialog({
                   ))}
                 </Grid>
               </Grid>
-            )}
-
-            {formData.contentType === LessonContentEnum.Video ? (
-              <>
-                {' '}
-                <Grid item xs={12}>
-                  <Typography variant="h6">{t('updateVideo')}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <ToggleButtonGroup
-                    value={videoSource}
-                    exclusive
-                    onChange={handleVideoSourceChange}
-                    aria-label={t('videoSource')}
-                    fullWidth
-                    disabled={isSubmitting}
-                    sx={{ mb: 2 }}
-                  >
-                    <ToggleButton value="select" aria-label={t('selectFromResources')}>
-                      {t('selectFromResources')}
-                    </ToggleButton>
-                    <ToggleButton value="upload" aria-label={t('uploadFiles')}>
-                      {t('uploadFiles')}
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  {videoSource === 'select' ? (
-                    <FileResourceSelect
-                      fileUsecase={fileUsecase}
-                      type={FileTypeEnum.Video}
-                      status={StatusEnum.Enable}
-                      value={formData.videoID}
-                      onChange={handleVideoSelectChange}
-                      label={t('video')}
-                      disabled={isSubmitting}
-                    />
-                  ) : (
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
-                        <CustomTextField
-                          label={t('videoDocumentNo')}
-                          value={formData.videoDocumentNo}
-                          onChange={(value) => {
-                            handleChange('videoDocumentNo', value);
-                          }}
-                          disabled={isSubmitting}
-                          icon={<ImageIcon {...iconStyle} />}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <CustomTextField
-                          label={t('videoPrefixName')}
-                          value={formData.videoPrefixName}
-                          onChange={(value) => {
-                            handleChange('videoPrefixName', value);
-                          }}
-                          disabled={isSubmitting}
-                          icon={<ImageIcon {...iconStyle} />}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Button
-                          variant="outlined"
-                          component="label"
-                          fullWidth
-                          disabled={isSubmitting}
-                          startIcon={<ImageIcon {...iconStyle} />}
-                        >
-                          {t('uploadVideo')}
-                          <input
-                            type="file"
-                            hidden
-                            accept="video/*"
-                            onChange={(e) => {
-                              handleVideoUpload(e.target.files?.[0] || null);
-                            }}
-                          />
-                        </Button>
-                      </Grid>
-                      {totalChunks > 0 && (
-                        <Grid item xs={12}>
-                          <Box
-                            sx={{
-                              mt: 2,
-                              p: 2,
-
-                              textAlign: 'center',
-                            }}
-                          >
-                            <Box sx={{ position: 'relative', height: 24 }}>
-                              {/* Thanh progress */}
-                              <LinearProgress
-                                variant="determinate"
-                                value={uploadProgress}
-                                sx={{
-                                  height: 24,
-                                  borderRadius: 12,
-                                  [`& .MuiLinearProgress-bar`]: {
-                                    borderRadius: 12,
-                                    backgroundColor:
-                                      uploadProgress < 100 ? theme.palette.primary.main : theme.palette.secondary.main,
-                                  },
-                                  // backgroundColor: theme.palette.grey[300],
-                                }}
-                              />
-
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  position: 'absolute',
-                                  inset: 0,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontWeight: 600,
-                                  color: theme.palette.mode === 'dark' ? '#fff' : '#000',
-                                }}
-                              >
-                                {Math.round(uploadProgress)}%
-                              </Typography>
-                            </Box>
-                          </Box>
-
-                          {/* CSS keyframes cho gradient */}
-                          <style>
-                            {`
-        @keyframes moveGradient {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 100% 50%; }
-        }
-      `}
-                          </style>
-                        </Grid>
-                      )}
-                    </Grid>
-                  )}
-                </Grid>
-                {videoPreviewUrl || lesson.video?.resourceUrl ? (
-                  <Grid item xs={12}>
-                    <CustomVideoPlayer src={videoPreviewUrl ?? lesson.video?.resourceUrl ?? ''} fullscreen />
-                  </Grid>
-                ) : null}
-              </>
-            ) : (
-              <></>
             )}
           </Grid>
         </Box>

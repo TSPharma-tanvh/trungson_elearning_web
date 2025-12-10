@@ -118,7 +118,7 @@ export function UpdateAttendanceRecordsFormDialog({
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('startAt')}
-                value={formData.startAt?.toISOString()}
+                value={DateTimeUtils.formatISODateToString(formData.startAt)}
                 onChange={(val) => {
                   handleChange('startAt', val !== undefined ? new Date(val) : undefined);
                 }}
@@ -129,7 +129,7 @@ export function UpdateAttendanceRecordsFormDialog({
             <Grid item xs={12} sm={6}>
               <CustomDateTimePicker
                 label={t('endAt')}
-                value={formData.endAt?.toISOString()}
+                value={DateTimeUtils.formatISODateToString(formData.endAt)}
                 onChange={(val) => {
                   handleChange('endAt', val !== undefined ? new Date(val) : undefined);
                 }}

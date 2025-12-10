@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { EnrollUserListToClassRequest } from '@/domain/models/attendance/request/enroll-user-to-class-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { ApproveStatusEnum, CheckinTimeEnum, ProgressEnrollmentTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { UploadFile } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -254,7 +255,7 @@ export function CreateAttendanceRecordsDialog({
           <Grid item xs={12} sm={6}>
             <CustomDateTimePicker
               label={t('startAt')}
-              value={form.startAt?.toISOString()}
+              value={DateTimeUtils.formatISODateToString(form.startAt)}
               onChange={(val) => {
                 handleChange('startAt', new Date(val ?? new Date()));
               }}
@@ -265,7 +266,7 @@ export function CreateAttendanceRecordsDialog({
           <Grid item xs={12} sm={6}>
             <CustomDateTimePicker
               label={t('endAt')}
-              value={form.endAt?.toISOString()}
+              value={DateTimeUtils.formatISODateToString(form.endAt)}
               onChange={(val) => {
                 handleChange('endAt', new Date(val ?? new Date()));
               }}

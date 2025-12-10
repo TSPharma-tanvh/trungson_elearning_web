@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CheckinTimeEnum } from '@/utils/enum/core-enum';
 
 export class CreateAttendanceRecordsRequest {
@@ -26,7 +27,7 @@ export class CreateAttendanceRecordsRequest {
       userID: this.userID,
       levelID: this.levelID,
       classID: this.classID,
-      checkinTime: this.checkinTime?.toISOString(),
+      checkinTime: this.checkinTime ? DateTimeUtils.formatISODateToString(this.checkinTime) : undefined,
       status: this.status,
     };
   }

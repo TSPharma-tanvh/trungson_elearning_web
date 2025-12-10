@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { type CheckinTimeEnum, type CheckOutTimeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 export class GetAttendanceRecordsRequest {
@@ -41,8 +42,8 @@ export class GetAttendanceRecordsRequest {
       levelID: this.levelID,
       classID: this.classID,
       enrollmentCriteriaId: this.enrollmentCriteriaId,
-      checkinTimeFrom: this.checkinTimeFrom?.toISOString(),
-      checkinTimeTo: this.checkinTimeTo?.toISOString(),
+      checkinTimeFrom: this.checkinTimeFrom ? DateTimeUtils.formatISODateToString(this.checkinTimeFrom) : undefined,
+      checkinTimeTo: this.checkinTimeTo ? DateTimeUtils.formatISODateToString(this.checkinTimeTo) : undefined,
       statusCheckIn: this.statusCheckIn,
       statusCheckOut: this.statusCheckOut,
       activeStatus: this.activeStatus,

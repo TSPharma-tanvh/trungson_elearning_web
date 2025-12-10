@@ -58,7 +58,7 @@ export function ResourceFilters({
 
         {/* Status */}
         <CustomSelectFilter<FileTypeEnum>
-          label={t('category')}
+          label={t('type')}
           value={resourceValue}
           onChange={(val) => {
             setResourceValue(val);

@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class GetUserDevicesRequest {
   userID?: string;
   deviceName?: string;
@@ -47,12 +49,12 @@ export class GetUserDevicesRequest {
       deviceID: this.deviceID,
       deviceToken: this.deviceToken,
       ipAddress: this.ipAddress,
-      signInAtFrom: this.signInAtFrom?.toISOString(),
-      signInAtTo: this.signInAtTo?.toISOString(),
-      signOutAtFrom: this.signOutAtFrom?.toISOString(),
-      signOutAtTo: this.signOutAtTo?.toISOString(),
-      lastAccessFrom: this.lastAccessFrom?.toISOString(),
-      lastAccessTo: this.lastAccessTo?.toISOString(),
+      signInAtFrom: this.signInAtFrom ? DateTimeUtils.formatISODateToString(this.signInAtFrom) : undefined,
+      signInAtTo: this.signInAtTo ? DateTimeUtils.formatISODateToString(this.signInAtTo) : undefined,
+      signOutAtFrom: this.signOutAtFrom ? DateTimeUtils.formatISODateToString(this.signOutAtFrom) : undefined,
+      signOutAtTo: this.signOutAtTo ? DateTimeUtils.formatISODateToString(this.signOutAtTo) : undefined,
+      lastAccessFrom: this.lastAccessFrom ? DateTimeUtils.formatISODateToString(this.lastAccessFrom) : undefined,
+      lastAccessTo: this.lastAccessTo ? DateTimeUtils.formatISODateToString(this.lastAccessTo) : undefined,
       searchText: this.searchText,
       pageNumber: this.pageNumber,
       pageSize: this.pageSize,

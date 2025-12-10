@@ -84,10 +84,8 @@ export default function EnrollUsersToLessonPage() {
     try {
       setLoading(true);
       await userLessonProgressUsecase.enrollUserListToLesson(form);
-      CustomSnackBar.showSnackbar(t('enrollUsersToLessonSuccess'), 'success');
-      // Có thể reset form hoặc redirect nếu cần
     } catch (error: any) {
-      CustomSnackBar.showSnackbar(t('enrollFailed') + ': ' + (error?.message || ''), 'error');
+      return null;
     } finally {
       setLoading(false);
     }
@@ -142,6 +140,20 @@ export default function EnrollUsersToLessonPage() {
                 </Typography>
               </Grid>
             )} */}
+
+            {selectedLessonDetail?.isFixedLesson ? (
+              <Grid item xs={12}>
+                <CustomDateTimePicker
+                  label={`${t('startDate')} *`}
+                  value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : ''}
+                  onChange={(val) => {
+                    const date = val ? DateTimeUtils.formatStringToDateTime(val) : null;
+                    handleChange('startDate', date);
+                  }}
+                  disabled={loading}
+                />
+              </Grid>
+            ) : null}
 
             {/* Cập nhật tiến độ cũ */}
             <Grid item xs={12}>
@@ -228,7 +240,6 @@ export default function EnrollUsersToLessonPage() {
               </Grid>
             )}
 
-            {/* Nút thực hiện */}
             <Grid item xs={12}>
               <Stack direction="row" spacing={2} justifyContent="flex-end">
                 <CustomButton

@@ -3,6 +3,7 @@ import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { UpdateUserQuizRequest } from '@/domain/models/user-quiz/request/update-quiz-progress-request';
 import { type UserQuizProgressDetailResponse } from '@/domain/models/user-quiz/response/user-quiz-progress-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { StatusEnum, UserQuizProgressEnum } from '@/utils/enum/core-enum';
 import { Edit } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -150,7 +151,7 @@ export function UpdateUserQuizScoreFormDialog({ open, data: userQuizProgress, on
                     <Typography variant="body2">{answer.answerText}</Typography>
 
                     <Typography variant="body2" sx={{ mt: 1 }}>
-                      {t('answeredAt')}: {answer.answeredAt?.toISOString() ?? ''}
+                      {t('answeredAt')}: {DateTimeUtils.formatISODateToString(answer.answeredAt)}
                     </Typography>
                   </Box>
                 }

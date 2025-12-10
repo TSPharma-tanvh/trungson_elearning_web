@@ -1,3 +1,5 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
+
 export class ExportQuizProgressReportRequest {
   quizId!: string;
   statuses?: string[];
@@ -50,12 +52,12 @@ export class ExportQuizProgressReportRequest {
       maxScore: this.maxScore,
       hasStarted: this.hasStarted,
       isOverdue: this.isOverdue,
-      startedFrom: this.startedFrom?.toISOString(),
-      startedTo: this.startedTo?.toISOString(),
-      completedFrom: this.completedFrom?.toISOString(),
-      completedTo: this.completedTo?.toISOString(),
-      lastAccessFrom: this.lastAccessFrom?.toISOString(),
-      lastAccessTo: this.lastAccessTo?.toISOString(),
+      startedFrom: this.startedFrom ? DateTimeUtils.formatISODateToString(this.startedFrom) : undefined,
+      startedTo: this.startedTo ? DateTimeUtils.formatISODateToString(this.startedTo) : undefined,
+      completedFrom: this.completedFrom ? DateTimeUtils.formatISODateToString(this.completedFrom) : undefined,
+      completedTo: this.completedTo ? DateTimeUtils.formatISODateToString(this.completedTo) : undefined,
+      lastAccessFrom: this.lastAccessFrom ? DateTimeUtils.formatISODateToString(this.lastAccessFrom) : undefined,
+      lastAccessTo: this.lastAccessTo ? DateTimeUtils.formatISODateToString(this.lastAccessTo) : undefined,
       sortBy: this.sortBy,
       sortDescending: this.sortDescending,
     };

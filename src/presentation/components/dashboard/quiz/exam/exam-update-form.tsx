@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
@@ -157,8 +158,9 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
         thumbnailID: quiz.thumbnailID,
 
         isFixedQuiz: quiz.isFixedQuiz ?? false,
-        startDate: quiz.startDate ? new Date(quiz.startDate).toISOString() : undefined,
-        endDate: quiz.endDate ? new Date(quiz.endDate).toISOString() : undefined,
+
+        startDate: quiz.startDate ? DateTimeUtils.formatISODateToString(quiz.startDate) : undefined,
+        endDate: quiz.endDate ? DateTimeUtils.formatISODateToString(quiz.endDate) : undefined,
         fixedQuizDayDuration: quiz.fixedQuizDayDuration ?? undefined,
 
         departmentTypeCode: quiz.departmentTypeCode ?? undefined,

@@ -397,7 +397,7 @@
   "totalScore": "Tổng điểm",
   "canStartOver": "Cho phép làm lại",
   "isAutoSubmitted": "Tự động nộp bài",
-  "time": "Giới hạn thời gian",
+  "time": "Thời gian",
   "scoreToPass": "Điểm đạt",
   "totalQuestion": "Tổng số câu hỏi",
   "maxAttempts": "Số lần làm tối đa",
@@ -984,5 +984,8 @@
   "exportExamProgress": "Xuất kết quả kì thi",
   "pleaseSelectExam": "Xin hãy chọn kì thi",
   "isFixedLesson": "Bài học cố định",
-  "basicInformation": "Thông tin cơ bản"
+  "basicInformation": "Thông tin cơ bản",
+  "selectResources": "Chọn học liệu",
+  "noQuizzesFound": "Không tìm thấy bài kiểm tra nào",
+  "lessonParts": "Các phần bài học"
 }

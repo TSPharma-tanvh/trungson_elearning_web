@@ -313,21 +313,6 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
-                label={t('isFixedCourse')}
-                value={formData.isFixedCourse ?? false}
-                onChange={(val) => {
-                  handleChange('isFixedCourse', val);
-                }}
-                disabled={isSubmitting}
-                options={[
-                  { value: true, label: 'yes' },
-                  { value: false, label: 'no' },
-                ]}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <CustomSelectDropDown<boolean>
                 label={t('isRequired')}
                 value={formData.isRequired ?? true}
                 onChange={(val) => {
@@ -656,6 +641,27 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 </Grid>
               </Grid>
             )}
+
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                {t('lessonCollections')}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('courseType')}
+                value={formData.isFixedCourse ?? false}
+                onChange={(val) => {
+                  handleChange('isFixedCourse', val);
+                }}
+                disabled={isSubmitting}
+                options={[
+                  { value: true, label: 'duration' },
+                  { value: false, label: 'time' },
+                ]}
+              />
+            </Grid>
 
             <Grid item xs={12}>
               <LessonCollectionUpdateEditor

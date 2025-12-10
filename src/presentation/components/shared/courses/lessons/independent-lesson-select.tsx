@@ -8,6 +8,7 @@ import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-se
 import {
   DisplayTypeEnum,
   LessonContentEnum,
+  LessonTypeEnum,
   ScheduleStatusEnum,
   StatusDisplayNames,
   StatusEnum,
@@ -56,7 +57,6 @@ interface IndependentLessonSingleSelectDialogProps extends Omit<SelectProps<stri
 }
 
 const filterOptions = {
-  // lessonType: [LearningModeEnum.Online, LearningModeEnum.Offline, undefined],
   displayType: [DisplayTypeEnum.Public, DisplayTypeEnum.Private, undefined],
   scheduleStatus: [ScheduleStatusEnum.Schedule, ScheduleStatusEnum.Ongoing, ScheduleStatusEnum.Cancelled, undefined],
   disableStatus: [StatusEnum.Enable, StatusEnum.Disable, undefined],
@@ -84,7 +84,6 @@ export function IndependentLessonSingleSelectDialog({
   const [selectedLessonMap, setSelectedLessonMap] = useState<Record<string, LessonDetailResponse>>({});
   const [viewOpen, setViewOpen] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
-  const [lessonType, setLessonType] = useState<LearningModeEnum | undefined>(undefined);
   const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(undefined);
   const [contentType, setContentType] = useState<LessonContentEnum | undefined>(undefined);
   const [status, setStatus] = useState<StatusEnum | undefined>(undefined);
@@ -93,7 +92,7 @@ export function IndependentLessonSingleSelectDialog({
 
   const filters = useMemo(
     () => ({
-      lessonType,
+      lessonType: LessonTypeEnum.Independent,
       disableStatus,
       contentType,
       status,
@@ -101,7 +100,7 @@ export function IndependentLessonSingleSelectDialog({
       hasFileResource,
       hasCourse: false,
     }),
-    [lessonType, disableStatus, contentType, status, hasVideo, hasFileResource]
+    [disableStatus, contentType, status, hasVideo, hasFileResource]
   );
 
   const { lessons, loadingLessons, pageNumber, totalPages, listRef, setSearchText, loadLessons } =
@@ -146,7 +145,6 @@ export function IndependentLessonSingleSelectDialog({
 
   const handleClearFilters = () => {
     setLocalSearchText('');
-    setLessonType(undefined);
     setDisableStatus(undefined);
     setContentType(undefined);
     setStatus(undefined);

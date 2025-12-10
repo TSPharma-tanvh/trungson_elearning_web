@@ -3,6 +3,7 @@ import { CreateLessonRequest } from '@/domain/models/lessons/request/create-less
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { CategoryEnum, LearningModeEnum, LessonContentEnum, LessonTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -24,10 +25,12 @@ import {
 import { Image as ImageIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
+import { CustomEmployeeDistinctSelectInForm } from '@/presentation/components/core/drop-down/custom-employee-distinct-select-in-form';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomSelectDropDownNullable } from '@/presentation/components/core/drop-down/custom-select-drop-down-nullable';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
@@ -61,7 +64,7 @@ export function CreateIndependentLessonDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   //video
-  const [_currentChunkIndex, setCurrentChunkIndex] = useState(0);
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
 
   //thumbnail
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -161,6 +164,22 @@ export function CreateIndependentLessonDialog({
     }
   };
 
+  const handleVideoSelectChange = async (id: string) => {
+    const newId = id === '' ? undefined : id;
+
+    handleChange('videoID', newId);
+    if (id) {
+      try {
+        const file = await fileUsecase.getFileResourceById(id);
+        setVideoPreviewUrl(file.resourceUrl || null);
+      } catch (error: unknown) {
+        setVideoPreviewUrl(null);
+      }
+    } else {
+      setVideoPreviewUrl(null);
+    }
+  };
+
   const handleFilePreview = (url: string, title?: string, type?: string) => {
     setFilePreviewData({ url, title, type });
     setFilePreviewOpen(true);
@@ -198,7 +217,6 @@ export function CreateIndependentLessonDialog({
 
       await onSubmit(request);
 
-      setCurrentChunkIndex(0);
       onClose();
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An error has occurred.';
@@ -364,6 +382,10 @@ export function CreateIndependentLessonDialog({
             />
           </Grid>
 
+          <Grid item xs={12}>
+            <Typography variant="h6">{t('duration')}</Typography>
+          </Grid>
+
           {form.isFixedLesson === true ? (
             <Grid item xs={12} sm={6}>
               <CustomTextField
@@ -390,6 +412,7 @@ export function CreateIndependentLessonDialog({
                   value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : undefined}
                   onChange={(value) => handleChange('startDate', value)}
                   disabled={disabled}
+                  allowClear
                 />
               </Grid>
 
@@ -399,6 +422,7 @@ export function CreateIndependentLessonDialog({
                   value={form.endDate ? DateTimeUtils.formatISODateToString(form.endDate) : undefined}
                   onChange={(value) => handleChange('endDate', value)}
                   disabled={disabled}
+                  allowClear
                 />
               </Grid>
             </>
@@ -406,17 +430,45 @@ export function CreateIndependentLessonDialog({
             <div></div>
           )}
 
+          <Grid item xs={12}>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              {t('employeeFilters')}
+            </Typography>
+          </Grid>
+
           <Grid item xs={12} sm={6}>
-            <CustomSelectDropDown<LessonContentEnum>
-              label={t('contentType')}
-              value={form.contentType ?? ''}
-              onChange={(val) => {
-                handleChange('contentType', val);
+            <CustomEmployeeDistinctSelectInForm
+              label="departmentType"
+              value={form.departmentTypeCode}
+              type={DepartmentFilterType.DepartmentType}
+              onChange={(value) => {
+                handleChange('departmentTypeCode', value);
               }}
-              options={[
-                { value: LessonContentEnum.PDF, label: 'pdf' },
-                { value: LessonContentEnum.Video, label: 'video' },
-              ]}
+              loadOnMount
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <CustomEmployeeDistinctSelectInForm
+              label="position"
+              value={form.positionCode}
+              type={DepartmentFilterType.Position}
+              onChange={(value) => {
+                handleChange('positionCode', value);
+              }}
+              loadOnMount
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <CustomEmployeeDistinctSelectInForm
+              label="currentPositionStateName"
+              value={form.positionStateCode}
+              type={DepartmentFilterType.PositionState}
+              onChange={(value) => {
+                handleChange('positionStateCode', value);
+              }}
+              loadOnMount
             />
           </Grid>
 
@@ -543,6 +595,48 @@ export function CreateIndependentLessonDialog({
           <Grid item xs={12}>
             <Typography variant="h6">{t('updateResources')}</Typography>
           </Grid>
+
+          <Grid item xs={12}>
+            <CustomSelectDropDown<LessonContentEnum>
+              label={t('contentType')}
+              value={form.contentType ?? ''}
+              onChange={(val) => {
+                handleChange('contentType', val);
+              }}
+              options={[
+                { value: LessonContentEnum.PDF, label: 'pdf' },
+                { value: LessonContentEnum.Video, label: 'video' },
+              ]}
+            />
+          </Grid>
+
+          {form.contentType === LessonContentEnum.Video ? (
+            <>
+              <Grid item xs={12} sm={12}>
+                <FileResourceSelect
+                  fileUsecase={fileUsecase}
+                  type={FileTypeEnum.Video}
+                  status={StatusEnum.Enable}
+                  value={form.videoID}
+                  onChange={handleVideoSelectChange}
+                  label={t('video')}
+                  disabled={isSubmitting}
+                />
+              </Grid>
+              {videoPreviewUrl ? (
+                <Grid item xs={12}>
+                  <CustomVideoPlayer src={videoPreviewUrl ?? ''} fullscreen />
+                </Grid>
+              ) : null}
+            </>
+          ) : (
+            <></>
+          )}
+
+          <Grid item xs={12}>
+            <Typography variant="h6">{t('selectResources')}</Typography>
+          </Grid>
+
           <Grid item xs={12}>
             <ToggleButtonGroup
               value={resourceSource}
@@ -656,29 +750,6 @@ export function CreateIndependentLessonDialog({
               </Grid>
             </Grid>
           )}
-
-          {/* {form.contentType === LessonContentEnum.Video ? (
-            <>
-              <Grid item xs={12} sm={12}>
-                <FileResourceSelect
-                  fileUsecase={fileUsecase}
-                  type={FileTypeEnum.Video}
-                  status={StatusEnum.Enable}
-                  value={form.videoID}
-                  onChange={handleVideoSelectChange}
-                  label={t('video')}
-                  disabled={isSubmitting}
-                />
-              </Grid>
-              {videoPreviewUrl ? (
-                <Grid item xs={12}>
-                  <CustomVideoPlayer src={videoPreviewUrl ?? ''} fullscreen />
-                </Grid>
-              ) : null}
-            </>
-          ) : (
-            <></>
-          )} */}
 
           <Grid item xs={12}>
             <CustomButton

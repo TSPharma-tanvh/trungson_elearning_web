@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import { type StatusEnum, type UserQuizProgressEnum } from '@/utils/enum/core-enum';
 
 export class GetUserQuizLiveStatusRequest {
@@ -42,13 +43,13 @@ export class GetUserQuizLiveStatusRequest {
     return {
       quizId: this.quizId,
       enrollmentCriteriaId: this.enrollmentCriteriaId,
-      assignedAt: this.assignedAt?.toISOString(),
-      startTime: this.startTime?.toISOString(),
-      endTime: this.endTime?.toISOString(),
+      assignedAt: DateTimeUtils.formatISODateToString(this.assignedAt),
+      startTime: DateTimeUtils.formatISODateToString(this.startTime),
+      endTime: DateTimeUtils.formatISODateToString(this.endTime),
       duration: this.duration,
-      startedAt: this.startedAt?.toISOString(),
-      completedAt: this.completedAt?.toISOString(),
-      lastAccess: this.lastAccess?.toISOString(),
+      startedAt: DateTimeUtils.formatISODateToString(this.startedAt),
+      completedAt: DateTimeUtils.formatISODateToString(this.completedAt),
+      lastAccess: DateTimeUtils.formatISODateToString(this.lastAccess),
       progressStatus: this.progressStatus,
       activeStatus: this.activeStatus,
       searchText: this.searchText,
@@ -59,20 +60,45 @@ export class GetUserQuizLiveStatusRequest {
 
   toFormData(): FormData {
     const form = new FormData();
+
     if (this.quizId) form.append('quizId', this.quizId);
     if (this.enrollmentCriteriaId) form.append('enrollmentCriteriaId', this.enrollmentCriteriaId);
-    if (this.assignedAt) form.append('assignedAt', this.assignedAt.toISOString());
-    if (this.startTime) form.append('startTime', this.startTime.toISOString());
-    if (this.endTime) form.append('endTime', this.endTime.toISOString());
+
+    const assignedAt = DateTimeUtils.formatISODateToString(this.assignedAt);
+    if (assignedAt) form.append('assignedAt', assignedAt);
+
+    const startTime = DateTimeUtils.formatISODateToString(this.startTime);
+    if (startTime) form.append('startTime', startTime);
+
+    const endTime = DateTimeUtils.formatISODateToString(this.endTime);
+    if (endTime) form.append('endTime', endTime);
+
     if (this.duration) form.append('duration', this.duration);
-    if (this.startedAt) form.append('startedAt', this.startedAt.toISOString());
-    if (this.completedAt) form.append('completedAt', this.completedAt.toISOString());
-    if (this.lastAccess) form.append('lastAccess', this.lastAccess.toISOString());
-    if (this.progressStatus !== undefined) form.append('progressStatus', this.progressStatus.toString());
-    if (this.activeStatus !== undefined) form.append('activeStatus', this.activeStatus.toString());
-    if (this.searchText) form.append('searchText', this.searchText);
+
+    const startedAt = DateTimeUtils.formatISODateToString(this.startedAt);
+    if (startedAt) form.append('startedAt', startedAt);
+
+    const completedAt = DateTimeUtils.formatISODateToString(this.completedAt);
+    if (completedAt) form.append('completedAt', completedAt);
+
+    const lastAccess = DateTimeUtils.formatISODateToString(this.lastAccess);
+    if (lastAccess) form.append('lastAccess', lastAccess);
+
+    if (this.progressStatus !== undefined) {
+      form.append('progressStatus', this.progressStatus.toString());
+    }
+
+    if (this.activeStatus !== undefined) {
+      form.append('activeStatus', this.activeStatus.toString());
+    }
+
+    if (this.searchText) {
+      form.append('searchText', this.searchText);
+    }
+
     form.append('pageNumber', this.pageNumber.toString());
     form.append('pageSize', this.pageSize.toString());
+
     return form;
   }
 }

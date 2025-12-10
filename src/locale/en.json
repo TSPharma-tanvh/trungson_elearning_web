@@ -984,5 +984,8 @@
   "exportExamProgress": "Export Exam Progress",
   "pleaseSelectExam": "Please Select Exam",
   "isFixedLesson": "Is Fixed Lesson",
-  "basicInformation": "Basic Information"
+  "basicInformation": "Basic Information",
+  "selectResources": "Select Resources",
+  "noQuizzesFound": "No Quizzes Found",
+  "lessonParts": "Lesson Parts"
 }

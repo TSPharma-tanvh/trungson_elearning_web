@@ -1,3 +1,4 @@
+import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
   StatusEnum,
   UserQuizProgressEnum,
@@ -80,11 +81,22 @@ export class CreateUserQuizRequest {
     if (this.enrollStatus !== undefined) form.append('EnrollStatus', this.enrollStatus.toString());
 
     if (this.approvedBy) form.append('ApprovedBy', this.approvedBy);
-    if (this.approvedAt) form.append('ApprovedAt', this.approvedAt.toISOString());
+
+    if (this.approvedAt) {
+      const formatted = DateTimeUtils.formatISODateToString(this.approvedAt);
+      if (formatted) {
+        form.append('ApprovedAt', formatted);
+      }
+    }
 
     if (this.rejectedReason) form.append('RejectedReason', this.rejectedReason);
 
-    if (this.fixedQuizStartDate) form.append('FixedQuizStartDate', this.fixedQuizStartDate.toISOString());
+    if (this.fixedQuizStartDate) {
+      const formatted = DateTimeUtils.formatISODateToString(this.fixedQuizStartDate);
+      if (formatted) {
+        form.append('FixedQuizStartDate', formatted);
+      }
+    }
 
     return form;
   }
