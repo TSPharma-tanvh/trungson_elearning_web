@@ -10,7 +10,7 @@ export class UpdateQuizRequest {
   isRequired?: boolean;
   type?: QuizTypeEnum;
   time?: string; // TimeSpan as "HH:mm:ss"
-  startTime?: string; // C# DateTime? → string
+  startTime?: string; // C# DateTime? string
   endTime?: string;
   maxAttempts?: number;
   scoreToPass?: number;

@@ -14,6 +14,7 @@ export class QuizResponse {
   title?: string;
   description?: string;
   status = '';
+  order?: number;
 
   startTime?: Date;
   endTime?: Date;
@@ -81,6 +82,7 @@ export class QuizResponse {
     dto.title = json.title;
     dto.description = json.description;
     dto.status = json.status ?? '';
+    dto.order = json.order;
 
     dto.startTime = json.startTime ? new Date(json.startTime) : undefined;
     dto.endTime = json.endTime ? new Date(json.endTime) : undefined;

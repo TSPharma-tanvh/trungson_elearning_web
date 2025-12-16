@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
-import { LessonOrderEditor } from './lesson-collection-create-detail-form';
+import { LessonCollectionCreateDetailForm } from './lesson-collection-create-detail-form';
 
 interface LessonCollectionItemCardProps {
   item: CreateLessonCollectionRequest;
@@ -62,7 +62,7 @@ function LessonCollectionItemCard({
         </Box>
 
         {/* Danh sách lesson */}
-        <LessonOrderEditor
+        <LessonCollectionCreateDetailForm
           value={item.collection || []}
           onChange={(newCollection) => {
             onChangeField('collection', newCollection);

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { LessonsCollectionUpdateRequest } from '@/domain/models/lessons/request/lesson-collection-update-request';
+import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { Add, Delete } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +10,9 @@ import { useTranslation } from 'react-i18next';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
-import { LessonOrderEditor } from './lesson-collection-create-detail-form'; // Reuse the same ordered editor
+import { QuizOrderCollectionUpdateForm } from '../../quiz/quiz/quiz-order-collection-update-form';
+import { LessonCollectionCreateDetailForm } from './lesson-collection-create-detail-form'; // Reuse the same ordered editor
+import { LessonCollectionUpdateDetailForm } from './lesson-collection-update-detail-form';
 
 interface LessonCollectionUpdateItemCardProps {
   item: LessonsCollectionUpdateRequest;
@@ -34,6 +37,7 @@ function LessonCollectionUpdateItemCard({
   onUpdateSharedDuration,
 }: LessonCollectionUpdateItemCardProps) {
   const { t } = useTranslation();
+  const { quizUsecase } = useDI();
 
   return (
     <Card variant="outlined">
@@ -65,12 +69,21 @@ function LessonCollectionUpdateItemCard({
         </Box>
 
         {/* Ordered Lessons */}
-        <LessonOrderEditor
-          value={item.collection}
+        <LessonCollectionUpdateDetailForm
+          value={item.lessons}
           onChange={(newCollection) => {
-            onChangeField('collection', newCollection);
+            onChangeField('lessons', newCollection);
           }}
           label={t('lessonsInCollection')}
+        />
+
+        <QuizOrderCollectionUpdateForm
+          value={item.quizzes || []}
+          onChange={(newCollection) => {
+            onChangeField('quizzes', newCollection);
+          }}
+          label={t('lessonsQuizzes')}
+          quizUsecase={quizUsecase}
         />
 
         {/* Start/End Date (only if not fixed course) */}
@@ -145,7 +158,8 @@ export function LessonCollectionUpdateEditor({
             id: '',
             name: '',
             order: 1,
-            collection: [],
+            lessons: [],
+            quizzes: [],
           }),
         ]
   );
@@ -196,7 +210,8 @@ export function LessonCollectionUpdateEditor({
       id: '',
       name: '',
       order: nextOrder,
-      collection: [],
+      lessons: [],
+      quizzes: [],
     });
     updateItems([...items, newItem]);
   };

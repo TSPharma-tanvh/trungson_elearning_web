@@ -4,6 +4,7 @@ import { type CourseDetailResponse } from '@/domain/models/courses/response/cour
 import {
   LessonsCollectionUpdateDetailRequest,
   LessonsCollectionUpdateRequest,
+  QuizzesCollectionUpdateDetailRequest,
 } from '@/domain/models/lessons/request/lesson-collection-update-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { CategoryEnum, StatusEnum } from '@/utils/enum/core-enum';
@@ -86,13 +87,23 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               endDate: c.endDate ? new Date(c.endDate) : undefined,
               fixedCourseDayDuration: c.fixedCourseDayDuration,
 
-              collection:
+              lessons:
                 c.lessons
                   ?.map(
                     (lesson) =>
                       new LessonsCollectionUpdateDetailRequest({
                         lessonId: lesson.id,
                         order: lesson.order ?? 0,
+                      })
+                  )
+                  .sort((a, b) => a.order - b.order) ?? [],
+              quizzes:
+                c.quizzes
+                  ?.map(
+                    (quiz) =>
+                      new QuizzesCollectionUpdateDetailRequest({
+                        quizId: quiz.id,
+                        order: quiz.order ?? 0,
                       })
                   )
                   .sort((a, b) => a.order - b.order) ?? [],
@@ -393,7 +404,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
             <Grid item xs={12}>
               <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                {t('resources')}
+                {t('thumbnail')}
               </Typography>
             </Grid>
 
@@ -495,7 +506,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       label={t('deleteOldThumbnail')}
                     />
                   </Grid> */}
-                  {previewUrl ? (
+                  {/* {previewUrl ? (
                     <Grid item xs={12}>
                       <Box
                         sx={{
@@ -518,13 +529,13 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                         />
                       </Box>
                     </Grid>
-                  ) : null}
+                  ) : null} */}
                 </Grid>
               )}
             </Grid>
 
             {/* File Resources */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
                 {t('uploadFiles')}
               </Typography>
@@ -541,9 +552,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 <ToggleButton value="multi-select">{t('selectFileResources')}</ToggleButton>
                 <ToggleButton value="upload">{t('uploadFiles')}</ToggleButton>
               </ToggleButtonGroup>
-            </Grid>
+            </Grid> */}
 
-            {fileSelectSource === 'multi-select' ? (
+            {/* {fileSelectSource === 'multi-select' ? (
               <Grid item xs={12}>
                 <FileResourceMultiSelect
                   fileUsecase={fileUsecase}
@@ -640,7 +651,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                   ))}
                 </Grid>
               </Grid>
-            )}
+            )} */}
 
             <Grid item xs={12}>
               <Typography variant="subtitle1" fontWeight={600} gutterBottom>

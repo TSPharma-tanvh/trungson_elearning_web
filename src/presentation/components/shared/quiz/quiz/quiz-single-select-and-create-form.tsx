@@ -40,21 +40,21 @@ import { UpdateQuizForLessonDialog } from '@/presentation/components/dashboard/q
 
 import { QuizSelectFilterDialog } from './quiz-select-filter-dialog';
 
-interface QuizMultiSelectAndCreateDialogProps {
+interface QuizSingleSelectAndCreateDialogProps {
   quizUsecase: QuizUsecase;
-  value: string[];
-  onChange: (value: string[]) => void;
+  value: string;
+  onChange: (value: string) => void;
   label?: string;
   disabled?: boolean;
 }
 
-export function QuizMultiSelectAndCreateDialog({
+export function QuizSingleSelectAndCreateDialog({
   quizUsecase,
-  value = [],
+  value = '',
   onChange,
-  label = 'quizzes',
+  label = 'quiz',
   disabled = false,
-}: QuizMultiSelectAndCreateDialogProps) {
+}: QuizSingleSelectAndCreateDialogProps) {
   const theme = useTheme();
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -74,7 +74,7 @@ export function QuizMultiSelectAndCreateDialog({
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Selection & data
-  const [localValue, setLocalValue] = useState<string[]>(value);
+  const [localValue, setLocalValue] = useState<string>(value);
   const [localSearchText, setLocalSearchText] = useState('');
   const [selectedQuizMap, setSelectedQuizMap] = useState<Record<string, QuizResponse>>({});
 
@@ -100,19 +100,14 @@ export function QuizMultiSelectAndCreateDialog({
   const isFull = isSmallScreen || isFullscreen;
 
   const fetchSelectedQuizzes = useCallback(async () => {
-    const idsToFetch = value.filter((id) => !selectedQuizMap[id]);
-    if (idsToFetch.length === 0) return;
+    if (!value || selectedQuizMap[value]) return;
 
-    await Promise.all(
-      idsToFetch.map(async (id) => {
-        try {
-          const quiz = await quizUsecase.getQuizById(id);
-          setSelectedQuizMap((prev) => ({ ...prev, [id]: quiz }));
-        } catch {
-          // ignore
-        }
-      })
-    );
+    try {
+      const quiz = await quizUsecase.getQuizById(value);
+      setSelectedQuizMap((prev) => ({ ...prev, [value]: quiz }));
+    } catch {
+      // ignore
+    }
   }, [value, quizUsecase, selectedQuizMap]);
 
   useEffect(() => {
@@ -122,12 +117,6 @@ export function QuizMultiSelectAndCreateDialog({
   useEffect(() => {
     void fetchSelectedQuizzes();
   }, [fetchSelectedQuizzes]);
-
-  // Handlers
-  // const handleCreateQuiz = async () => {
-  //   setShowCreateDialog(false);
-  //   await loadQuizzes(1, true);
-  // };
 
   const handleCreateQuizLesson = async (request: CreateQuizRequest) => {
     try {
@@ -163,8 +152,10 @@ export function QuizMultiSelectAndCreateDialog({
       await quizUsecase.deleteQuiz(pendingDeleteId);
       CustomSnackBar.showSnackbar(t('deleteSuccess'), 'success');
       await loadQuizzes(pageNumber, true);
-      setLocalValue((prev) => prev.filter((id) => id !== pendingDeleteId));
-      onChange(localValue.filter((id) => id !== pendingDeleteId));
+      if (localValue === pendingDeleteId) {
+        setLocalValue('');
+        onChange('');
+      }
     } catch {
       CustomSnackBar.showSnackbar(t('deleteFailed'), 'error');
     } finally {
@@ -180,7 +171,7 @@ export function QuizMultiSelectAndCreateDialog({
   };
 
   const toggleQuiz = (id: string) => {
-    setLocalValue((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]));
+    setLocalValue((prev) => (prev === id ? '' : id));
   };
 
   return (
@@ -189,15 +180,12 @@ export function QuizMultiSelectAndCreateDialog({
       <FormControl fullWidth disabled={disabled}>
         <InputLabel>{t(label)}</InputLabel>
         <Select
-          multiple
           value={value}
           onClick={() => {
             setDialogOpen(true);
           }}
           input={<OutlinedInput label={t(label)} startAdornment={<Book sx={{ mr: 1, opacity: 0.7 }} />} />}
-          renderValue={(selected) =>
-            selected.map((id) => selectedQuizMap[id]?.title || id).join(', ') || t('noQuizzesSelected')
-          }
+          renderValue={() => selectedQuizMap[value]?.title || value || t('noQuizSelected')}
           open={false}
         />
       </FormControl>
@@ -205,7 +193,7 @@ export function QuizMultiSelectAndCreateDialog({
       {/* Main Dialog */}
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth fullScreen={isFull} maxWidth="md">
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6">{t('selectQuizzes')}</Typography>
+          <Typography variant="h6">{t('selectQuiz')}</Typography>
           <Box>
             <IconButton
               onClick={() => {
@@ -257,7 +245,7 @@ export function QuizMultiSelectAndCreateDialog({
               <QuizListItem
                 key={quiz.id}
                 quiz={quiz}
-                selected={localValue.includes(quiz.id ?? '')}
+                selected={localValue === quiz.id}
                 onToggle={() => {
                   toggleQuiz(quiz.id ?? '');
                 }}
@@ -302,7 +290,7 @@ export function QuizMultiSelectAndCreateDialog({
               }}
               variant="contained"
             >
-              {t('confirm')} ({localValue.length})
+              {t('confirm')}
             </Button>
           </Box>
         </DialogActions>
@@ -367,7 +355,7 @@ export function QuizMultiSelectAndCreateDialog({
   );
 }
 
-// Item với menu MoreVert
+// Item với menu MoreVert (giữ nguyên)
 function QuizListItem({
   quiz,
   selected,

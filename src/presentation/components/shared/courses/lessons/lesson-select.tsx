@@ -8,6 +8,7 @@ import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-se
 import {
   DisplayTypeEnum,
   LessonContentEnum,
+  LessonTypeEnum,
   ScheduleStatusEnum,
   StatusDisplayNames,
   StatusEnum,
@@ -84,7 +85,7 @@ export function LessonSingleSelectDialog({
   const [selectedLessonMap, setSelectedLessonMap] = useState<Record<string, LessonDetailResponse>>({});
   const [viewOpen, setViewOpen] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<LessonDetailResponse | null>(null);
-  const [lessonType, setLessonType] = useState<LearningModeEnum | undefined>(undefined);
+  const [lessonType, setLessonType] = useState<LessonTypeEnum | undefined>(undefined);
   const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(undefined);
   const [contentType, setContentType] = useState<LessonContentEnum | undefined>(undefined);
   const [status, setStatus] = useState<StatusEnum | undefined>(undefined);

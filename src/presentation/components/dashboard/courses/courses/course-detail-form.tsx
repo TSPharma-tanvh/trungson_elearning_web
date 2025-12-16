@@ -32,6 +32,7 @@ import CustomFieldTypography from '@/presentation/components/core/text-field/cus
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
+import QuizDetailForm from '../../quiz/quiz/quiz-detail-form';
 import LessonDetailForm from '../lessons/lesson-detail-form';
 
 interface CourseDetailProps {
@@ -43,11 +44,14 @@ interface CourseDetailProps {
 function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; fullScreen: boolean }) {
   const { t } = useTranslation();
   const [courseExpandedLessons, setCourseExpandedLessons] = useState<Record<string, boolean>>({});
+  const [courseExpandedQuizzes, setCourseExpandedQuizzes] = useState<Record<string, boolean>>({});
+
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
 
   //lesson id
   const [openLessonDetailId, setOpenLessonDetailId] = useState<string | null>(null);
+  const [openQuizDetailId, setOpenQuizDetailId] = useState<string | null>(null);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
     <Grid item xs={12} sm={fullScreen ? 4 : 6}>
@@ -163,6 +167,10 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
       setOpenLessonDetailId(lessonId);
     };
 
+    const handleViewQuizDetail = (lessonId: string) => {
+      setOpenQuizDetailId(lessonId);
+    };
+
     return (
       <Box sx={{ mb: 2 }}>
         <CardHeader title={t('parts')} sx={{ pl: 2, pb: 1, mb: 2 }} />
@@ -202,6 +210,8 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
 
               <Collapse in={colExpanded} timeout="auto" unmountOnExit>
                 <CardContent>
+                  <SectionTitle icon={<InfoOutlined fontSize="small" />} title={t('lessons')} />
+
                   {collection.lessons?.length ? (
                     collection.lessons.map((lesson, idx) => {
                       const lessonId = lesson.id ?? `lesson-${idx}`;
@@ -270,6 +280,73 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                   )}
                 </CardContent>
               </Collapse>
+
+              <Collapse in={colExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <SectionTitle icon={<InfoOutlined fontSize="small" />} title={t('quizzes')} />
+
+                  {collection.quizzes?.length ? (
+                    collection.quizzes.map((quiz, idx) => {
+                      const quizId = quiz.id ?? `lesson-${idx}`;
+                      const quizExpanded = courseExpandedQuizzes[quizId] || false;
+
+                      return (
+                        <Card
+                          key={quizId}
+                          sx={{
+                            mb: 2,
+                            border: '1px solid #e0e0e0',
+                            borderRadius: 2,
+                            boxShadow: 'none',
+                          }}
+                        >
+                          <CardHeader
+                            title={quiz.title ?? `Lesson ${idx + 1}`}
+                            action={
+                              <Stack direction="row" spacing={1}>
+                                <IconButton
+                                  onClick={() => {
+                                    handleViewQuizDetail(quiz.id ?? '');
+                                  }}
+                                >
+                                  <InfoOutlined />
+                                </IconButton>
+
+                                <IconButton
+                                  onClick={() => {
+                                    toggleExpand(quizId);
+                                  }}
+                                  sx={{
+                                    transform: quizExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                    transition: 'transform 0.2s',
+                                  }}
+                                >
+                                  <ExpandMoreIcon />
+                                </IconButton>
+                              </Stack>
+                            }
+                            sx={{ py: 1 }}
+                          />
+
+                          {/* lesson content */}
+                          <Collapse in={quizExpanded} timeout="auto" unmountOnExit>
+                            <CardContent>
+                              <Grid container spacing={2}>
+                                {renderField('id', quiz.id)}
+                                {renderField('detail', quiz.description)}
+                              </Grid>
+                            </CardContent>
+                          </Collapse>
+                        </Card>
+                      );
+                    })
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      {t('noQuizzes')}
+                    </Typography>
+                  )}
+                </CardContent>
+              </Collapse>
             </Card>
           );
         })}
@@ -282,9 +359,26 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
             setOpenLessonDetailId(null);
           }}
         />
+
+        <QuizDetailForm
+          open={Boolean(openQuizDetailId)}
+          quizId={openQuizDetailId}
+          onClose={() => {
+            setOpenQuizDetailId(null);
+          }}
+        />
       </Box>
     );
   };
+
+  const SectionTitle = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
+    <Box display="flex" alignItems="center" gap={1} mb={1} mt={2}>
+      {icon}
+      <Typography variant="subtitle1" fontWeight={600}>
+        {title}
+      </Typography>
+    </Box>
+  );
 
   const renderTeacher = () => {
     if (!course.classTeacher) return null;

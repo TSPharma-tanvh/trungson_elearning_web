@@ -1,22 +1,26 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
+  CategoryEnum,
   DisplayTypeEnum,
   LearningModeEnum,
+  LessonContentEnum,
   ScheduleStatusEnum,
   StatusEnum,
-  type CategoryEnum,
 } from '@/utils/enum/core-enum';
-
-import { type CreateLessonCollectionRequest } from './create-course-lesson-collection-request';
 
 export class CreateCourseRequest {
   pathID?: string;
   detail?: string;
   isRequired?: boolean;
-  name = '';
+
+  name!: string;
 
   disableStatus: StatusEnum = StatusEnum.Enable;
+
+  positionCode?: string;
   positionStateCode?: string;
+  departmentTypeCode?: string;
+
   isFixedCourse = false;
   teacherID?: string;
 
@@ -27,87 +31,136 @@ export class CreateCourseRequest {
 
   scheduleStatus: ScheduleStatusEnum = ScheduleStatusEnum.Ongoing;
 
-  collections?: CreateLessonCollectionRequest[];
+  collections?: CourseCreateLessonCollectionRequest[];
 
   categoryID?: string;
-
   thumbnailID?: string;
-  resourceIDs?: string;
-  resources?: File[];
-  resourceDocumentNo?: string;
-  resourcePrefixName?: string;
 
   thumbnail?: File;
   thumbDocumentNo?: string;
   thumbPrefixName?: string;
-
-  isDeleteOldResource?: boolean;
   isDeleteOldThumbnail?: boolean;
-  categoryEnum?: CategoryEnum;
 
-  departmentTypeCode?: string;
-  positionCode?: string;
+  categoryEnum?: CategoryEnum;
 
   constructor(init?: Partial<CreateCourseRequest>) {
     Object.assign(this, init);
   }
 
   toFormData(): FormData {
-    const formData = new FormData();
+    const fd = new FormData();
 
-    formData.append('Name', this.name);
-    if (this.pathID) formData.append('PathID', this.pathID);
-    if (this.detail) formData.append('Detail', this.detail);
-    if (this.isRequired !== undefined) formData.append('IsRequired', this.isRequired.toString());
-    formData.append('DisableStatus', this.disableStatus.toString());
-    if (this.positionStateCode) formData.append('PositionStateCode', this.positionStateCode);
-    formData.append('IsFixedCourse', this.isFixedCourse.toString());
-    if (this.teacherID) formData.append('TeacherID', this.teacherID);
-    formData.append('CourseType', this.courseType.toString());
-    formData.append('DisplayType', this.displayType.toString());
-    if (this.meetingLink) formData.append('MeetingLink', this.meetingLink);
-    formData.append('ScheduleStatus', this.scheduleStatus.toString());
-    if (this.categoryID) formData.append('CategoryID', this.categoryID);
-    if (this.thumbnailID) formData.append('ThumbnailID', this.thumbnailID);
-    if (this.resourceIDs) formData.append('ResourceIDs', this.resourceIDs);
-    if (this.departmentTypeCode) formData.append('DepartmentTypeCode', this.departmentTypeCode);
-    if (this.positionCode) formData.append('PositionCode', this.positionCode);
+    fd.append('Name', this.name);
+    if (this.pathID) fd.append('PathID', this.pathID);
+    if (this.detail) fd.append('Detail', this.detail);
+    if (this.isRequired !== undefined) fd.append('IsRequired', String(this.isRequired));
 
-    if (this.resources)
-      this.resources.forEach((file) => {
-        formData.append('Resources', file);
-      });
-    if (this.resourceDocumentNo) formData.append('ResourceDocumentNo', this.resourceDocumentNo);
-    if (this.resourcePrefixName) formData.append('ResourcePrefixName', this.resourcePrefixName);
+    fd.append('DisableStatus', String(this.disableStatus));
+    fd.append('IsFixedCourse', String(this.isFixedCourse));
+    fd.append('CourseType', String(this.courseType));
+    fd.append('DisplayType', String(this.displayType));
+    fd.append('ScheduleStatus', String(this.scheduleStatus));
 
-    if (this.thumbnail) formData.append('Thumbnail', this.thumbnail);
-    if (this.thumbDocumentNo) formData.append('ThumbDocumentNo', this.thumbDocumentNo);
-    if (this.thumbPrefixName) formData.append('ThumbPrefixName', this.thumbPrefixName);
+    if (this.positionCode) fd.append('PositionCode', this.positionCode);
+    if (this.positionStateCode) fd.append('PositionStateCode', this.positionStateCode);
+    if (this.departmentTypeCode) fd.append('DepartmentTypeCode', this.departmentTypeCode);
+    if (this.teacherID) fd.append('TeacherID', this.teacherID);
+    if (this.meetingLink) fd.append('MeetingLink', this.meetingLink);
 
-    if (this.isDeleteOldResource !== undefined)
-      formData.append('IsDeleteOldResource', this.isDeleteOldResource.toString());
+    if (this.categoryID) fd.append('CategoryID', this.categoryID);
+    if (this.thumbnailID) fd.append('ThumbnailID', this.thumbnailID);
 
-    if (this.isDeleteOldThumbnail !== undefined)
-      formData.append('IsDeleteOldThumbnail', this.isDeleteOldThumbnail.toString());
+    if (this.thumbnail) fd.append('Thumbnail', this.thumbnail);
+    if (this.thumbDocumentNo) fd.append('ThumbDocumentNo', this.thumbDocumentNo);
+    if (this.thumbPrefixName) fd.append('ThumbPrefixName', this.thumbPrefixName);
+    if (this.isDeleteOldThumbnail !== undefined) fd.append('IsDeleteOldThumbnail', String(this.isDeleteOldThumbnail));
 
-    if (this.categoryEnum !== undefined) formData.append('CategoryEnum', this.categoryEnum.toString());
+    if (this.categoryEnum !== undefined) fd.append('CategoryEnum', String(this.categoryEnum));
 
-    if (this.collections && this.collections.length > 0) {
-      const collectionsForApi = this.collections.map((col) => ({
-        Name: col.name,
-        Order: col.order,
-        StartDate: col.startDate ? DateTimeUtils.formatISODateToString(col.startDate) : undefined,
-        EndDate: col.endDate ? DateTimeUtils.formatISODateToString(col.endDate) : undefined,
-        FixedCourseDayDuration: col.fixedCourseDayDuration,
-        Collection: col.collection.map((item) => ({
-          LessonId: item.lessonId,
-          Order: item.order,
-        })),
-      }));
-
-      formData.append('Collections', JSON.stringify(collectionsForApi));
+    if (this.collections?.length) {
+      fd.append('Collections', JSON.stringify(this.collections.map((c) => c.toJson())));
     }
 
-    return formData;
+    return fd;
+  }
+}
+
+export class CourseCreateLessonCollectionRequest {
+  name!: string;
+  order!: number;
+
+  startDate?: Date;
+  endDate?: Date;
+  fixedCourseDayDuration?: number;
+
+  lessonCollectionName!: string;
+  lessonCollectionDetail?: string;
+
+  lessonCollection!: CourseCreateLessonCollectionLessonDetailRequest[];
+  quizzes?: QuizzesCollectionCreateDetailRequest[];
+
+  constructor(init?: Partial<CourseCreateLessonCollectionRequest>) {
+    Object.assign(this, init);
+    this.lessonCollection =
+      init?.lessonCollection?.map((x) => new CourseCreateLessonCollectionLessonDetailRequest(x)) || [];
+    this.quizzes = init?.quizzes?.map((x) => new QuizzesCollectionCreateDetailRequest(x)) || [];
+  }
+
+  toJson(): any {
+    return {
+      Name: this.name,
+      Order: this.order,
+      StartDate: this.startDate ? DateTimeUtils.formatISODateToString(this.startDate) : null,
+      EndDate: this.endDate ? DateTimeUtils.formatISODateToString(this.endDate) : null,
+      FixedCourseDayDuration: this.fixedCourseDayDuration,
+
+      LessonCollectionName: this.lessonCollectionName,
+      LessonCollectionDetail: this.lessonCollectionDetail,
+      LessonCollection: this.lessonCollection.map((x) => x.toJson()),
+
+      Quizzes: this.quizzes?.map((q) => q.toJson()) ?? null,
+    };
+  }
+}
+
+export class CourseCreateLessonCollectionLessonDetailRequest {
+  thumbnailID?: string;
+  isRequired?: boolean;
+
+  order!: number;
+
+  lessonType: LessonContentEnum = LessonContentEnum.PDF;
+  videoID?: string;
+  resourceID?: string;
+
+  constructor(init?: Partial<CourseCreateLessonCollectionLessonDetailRequest>) {
+    Object.assign(this, init);
+  }
+
+  toJson(): any {
+    return {
+      ThumbnailID: this.thumbnailID,
+      IsRequired: this.isRequired,
+      Order: this.order,
+      LessonType: this.lessonType,
+      VideoID: this.videoID,
+      ResourceID: this.resourceID,
+    };
+  }
+}
+
+export class QuizzesCollectionCreateDetailRequest {
+  quizId!: string;
+  order!: number;
+
+  constructor(init?: Partial<QuizzesCollectionCreateDetailRequest>) {
+    Object.assign(this, init);
+  }
+
+  toJson(): any {
+    return {
+      QuizId: this.quizId,
+      Order: this.order,
+    };
   }
 }

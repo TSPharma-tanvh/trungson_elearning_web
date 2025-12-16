@@ -119,7 +119,7 @@ export default function AppSettingsTable({
   //     const distanceTo = obj.DistanceToKm ?? obj.distanceToKm;
   //     const amount = obj.AllowanceAmount ?? obj.allowanceAmount;
 
-  //     return `${distanceFrom} → ${distanceTo} km / ${amount.toLocaleString()}₫`;
+  //     return `${distanceFrom} ${distanceTo} km / ${amount.toLocaleString()}₫`;
   //   } catch (error) {
   //     return null;
   //   }

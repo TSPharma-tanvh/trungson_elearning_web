@@ -987,5 +987,13 @@
   "basicInformation": "Thông tin cơ bản",
   "selectResources": "Chọn học liệu",
   "noQuizzesFound": "Không tìm thấy bài kiểm tra nào",
-  "lessonParts": "Các phần bài học"
+  "lessonParts": "Các phần bài học",
+  "selectVideo": "Chọn Video",
+  "lessonCollectionName": "Tên các bài học trong phần",
+  "lessonCollectionDetail": "Mô tả các bài học trong phần",
+  "basicInfo": "Thông tin cơ bản",
+  "lessonsQuizzes": "Bài kiểm tra trong phần học",
+  "quizNotSelected": "Bài kiểm tra không được chọn",
+  "addQuiz": "Thêm bài kiểm tra",
+  "noQuizzes": "Không có bài kiểm tra"
 }

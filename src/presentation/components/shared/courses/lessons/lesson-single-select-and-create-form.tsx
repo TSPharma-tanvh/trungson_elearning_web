@@ -157,7 +157,7 @@ export function LessonSingleSelectAndCreateDialog({
       CustomSnackBar.showSnackbar(t('deleteSuccess'), 'success');
       await loadLessons(pageNumber, true);
 
-      // Nếu lesson bị xóa là lesson đang chọn → bỏ chọn
+      // Nếu lesson bị xóa là lesson đang chọn bỏ chọn
       if (localValue === pendingDeleteId) {
         setLocalValue('');
         onChange('');

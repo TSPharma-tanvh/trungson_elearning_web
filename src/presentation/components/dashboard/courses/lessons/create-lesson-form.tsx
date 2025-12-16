@@ -30,7 +30,6 @@ import { FileResourceMultiSelect } from '@/presentation/components/shared/file/f
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
-import { QuizMultiSelectAndCreateDialog } from '@/presentation/components/shared/quiz/quiz/quiz-multi-select-and-create-form';
 
 import { CustomButton } from '../../../core/button/custom-button';
 import CustomSnackBar from '../../../core/snack-bar/custom-snack-bar';
@@ -328,7 +327,7 @@ export function CreateLessonDialog({
             />
           </Grid>
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <QuizMultiSelectAndCreateDialog
               quizUsecase={quizUsecase}
               value={form.quizIDs ? form.quizIDs.split(',').filter((id) => id) : []}
@@ -337,7 +336,7 @@ export function CreateLessonDialog({
               }}
               disabled={isSubmitting}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} sm={6}>
             <CustomSelectDropDown<boolean>

@@ -987,5 +987,13 @@
   "basicInformation": "Basic Information",
   "selectResources": "Select Resources",
   "noQuizzesFound": "No Quizzes Found",
-  "lessonParts": "Lesson Parts"
+  "lessonParts": "Lesson Parts",
+  "selectVideo": "Select Video",
+  "lessonCollectionName": "Lesson Names in this Part",
+  "lessonCollectionDetail": "Lesson Description in this Part",
+  "basicInfo": "Basic Information",
+  "lessonsQuizzes": "Lesson Quizzes",
+  "quizNotSelected": "Quiz Not Selected",
+  "addQuiz": "Add Quiz",
+  "noQuizzes": "No Quizzes"
 }

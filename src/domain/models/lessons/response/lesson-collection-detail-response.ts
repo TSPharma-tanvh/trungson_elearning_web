@@ -1,15 +1,21 @@
 import { CourseDetailResponse } from '../../courses/response/course-detail-response';
+import { QuizResponse } from '../../quiz/response/quiz-response';
 import { LessonResponse } from './lesson-response';
 
 export class LessonsCollectionDetailResponse {
   id = '';
   name = '';
   order = 0;
+
   startDate?: string;
   endDate?: string;
   fixedCourseDayDuration?: number;
+
   courseID?: string;
+
   lessons: LessonResponse[] = [];
+  quizzes: QuizResponse[] = [];
+
   course?: CourseDetailResponse;
 
   constructor(init?: Partial<LessonsCollectionDetailResponse>) {
@@ -25,7 +31,10 @@ export class LessonsCollectionDetailResponse {
       endDate: json.endDate,
       fixedCourseDayDuration: json.fixedCourseDayDuration,
       courseID: json.courseID,
+
       lessons: json.lessons?.map((l: any) => LessonResponse.fromJson(l)) ?? [],
+      quizzes: json.quizzes?.map((q: any) => QuizResponse.fromJson(q)) ?? [],
+
       course: json.course ? CourseDetailResponse.fromJson(json.course) : undefined,
     });
   }
@@ -39,7 +48,10 @@ export class LessonsCollectionDetailResponse {
       endDate: this.endDate,
       fixedCourseDayDuration: this.fixedCourseDayDuration,
       courseID: this.courseID,
+
       lessons: this.lessons.map((l) => l.toJson()),
+      quizzes: this.quizzes.map((q) => q.toJson()),
+
       course: this.course?.toJson(),
     };
   }

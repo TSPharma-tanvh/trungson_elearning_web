@@ -57,46 +57,46 @@ function ExamDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
     </Grid>
   );
 
-  const renderEnrollmentCriteria = () => {
-    if (!quiz.quizEnrollments || quiz.quizEnrollments.length === 0) return null;
+  // const renderEnrollmentCriteria = () => {
+  //   if (!quiz.quizEnrollments || quiz.quizEnrollments.length === 0) return null;
 
-    return (
-      <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('enrollmentCriteria')} />
-        <CardContent>
-          {quiz.quizEnrollments.map((qe, index) => {
-            const criteria = qe.enrollmentCriteria;
-            if (!criteria) return null;
+  //   return (
+  //     <Card sx={{ mb: 2 }}>
+  //       <CardHeader title={t('enrollmentCriteria')} />
+  //       <CardContent>
+  //         {quiz.quizEnrollments.map((qe, index) => {
+  //           const criteria = qe.enrollmentCriteria;
+  //           if (!criteria) return null;
 
-            return (
-              <Box key={qe.id ?? index} sx={{ mb: 2 }}>
-                <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-                  {t('criteriaNumber')} #{index + 1}
-                </Typography>
-                <Grid container spacing={2}>
-                  {renderField('relationId', qe.id)}
-                  {renderField('quizId', qe.quizID)}
-                  {renderField('criteriaId', criteria.id)}
-                  {renderField('name', criteria.name)}
-                  {renderField('description', criteria.desc)}
-                  {renderField(
-                    'targetType',
-                    criteria.targetType
-                      ? t(criteria.targetType.charAt(0).toLowerCase() + t(criteria.targetType.slice(1)))
-                      : ''
-                  )}
-                  {renderField('targetId', criteria.targetID)}
-                  {renderField('targetLevelId', criteria.targetLevelID)}
-                  {renderField('maxCapacity', criteria.maxCapacity)}
-                  {renderField('targetPharmacyId', criteria.targetPharmacyID)}
-                </Grid>
-              </Box>
-            );
-          })}
-        </CardContent>
-      </Card>
-    );
-  };
+  //           return (
+  //             <Box key={qe.id ?? index} sx={{ mb: 2 }}>
+  //               <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+  //                 {t('criteriaNumber')} #{index + 1}
+  //               </Typography>
+  //               <Grid container spacing={2}>
+  //                 {renderField('relationId', qe.id)}
+  //                 {renderField('quizId', qe.quizID)}
+  //                 {renderField('criteriaId', criteria.id)}
+  //                 {renderField('name', criteria.name)}
+  //                 {renderField('description', criteria.desc)}
+  //                 {renderField(
+  //                   'targetType',
+  //                   criteria.targetType
+  //                     ? t(criteria.targetType.charAt(0).toLowerCase() + t(criteria.targetType.slice(1)))
+  //                     : ''
+  //                 )}
+  //                 {renderField('targetId', criteria.targetID)}
+  //                 {renderField('targetLevelId', criteria.targetLevelID)}
+  //                 {renderField('maxCapacity', criteria.maxCapacity)}
+  //                 {renderField('targetPharmacyId', criteria.targetPharmacyID)}
+  //               </Grid>
+  //             </Box>
+  //           );
+  //         })}
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // };
 
   const renderQuestions = () => {
     if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) return null;
@@ -355,7 +355,7 @@ function ExamDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
       </Card>
       {renderQuestions()}
       {renderFiles()}
-      {renderEnrollmentCriteria()}
+      {/* {renderEnrollmentCriteria()} */}
 
       {/* question details */}
       {selectedQuestion ? (

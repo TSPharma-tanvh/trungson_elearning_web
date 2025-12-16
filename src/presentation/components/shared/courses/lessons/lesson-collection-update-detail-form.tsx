@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import React from 'react';
-import { CreateLessonCollectionLessonDetailRequest } from '@/domain/models/courses/request/create-course-lesson-collection-request';
+import { LessonsCollectionUpdateDetailRequest } from '@/domain/models/lessons/request/lesson-collection-update-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import {
   Add as AddIcon,
@@ -14,23 +14,23 @@ import { useTranslation } from 'react-i18next';
 
 import { LessonSingleSelectAndCreateDialog } from '@/presentation/components/shared/courses/lessons/lesson-single-select-and-create-form';
 
-interface LessonCollectionCreateDetailForm {
-  value: CreateLessonCollectionLessonDetailRequest[];
-  onChange: (value: CreateLessonCollectionLessonDetailRequest[]) => void;
+interface LessonCollectionUpdateDetailForm {
+  value: LessonsCollectionUpdateDetailRequest[];
+  onChange: (value: LessonsCollectionUpdateDetailRequest[]) => void;
   label?: string;
 }
 
-function LessonCollectionCreateDetailFormComponent({
+function LessonCollectionUpdateDetailFormComponent({
   value: lessons,
   onChange,
   label = 'lessonsInCollection',
-}: LessonCollectionCreateDetailForm) {
+}: LessonCollectionUpdateDetailForm) {
   const { t } = useTranslation();
   const { lessonUsecase } = useDI();
 
   const handleLessonChange = (index: number, lessonId: string) => {
     const updated = [...lessons];
-    updated[index] = new CreateLessonCollectionLessonDetailRequest({
+    updated[index] = new LessonsCollectionUpdateDetailRequest({
       lessonId,
       order: index + 1,
     });
@@ -40,7 +40,7 @@ function LessonCollectionCreateDetailFormComponent({
   const handleAdd = () => {
     const updated = [
       ...lessons,
-      new CreateLessonCollectionLessonDetailRequest({
+      new LessonsCollectionUpdateDetailRequest({
         lessonId: '',
         order: lessons.length + 1,
       }),
@@ -52,7 +52,7 @@ function LessonCollectionCreateDetailFormComponent({
     const filtered = lessons.filter((_, i) => i !== index);
     const reindexed = filtered.map(
       (item, i) =>
-        new CreateLessonCollectionLessonDetailRequest({
+        new LessonsCollectionUpdateDetailRequest({
           lessonId: item.lessonId,
           order: i + 1,
         })
@@ -140,4 +140,4 @@ function LessonCollectionCreateDetailFormComponent({
   );
 }
 
-export const LessonCollectionCreateDetailForm = React.memo(LessonCollectionCreateDetailFormComponent);
+export const LessonCollectionUpdateDetailForm = React.memo(LessonCollectionUpdateDetailFormComponent);

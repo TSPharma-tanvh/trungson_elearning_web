@@ -109,7 +109,7 @@ export class UpdateCourseRequest {
   }
 
   /**
-   * Converts to FormData that .NET can correctly parse.
+   * Converts to FormData that .NET can correctly parse
    */
   toFormData(): FormData {
     const fd = new FormData();
@@ -117,7 +117,7 @@ export class UpdateCourseRequest {
     fd.append('Id', this.id);
     if (this.pathId) fd.append('PathID', this.pathId);
     if (this.detail) fd.append('Detail', this.detail);
-    if (this.isRequired !== null) fd.append('IsRequired', String(this.isRequired));
+    if (this.isRequired !== undefined) fd.append('IsRequired', String(this.isRequired));
     if (this.name) fd.append('Name', this.name);
     if (this.disableStatus) fd.append('DisableStatus', this.disableStatus);
 
@@ -130,8 +130,12 @@ export class UpdateCourseRequest {
     if (this.displayType) fd.append('DisplayType', this.displayType);
     if (this.meetingLink) fd.append('MeetingLink', this.meetingLink);
 
-    // Collections → must be JSON string
-    if (this.collections && this.collections.length > 0) {
+    /**
+     * 🔥 IMPORTANT:
+     * Backend expects Collections as JSON string
+     * with Lessons + Quizzes
+     */
+    if (this.collections.length > 0) {
       fd.append(
         'Collections',
         JSON.stringify(
@@ -141,11 +145,16 @@ export class UpdateCourseRequest {
             Order: c.order,
             StartDate: c.startDate ? DateTimeUtils.formatISODateToString(c.startDate) : undefined,
             EndDate: c.endDate ? DateTimeUtils.formatISODateToString(c.endDate) : undefined,
-
             FixedCourseDayDuration: c.fixedCourseDayDuration,
-            Collection: c.collection.map((item) => ({
-              LessonId: item.lessonId,
-              Order: item.order,
+
+            Lessons: c.lessons.map((l) => ({
+              LessonId: l.lessonId,
+              Order: l.order,
+            })),
+
+            Quizzes: c.quizzes?.map((q) => ({
+              QuizId: q.quizId,
+              Order: q.order,
             })),
           }))
         )
@@ -171,13 +180,14 @@ export class UpdateCourseRequest {
     if (this.thumbDocumentNo) fd.append('ThumbDocumentNo', this.thumbDocumentNo);
     if (this.thumbPrefixName) fd.append('ThumbPrefixName', this.thumbPrefixName);
 
-    if (this.isDeleteOldThumbnail !== null) {
+    if (this.isDeleteOldThumbnail !== undefined) {
       fd.append('IsDeleteOldThumbnail', String(this.isDeleteOldThumbnail));
     }
 
     if (this.categoryEnum) fd.append('CategoryEnum', this.categoryEnum);
     if (this.departmentTypeCode) fd.append('DepartmentTypeCode', this.departmentTypeCode);
     if (this.positionCode) fd.append('PositionCode', this.positionCode);
+
     return fd;
   }
 }
