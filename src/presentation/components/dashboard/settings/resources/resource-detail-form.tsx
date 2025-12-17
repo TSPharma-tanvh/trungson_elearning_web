@@ -89,6 +89,8 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
           {renderField('isThumbnail', resource.isThumbnail ? t('yes') : t('no'))}
           {renderField('categoryID', resource.categoryID)}
           {renderField('categoryName', resource.category?.categoryName)}
+          {renderField('createdByUser', resource.createdByUser?.employee?.name)}
+          {renderField('updatedByUser', resource.updatedByUser?.employee?.name)}
         </Grid>
       </CardContent>
     </Card>

@@ -18,7 +18,7 @@ export class CreateQuizRequest {
   isRestrictAttempts = false;
 
   maxAttempts?: number;
-  scoreToPass!: number;
+  // scoreToPass!: number;
 
   title = '';
   description?: string;

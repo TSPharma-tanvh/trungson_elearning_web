@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { type UpdateFileResourcesRequest } from '@/domain/models/file/request/update-file-resource-request';
 import { type FileResourcesResponseForAdmin } from '@/domain/models/file/response/file-resources-for-admin-response';
 import { MoreVert } from '@mui/icons-material';
-import { Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Stack, TableCell, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomTable } from '@/presentation/components/core/custom-table';
@@ -93,6 +93,8 @@ export default function FileResourcesTable({
             <TableCell>{t('fileLessonRelation')}</TableCell>
             <TableCell>{t('fileQuestionRelation')}</TableCell>
             <TableCell>{t('fileQuizRelation')}</TableCell>
+            <TableCell>{t('createdByUser')}</TableCell>
+            <TableCell>{t('updatedByUser')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -115,7 +117,34 @@ export default function FileResourcesTable({
             <TableCell>{row.fileLessonRelation?.length}</TableCell>
             <TableCell>{row.fileQuestionRelation?.length}</TableCell>
             <TableCell>{row.fileQuizRelation?.length}</TableCell>
+            <TableCell sx={{ width: '25%' }}>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Avatar src={row?.createdByUser?.employee?.avatar}>{row?.createdByUser?.employee?.name}</Avatar>
+                <Box>
+                  <Typography variant="subtitle2" noWrap>
+                    {row?.createdByUser?.employee?.name}
+                  </Typography>
 
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    {row?.createdByUser?.userName}
+                  </Typography>
+                </Box>
+              </Stack>
+            </TableCell>{' '}
+            <TableCell sx={{ width: '25%' }}>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Avatar src={row?.updatedByUser?.employee?.avatar}>{row?.updatedByUser?.employee?.name}</Avatar>
+                <Box>
+                  <Typography variant="subtitle2" noWrap>
+                    {row?.updatedByUser?.employee?.name}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    {row?.updatedByUser?.userName}
+                  </Typography>
+                </Box>
+              </Stack>
+            </TableCell>{' '}
             <TableCell align="right">
               <IconButton onClick={onActionClick}>
                 <MoreVert />

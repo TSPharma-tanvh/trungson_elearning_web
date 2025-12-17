@@ -485,7 +485,7 @@ export function CreateQuizForLessonDialog({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('scoreToPass')}
                 value={form.scoreToPass?.toString() ?? ''}
@@ -498,7 +498,7 @@ export function CreateQuizForLessonDialog({
                 required
                 icon={<NumberCircleNine {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             {/* <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>

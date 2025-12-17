@@ -63,6 +63,8 @@ function CategoryDetails({ category, fullScreen }: { category: CategoryDetailRes
                 : ''
             )}
             {renderField('thumbnailId', category.thumbnail?.id)}
+            {renderField('createdByUser', category.createdByUser?.employee?.name)}
+            {renderField('updatedByUser', category.updatedByUser?.employee?.name)}
           </Grid>
         </CardContent>
       </Card>

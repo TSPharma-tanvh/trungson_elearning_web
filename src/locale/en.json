@@ -995,5 +995,7 @@
   "lessonsQuizzes": "Lesson Quizzes",
   "quizNotSelected": "Quiz Not Selected",
   "addQuiz": "Add Quiz",
-  "noQuizzes": "No Quizzes"
+  "noQuizzes": "No Quizzes",
+  "createdByUser": "Created By User",
+  "updatedByUser": "Updated By User"
 }

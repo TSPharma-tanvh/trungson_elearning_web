@@ -156,8 +156,15 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
     const collections = course.collections;
     if (!collections || collections.length === 0) return null;
 
-    const toggleExpand = (id: string) => {
+    const toggleLessonExpand = (id: string) => {
       setCourseExpandedLessons((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }));
+    };
+
+    const toggleQuizExpand = (id: string) => {
+      setCourseExpandedQuizzes((prev) => ({
         ...prev,
         [id]: !prev[id],
       }));
@@ -195,7 +202,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
                 action={
                   <IconButton
                     onClick={() => {
-                      toggleExpand(colId);
+                      toggleLessonExpand(colId);
                     }}
                     sx={{
                       transform: colExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -241,7 +248,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
 
                                 <IconButton
                                   onClick={() => {
-                                    toggleExpand(lessonId);
+                                    toggleLessonExpand(lessonId);
                                   }}
                                   sx={{
                                     transform: lessonExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -314,7 +321,7 @@ function CourseDetails({ course, fullScreen }: { course: CourseDetailResponse; f
 
                                 <IconButton
                                   onClick={() => {
-                                    toggleExpand(quizId);
+                                    toggleQuizExpand(quizId);
                                   }}
                                   sx={{
                                     transform: quizExpanded ? 'rotate(180deg)' : 'rotate(0deg)',

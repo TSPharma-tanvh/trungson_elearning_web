@@ -444,7 +444,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('scoreToPass')}
                 value={form.scoreToPass?.toString() ?? ''}
@@ -457,7 +457,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
                 required
                 icon={<NumberCircleNine {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>

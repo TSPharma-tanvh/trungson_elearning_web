@@ -1,6 +1,7 @@
 import { type StatusEnum } from '@/utils/enum/core-enum';
 
 import { CategoryResponseNoThumbnail } from '../../category/response/category-response-no-thumbnail-response';
+import { UserDetailResponse } from '../../user/response/user-detail-response';
 import { FileClassRelationResponseForResource } from './file-class-relation-response-for-resource';
 import { FileClassQRRelationResponseForResource } from './file-classqr-relation-response-for-resource';
 import { FileCourseRelationResponseForResource } from './file-course-relation-response-for-resource';
@@ -15,7 +16,7 @@ export class FileResourcesResponseForAdmin {
   status?: StatusEnum;
   tagID?: string;
   name?: string;
-  size?: number;
+  size: number = 0;
   isThumbnail?: boolean;
   categoryID?: string;
   category?: CategoryResponseNoThumbnail;
@@ -26,6 +27,9 @@ export class FileResourcesResponseForAdmin {
   fileLessonRelation: FileLessonRelationResponseForResource[] = [];
   fileQuestionRelation: FileQuestionRelationResponseForResource[] = [];
   fileQuizRelation: FileQuizRelationResponseForResources[] = [];
+
+  createdByUser?: UserDetailResponse;
+  updatedByUser?: UserDetailResponse;
 
   constructor(init?: Partial<FileResourcesResponseForAdmin>) {
     Object.assign(this, init);
@@ -41,27 +45,30 @@ export class FileResourcesResponseForAdmin {
       status: json.status,
       tagID: json.tagID,
       name: json.name,
-      size: json.size,
+      size: json.size ?? 0,
       isThumbnail: json.isThumbnail,
       categoryID: json.categoryID,
       category: json.category ? CategoryResponseNoThumbnail.fromJson(json.category) : undefined,
 
-      fileClassQRRelation: (json.fileClassQRRelation || []).map((x: any) =>
+      fileClassQRRelation: (json.fileClassQRRelation ?? []).map((x: any) =>
         FileClassQRRelationResponseForResource.fromJson(x)
       ),
-      fileClassRelation: (json.fileClassRelation || []).map((x: any) =>
+      fileClassRelation: (json.fileClassRelation ?? []).map((x: any) =>
         FileClassRelationResponseForResource.fromJson(x)
       ),
-      fileCourseRelation: (json.fileCourseRelation || []).map((x: any) =>
+      fileCourseRelation: (json.fileCourseRelation ?? []).map((x: any) =>
         FileCourseRelationResponseForResource.fromJson(x)
       ),
-      fileLessonRelation: (json.fileLessonRelation || []).map((x: any) =>
+      fileLessonRelation: (json.fileLessonRelation ?? []).map((x: any) =>
         FileLessonRelationResponseForResource.fromJson(x)
       ),
-      fileQuestionRelation: (json.fileQuestionRelation || []).map((x: any) =>
+      fileQuestionRelation: (json.fileQuestionRelation ?? []).map((x: any) =>
         FileQuestionRelationResponseForResource.fromJson(x)
       ),
-      fileQuizRelation: (json.fileQuizRelation || []).map((x: any) => FileQuizRelationResponseForResources.fromJson(x)),
+      fileQuizRelation: (json.fileQuizRelation ?? []).map((x: any) => FileQuizRelationResponseForResources.fromJson(x)),
+
+      createdByUser: json.createdByUser ? UserDetailResponse.fromJson(json.createdByUser) : undefined,
+      updatedByUser: json.updatedByUser ? UserDetailResponse.fromJson(json.updatedByUser) : undefined,
     });
   }
 
@@ -84,6 +91,9 @@ export class FileResourcesResponseForAdmin {
       fileLessonRelation: this.fileLessonRelation.map((x) => x.toJson()),
       fileQuestionRelation: this.fileQuestionRelation.map((x) => x.toJson()),
       fileQuizRelation: this.fileQuizRelation.map((x) => x.toJson()),
+
+      createdByUser: this.createdByUser?.toJson(),
+      updatedByUser: this.updatedByUser?.toJson(),
     };
   }
 }

@@ -144,7 +144,7 @@ export function UpdateQuizForLessonDialog({
         isRequired: quiz.isRequired ?? true,
         displayedQuestionCount: quiz.displayedQuestionCount,
         time: quiz.time,
-        scoreToPass: quiz.scoreToPass,
+        // scoreToPass: quiz.scoreToPass,
         type: quiz.type ? (quiz.type === 'ExamQuiz' ? QuizTypeEnum.ExamQuiz : QuizTypeEnum.LessonQuiz) : undefined,
         categoryID: quiz.categoryID,
         questionCategoryIDs:
@@ -321,7 +321,7 @@ export function UpdateQuizForLessonDialog({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('scoreToPass')}
                 value={form.scoreToPass?.toString() ?? ''}
@@ -333,7 +333,7 @@ export function UpdateQuizForLessonDialog({
                 required
                 icon={<NumberCircleNine {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CategorySelect

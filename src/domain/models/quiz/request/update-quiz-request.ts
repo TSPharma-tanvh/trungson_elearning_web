@@ -13,7 +13,7 @@ export class UpdateQuizRequest {
   startTime?: string; // C# DateTime? string
   endTime?: string;
   maxAttempts?: number;
-  scoreToPass?: number;
+  // scoreToPass?: number;
 
   title?: string;
   description?: string;
@@ -72,7 +72,7 @@ export class UpdateQuizRequest {
       startTime: this.startTime,
       endTime: this.endTime,
       maxAttempts: this.maxAttempts,
-      scoreToPass: this.scoreToPass,
+      // scoreToPass: this.scoreToPass,
 
       title: this.title,
       description: this.description,
@@ -126,7 +126,7 @@ export class UpdateQuizRequest {
     append('startTime', this.startTime);
     append('endTime', this.endTime);
     append('maxAttempts', this.maxAttempts);
-    append('scoreToPass', this.scoreToPass);
+    // append('scoreToPass', this.scoreToPass);
 
     append('title', this.title);
     append('description', this.description);

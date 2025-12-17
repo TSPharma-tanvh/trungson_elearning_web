@@ -96,6 +96,8 @@ export default function CategoryTable({
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
             <TableCell>{t('type')}</TableCell>
+            <TableCell>{t('createdByUser')}</TableCell>
+            <TableCell>{t('updatedByUser')}</TableCell>
           </>
         )}
         renderRow={(row, isSelected, onSelect, onActionClick) => (
@@ -113,13 +115,39 @@ export default function CategoryTable({
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
               <Typography variant="body2">{row.description}</Typography>
             </TableCell>
-
             <TableCell>
               {row.category
                 ? t(row.category.toString().charAt(0).toLowerCase() + t(row.category.toString()).slice(1))
                 : ''}
             </TableCell>
+            <TableCell sx={{ width: '25%' }}>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Avatar src={row?.createdByUser?.employee?.avatar}>{row?.createdByUser?.employee?.name}</Avatar>
+                <Box>
+                  <Typography variant="subtitle2" noWrap>
+                    {row?.createdByUser?.employee?.name}
+                  </Typography>
 
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    {row?.createdByUser?.userName}
+                  </Typography>
+                </Box>
+              </Stack>
+            </TableCell>{' '}
+            <TableCell sx={{ width: '25%' }}>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Avatar src={row?.updatedByUser?.employee?.avatar}>{row?.updatedByUser?.employee?.name}</Avatar>
+                <Box>
+                  <Typography variant="subtitle2" noWrap>
+                    {row?.updatedByUser?.employee?.name}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    {row?.updatedByUser?.userName}
+                  </Typography>
+                </Box>
+              </Stack>
+            </TableCell>{' '}
             <TableCell align="right">
               <IconButton
                 onClick={(e) => {

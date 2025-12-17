@@ -90,6 +90,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
         displayType: DisplayTypeEnum.Public,
         categoryEnum: CategoryEnum.Course,
         courseType: LearningModeEnum.Online,
+        collections: [],
       })
     );
     setLessonCollections([]);

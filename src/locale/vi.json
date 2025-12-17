@@ -995,5 +995,7 @@
   "lessonsQuizzes": "Bài kiểm tra trong phần học",
   "quizNotSelected": "Bài kiểm tra không được chọn",
   "addQuiz": "Thêm bài kiểm tra",
-  "noQuizzes": "Không có bài kiểm tra"
+  "noQuizzes": "Không có bài kiểm tra",
+  "createdByUser": "Được tạo bởi",
+  "updatedByUser": "Được cập nhật bởi"
 }

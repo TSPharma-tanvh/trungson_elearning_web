@@ -138,7 +138,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
         title: quiz.title,
         description: quiz.description,
         time: quiz.time,
-        scoreToPass: quiz.scoreToPass,
+        // scoreToPass: quiz.scoreToPass,
         displayedQuestionCount: quiz.displayedQuestionCount,
         maxAttempts: quiz.maxAttempts ?? 5,
         isRequired: quiz.isRequired ?? true,
@@ -291,7 +291,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('scoreToPass')}
                 value={form.scoreToPass?.toString() ?? ''}
@@ -303,7 +303,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 required
                 icon={<NumberCircleNine {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
