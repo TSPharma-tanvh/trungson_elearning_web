@@ -6,7 +6,15 @@ import { type CourseDetailResponse } from '@/domain/models/courses/response/cour
 import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
 import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
-import { DisplayTypeEnum, LearningModeEnum, StatusDisplayNames, StatusEnum } from '@/utils/enum/core-enum';
+import {
+  CourseTypeDisplayNames,
+  CourseTypeEnum,
+  DisplayTypeEnum,
+  LearningModeDisplayNames,
+  LearningModeEnum,
+  StatusDisplayNames,
+  StatusEnum,
+} from '@/utils/enum/core-enum';
 import { DepartmentFilterType } from '@/utils/enum/employee-enum';
 import { Book, InfoOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -85,6 +93,7 @@ export function CourseSelectDialog({
     pageNumber,
     totalPages,
     setSearchText,
+    courseType,
     setCourseType,
     setDisplayType,
     setDisableStatus,
@@ -236,22 +245,23 @@ export function CourseSelectDialog({
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {/* Course Type */}
-            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('courseType')}</InputLabel>
               <Select
                 value={courseType !== undefined ? String(courseType) : ''}
                 onChange={(e: SelectChangeEvent) => {
-                  setCourseType(e.target.value !== '' ? (Number(e.target.value) as LearningModeEnum) : undefined);
+                  setCourseType(e.target.value !== '' ? (Number(e.target.value) as CourseTypeEnum) : undefined);
                 }}
                 label={t('courseType')}
               >
                 {filterOptions.courseType.map((opt) => (
                   <MenuItem key={String(opt ?? 'none')} value={opt !== undefined ? String(opt) : ''}>
-                    {opt !== undefined ? t(LearningModeDisplayNames[opt]) : t('all')}
+                    {opt !== undefined ? t(CourseTypeDisplayNames[opt]) : t('all')}
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl> */}
+            </FormControl>
+
             <CustomEmployeeDistinctSelectFilter
               label={t('departmentType')}
               value={departmentTypeCode}

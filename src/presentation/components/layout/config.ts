@@ -6,12 +6,12 @@ export const navItems = [
 
   {
     key: 'courses',
-    title: 'courses',
-    icon: 'book',
+    title: 'courseStructureModularLabel',
+    icon: 'course',
     items: [
       // { key: 'path', title: 'path', href: paths.dashboard.path, icon: 'path' },
-      { key: 'courses', title: 'courses', href: paths.dashboard.courses, icon: 'course' },
-      { key: 'courseLesson', title: 'courseLesson', href: paths.dashboard.lessonCourse, icon: 'lesson' },
+      { key: 'courses', title: 'courseStructureModularLabel', href: paths.dashboard.courses, icon: 'course' },
+      // { key: 'courseLesson', title: 'courseLesson', href: paths.dashboard.courseLesson, icon: 'lesson' },
       {
         key: 'courseProgress',
         title: 'userCourseProgress',
@@ -28,20 +28,21 @@ export const navItems = [
   },
   {
     key: 'lesson',
-    title: 'lesson',
-    icon: 'lesson',
+    title: 'courseStructureLinearLabel',
+    icon: 'book',
     items: [
       // { key: 'path', title: 'path', href: paths.dashboard.path, icon: 'path' },
-      { key: 'independentLesson', title: 'independentLesson', href: paths.dashboard.lesson, icon: 'lesson' },
+      { key: 'courses', title: 'courseStructureLinearLabel', href: paths.dashboard.lessonCourse, icon: 'book' },
+      // { key: 'linearLesson', title: 'linearLesson', href: paths.dashboard.lesson, icon: 'lesson' },
       {
         key: 'userLessonProgress',
-        title: 'userLessonProgress',
+        title: 'userCourseProgress',
         href: paths.dashboard.userLessonProgress,
         icon: 'userLesson',
       },
       {
         key: 'userLessonProgressCreate',
-        title: 'enrollLesson',
+        title: 'enrollCourse',
         href: paths.dashboard.userLessonProgressCreate,
         icon: 'enroll',
       },
@@ -68,7 +69,7 @@ export const navItems = [
   },
   {
     key: 'questions',
-    title: 'questions',
+    title: 'examManager',
     icon: 'question',
     items: [
       { key: 'category', title: 'questionBank', href: paths.dashboard.questionCategory, icon: 'questionCategory' },
@@ -104,13 +105,22 @@ export const navItems = [
   //   ],
   // },
 
+  // {
+  //   key: 'class',
+  //   title: 'class',
+  //   icon: 'class',
+  //   items: [
+  //     { key: 'class', title: 'class', href: paths.dashboard.class, icon: 'chalkboard-simple' },
+  //     { key: 'attendance', title: 'attendance', href: paths.dashboard.attendance, icon: 'student' },
+  //   ],
+  // },
   {
-    key: 'class',
-    title: 'class',
-    icon: 'class',
+    key: 'fileResource',
+    title: 'fileResource',
+    icon: 'files',
     items: [
-      { key: 'class', title: 'class', href: paths.dashboard.class, icon: 'chalkboard-simple' },
-      { key: 'attendance', title: 'attendance', href: paths.dashboard.attendance, icon: 'student' },
+      { key: 'category', title: 'category', href: paths.dashboard.category, icon: 'category' },
+      { key: 'resources', title: 'resources', href: paths.dashboard.resources, icon: 'files' },
     ],
   },
   {
@@ -124,11 +134,11 @@ export const navItems = [
   },
   {
     key: 'management',
-    title: 'users',
+    title: 'userManager',
     icon: 'userManager',
     items: [
       // { key: 'customers', title: 'customers', href: paths.dashboard.customers, icon: 'users' },
-      { key: 'users', title: 'users', href: paths.dashboard.users, icon: 'users' },
+      { key: 'users', title: 'userManager', href: paths.dashboard.users, icon: 'users' },
       { key: 'roles', title: 'roles', href: paths.dashboard.roles, icon: 'roles' },
       { key: 'teacher', title: 'teacher', href: paths.dashboard.teacher, icon: 'teacher' },
       // { key: 'employee', title: 'employee', href: paths.dashboard.employee, icon: 'employee' },
@@ -142,11 +152,11 @@ export const navItems = [
       // { key: 'integrations', title: 'integrations', href: paths.dashboard.integrations, icon: 'plugs-connected' },
       // { key: 'system', title: 'system', href: paths.dashboard.system, icon: 'system' },
       // { key: 'account', title: 'account', href: paths.dashboard.account, icon: 'user' },
-      { key: 'category', title: 'category', href: paths.dashboard.category, icon: 'category' },
+
       // { key: 'criteria', title: 'criteria', href: paths.dashboard.criteria, icon: 'criteria' },
       // { key: 'email', title: 'email', href: paths.dashboard.email, icon: 'email' },
       // { key: 'notification', title: 'notification', href: paths.dashboard.notification, icon: 'notification' },
-      { key: 'resources', title: 'resources', href: paths.dashboard.resources, icon: 'files' },
+
       { key: 'devices', title: 'devices', href: paths.dashboard.devices, icon: 'devices' },
       { key: 'settings', title: 'settings', href: paths.dashboard.settings, icon: 'gear-six' },
     ],

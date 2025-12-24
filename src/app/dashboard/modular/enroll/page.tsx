@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
-import { EnrollUserListToLessonRequest } from '@/domain/models/user-lesson/request/enroll-user-to-lesson-request';
+import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
+import { EnrollUserListToCourseRequest } from '@/domain/models/user-course/request/enroll-user-list-to-course';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import { ProgressEnrollmentTypeEnum, StatusEnum, UserProgressEnum } from '@/utils/enum/core-enum';
@@ -14,34 +14,37 @@ import { CustomButton } from '@/presentation/components/core/button/custom-butto
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
-import { IndependentLessonSingleSelectDialog } from '@/presentation/components/shared/courses/lessons/independent-lesson-select';
-import { LessonSingleSelectDialog } from '@/presentation/components/shared/courses/lessons/lesson-select';
+import { CourseSelectDialog } from '@/presentation/components/shared/courses/courses/courses-select';
+import { ModularCourseSelectDialog } from '@/presentation/components/shared/courses/courses/modular-courses-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
-export default function EnrollUsersToLessonPage() {
+export default function EnrollUsersToCoursePage() {
   const { t } = useTranslation();
-  const { userLessonProgressUsecase, lessonUsecase, userUsecase } = useDI();
+  // const router = useRouter();
+  const { userCourseProgressUsecase, courseUsecase, userUsecase } = useDI();
 
   const [loading, setLoading] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
-  const [selectedLessonDetail, setSelectedLessonDetail] = useState<LessonDetailResponse | null>(null);
+  const [selectedCourseDetail, setSelectedCourseDetail] = useState<CourseDetailResponse | null>(null);
+  // const [startDateError, setStartDateError] = useState<string | null>(null);
+  // const [endDateError, setEndDateError] = useState<string | null>(null);
 
-  const [form, setForm] = useState<EnrollUserListToLessonRequest>(
-    new EnrollUserListToLessonRequest({
-      lessonID: '',
+  const [form, setForm] = useState<EnrollUserListToCourseRequest>(
+    new EnrollUserListToCourseRequest({
+      courseID: '',
       progress: 0,
-      status: UserProgressEnum[UserProgressEnum.NotStarted],
+      status: UserProgressEnum.NotStarted,
       activeStatus: StatusEnum.Enable,
       enrollType: ProgressEnrollmentTypeEnum.AllUsers,
       isUpdateOldProgress: false,
     })
   );
 
-  const handleChange = <K extends keyof EnrollUserListToLessonRequest>(
+  const handleChange = <K extends keyof EnrollUserListToCourseRequest>(
     key: K,
-    value: EnrollUserListToLessonRequest[K] | null | undefined
+    value: EnrollUserListToCourseRequest[K] | null | undefined
   ) => {
-    setForm((prev) => new EnrollUserListToLessonRequest({ ...prev, [key]: value as any }));
+    setForm((prev) => new EnrollUserListToCourseRequest({ ...prev, [key]: value as any }));
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,18 +75,20 @@ export default function EnrollUsersToLessonPage() {
   };
 
   const handleSubmit = async () => {
-    if (!form.lessonID) {
-      CustomSnackBar.showSnackbar(t('pleaseSelectLesson'), 'error');
+    if (!form.courseID) {
+      CustomSnackBar.showSnackbar(t('pleaseSelectCourse'), 'error');
       return;
     }
     if (form.enrollType === ProgressEnrollmentTypeEnum.FromFile && !form.userFile) {
       CustomSnackBar.showSnackbar(t('fileRequired'), 'error');
+
       return;
     }
 
     try {
       setLoading(true);
-      await userLessonProgressUsecase.enrollUserListToLesson(form);
+      await userCourseProgressUsecase.enrollUserCourseProgress(form);
+      // router.push('/dashboard/progress/course');
     } catch (error: any) {
       return null;
     } finally {
@@ -97,70 +102,61 @@ export default function EnrollUsersToLessonPage() {
         {/* Header */}
         <Stack direction="row" alignItems="center" spacing={2}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            {t('enrollUsersToLesson')}
+            {t('enrollUsersToCourse')}
           </Typography>
         </Stack>
 
         <Card elevation={3} sx={{ p: 4, borderRadius: 3 }}>
           <Grid container spacing={4}>
-            {/* Lesson Selection */}
+            {/* Course Selection */}
             <Grid item xs={12}>
-              <IndependentLessonSingleSelectDialog
-                lessonUsecase={lessonUsecase}
-                value={form.lessonID ?? ''}
+              <ModularCourseSelectDialog
+                courseUsecase={courseUsecase}
+                value={form.courseID ?? ''}
                 onChange={async (value) => {
-                  handleChange('lessonID', value);
+                  handleChange('courseID', value);
 
                   if (!value) {
-                    setSelectedLessonDetail(null);
+                    setSelectedCourseDetail(null);
                     return;
                   }
 
                   try {
-                    const detail = await lessonUsecase.getLessonById(value);
-                    setSelectedLessonDetail(detail);
+                    const detail = await courseUsecase.getCourseById(value);
+                    setSelectedCourseDetail(detail);
                   } catch (err) {
-                    setSelectedLessonDetail(null);
+                    CustomSnackBar.showSnackbar(t('failedToLoadCourseDetail'), 'error');
+                    setSelectedCourseDetail(null);
                   }
                 }}
                 disabled={loading}
               />
             </Grid>
 
-            {/* Hiển thị thông tin lesson nếu có */}
-            {/* {selectedLessonDetail && (
-              <Grid item xs={12}>
-                <Typography variant="body1" color="text.secondary">
-                  <strong>{t('lessonName')}:</strong> {selectedLessonDetail.name} <br />
-                  {selectedLessonDetail.course?.name && (
-                    <>
-                      <strong>{t('course')}:</strong> {selectedLessonDetail.course.name}
-                    </>
-                  )}
-                </Typography>
-              </Grid>
-            )} */}
-
-            {selectedLessonDetail?.isFixedLesson ? (
+            {selectedCourseDetail?.isFixedCourse ? (
               <Grid item xs={12}>
                 <CustomDateTimePicker
                   label={`${t('startDate')} *`}
-                  value={form.startDate ? DateTimeUtils.formatISODateToString(form.startDate) : ''}
+                  value={
+                    form.fixedCourseStartDate ? DateTimeUtils.formatISODateToString(form.fixedCourseStartDate) : ''
+                  }
                   onChange={(val) => {
                     const date = val ? DateTimeUtils.formatStringToDateTime(val) : null;
-                    handleChange('startDate', date);
+                    handleChange('fixedCourseStartDate', date);
                   }}
                   disabled={loading}
                 />
               </Grid>
             ) : null}
 
-            {/* Cập nhật tiến độ cũ */}
+            {/* Update Old Progress */}
             <Grid item xs={12}>
               <CustomSelectDropDown<boolean>
                 label={t('isUpdateOldProgress')}
                 value={form.isUpdateOldProgress ?? false}
-                onChange={(val) => handleChange('isUpdateOldProgress', val)}
+                onChange={(val) => {
+                  handleChange('isUpdateOldProgress', val);
+                }}
                 disabled={loading}
                 options={[
                   { value: true, label: t('yes') },
@@ -169,12 +165,14 @@ export default function EnrollUsersToLessonPage() {
               />
             </Grid>
 
-            {/* Loại ghi danh */}
+            {/* Enroll Type */}
             <Grid item xs={12}>
               <CustomSelectDropDown<ProgressEnrollmentTypeEnum>
                 label={t('enrollType')}
                 value={form.enrollType}
-                onChange={(val) => handleChange('enrollType', Number(val) as ProgressEnrollmentTypeEnum)}
+                onChange={(val) => {
+                  handleChange('enrollType', Number(val) as ProgressEnrollmentTypeEnum);
+                }}
                 disabled={loading}
                 options={[
                   { value: ProgressEnrollmentTypeEnum.AllUsers, label: t('allUsers') },
@@ -184,19 +182,21 @@ export default function EnrollUsersToLessonPage() {
               />
             </Grid>
 
-            {/* Chọn từng user */}
+            {/* Selected Users */}
             {form.enrollType === ProgressEnrollmentTypeEnum.SelectedUsers && (
               <Grid item xs={12}>
                 <UserMultiSelectDialog
                   userUsecase={userUsecase}
                   value={form.userIDs || []}
-                  onChange={(ids) => handleChange('userIDs', ids)}
+                  onChange={(ids) => {
+                    handleChange('userIDs', ids);
+                  }}
                   disabled={loading}
                 />
               </Grid>
             )}
 
-            {/* Upload file Excel */}
+            {/* Upload File */}
             {form.enrollType === ProgressEnrollmentTypeEnum.FromFile && (
               <Grid item xs={12}>
                 <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
@@ -229,25 +229,21 @@ export default function EnrollUsersToLessonPage() {
                   )}
                   <input type="file" hidden accept=".xlsx,.xls" onChange={handleFileChange} />
                 </Button>
-                {fileError && (
+                {fileError ? (
                   <Typography color="error" variant="caption" sx={{ mt: 1, ml: 1 }}>
                     {fileError}
                   </Typography>
-                )}
+                ) : null}
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
                   {t('supportedFormats')}: .xlsx, .xls | {t('maxSize')}: 5MB
                 </Typography>
               </Grid>
             )}
 
+            {/* Action Buttons */}
             <Grid item xs={12}>
               <Stack direction="row" spacing={2} justifyContent="flex-end">
-                <CustomButton
-                  label={t('enrollUsersToLesson')}
-                  onClick={handleSubmit}
-                  loading={loading}
-                  disabled={loading}
-                />
+                <CustomButton label={t('enrollUsers')} onClick={handleSubmit} loading={loading} />
               </Stack>
             </Grid>
           </Grid>

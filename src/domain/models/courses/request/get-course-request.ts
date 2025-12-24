@@ -1,4 +1,4 @@
-import { type LearningModeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
+import { CourseTypeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { type DisplayTypeEnum, type StatusEnum } from '@/utils/enum/path-enum';
 
 export class GetCourseRequest {
@@ -7,7 +7,7 @@ export class GetCourseRequest {
   isRequired?: boolean;
   disableStatus?: StatusEnum;
   teacherID?: string;
-  courseType?: LearningModeEnum;
+  courseType?: CourseTypeEnum;
   displayType?: DisplayTypeEnum;
   scheduleStatus?: ScheduleStatusEnum;
 
@@ -31,7 +31,7 @@ export class GetCourseRequest {
       isRequired: json.isRequired,
       disableStatus: json.disableStatus !== undefined ? (Number(json.disableStatus) as StatusEnum) : undefined,
       teacherID: json.teacherID,
-      courseType: json.courseType !== undefined ? (Number(json.courseType) as LearningModeEnum) : undefined,
+      courseType: json.courseType !== undefined ? (Number(json.courseType) as CourseTypeEnum) : undefined,
       displayType: json.displayType !== undefined ? (Number(json.displayType) as DisplayTypeEnum) : undefined,
       scheduleStatus:
         json.scheduleStatus !== undefined ? (Number(json.scheduleStatus) as ScheduleStatusEnum) : undefined,

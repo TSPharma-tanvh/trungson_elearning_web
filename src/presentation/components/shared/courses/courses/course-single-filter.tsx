@@ -7,6 +7,7 @@ import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
 import { useCourseSelectDebounce } from '@/presentation/hooks/course/use-course-select-debounce';
 import { useCourseSelectLoader } from '@/presentation/hooks/course/use-course-select-loader';
 import {
+  CourseTypeEnum,
   DisplayTypeDisplayNames,
   DisplayTypeEnum,
   LearningModeDisplayNames,
@@ -57,6 +58,7 @@ interface CourseSingleFilterProps extends Omit<SelectProps<string>, 'value' | 'o
   disabled?: boolean;
   pathID?: string;
   maxWidth?: number;
+  courseTypeValue?: CourseTypeEnum;
 }
 
 const filterOptions = {
@@ -75,6 +77,7 @@ export function CourseSingleFilter({
   disabled = false,
   pathID,
   maxWidth = 200,
+  courseTypeValue,
   ...selectProps
 }: CourseSingleFilterProps) {
   const theme = useTheme();
@@ -96,8 +99,6 @@ export function CourseSingleFilter({
     pageNumber,
     totalPages,
     setSearchText,
-    courseType,
-    setCourseType,
     displayType,
     setDisplayType,
 
@@ -119,6 +120,7 @@ export function CourseSingleFilter({
     isOpen: dialogOpen,
 
     searchText: debouncedSearchText,
+    courseType: courseTypeValue,
   });
 
   const isFull = isSmallScreen || isFullscreen;
@@ -144,7 +146,6 @@ export function CourseSingleFilter({
 
   const handleClearFilters = () => {
     setLocalSearchText('');
-    setCourseType(undefined);
     setDisplayType(undefined);
     setDisableStatus(undefined);
     setPositionCode(undefined);

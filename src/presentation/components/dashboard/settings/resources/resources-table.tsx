@@ -86,7 +86,16 @@ export default function FileResourcesTable({
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('type')}</TableCell>
             <TableCell>{t('size')} (MB)</TableCell>
-            <TableCell>{t('category')}</TableCell>
+            <TableCell
+              sx={{
+                minWidth: 180,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                paddingY: 1,
+              }}
+            >
+              {t('category')}
+            </TableCell>
             <TableCell>{t('fileClassQRRelation')}</TableCell>
             <TableCell>{t('fileClassRelation')}</TableCell>
             <TableCell>{t('fileCourseRelation')}</TableCell>
@@ -102,7 +111,7 @@ export default function FileResourcesTable({
             <TableCell>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Box>
-                  <Typography variant="subtitle2" noWrap>
+                  <Typography variant="subtitle2" title={row.name}>
                     {row.name}
                   </Typography>
                 </Box>
@@ -110,7 +119,7 @@ export default function FileResourcesTable({
             </TableCell>
             <TableCell>{row.type}</TableCell>
             <TableCell>{row.size ? (row.size / (1024 * 1024)).toFixed(3) : 0}</TableCell>
-            <TableCell>{row.category?.categoryName}</TableCell>
+            <TableCell sx={{ width: '25%' }}>{row.category?.categoryName}</TableCell>
             <TableCell>{row.fileClassQRRelation?.length}</TableCell>
             <TableCell>{row.fileClassRelation?.length}</TableCell>
             <TableCell>{row.fileCourseRelation?.length}</TableCell>

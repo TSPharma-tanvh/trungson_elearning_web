@@ -15,6 +15,7 @@ import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/c
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CourseSelectDialog } from '@/presentation/components/shared/courses/courses/courses-select';
+import { LinearCourseSelectDialog } from '@/presentation/components/shared/courses/courses/linear-courses-select';
 import { UserMultiSelectDialog } from '@/presentation/components/user/user-multi-select';
 
 export default function EnrollUsersToCoursePage() {
@@ -109,7 +110,7 @@ export default function EnrollUsersToCoursePage() {
           <Grid container spacing={4}>
             {/* Course Selection */}
             <Grid item xs={12}>
-              <CourseSelectDialog
+              <LinearCourseSelectDialog
                 courseUsecase={courseUsecase}
                 value={form.courseID ?? ''}
                 onChange={async (value) => {

@@ -21,8 +21,9 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
 import { LessonCollectionCreateByFileEditor } from '@/presentation/components/shared/courses/lessons/lesson-collection-detail-create-by-file-category-form';
+import { LinearLessonCollectionCreateByFileEditor } from '@/presentation/components/shared/courses/linear-courses/linear-lesson-collection-detail-create-by-file-category-form';
 
-interface CreateCourseProps {
+interface LinearCreateCourseProps {
   disabled?: boolean;
   onSubmit: (data: CreateCourseRequest) => void;
   loading?: boolean;
@@ -30,7 +31,13 @@ interface CreateCourseProps {
   onClose: () => void;
 }
 
-export function CreateCourseDialog({ disabled = false, onSubmit, loading = false, open, onClose }: CreateCourseProps) {
+export function LinearCreateCourseDialog({
+  disabled = false,
+  onSubmit,
+  loading = false,
+  open,
+  onClose,
+}: LinearCreateCourseProps) {
   const { t } = useTranslation();
   const { categoryUsecase, classTeacherUsecase } = useDI();
 
@@ -45,7 +52,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
       disableStatus: StatusEnum.Enable,
       displayType: DisplayTypeEnum.Public,
       categoryEnum: CategoryEnum.Course,
-      courseType: CourseTypeEnum.Modular,
+      courseType: CourseTypeEnum.Linear,
     })
   );
 
@@ -89,7 +96,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
         disableStatus: StatusEnum.Enable,
         displayType: DisplayTypeEnum.Public,
         categoryEnum: CategoryEnum.Course,
-        courseType: CourseTypeEnum.Modular,
+        courseType: CourseTypeEnum.Linear,
         collections: [],
       })
     );
@@ -218,7 +225,7 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
               />
             </Grid>
             <Grid item xs={12}>
-              <LessonCollectionCreateByFileEditor
+              <LinearLessonCollectionCreateByFileEditor
                 value={memoizedLessonCollections}
                 onChange={setLessonCollections}
                 fixedCourse={form.isFixedCourse}
@@ -245,5 +252,3 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
     </Dialog>
   );
 }
-
-///

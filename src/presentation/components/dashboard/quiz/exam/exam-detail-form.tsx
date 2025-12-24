@@ -345,7 +345,7 @@ function ExamDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
               quiz.type ? t(quiz.type.toString().charAt(0).toLowerCase() + t(quiz.type.toString().slice(1))) : ''
             )}
             {renderField('scoreToPass', quiz.scoreToPass)}
-            {renderField('maxAttempts', quiz.maxAttempts)}
+            {/* {renderField('maxAttempts', quiz.maxAttempts)} */}
             {renderField('isFixedExam', quiz.isFixedQuiz ? t('yes') : t('no'))}
             {renderField('canShuffle', quiz.canShuffle ? t('yes') : t('no'))}
             {renderField('isRequired', quiz.isRequired ? t('yes') : t('no'))}

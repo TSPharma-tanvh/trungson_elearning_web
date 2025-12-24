@@ -12,7 +12,11 @@ import { CustomEmployeeDistinctFilter } from '@/presentation/components/core/dro
 import { CustomSelectFilter } from '@/presentation/components/core/drop-down/custom-select-filter';
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 
-export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseRequest) => void }): React.JSX.Element {
+export function LinearCourseFilters({
+  onFilter,
+}: {
+  onFilter: (filters: GetCourseRequest) => void;
+}): React.JSX.Element {
   const { t } = useTranslation();
   const [searchText, setSearchText] = React.useState('');
   const [isRequired, setIsRequired] = React.useState<boolean | undefined>(undefined);
@@ -30,7 +34,7 @@ export function CourseFilters({ onFilter }: { onFilter: (filters: GetCourseReque
       searchText: searchText || undefined,
       isRequired,
       disableStatus: status,
-      courseType: CourseTypeEnum.Modular,
+      courseType: CourseTypeEnum.Linear,
       displayType,
       scheduleStatus,
       positionCode,

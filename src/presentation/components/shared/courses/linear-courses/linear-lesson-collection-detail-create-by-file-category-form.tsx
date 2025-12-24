@@ -4,31 +4,27 @@ import React, { useEffect, useState } from 'react';
 import { CourseCreateLessonCollectionRequest } from '@/domain/models/courses/request/create-course-request';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
-import { Add, Delete, UnfoldLess, UnfoldMore } from '@mui/icons-material';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { Box, Button, Card, CardContent, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { UnfoldLess, UnfoldMore } from '@mui/icons-material';
+import { Box, Card, CardContent, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { CustomDateTimePicker } from '@/presentation/components/core/picker/custom-date-picker';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
 import { QuizOrderCollectionCreateForm } from '../../quiz/quiz/quiz-order-collection-create-form';
-import { LessonOrderEditor } from './lesson-order-editor';
+import { LinearLessonOrderEditor } from './linear-lesson-order-editor';
 
-interface LessonCollectionEditorProps {
+interface LinearLessonCollectionEditorProps {
   fixedCourse?: boolean;
   value: CourseCreateLessonCollectionRequest[];
   onChange: (value: CourseCreateLessonCollectionRequest[]) => void;
-  isLinearCourse?: boolean;
 }
 
-export function LessonCollectionCreateByFileEditor({
+export function LinearLessonCollectionCreateByFileEditor({
   fixedCourse = false,
   value,
   onChange,
-  isLinearCourse = false,
-}: LessonCollectionEditorProps) {
+}: LinearLessonCollectionEditorProps) {
   const { t } = useTranslation();
   const { quizUsecase } = useDI();
 
@@ -40,7 +36,6 @@ export function LessonCollectionCreateByFileEditor({
       ? normalize(value)
       : [
           new CourseCreateLessonCollectionRequest({
-            name: '',
             order: 1,
             lessonCollection: [],
           }),
@@ -60,45 +55,6 @@ export function LessonCollectionCreateByFileEditor({
 
   const toggleCollapse = (order: number) => {
     setCollapsedMap((p) => ({ ...p, [order]: !p[order] }));
-  };
-
-  const addCollection = () => {
-    updateItems([
-      ...items,
-      new CourseCreateLessonCollectionRequest({
-        name: '',
-        order: items.length + 1,
-        lessonCollection: [],
-      }),
-    ]);
-  };
-
-  const removeCollection = (order: number) => {
-    const reIndexed = items
-      .filter((i) => i.order !== order)
-      .map((i, idx) => new CourseCreateLessonCollectionRequest({ ...i, order: idx + 1 }));
-    updateItems(reIndexed);
-  };
-
-  const moveCollection = (order: number, direction: 'up' | 'down') => {
-    const index = items.findIndex((i) => i.order === order);
-    if (index === -1) return;
-
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= items.length) return;
-
-    const cloned = [...items];
-    [cloned[index], cloned[targetIndex]] = [cloned[targetIndex], cloned[index]];
-
-    updateItems(
-      cloned.map(
-        (item, idx) =>
-          new CourseCreateLessonCollectionRequest({
-            ...item,
-            order: idx + 1,
-          })
-      )
-    );
   };
 
   const updateField = <K extends keyof CourseCreateLessonCollectionRequest>(
@@ -131,40 +87,13 @@ export function LessonCollectionCreateByFileEditor({
                 <Grid container alignItems="center" justifyContent="space-between">
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Typography fontWeight={600} color="primary">
-                      {t('part')} {item.order}
+                      {t('basicInfo')}
                     </Typography>
-
-                    {isCollapsed && item.name && <Typography color="text.secondary">– {item.name}</Typography>}
                   </Stack>
 
                   <Box>
                     <IconButton size="small" onClick={() => toggleCollapse(item.order)}>
                       {isCollapsed ? <UnfoldMore fontSize="small" /> : <UnfoldLess fontSize="small" />}
-                    </IconButton>
-
-                    <IconButton
-                      size="small"
-                      disabled={item.order === 1}
-                      onClick={() => moveCollection(item.order, 'up')}
-                    >
-                      <ArrowUpwardIcon fontSize="small" />
-                    </IconButton>
-
-                    <IconButton
-                      size="small"
-                      disabled={item.order === items.length}
-                      onClick={() => moveCollection(item.order, 'down')}
-                    >
-                      <ArrowDownwardIcon fontSize="small" />
-                    </IconButton>
-
-                    <IconButton
-                      color="error"
-                      size="small"
-                      disabled={items.length === 1}
-                      onClick={() => removeCollection(item.order)}
-                    >
-                      <Delete fontSize="small" />
                     </IconButton>
                   </Box>
                 </Grid>
@@ -175,22 +104,11 @@ export function LessonCollectionCreateByFileEditor({
                 {/*  EXPANDED  */}
                 {!isCollapsed && (
                   <>
-                    <Stack spacing={2} mt={3}>
-                      <Typography fontWeight={600}>{t('basicInfo')}</Typography>
-
-                      <CustomTextField
-                        label={t('collectionName')}
-                        value={item.name}
-                        onChange={(v) => updateField(item.order, 'name', v)}
-                        required
-                      />
-                    </Stack>
-
                     <Box mt={3}>
-                      <LessonOrderEditor
+                      <LinearLessonOrderEditor
                         value={item.lessonCollection}
                         onChange={(val) => updateField(item.order, 'lessonCollection', val)}
-                        label={t('lessonsInCollection')}
+                        label={t('lesson')}
                       />
                     </Box>
 
@@ -248,15 +166,6 @@ export function LessonCollectionCreateByFileEditor({
           );
         })}
       </Stack>
-      {isLinearCourse ? (
-        <div></div>
-      ) : (
-        <Box mt={4}>
-          <Button variant="outlined" startIcon={<Add />} onClick={addCollection}>
-            {t('addCollection')}
-          </Button>
-        </Box>
-      )}
     </Box>
   );
 }

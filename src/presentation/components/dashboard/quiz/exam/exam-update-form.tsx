@@ -140,7 +140,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
         time: quiz.time,
         // scoreToPass: quiz.scoreToPass,
         displayedQuestionCount: quiz.displayedQuestionCount,
-        maxAttempts: quiz.maxAttempts ?? 5,
+        // maxAttempts: quiz.maxAttempts ?? 5,
         isRequired: quiz.isRequired ?? true,
         canShuffle: quiz.canShuffle ?? false,
         canStartOver: quiz.canStartOver ?? true,
@@ -319,7 +319,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('maxAttempts')}
                 value={form.maxAttempts?.toString() ?? ''}
@@ -330,7 +330,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 disabled={isSubmitting}
                 icon={<NumberCircleFive {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>

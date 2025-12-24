@@ -7,6 +7,7 @@ import { type UpdateCourseRequest } from '@/domain/models/courses/request/update
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { CourseTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +16,9 @@ import * as XLSX from 'xlsx';
 import { CourseFilters } from '@/presentation/components/dashboard/courses/courses/course-filters';
 import CourseTable from '@/presentation/components/dashboard/courses/courses/course-table';
 import { CreateCourseDialog } from '@/presentation/components/dashboard/courses/courses/create-course-form';
+import { LinearCourseFilters } from '@/presentation/components/dashboard/courses/linear-courses/linear-course-filters';
+import LinearCourseTable from '@/presentation/components/dashboard/courses/linear-courses/linear-course-table';
+import { LinearCreateCourseDialog } from '@/presentation/components/dashboard/courses/linear-courses/linear-create-course-form';
 
 export default function Page(): React.JSX.Element {
   const { t } = useTranslation();
@@ -35,6 +39,7 @@ export default function Page(): React.JSX.Element {
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
+        courseType: CourseTypeEnum.Linear,
       });
       const { courses: courseList, totalRecords } = await courseUsecase.getCourseListInfo(request);
       setCourses(courseList);
@@ -144,9 +149,9 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ display: 'flex', flex: '1 1 auto' }}>
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
-            {t('courses')}
+            {t('allCourses')}
           </Typography>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button
               color="inherit"
               startIcon={<FileXls fontSize="var(--icon-fontSize-md)" />}
@@ -156,7 +161,7 @@ export default function Page(): React.JSX.Element {
             >
               {t('exportToExcel')}
             </Button>
-          </Stack>
+          </Stack> */}
         </Stack>
 
         <div>
@@ -177,8 +182,8 @@ export default function Page(): React.JSX.Element {
         </div>
       </Stack>
 
-      <CourseFilters onFilter={handleFilter} />
-      <CourseTable
+      <LinearCourseFilters onFilter={handleFilter} />
+      <LinearCourseTable
         rows={courses}
         count={totalCount}
         page={page}
@@ -190,7 +195,7 @@ export default function Page(): React.JSX.Element {
         onDeleteCoursePermanently={handleDeleteCoursesPermanently}
       />
 
-      <CreateCourseDialog
+      <LinearCreateCourseDialog
         onSubmit={handleCreateCourse}
         disabled={false}
         loading={false}

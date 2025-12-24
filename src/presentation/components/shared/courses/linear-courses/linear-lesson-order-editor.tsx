@@ -53,13 +53,13 @@ import { CategorySelectDialog } from '@/presentation/components/shared/category/
 import ImagePreviewDialog from '../../file/image-preview-dialog';
 import VideoPreviewDialog from '../../file/video-preview-dialog';
 
-interface LessonOrderEditorProps {
+interface LinearLessonOrderEditorProps {
   value: CourseCreateLessonCollectionLessonDetailRequest[];
   onChange: (val: CourseCreateLessonCollectionLessonDetailRequest[]) => void;
   label?: string;
 }
 
-export function LessonOrderEditor({ value, onChange, label }: LessonOrderEditorProps) {
+export function LinearLessonOrderEditor({ value, onChange, label }: LinearLessonOrderEditorProps) {
   const { t } = useTranslation();
   const { fileUsecase, categoryUsecase } = useDI();
 
@@ -278,7 +278,7 @@ export function LessonOrderEditor({ value, onChange, label }: LessonOrderEditorP
                       </Box>
                     </Button>
 
-                    <LessonCollectionCreateByFileCategoryForm
+                    <LinearLessonCollectionCreateByFileCategoryForm
                       open={openPickerIndex === idx}
                       value={resourceInfo[idx]}
                       lessonType={item.lessonType}
@@ -325,19 +325,19 @@ export function LessonOrderEditor({ value, onChange, label }: LessonOrderEditorP
   );
 }
 
-interface LessonCollectionDetailCreateByFileCategoryFormProps {
+interface LinearLessonCollectionDetailCreateByFileCategoryFormProps {
   open: boolean;
   value?: FileResourcesResponse;
   onChange: (value: FileResourcesResponse) => void;
   onClose: () => void;
 }
 
-export default function LessonCollectionDetailCreateByFileCategoryForm({
+export default function LinearLessonCollectionDetailCreateByFileCategoryForm({
   open,
   value,
   onChange,
   onClose,
-}: LessonCollectionDetailCreateByFileCategoryFormProps) {
+}: LinearLessonCollectionDetailCreateByFileCategoryFormProps) {
   const { categoryUsecase } = useDI();
   const { t } = useTranslation();
 
@@ -439,7 +439,7 @@ export default function LessonCollectionDetailCreateByFileCategoryForm({
   );
 }
 
-interface LessonCollectionCreateByFileCategoryFormProps {
+interface LinearLessonCollectionCreateByFileCategoryFormProps {
   open: boolean;
   value: FileResourcesResponse;
   lessonType: LessonContentEnum;
@@ -448,14 +448,14 @@ interface LessonCollectionCreateByFileCategoryFormProps {
   categoryUsecase: CategoryUsecase | null;
 }
 
-export function LessonCollectionCreateByFileCategoryForm({
+export function LinearLessonCollectionCreateByFileCategoryForm({
   open,
   value,
   lessonType,
   onChange,
   onClose,
   categoryUsecase,
-}: LessonCollectionCreateByFileCategoryFormProps) {
+}: LinearLessonCollectionCreateByFileCategoryFormProps) {
   const { t } = useTranslation();
 
   const [categories, setCategories] = useState<CategoryDetailResponse[]>([]);

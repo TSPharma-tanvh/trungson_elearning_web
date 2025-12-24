@@ -11,7 +11,7 @@ import { CustomSelectFilter } from '@/presentation/components/core/drop-down/cus
 import { CustomSearchFilter } from '@/presentation/components/core/text-field/custom-search-filter';
 import { CourseSingleFilter } from '@/presentation/components/shared/courses/courses/course-single-filter';
 
-export function UserCourseProgressFilters({
+export function UserLinearCourseProgressFilters({
   onFilter,
   courseUsecase,
 }: {
@@ -38,7 +38,7 @@ export function UserCourseProgressFilters({
       ...form,
       pageNumber: 1,
       pageSize: 10,
-      courseType: CourseTypeEnum[CourseTypeEnum.Modular],
+      courseType: CourseTypeEnum[CourseTypeEnum.Linear],
     });
     onFilter(request);
   };
@@ -53,7 +53,7 @@ export function UserCourseProgressFilters({
       new GetUserCourseProgressRequest({
         pageNumber: 1,
         pageSize: 10,
-        courseType: CourseTypeEnum[CourseTypeEnum.Modular],
+        courseType: CourseTypeEnum[CourseTypeEnum.Linear],
       })
     );
   };
@@ -101,7 +101,7 @@ export function UserCourseProgressFilters({
             handleChange('courseID', value);
           }}
           disabled={false}
-          courseTypeValue={CourseTypeEnum.Modular}
+          courseTypeValue={CourseTypeEnum.Linear}
         />
 
         {/* Enrollment Criteria */}

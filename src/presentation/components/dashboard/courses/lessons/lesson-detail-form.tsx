@@ -359,6 +359,7 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
+                          p: 2,
                         }}
                       >
                         <Button
@@ -367,6 +368,10 @@ function LessonDetails({ lesson, fullScreen }: { lesson: LessonDetailResponse; f
                           href={res.resourceUrl ?? '#'}
                           download={res.name}
                           sx={{
+                            maxWidth: '100%',
+                            whiteSpace: 'normal',
+                            textAlign: 'center',
+                            wordBreak: 'break-word',
                             textTransform: 'none',
                             fontWeight: 500,
                           }}

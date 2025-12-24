@@ -1,4 +1,4 @@
-import { type LearningModeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
+import { type CourseTypeEnum, type ScheduleStatusEnum } from '@/utils/enum/core-enum';
 import { type DisplayTypeEnum, type StatusEnum } from '@/utils/enum/path-enum';
 
 export class CourseResponse {
@@ -9,7 +9,7 @@ export class CourseResponse {
   name?: string;
   disableStatus?: StatusEnum;
   teacherId?: string;
-  courseType?: LearningModeEnum;
+  courseType?: CourseTypeEnum;
   displayType?: DisplayTypeEnum;
   meetingLink?: string;
   scheduleStatus?: ScheduleStatusEnum;

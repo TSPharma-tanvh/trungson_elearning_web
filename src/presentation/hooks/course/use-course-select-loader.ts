@@ -4,7 +4,7 @@ import { GetCourseRequest } from '@/domain/models/courses/request/get-course-req
 import { type CourseDetailResponse } from '@/domain/models/courses/response/course-detail-response';
 import { type CourseDetailListResult } from '@/domain/models/courses/response/course-detail-result';
 import { type CourseUsecase } from '@/domain/usecases/courses/course-usecase';
-import { type DisplayTypeEnum, type LearningModeEnum, type StatusEnum } from '@/utils/enum/core-enum';
+import { CourseTypeEnum, type DisplayTypeEnum, type LearningModeEnum, type StatusEnum } from '@/utils/enum/core-enum';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 
@@ -12,7 +12,7 @@ interface UseCourseSelectLoaderProps {
   courseUsecase: CourseUsecase | null;
   isOpen: boolean;
   disableStatus?: StatusEnum;
-  courseType?: LearningModeEnum;
+  courseType?: CourseTypeEnum;
   displayType?: DisplayTypeEnum;
   searchText?: string;
 
@@ -35,7 +35,7 @@ interface CourseSelectLoaderState {
 
   setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
-  setCourseType: React.Dispatch<React.SetStateAction<LearningModeEnum | undefined>>;
+  setCourseType: React.Dispatch<React.SetStateAction<CourseTypeEnum | undefined>>;
   setDisplayType: React.Dispatch<React.SetStateAction<DisplayTypeEnum | undefined>>;
   setDisableStatus: React.Dispatch<React.SetStateAction<StatusEnum | undefined>>;
 
@@ -47,7 +47,7 @@ interface CourseSelectLoaderState {
 
   // CURRENT FILTERS
   searchText: string;
-  courseType: LearningModeEnum | undefined;
+  courseType: CourseTypeEnum | undefined;
   displayType: DisplayTypeEnum | undefined;
   disableStatus: StatusEnum | undefined;
 
@@ -81,7 +81,7 @@ export function useCourseSelectLoader({
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   const [searchText, setSearchText] = useState(initialSearchText);
-  const [courseType, setCourseType] = useState<LearningModeEnum | undefined>(initialCourseType);
+  const [courseType, setCourseType] = useState<CourseTypeEnum | undefined>(initialCourseType);
   const [displayType, setDisplayType] = useState<DisplayTypeEnum | undefined>(initialDisplayType);
   const [disableStatus, setDisableStatus] = useState<StatusEnum | undefined>(initialDisableStatus);
 

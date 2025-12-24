@@ -6,6 +6,7 @@ import { type UpdateUserCourseProgressRequest } from '@/domain/models/user-cours
 import { type UserCourseProgressResponse } from '@/domain/models/user-course/response/user-course-progress-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
+import { CourseTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +37,7 @@ export default function Page(): React.JSX.Element {
         ...filters,
         pageNumber: page + 1,
         pageSize: rowsPerPage,
+        courseType: CourseTypeEnum[CourseTypeEnum.Modular],
       });
       const { courses, totalRecords } = await userCourseProgressUsecase.getUserCourseProgressListInfo(request);
       setUserCourseProgress(courses);

@@ -40,19 +40,20 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
 import { ClassTeacherSelectDialog } from '@/presentation/components/shared/classes/teacher/teacher-select';
 import { LessonCollectionUpdateEditor } from '@/presentation/components/shared/courses/lessons/lesson-collection-update-form';
+import { LinearLessonCollectionUpdateEditor } from '@/presentation/components/shared/courses/linear-courses/linear-lesson-collection-update-form';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 import VideoPreviewDialog from '@/presentation/components/shared/file/video-preview-dialog';
 
-interface EditCourseDialogProps {
+interface LinearEditCourseDialogProps {
   open: boolean;
   data: CourseDetailResponse | null;
   onClose: () => void;
   onSubmit: (data: UpdateCourseRequest) => void;
 }
 
-export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }: EditCourseDialogProps) {
+export function LinearUpdateCourseFormDialog({ open, data: course, onClose, onSubmit }: LinearEditCourseDialogProps) {
   const theme = useTheme();
   const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -661,7 +662,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
-                label={t('courseDurationType')}
+                label={t('courseType')}
                 value={formData.isFixedCourse ?? false}
                 onChange={(val) => {
                   handleChange('isFixedCourse', val);
@@ -675,7 +676,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
             </Grid>
 
             <Grid item xs={12}>
-              <LessonCollectionUpdateEditor
+              <LinearLessonCollectionUpdateEditor
                 fixedCourse={formData.isFixedCourse}
                 value={formData.collections}
                 onChange={(collections) => {

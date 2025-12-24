@@ -11,10 +11,9 @@ import { CustomDateTimePicker } from '@/presentation/components/core/picker/cust
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
 import { QuizOrderCollectionUpdateForm } from '../../quiz/quiz/quiz-order-collection-update-form';
-import { LessonCollectionCreateDetailForm } from './lesson-collection-create-detail-form'; // Reuse the same ordered editor
-import { LessonCollectionUpdateDetailForm } from './lesson-collection-update-detail-form';
+import { LessonCollectionUpdateDetailForm } from '../lessons/lesson-collection-update-detail-form';
 
-interface LessonCollectionUpdateItemCardProps {
+interface LinearLessonCollectionUpdateItemCardProps {
   item: LessonsCollectionUpdateRequest;
   fixedCourse: boolean;
   sharedFixedDuration?: number;
@@ -27,7 +26,7 @@ interface LessonCollectionUpdateItemCardProps {
   onUpdateSharedDuration: (num: number | undefined) => void;
 }
 
-function LessonCollectionUpdateItemCard({
+function LinearLessonCollectionUpdateItemCard({
   item,
   fixedCourse,
   sharedFixedDuration,
@@ -35,7 +34,7 @@ function LessonCollectionUpdateItemCard({
   onDelete,
   onChangeField,
   onUpdateSharedDuration,
-}: LessonCollectionUpdateItemCardProps) {
+}: LinearLessonCollectionUpdateItemCardProps) {
   const { t } = useTranslation();
   const { quizUsecase } = useDI();
 
@@ -46,27 +45,10 @@ function LessonCollectionUpdateItemCard({
         <Grid container alignItems="center" justifyContent="space-between" mb={2}>
           <Grid item>
             <Typography fontWeight={600} color="primary">
-              {t('part')} {item.order}
+              {t('basicInfo')}
             </Typography>
           </Grid>
-          <Grid item>
-            <IconButton color="error" onClick={onDelete} disabled={!canDelete} size="small">
-              <Delete fontSize="small" />
-            </IconButton>
-          </Grid>
         </Grid>
-
-        {/* Collection Name */}
-        <Box mb={3}>
-          <CustomTextField
-            label={t('collectionName')}
-            value={item.name}
-            onChange={(val) => {
-              onChangeField('name', val);
-            }}
-            required
-          />
-        </Box>
 
         {/* Ordered Lessons */}
         <LessonCollectionUpdateDetailForm
@@ -139,7 +121,7 @@ interface LessonCollectionUpdateEditorProps {
   onChange: (value: LessonsCollectionUpdateRequest[]) => void;
 }
 
-export function LessonCollectionUpdateEditor({
+export function LinearLessonCollectionUpdateEditor({
   fixedCourse = false,
   value,
   onChange,
@@ -241,7 +223,7 @@ export function LessonCollectionUpdateEditor({
 
       <Stack spacing={3}>
         {items.map((item) => (
-          <LessonCollectionUpdateItemCard
+          <LinearLessonCollectionUpdateItemCard
             key={item.order}
             item={item}
             fixedCourse={fixedCourse}
@@ -257,12 +239,6 @@ export function LessonCollectionUpdateEditor({
           />
         ))}
       </Stack>
-
-      <Box mt={4}>
-        <Button variant="outlined" startIcon={<Add />} onClick={handleAdd}>
-          {t('addCollection')}
-        </Button>
-      </Box>
     </Box>
   );
 }

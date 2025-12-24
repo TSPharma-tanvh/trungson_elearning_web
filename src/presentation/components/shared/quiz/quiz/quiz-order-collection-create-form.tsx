@@ -75,7 +75,7 @@ export function QuizOrderCollectionCreateForm({ value, onChange, label, quizUsec
             justifyContent="space-between"
             p={1}
             border="1px solid #e0e0e0"
-            borderRadius={1}
+            borderRadius={4}
           >
             <Box flex={1} mr={2} padding={1}>
               <QuizSingleSelectAndCreateDialog

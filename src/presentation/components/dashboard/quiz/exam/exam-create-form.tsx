@@ -224,7 +224,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
           description: '',
           isRequired: true,
           hasLesson: false,
-          maxAttempts: 5,
+          // maxAttempts: 5,
           status: StatusEnum.Enable,
           type: QuizTypeEnum.ExamQuiz,
           categoryEnum: CategoryEnum.Quiz,
@@ -395,7 +395,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               />
             </Grid>
 
-            {form.type === QuizTypeEnum.ExamQuiz ? (
+            {/* {form.type === QuizTypeEnum.ExamQuiz ? (
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   label={t('maxAttempts')}
@@ -412,7 +412,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               </Grid>
             ) : (
               <div />
-            )}
+            )} */}
 
             <Grid item xs={12} sm={6}>
               <CustomTextField

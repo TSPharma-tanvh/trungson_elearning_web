@@ -1,8 +1,8 @@
 import { DateTimeUtils } from '@/utils/date-time-utils';
 import {
   CategoryEnum,
+  CourseTypeEnum,
   DisplayTypeEnum,
-  LearningModeEnum,
   LessonContentEnum,
   ScheduleStatusEnum,
   StatusEnum,
@@ -24,7 +24,7 @@ export class CreateCourseRequest {
   isFixedCourse = false;
   teacherID?: string;
 
-  courseType: LearningModeEnum = LearningModeEnum.Online;
+  courseType: CourseTypeEnum = CourseTypeEnum.Modular;
   displayType: DisplayTypeEnum = DisplayTypeEnum.Public;
 
   meetingLink?: string;
@@ -86,15 +86,12 @@ export class CreateCourseRequest {
 }
 
 export class CourseCreateLessonCollectionRequest {
-  name!: string;
+  name?: string;
   order!: number;
 
   startDate?: Date;
   endDate?: Date;
   fixedCourseDayDuration?: number;
-
-  lessonCollectionName!: string;
-  lessonCollectionDetail?: string;
 
   lessonCollection!: CourseCreateLessonCollectionLessonDetailRequest[];
   quizzes?: QuizzesCollectionCreateDetailRequest[];
@@ -113,9 +110,6 @@ export class CourseCreateLessonCollectionRequest {
       StartDate: this.startDate ? DateTimeUtils.formatISODateToString(this.startDate) : null,
       EndDate: this.endDate ? DateTimeUtils.formatISODateToString(this.endDate) : null,
       FixedCourseDayDuration: this.fixedCourseDayDuration,
-
-      LessonCollectionName: this.lessonCollectionName,
-      LessonCollectionDetail: this.lessonCollectionDetail,
       LessonCollection: this.lessonCollection.map((x) => x.toJson()),
 
       Quizzes: this.quizzes?.map((q) => q.toJson()) ?? null,
@@ -124,6 +118,8 @@ export class CourseCreateLessonCollectionRequest {
 }
 
 export class CourseCreateLessonCollectionLessonDetailRequest {
+  lessonCollectionName!: string;
+  lessonCollectionDetail?: string;
   thumbnailID?: string;
   isRequired?: boolean;
 
@@ -139,6 +135,8 @@ export class CourseCreateLessonCollectionLessonDetailRequest {
 
   toJson(): any {
     return {
+      LessonCollectionName: this.lessonCollectionName,
+      LessonCollectionDetail: this.lessonCollectionDetail,
       ThumbnailID: this.thumbnailID,
       IsRequired: this.isRequired,
       Order: this.order,

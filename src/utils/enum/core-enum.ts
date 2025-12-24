@@ -14,6 +14,11 @@ export enum LearningModeEnum {
   Offline = 1,
 }
 
+export enum CourseTypeEnum {
+  Modular = 0,
+  Linear = 1,
+}
+
 export enum ScheduleStatusEnum {
   Schedule = 0,
   Ongoing = 1,
@@ -50,7 +55,7 @@ export enum CategoryFilterEnum {
   Quiz = 4,
   Question = 5,
   Answer = 6,
-  Criteria = 7,
+  // Criteria = 7,
   Resource = 8,
 }
 
@@ -177,6 +182,11 @@ export const QuizTypeEnumUtils = {
   getStatusKeyFromValue(value: QuizTypeEnum): string | undefined {
     return QuizTypeEnum[value];
   },
+};
+
+export const CourseTypeDisplayNames: Record<CourseTypeEnum, string> = {
+  [CourseTypeEnum.Modular]: 'courseStructureModularLabel',
+  [CourseTypeEnum.Linear]: 'courseStructureLinearLabel',
 };
 
 export const LearningModeDisplayNames: Record<LearningModeEnum, string> = {
