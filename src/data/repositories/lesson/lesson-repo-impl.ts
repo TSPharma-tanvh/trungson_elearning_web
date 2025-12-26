@@ -88,7 +88,7 @@ export class LessonRepoImpl implements LessonRepository {
 
   async exportLesson(request: ExportLessonProgressReportRequest): Promise<ApiResponse> {
     try {
-      const response = await customApiClient.post<ApiResponse>(apiEndpoints.lessons.create, request.toJson());
+      const response = await customApiClient.post<ApiResponse>(apiEndpoints.lessons.export, request.toJson());
 
       const apiResponse = response.data;
 

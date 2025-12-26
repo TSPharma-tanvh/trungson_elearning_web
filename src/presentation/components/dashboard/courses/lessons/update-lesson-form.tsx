@@ -30,7 +30,7 @@ import {
 import { Article, Image as ImageIcon, Tag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
-import { CategorySelect } from '@/presentation/components/shared/category/category-select';
+import { LessonCollectionCreateByFileCategoryForm } from '@/presentation/components/shared/courses/lessons/lesson-order-editor';
 import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-video-player';
 import { FileResourceMultiSelect } from '@/presentation/components/shared/file/file-resource-multi-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
@@ -59,6 +59,10 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   const [formData, setFormData] = useState<UpdateLessonRequest>(new UpdateLessonRequest({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // resource
+  const [openResourcePicker, setOpenResourcePicker] = useState(false);
+  const [selectedResource, setSelectedResource] = useState<any>();
+
   //video
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
@@ -85,6 +89,21 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
   } | null>(null);
 
   useEffect(() => {
+    if (lesson && open) {
+      if (lesson.contentType === LessonContentEnum[LessonContentEnum.Video] && lesson.video) {
+        setSelectedResource(lesson.video);
+      }
+
+      if (lesson.contentType === LessonContentEnum[LessonContentEnum.PDF] && lesson.fileLessonRelation?.length) {
+        setSelectedResource({
+          id: lesson.fileLessonRelation[0].fileResourceId,
+          name: lesson.fileLessonRelation[0].fileResources?.name,
+        });
+      }
+    }
+  }, [lesson, open]);
+
+  useEffect(() => {
     async function setupFormData() {
       if (lesson && open) {
         if (lesson.video?.resourceUrl && !formData.videoChunk) {
@@ -103,7 +122,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
           name: lesson.name || '',
           detail: lesson.detail,
           enablePlay: lesson.enablePlay,
-          isRequired: lesson.isRequired,
+          // isRequired: lesson.isRequired,
           status: lesson.status !== undefined ? StatusEnum[lesson.status as keyof typeof StatusEnum] : undefined,
           lessonType:
             lesson.lessonType !== undefined
@@ -509,7 +528,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid> */}
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
@@ -519,7 +538,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                 categoryEnum={CategoryEnum.Lesson}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
             {/* <Grid item xs={12}>
               <QuizMultiSelectAndCreateDialog
@@ -532,7 +551,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
               />
             </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown
                 label={t('status')}
                 value={formData.status ?? ''}
@@ -542,9 +561,9 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                 disabled={isSubmitting}
                 options={statusTypeOptions}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('required')}
                 value={formData.isRequired ?? false}
@@ -557,7 +576,7 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                   { value: false, label: t('no') },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
@@ -575,97 +594,72 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
             </Grid> */}
 
             <Grid item xs={12}>
+              <Typography variant="h6">{t('updateResources')}</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <CustomSelectDropDown<LessonContentEnum>
+                label={t('contentType')}
+                value={(formData.contentType as LessonContentEnum) ?? ''}
+                onChange={(val) => {
+                  handleChange('contentType', val);
+                }}
+                options={[
+                  { value: LessonContentEnum.PDF, label: 'pdf' },
+                  { value: LessonContentEnum.Video, label: 'video' },
+                ]}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => setOpenResourcePicker(true)}
+                sx={{
+                  height: 56,
+                  justifyContent: 'space-between',
+                  textTransform: 'none',
+                }}
+              >
+                {selectedResource?.name ??
+                  (formData.contentType === LessonContentEnum.Video ? t('selectVideo') : t('selectResources'))}
+              </Button>
+
+              <LessonCollectionCreateByFileCategoryForm
+                open={openResourcePicker}
+                value={selectedResource}
+                lessonType={formData.contentType}
+                categoryUsecase={categoryUsecase}
+                onChange={(res) => {
+                  setSelectedResource(res);
+
+                  if (formData.contentType === LessonContentEnum.Video) {
+                    handleChange('videoID', res.id);
+                    handleChange('resourceIDs', undefined);
+                  } else {
+                    handleChange('resourceIDs', res.id);
+                    handleChange('videoID', undefined);
+                  }
+                }}
+                onClose={() => setOpenResourcePicker(false)}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <Typography variant="h6">{t('updateThumbnail')}</Typography>
             </Grid>
 
             <Grid item xs={12}>
-              <ToggleButtonGroup
-                value={thumbnailSource}
-                exclusive
-                onChange={handleThumbnailSourceChange}
-                aria-label="thumbnail source"
-                fullWidth
+              <FileResourceSelect
+                fileUsecase={fileUsecase}
+                type={FileTypeEnum.Image}
+                status={StatusEnum.Enable}
+                value={formData.thumbnailID}
+                onChange={handleThumbnailSelectChange}
+                label={t('thumbnail')}
                 disabled={isSubmitting}
-                sx={{ mb: 2 }}
-              >
-                <ToggleButton value="select" aria-label={t('selectFromResources')}>
-                  {t('selectFromResources')}
-                </ToggleButton>
-                <ToggleButton value="upload" aria-label={t('uploadFile')}>
-                  {t('uploadFile')}
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              {thumbnailSource === 'select' ? (
-                <FileResourceSelect
-                  fileUsecase={fileUsecase}
-                  type={FileTypeEnum.Image}
-                  status={StatusEnum.Enable}
-                  value={formData.thumbnailID}
-                  onChange={handleThumbnailSelectChange}
-                  label={t('thumbnail')}
-                  disabled={isSubmitting}
-                />
-              ) : (
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('thumbnailDocumentNo')}
-                      value={formData.thumbDocumentNo}
-                      onChange={(value) => {
-                        handleChange('thumbDocumentNo', value);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<ImageIcon {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('thumbnailPrefixName')}
-                      value={formData.thumbPrefixName}
-                      onChange={(value) => {
-                        handleChange('thumbPrefixName', value);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<ImageIcon {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      fullWidth
-                      disabled={isSubmitting}
-                      startIcon={<ImageIcon {...iconStyle} />}
-                    >
-                      {t('uploadThumbnail')}
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={(e) => {
-                          handleFileUpload(e.target.files?.[0] || null);
-                        }}
-                      />
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={Boolean(formData.isDeleteOldThumbnail)}
-                          onChange={(e) => {
-                            handleChange('isDeleteOldThumbnail', e.target.checked);
-                          }}
-                          disabled={isSubmitting}
-                        />
-                      }
-                      label={t('deleteOldThumbnail')}
-                    />
-                  </Grid>
-                </Grid>
-              )}
+              />{' '}
             </Grid>
 
             {previewUrl || lesson.thumbnail?.resourceUrl ? (
@@ -692,321 +686,6 @@ export function UpdateLessonFormDialog({ open, data: lesson, onClose, onSubmit, 
                 </Box>
               </Grid>
             ) : null}
-
-            <Grid item xs={12}>
-              <Typography variant="h6">{t('updateResources')}</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <CustomSelectDropDown<LessonContentEnum>
-                label={t('contentType')}
-                value={(formData.contentType as LessonContentEnum) ?? ''}
-                onChange={(val) => {
-                  handleChange('contentType', val);
-                }}
-                options={[
-                  { value: LessonContentEnum.PDF, label: 'pdf' },
-                  { value: LessonContentEnum.Video, label: 'video' },
-                ]}
-              />
-            </Grid>
-
-            {formData.contentType === LessonContentEnum.Video ? (
-              <>
-                {' '}
-                <Grid item xs={12}>
-                  <Typography variant="h6">{t('updateVideo')}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <ToggleButtonGroup
-                    value={videoSource}
-                    exclusive
-                    onChange={handleVideoSourceChange}
-                    aria-label={t('videoSource')}
-                    fullWidth
-                    disabled={isSubmitting}
-                    sx={{ mb: 2 }}
-                  >
-                    <ToggleButton value="select" aria-label={t('selectFromResources')}>
-                      {t('selectFromResources')}
-                    </ToggleButton>
-                    <ToggleButton value="upload" aria-label={t('uploadFiles')}>
-                      {t('uploadFiles')}
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  {videoSource === 'select' ? (
-                    <FileResourceSelect
-                      fileUsecase={fileUsecase}
-                      type={FileTypeEnum.Video}
-                      status={StatusEnum.Enable}
-                      value={formData.videoID}
-                      onChange={handleVideoSelectChange}
-                      label={t('video')}
-                      disabled={isSubmitting}
-                    />
-                  ) : (
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
-                        <CustomTextField
-                          label={t('videoDocumentNo')}
-                          value={formData.videoDocumentNo}
-                          onChange={(value) => {
-                            handleChange('videoDocumentNo', value);
-                          }}
-                          disabled={isSubmitting}
-                          icon={<ImageIcon {...iconStyle} />}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <CustomTextField
-                          label={t('videoPrefixName')}
-                          value={formData.videoPrefixName}
-                          onChange={(value) => {
-                            handleChange('videoPrefixName', value);
-                          }}
-                          disabled={isSubmitting}
-                          icon={<ImageIcon {...iconStyle} />}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Button
-                          variant="outlined"
-                          component="label"
-                          fullWidth
-                          disabled={isSubmitting}
-                          startIcon={<ImageIcon {...iconStyle} />}
-                        >
-                          {t('uploadVideo')}
-                          <input
-                            type="file"
-                            hidden
-                            accept="video/*"
-                            onChange={(e) => {
-                              handleVideoUpload(e.target.files?.[0] || null);
-                            }}
-                          />
-                        </Button>
-                      </Grid>
-                      {totalChunks > 0 && (
-                        <Grid item xs={12}>
-                          <Box
-                            sx={{
-                              mt: 2,
-                              p: 2,
-
-                              textAlign: 'center',
-                            }}
-                          >
-                            <Box sx={{ position: 'relative', height: 24 }}>
-                              {/* Thanh progress */}
-                              <LinearProgress
-                                variant="determinate"
-                                value={uploadProgress}
-                                sx={{
-                                  height: 24,
-                                  borderRadius: 12,
-                                  [`& .MuiLinearProgress-bar`]: {
-                                    borderRadius: 12,
-                                    backgroundColor:
-                                      uploadProgress < 100 ? theme.palette.primary.main : theme.palette.secondary.main,
-                                  },
-                                  // backgroundColor: theme.palette.grey[300],
-                                }}
-                              />
-
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  position: 'absolute',
-                                  inset: 0,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontWeight: 600,
-                                  color: theme.palette.mode === 'dark' ? '#fff' : '#000',
-                                }}
-                              >
-                                {Math.round(uploadProgress)}%
-                              </Typography>
-                            </Box>
-                          </Box>
-
-                          {/* CSS keyframes cho gradient */}
-                          <style>
-                            {`
-        @keyframes moveGradient {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 100% 50%; }
-        }
-      `}
-                          </style>
-                        </Grid>
-                      )}
-                    </Grid>
-                  )}
-                </Grid>
-                {videoPreviewUrl || lesson.video?.resourceUrl ? (
-                  <Grid item xs={12}>
-                    <CustomVideoPlayer src={videoPreviewUrl ?? lesson.video?.resourceUrl ?? ''} fullscreen />
-                  </Grid>
-                ) : null}
-              </>
-            ) : (
-              <></>
-            )}
-
-            <Grid item xs={12}>
-              <Typography variant="h6">{t('updateResources')}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <ToggleButtonGroup
-                value={resourceSource}
-                exclusive
-                onChange={(_, newSource: 'upload' | 'select') => {
-                  if (newSource) setResourceSource(newSource);
-                }}
-                fullWidth
-                disabled={isSubmitting}
-                sx={{ mb: 2 }}
-              >
-                <ToggleButton value="select" aria-label={t('selectFromResources')}>
-                  {t('selectFromResources')}
-                </ToggleButton>
-                <ToggleButton value="upload" aria-label={t('uploadFiles')}>
-                  {t('uploadFiles')}
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Grid>
-            <Grid item xs={12}>
-              {resourceSource === 'select' ? (
-                <FileResourceMultiSelect
-                  fileUsecase={fileUsecase}
-                  // type={FileTypeEnum.PDF}
-                  status={StatusEnum.Enable}
-                  value={selectedResourceIds}
-                  onChange={(val) => {
-                    setSelectedResourceIds(val);
-                  }}
-                  label={t('resources')}
-                  disabled={isSubmitting}
-                  showTypeSwitcher
-                  allowAllTypes
-                />
-              ) : (
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('resourceDocumentNo')}
-                      value={formData.resourceDocumentNo}
-                      onChange={(value) => {
-                        handleChange('resourceDocumentNo', value);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<ImageIcon {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('resourcePrefixName')}
-                      value={formData.resourcePrefixName}
-                      onChange={(value) => {
-                        handleChange('resourcePrefixName', value);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<ImageIcon {...iconStyle} />}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      fullWidth
-                      disabled={isSubmitting}
-                      startIcon={<ImageIcon {...iconStyle} />}
-                    >
-                      {t('uploadResources')}
-                      <input
-                        type="file"
-                        hidden
-                        multiple
-                        accept="*/*"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files ?? []);
-                          setResourceFiles(files);
-                        }}
-                      />
-                    </Button>
-                  </Grid>
-                </Grid>
-              )}
-            </Grid>
-
-            {formData.resourceIDs && formData.resourceIDs.length > 0 && resourceSource === 'select' ? (
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" mb={1}>
-                  {t('selectedFiles')}
-                </Typography>
-                <Grid container spacing={1} direction="column">
-                  {formData.resourceIDs.split(',').map((id) => {
-                    const file = lesson?.fileLessonRelation?.find((f) => f.fileResourceId === id)?.fileResources;
-                    if (!file) return null;
-                    return (
-                      <Grid item key={file.id}>
-                        <Button
-                          variant="text"
-                          fullWidth
-                          onClick={() => {
-                            handleFilePreview(file.resourceUrl ?? '', file.name, file.type);
-                          }}
-                          sx={{
-                            justifyContent: 'flex-start',
-                            textAlign: 'left',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          {file.name}
-                        </Button>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </Grid>
-            ) : null}
-
-            {resourceFiles.length > 0 && resourceSource === 'upload' && (
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" mb={1}>
-                  {t('uploadedFiles')}
-                </Typography>
-                <Grid container spacing={1} direction="column">
-                  {resourceFiles.map((file, index) => (
-                    <Grid item key={index}>
-                      <Button
-                        variant="text"
-                        fullWidth
-                        onClick={() => {
-                          handleFilePreview(URL.createObjectURL(file), file.name, file.type);
-                        }}
-                        sx={{
-                          justifyContent: 'flex-start',
-                          textAlign: 'left',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {file.name}
-                      </Button>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Grid>
-            )}
           </Grid>
         </Box>
       </DialogContent>

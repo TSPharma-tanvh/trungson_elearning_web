@@ -23,6 +23,8 @@ import { CustomButton } from '@/presentation/components/core/button/custom-butto
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
+import { MapPickerDialog } from './map-picker-dialog';
+
 interface CreateClassProps {
   disabled?: boolean;
   onSubmit: (data: CreateClassRequest) => void;
@@ -35,6 +37,8 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
   const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [detailRows, setDetailRows] = useState(3);
+  const [openMap, setOpenMap] = useState(false);
+
   const [form, setForm] = useState<CreateClassRequest>(
     new CreateClassRequest({
       className: '',
@@ -196,6 +200,22 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             </Grid>
           )}
 
+          {(form.classType as LearningModeEnum) === LearningModeEnum.Offline && (
+            <Grid item xs={12}>
+              <CustomButton
+                variant="outlined"
+                label={
+                  form.latitude && form.longitude
+                    ? form.locationAddress !== undefined
+                      ? `${form.locationAddress}`
+                      : `${form.latitude.toFixed(5)}, ${form.longitude.toFixed(5)}`
+                    : t('selectLocation')
+                }
+                onClick={() => setOpenMap(true)}
+              />
+            </Grid>
+          )}
+
           <Grid item xs={12} sm={6}>
             <FormControlLabel
               control={
@@ -223,6 +243,17 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
           </Grid>
         </Grid>
       </DialogContent>
+
+      <MapPickerDialog
+        open={openMap}
+        onClose={() => setOpenMap(false)}
+        onSelect={({ lat, lng, address }) => {
+          handleChange('latitude', lat);
+          handleChange('longitude', lng);
+          handleChange('locationAddress', address);
+        }}
+        initialPosition={form.latitude && form.longitude ? { lat: form.latitude, lng: form.longitude } : null}
+      />
     </Dialog>
   );
 }

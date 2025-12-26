@@ -337,7 +337,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryId}
@@ -347,9 +347,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 categoryEnum={CategoryEnum.Course}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
                 value={formData.teacherId ?? ''}
@@ -358,7 +358,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                 }}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <Typography variant="subtitle1" sx={{ mb: 1 }}>
@@ -408,8 +408,20 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
               </Typography>
             </Grid>
 
-            {/* Thumbnail Section */}
             <Grid item xs={12}>
+              <FileResourceSelect
+                fileUsecase={fileUsecase}
+                type={FileTypeEnum.Image}
+                status={StatusEnum.Enable}
+                value={formData.thumbnailId}
+                onChange={handleFileSelectChange}
+                label={t('thumbnail')}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            {/* Thumbnail Section */}
+            {/* <Grid item xs={12}>
               <ToggleButtonGroup
                 value={thumbnailSource}
                 exclusive
@@ -477,8 +489,8 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                         }}
                       />
                     </Button>
-                  </Grid>
-                  {/* <Grid item xs={12}>
+                  </Grid> */}
+            {/* <Grid item xs={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -492,7 +504,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       label={t('isRequired')}
                     />
                   </Grid> */}
-                  {/* <Grid item xs={12}>
+            {/* <Grid item xs={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -506,7 +518,7 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       label={t('deleteOldThumbnail')}
                     />
                   </Grid> */}
-                  {/* {previewUrl ? (
+            {/* {previewUrl ? (
                     <Grid item xs={12}>
                       <Box
                         sx={{
@@ -530,9 +542,9 @@ export function UpdateCourseFormDialog({ open, data: course, onClose, onSubmit }
                       </Box>
                     </Grid>
                   ) : null} */}
-                </Grid>
+            {/* </Grid>
               )}
-            </Grid>
+            </Grid> */}
 
             {/* File Resources */}
             {/* <Grid item xs={12}>

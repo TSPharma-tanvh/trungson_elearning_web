@@ -133,21 +133,21 @@ export function CreateCourseDialog({ disabled = false, onSubmit, loading = false
                 rows={detailRows}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.categoryID}
                 categoryEnum={CategoryEnum.Course}
                 onChange={(val) => handleChange('categoryID', val)}
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </Grid> */}
+            {/* <Grid item xs={12} sm={6}>
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
                 value={form.teacherID ?? ''}
                 onChange={(val) => handleChange('teacherID', val)}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('isRequired')}

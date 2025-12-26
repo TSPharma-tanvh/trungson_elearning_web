@@ -31,7 +31,10 @@ import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/c
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
-import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
+import {
+  QuestionCategoryMultiSelect,
+  QuestionCategorySelect,
+} from '@/presentation/components/shared/category/question-category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface UpdateQuizForLessonProps {
@@ -244,16 +247,20 @@ export function UpdateQuizForLessonDialog({
             </Grid>
 
             <Grid item xs={12}>
-              <QuestionCategorySelect
+              <QuestionCategoryMultiSelect
                 categoryUsecase={categoryUsecase}
-                value={form.questionCategoryIDs}
+                value={
+                  form.questionCategoryIDs
+                    ?.split(',')
+                    .map((id) => id.trim())
+                    .filter(Boolean) ?? []
+                }
                 label={t('questionBank')}
-                onChange={(v) => {
-                  handleChange('questionCategoryIDs', v);
+                onChange={(value: string[]) => {
+                  handleChange('questionCategoryIDs', value.join(','));
                 }}
                 categoryEnum={CategoryEnum.Question}
                 required
-                disabled={isSubmitting}
               />
             </Grid>
 
@@ -335,7 +342,7 @@ export function UpdateQuizForLessonDialog({
               />
             </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CategorySelect
                 label={t('quizCategory')}
                 categoryUsecase={categoryUsecase}
@@ -346,10 +353,27 @@ export function UpdateQuizForLessonDialog({
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
               />
+            </Grid> */}
+
+            <Grid item xs={12}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                {t('uploadThumbnail')}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FileResourceSelect
+                fileUsecase={fileUsecase}
+                type={FileTypeEnum.Image}
+                status={StatusEnum.Enable}
+                value={form.thumbnailID || ''}
+                onChange={handleFileSelectChange}
+                disabled={isSubmitting}
+              />
             </Grid>
 
             {/* Thumbnail */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
                 {t('uploadThumbnail')}
               </Typography>
@@ -435,7 +459,7 @@ export function UpdateQuizForLessonDialog({
                   </Grid>
                 </Grid>
               )}
-            </Grid>
+            </Grid> */}
 
             {previewUrl ? (
               <Grid item xs={12}>

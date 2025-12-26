@@ -129,6 +129,7 @@ export const navItems = [
     icon: 'export',
     items: [
       { key: 'reportCourse', title: 'reportCourse', href: paths.dashboard.reportCourse, icon: 'course' },
+      { key: 'reportLesson', title: 'reportLesson', href: paths.dashboard.reportLesson, icon: 'lesson' },
       { key: 'reportExam', title: 'reportExam', href: paths.dashboard.reportExam, icon: 'exam' },
     ],
   },

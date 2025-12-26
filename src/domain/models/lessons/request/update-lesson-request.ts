@@ -13,7 +13,7 @@ export class UpdateLessonRequest {
   enablePlay?: boolean;
   status?: StatusEnum | string;
   lessonType?: LessonTypeEnum | string;
-  contentType?: LessonContentEnum | string;
+  contentType!: LessonContentEnum;
   isRequired?: boolean;
   quizIDs?: string;
   categoryID?: string;

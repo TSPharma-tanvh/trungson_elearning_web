@@ -27,6 +27,9 @@ export class CreateClassRequest {
   enrollmentStatus?: number;
   maxCapacity?: number;
   enrollmentCourseIDs?: string;
+  latitude?: number;
+  longitude?: number;
+  locationAddress?: string;
 
   constructor(init?: Partial<CreateClassRequest>) {
     Object.assign(this, init);

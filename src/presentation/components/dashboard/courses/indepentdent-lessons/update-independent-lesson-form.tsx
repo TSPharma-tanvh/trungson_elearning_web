@@ -533,7 +533,7 @@ export function UpdateIndependentLessonFormDialog({
               />
             </Grid> */}
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryID}
@@ -543,7 +543,7 @@ export function UpdateIndependentLessonFormDialog({
                 categoryEnum={CategoryEnum.Lesson}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <QuizMultiSelectAndCreateDialog

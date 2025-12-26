@@ -252,10 +252,10 @@ export function LessonOrderEditor({ value, onChange, label }: LessonOrderEditorP
                         )
                       }
                       sx={{
-                        height: 56, // ✅ QUAN TRỌNG
+                        height: 56,
                         justifyContent: 'space-between',
                         textTransform: 'none',
-                        padding: '16.5px 14px', // giống OutlinedInput
+                        padding: '16.5px 14px',
                         borderColor: 'grey.400',
 
                         '&:hover': {

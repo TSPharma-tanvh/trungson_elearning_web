@@ -36,7 +36,7 @@ export function CreateCategoryDialog({
     new CreateCategoryRequest({
       categoryName: '',
       description: '',
-      category: CategoryEnum.Path,
+      category: CategoryEnum.Resource,
     })
   );
 
@@ -145,7 +145,7 @@ export function CreateCategoryDialog({
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <CustomSelectDropDown<CategoryEnum>
                 label={t('categoryType')}
                 value={form.category ?? CategoryEnum.Path}
@@ -163,7 +163,7 @@ export function CreateCategoryDialog({
                   { value: CategoryEnum.Resource, label: 'resource' },
                 ]}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <CustomButton

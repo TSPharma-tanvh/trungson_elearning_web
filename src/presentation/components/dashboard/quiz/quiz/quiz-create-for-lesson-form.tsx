@@ -8,29 +8,15 @@ import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
-import { Clock, Image, NumberCircleNine, NumberCircleSix } from '@phosphor-icons/react';
+import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { Clock, NumberCircleSix } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { CategorySelect } from '@/presentation/components/shared/category/category-select';
-import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
+import { QuestionCategoryMultiSelect } from '@/presentation/components/shared/category/question-category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface CreateQuizForLessonProps {
@@ -349,12 +335,17 @@ export function CreateQuizForLessonDialog({
             </Grid> */}
 
             <Grid item xs={12}>
-              <QuestionCategorySelect
+              <QuestionCategoryMultiSelect
                 categoryUsecase={categoryUsecase}
-                value={form.questionCategoryIDs}
+                value={
+                  form.questionCategoryIDs
+                    ?.split(',')
+                    .map((id) => id.trim())
+                    .filter(Boolean) ?? []
+                }
                 label={t('questionBank')}
-                onChange={(value) => {
-                  handleChange('questionCategoryIDs', value);
+                onChange={(value: string[]) => {
+                  handleChange('questionCategoryIDs', value.join(','));
                 }}
                 categoryEnum={CategoryEnum.Question}
                 required
@@ -598,7 +589,7 @@ export function CreateQuizForLessonDialog({
               </Typography>
             </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CategorySelect
                 label={t('quizCategory')}
                 categoryUsecase={categoryUsecase}
@@ -609,10 +600,25 @@ export function CreateQuizForLessonDialog({
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
               />
+            </Grid> */}
+            <Grid item xs={12}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                {t('uploadThumbnail')}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <FileResourceSelect
+                fileUsecase={fileUsecase}
+                type={FileTypeEnum.Image}
+                status={StatusEnum.Enable}
+                value={form.thumbnailID}
+                onChange={handleFileSelectChange}
+                disabled={isSubmitting}
+              />
             </Grid>
 
             {/* upload thumbnail */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant="body2" mb={1}>
                 {t('uploadThumbnail')}
               </Typography>
@@ -686,18 +692,6 @@ export function CreateQuizForLessonDialog({
                       />
                     </Button>
                   </Grid>
-                  {/* <Grid item xs={12}>
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      checked={!!formData.isRequired}
-                                      onChange={(e) => handleChange('isRequired', e.target.checked)}
-                                      disabled={isSubmitting}
-                                    />
-                                  }
-                                  label="Is Required"
-                                />
-                              </Grid> */}
                   <Grid item xs={12}>
                     <FormControlLabel
                       control={
@@ -714,7 +708,7 @@ export function CreateQuizForLessonDialog({
                   </Grid>
                 </Grid>
               )}
-            </Grid>
+            </Grid> */}
 
             {previewUrl ? (
               <Grid item xs={12}>

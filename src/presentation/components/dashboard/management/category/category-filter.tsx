@@ -57,14 +57,14 @@ export function CategoryFilters({ onFilter }: { onFilter: (filters: GetCategoryR
         />
 
         {/* Status */}
-        <CustomSelectFilter<CategoryFilterEnum>
+        {/* <CustomSelectFilter<CategoryFilterEnum>
           label={t('category')}
           value={categoryValue}
           onChange={(val) => {
             setCategoryValue(val);
           }}
           options={CoreEnumUtils.getEnumOptions(CategoryFilterEnum)}
-        />
+        /> */}
 
         <Button variant="contained" color="primary" size="small" onClick={handleFilter}>
           {t('filter')}

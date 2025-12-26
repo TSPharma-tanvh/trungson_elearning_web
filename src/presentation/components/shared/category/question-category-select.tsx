@@ -243,6 +243,7 @@ export function CategorySelectDialog({
   );
 }
 
+//single select
 interface QuestionCategorySelectProps {
   categoryUsecase: CategoryUsecase | null;
   value: string | undefined;
@@ -288,6 +289,199 @@ export function QuestionCategorySelect({
     <CategorySelectDialog
       categoryUsecase={categoryUsecase}
       value={value || ''}
+      onChange={onChange}
+      categoryEnum={categoryEnum}
+      label={label}
+      disabled={disabled}
+      required={required}
+      selectedCategoryMap={categoryMap}
+      onCategoryMapUpdate={setCategoryMap}
+    />
+  );
+}
+
+//multi select
+interface QuestionCategoryMultiSelectProps {
+  categoryUsecase: CategoryUsecase | null;
+  value: string[];
+  onChange: (value: string[]) => void;
+  categoryEnum: CategoryEnum;
+  label?: string;
+  disabled?: boolean;
+  required?: boolean;
+}
+
+export function QuestionCategoryMultiSelectDialog({
+  categoryUsecase,
+  value,
+  onChange,
+  categoryEnum,
+  label = 'questionBank',
+  disabled = false,
+  required = false,
+  selectedCategoryMap,
+  onCategoryMapUpdate,
+}: {
+  categoryUsecase: CategoryUsecase | null;
+  value: string[];
+  onChange: (value: string[]) => void;
+  categoryEnum: CategoryEnum;
+  label?: string;
+  disabled?: boolean;
+  required?: boolean;
+  selectedCategoryMap: Record<string, CategoryDetailResponse>;
+  onCategoryMapUpdate: (map: Record<string, CategoryDetailResponse>) => void;
+}) {
+  const theme = useTheme();
+  const { t } = useTranslation();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [localValue, setLocalValue] = useState<string[]>(value);
+  const [localSearchText, setLocalSearchText] = useState('');
+  const debouncedSearchText = useCategorySelectDebounce(localSearchText, 300);
+
+  const { categories, loadingCategories, pageNumber, totalPages, setSearchText, listRef, loadCategories } =
+    useCategoryQuestionLoader({
+      categoryUsecase,
+      isOpen: dialogOpen,
+      categoryEnum,
+      searchText: debouncedSearchText,
+    });
+
+  const isFull = isSmallScreen || isFullscreen;
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  useEffect(() => {
+    setSearchText(debouncedSearchText);
+  }, [debouncedSearchText, setSearchText]);
+
+  useEffect(() => {
+    if (!dialogOpen) return;
+    const newMap = { ...selectedCategoryMap };
+    let updated = false;
+
+    for (const cat of categories) {
+      if (cat.id && !newMap[cat.id]) {
+        newMap[cat.id] = cat;
+        updated = true;
+      }
+    }
+    if (updated) onCategoryMapUpdate(newMap);
+  }, [categories, dialogOpen]);
+
+  const toggleSelect = (id: string) => {
+    setLocalValue((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
+  return (
+    <>
+      <FormControl fullWidth disabled={disabled}>
+        <InputLabel>
+          {t(label)}
+          {required && value.length === 0 && <span style={{ color: 'red', marginLeft: 4 }}></span>}
+        </InputLabel>
+
+        <Select
+          multiple
+          open={false}
+          value={value}
+          onClick={() => setDialogOpen(true)}
+          renderValue={(selected) =>
+            selected.length
+              ? selected.map((id) => selectedCategoryMap[id]?.categoryName).join(', ')
+              : t('noItemSelected')
+          }
+          input={<OutlinedInput label={t(label)} />}
+        />
+      </FormControl>
+
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullScreen={isFull} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between">
+            <Typography variant="h6">{t('selectQuestionBank')}</Typography>
+            <Box>
+              <IconButton onClick={() => setIsFullscreen((p) => !p)}>
+                {isFull ? <FullscreenExitIcon /> : <FullscreenIcon />}
+              </IconButton>
+              <IconButton onClick={() => setDialogOpen(false)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
+
+          <CustomSearchInput value={localSearchText} onChange={setLocalSearchText} />
+        </DialogTitle>
+
+        <DialogContent dividers>
+          <Box component="ul" ref={listRef} sx={{ listStyle: 'none', p: 0 }}>
+            {categories.map((category) => {
+              const checked = localValue.includes(category.id!);
+              return (
+                <MenuItem key={category.id} onClick={() => toggleSelect(category.id!)}>
+                  <Checkbox checked={checked} />
+                  <ListItemText primary={category.categoryName} />
+                </MenuItem>
+              );
+            })}
+          </Box>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>{t('cancel')}</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              onChange(localValue);
+              setDialogOpen(false);
+            }}
+            disabled={required && localValue.length === 0}
+          >
+            {t('save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+export function QuestionCategoryMultiSelect({
+  categoryUsecase,
+  value,
+  onChange,
+  categoryEnum,
+  label,
+  disabled,
+  required,
+}: QuestionCategoryMultiSelectProps) {
+  const [categoryMap, setCategoryMap] = useState<Record<string, CategoryDetailResponse>>({});
+
+  // Fetch missing categories (for renderValue)
+  useEffect(() => {
+    if (!categoryUsecase) return;
+
+    value.forEach((id) => {
+      if (categoryMap[id]) return;
+
+      void categoryUsecase.getCategoryById(id).then((detail) => {
+        if (detail.id) {
+          setCategoryMap((prev) => ({
+            ...prev,
+            [detail.id!]: detail,
+          }));
+        }
+      });
+    });
+  }, [value, categoryUsecase]);
+
+  return (
+    <QuestionCategoryMultiSelectDialog
+      categoryUsecase={categoryUsecase}
+      value={value}
       onChange={onChange}
       categoryEnum={categoryEnum}
       label={label}

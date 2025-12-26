@@ -34,7 +34,10 @@ import { CustomDateTimePicker } from '@/presentation/components/core/picker/cust
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
-import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
+import {
+  QuestionCategoryMultiSelect,
+  QuestionCategorySelect,
+} from '@/presentation/components/shared/category/question-category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface CreateExamProps {
@@ -348,12 +351,17 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
             </Grid> */}
 
             <Grid item xs={12}>
-              <QuestionCategorySelect
+              <QuestionCategoryMultiSelect
                 categoryUsecase={categoryUsecase}
-                value={form.questionCategoryIDs}
+                value={
+                  form.questionCategoryIDs
+                    ?.split(',')
+                    .map((id) => id.trim())
+                    .filter(Boolean) ?? []
+                }
                 label={t('questionBank')}
-                onChange={(value) => {
-                  handleChange('questionCategoryIDs', value);
+                onChange={(value: string[]) => {
+                  handleChange('questionCategoryIDs', value.join(','));
                 }}
                 categoryEnum={CategoryEnum.Question}
                 required
@@ -473,6 +481,21 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               />
             </Grid>
 
+            <Grid item xs={12} sm={6}>
+              <CustomSelectDropDown<boolean>
+                label={t('canShuffle')}
+                value={form.canShuffle ?? false}
+                onChange={(v) => {
+                  handleChange('canShuffle', v);
+                }}
+                options={[
+                  { value: true, label: 'yes' },
+                  { value: false, label: 'no' },
+                ]}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
             <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('timeSchedule')}
@@ -564,7 +587,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
                 loadOnMount
               />
             </Grid>
-
+            {/* 
             <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('categoryAndClassification')}
@@ -582,111 +605,23 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
             {/* upload thumbnail */}
             <Grid item xs={12}>
-              <Typography variant="body2" mb={1}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('uploadThumbnail')}
               </Typography>
-              <ToggleButtonGroup
-                value={thumbnailSource}
-                exclusive
-                onChange={handleThumbnailSourceChange}
-                aria-label="thumbnail source"
-                fullWidth
-                disabled={isSubmitting}
-                sx={{ mb: 2 }}
-              >
-                <ToggleButton value="select" aria-label="select from resources">
-                  {t('selectFromResources')}
-                </ToggleButton>
-                <ToggleButton value="upload" aria-label="upload file">
-                  {t('uploadFile')}
-                </ToggleButton>
-              </ToggleButtonGroup>
             </Grid>
             <Grid item xs={12} sm={12}>
-              {thumbnailSource === 'select' ? (
-                <FileResourceSelect
-                  fileUsecase={fileUsecase}
-                  type={FileTypeEnum.Image}
-                  status={StatusEnum.Enable}
-                  value={form.thumbnailID}
-                  onChange={handleFileSelectChange}
-                  disabled={isSubmitting}
-                />
-              ) : (
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('thumbnailDocumentNo')}
-                      value={form.thumbDocumentNo}
-                      onChange={(value: string | undefined) => {
-                        handleChange('thumbDocumentNo', value);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<Image {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('thumbnailPrefixName')}
-                      value={form.thumbPrefixName}
-                      onChange={(value: string | undefined) => {
-                        handleChange('thumbPrefixName', value);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<Image {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      fullWidth
-                      disabled={isSubmitting}
-                      startIcon={<Image {...iconStyle} />}
-                    >
-                      {t('uploadThumbnail')}
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={(e) => {
-                          handleFileUpload(e.target.files?.[0] || null);
-                        }}
-                      />
-                    </Button>
-                  </Grid>
-                  {/* <Grid item xs={12}>
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      checked={!!formData.isRequired}
-                                      onChange={(e) => handleChange('isRequired', e.target.checked)}
-                                      disabled={isSubmitting}
-                                    />
-                                  }
-                                  label="Is Required"
-                                />
-                              </Grid> */}
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={Boolean(form.isDeleteOldThumbnail)}
-                          onChange={(e) => {
-                            handleChange('isDeleteOldThumbnail', e.target.checked);
-                          }}
-                          disabled={isSubmitting}
-                        />
-                      }
-                      label={t('deleteOldThumbnail')}
-                    />
-                  </Grid>
-                </Grid>
-              )}
+              <FileResourceSelect
+                fileUsecase={fileUsecase}
+                type={FileTypeEnum.Image}
+                status={StatusEnum.Enable}
+                value={form.thumbnailID}
+                onChange={handleFileSelectChange}
+                disabled={isSubmitting}
+              />
             </Grid>
 
             {previewUrl ? (

@@ -107,9 +107,10 @@ export default function Page(): React.JSX.Element {
   const handleEditQuiz = async (request: UpdateQuizRequest) => {
     try {
       await quizUsecase.updateQuiz(request);
-      await fetchQuizzes();
     } catch (error) {
       return undefined;
+    } finally {
+      await fetchQuizzes();
     }
   };
 
@@ -122,10 +123,10 @@ export default function Page(): React.JSX.Element {
           throw new Error(`Failed to delete path with ID: ${id}`);
         }
       }
-      await fetchQuizzes();
     } catch (error) {
       return undefined;
     } finally {
+      await fetchQuizzes();
       setDeleteLoading(false);
     }
   };

@@ -409,131 +409,19 @@ export function LinearUpdateCourseFormDialog({ open, data: course, onClose, onSu
               </Typography>
             </Grid>
 
-            {/* Thumbnail Section */}
             <Grid item xs={12}>
-              <ToggleButtonGroup
-                value={thumbnailSource}
-                exclusive
-                onChange={handleThumbnailSourceChange}
-                aria-label={t('uploadFile')}
-                fullWidth
+              <FileResourceSelect
+                fileUsecase={fileUsecase}
+                type={FileTypeEnum.Image}
+                status={StatusEnum.Enable}
+                value={formData.thumbnailId}
+                onChange={handleFileSelectChange}
+                label={t('thumbnail')}
                 disabled={isSubmitting}
-                sx={{ mb: 2 }}
-              >
-                <ToggleButton value="select">{t('selectFromResources')}</ToggleButton>
-                <ToggleButton value="upload">{t('uploadFile')}</ToggleButton>
-              </ToggleButtonGroup>
+              />
             </Grid>
 
-            <Grid item xs={12}>
-              {thumbnailSource === 'select' ? (
-                <FileResourceSelect
-                  fileUsecase={fileUsecase}
-                  type={FileTypeEnum.Image}
-                  status={StatusEnum.Enable}
-                  value={formData.thumbnailId}
-                  onChange={handleFileSelectChange}
-                  label={t('thumbnail')}
-                  disabled={isSubmitting}
-                />
-              ) : (
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('thumbnailDocumentNo')}
-                      value={formData.thumbDocumentNo}
-                      onChange={(value) => {
-                        handleChange('thumbDocumentNo', value);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<ImageIcon {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('thumbnailPrefixName')}
-                      value={formData.thumbPrefixName}
-                      onChange={(value) => {
-                        handleChange('thumbPrefixName', value);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<ImageIcon {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      fullWidth
-                      disabled={isSubmitting}
-                      startIcon={<ImageIcon {...iconStyle} />}
-                    >
-                      {t('uploadThumbnail')}
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={(e) => {
-                          handleFileUpload(e.target.files?.[0] || null);
-                        }}
-                      />
-                    </Button>
-                  </Grid>
-                  {/* <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={Boolean(formData.isRequired)}
-                          onChange={(e) => {
-                            handleChange('isRequired', e.target.checked);
-                          }}
-                          disabled={isSubmitting}
-                        />
-                      }
-                      label={t('isRequired')}
-                    />
-                  </Grid> */}
-                  {/* <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={Boolean(formData.isDeleteOldThumbnail)}
-                          onChange={(e) => {
-                            handleChange('isDeleteOldThumbnail', e.target.checked);
-                          }}
-                          disabled={isSubmitting}
-                        />
-                      }
-                      label={t('deleteOldThumbnail')}
-                    />
-                  </Grid> */}
-                  {/* {previewUrl ? (
-                    <Grid item xs={12}>
-                      <Box
-                        sx={{
-                          width: fullScreen ? 400 : 200,
-                          height: fullScreen ? 400 : 200,
-                          borderRadius: 1,
-                          border: '1px solid #ccc',
-                          overflow: 'hidden',
-                          mt: 2,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          mx: 'auto',
-                        }}
-                      >
-                        <img
-                          src={previewUrl}
-                          alt={t('thumbnailPreview')}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      </Box>
-                    </Grid>
-                  ) : null} */}
-                </Grid>
-              )}
-            </Grid>
+            {/* Thumbnail Section */}
 
             {/* File Resources */}
             {/* <Grid item xs={12}>

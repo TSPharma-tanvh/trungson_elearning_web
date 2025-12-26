@@ -41,7 +41,7 @@ function QuestionDetails({ question, fullScreen }: { question: QuestionResponse;
   const theme = useTheme();
   const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [expandedAnswers, setExpandedAnswers] = useState<Record<string, boolean>>({}); // ✅ move here
+  const [expandedAnswers, setExpandedAnswers] = useState<Record<string, boolean>>({}); //  move here
 
   const toggleExpanded = (lessonId: string) => {
     setExpandedAnswers((prev) => ({

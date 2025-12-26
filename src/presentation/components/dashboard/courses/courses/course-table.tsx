@@ -141,11 +141,11 @@ export default function CourseTable({
             <TableCell>{t('required')}</TableCell>
             <TableCell>{t('status')}</TableCell>
             {/* <TableCell>{t('courseType')}</TableCell> */}
-            <TableCell>{t('teacher')}</TableCell>
+            {/* <TableCell>{t('teacher')}</TableCell> */}
             {/* <TableCell>{t('displayType')}</TableCell> */}
             <TableCell>{t('parts')}</TableCell>
             {/* <TableCell>{t('lessons')}</TableCell> */}
-            <TableCell>{t('category')}</TableCell>
+            {/* <TableCell>{t('category')}</TableCell> */}
             <TableCell>{t('positionName')}</TableCell>
             <TableCell>{t('positionStateName')}</TableCell>
             <TableCell>{t('departmentTypeName')}</TableCell>
@@ -182,7 +182,7 @@ export default function CourseTable({
             {/* <TableCell>
               {row.courseType ? t(row.courseType.charAt(0).toLowerCase() + row.courseType.slice(1)) : ''}
             </TableCell> */}
-            <TableCell
+            {/* <TableCell
               sx={{
                 minWidth: 120,
                 whiteSpace: 'normal',
@@ -215,12 +215,12 @@ export default function CourseTable({
                   ) : null}
                 </Box>
               </Stack>
-            </TableCell>
+            </TableCell> */}
             {/* <TableCell>
               {row.displayType ? t(row.displayType.charAt(0).toLowerCase() + row.displayType.slice(1)) : ''}
             </TableCell> */}
             <TableCell>{row.collections ? row.collections.length : 0}</TableCell>
-            <TableCell>{row.category?.categoryName}</TableCell>
+            {/* <TableCell>{row.category?.categoryName}</TableCell> */}
             <TableCell>{row.positionName}</TableCell>
             <TableCell>{row.positionStateName}</TableCell>
             <TableCell>{row.departmentTypeName}</TableCell>

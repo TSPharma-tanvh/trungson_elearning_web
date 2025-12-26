@@ -25,7 +25,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { Clock, Image, NumberCircleFive, NumberCircleNine, NumberCircleSix } from '@phosphor-icons/react';
+import { Clock, Image, NumberCircleSix } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
@@ -35,7 +35,10 @@ import { CustomDateTimePicker } from '@/presentation/components/core/picker/cust
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 import { CategorySelect } from '@/presentation/components/shared/category/category-select';
-import { QuestionCategorySelect } from '@/presentation/components/shared/category/question-category-select';
+import {
+  QuestionCategoryMultiSelect,
+  QuestionCategorySelect,
+} from '@/presentation/components/shared/category/question-category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
 interface UpdateExamDialogProps {
@@ -256,16 +259,20 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
             </Grid>
 
             <Grid item xs={12}>
-              <QuestionCategorySelect
+              <QuestionCategoryMultiSelect
                 categoryUsecase={categoryUsecase}
-                value={form.questionCategoryIDs}
+                value={
+                  form.questionCategoryIDs
+                    ?.split(',')
+                    .map((id) => id.trim())
+                    .filter(Boolean) ?? []
+                }
                 label={t('questionBank')}
-                onChange={(v) => {
-                  handleChange('questionCategoryIDs', v);
+                onChange={(value: string[]) => {
+                  handleChange('questionCategoryIDs', value.join(','));
                 }}
                 categoryEnum={CategoryEnum.Question}
                 required
-                disabled={isSubmitting}
               />
             </Grid>
 
@@ -362,7 +369,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('canStartOver')}
                 value={form.canStartOver ?? true}
@@ -375,7 +382,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 ]}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
@@ -486,13 +493,13 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('categoryAndClassification')}
               </Typography>
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CategorySelect
                 label={t('examCategory')}
                 categoryUsecase={categoryUsecase}
@@ -503,95 +510,24 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 categoryEnum={CategoryEnum.Quiz}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
             {/* Thumbnail */}
             <Grid item xs={12}>
-              <Typography variant="body2" mb={1}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
                 {t('uploadThumbnail')}
               </Typography>
-              <ToggleButtonGroup
-                value={thumbnailSource}
-                exclusive
-                onChange={handleThumbnailSourceChange}
-                fullWidth
-                disabled={isSubmitting}
-                sx={{ mb: 2 }}
-              >
-                <ToggleButton value="select">{t('selectFromResources')}</ToggleButton>
-                <ToggleButton value="upload">{t('uploadFile')}</ToggleButton>
-              </ToggleButtonGroup>
             </Grid>
 
             <Grid item xs={12}>
-              {thumbnailSource === 'select' ? (
-                <FileResourceSelect
-                  fileUsecase={fileUsecase}
-                  type={FileTypeEnum.Image}
-                  status={StatusEnum.Enable}
-                  value={form.thumbnailID || ''}
-                  onChange={handleFileSelectChange}
-                  disabled={isSubmitting}
-                />
-              ) : (
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('thumbnailDocumentNo')}
-                      value={form.thumbDocumentNo || ''}
-                      onChange={(v) => {
-                        handleChange('thumbDocumentNo', v);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<Image {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      label={t('thumbnailPrefixName')}
-                      value={form.thumbPrefixName || ''}
-                      onChange={(v) => {
-                        handleChange('thumbPrefixName', v);
-                      }}
-                      disabled={isSubmitting}
-                      icon={<Image {...iconStyle} />}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      fullWidth
-                      disabled={isSubmitting}
-                      startIcon={<Image {...iconStyle} />}
-                    >
-                      {t('uploadThumbnail')}
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={(e) => {
-                          handleFileUpload(e.target.files?.[0] || null);
-                        }}
-                      />
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={Boolean(form.isDeleteOldThumbnail)}
-                          onChange={(e) => {
-                            handleChange('isDeleteOldThumbnail', e.target.checked);
-                          }}
-                          disabled={isSubmitting}
-                        />
-                      }
-                      label={t('deleteOldThumbnail')}
-                    />
-                  </Grid>
-                </Grid>
-              )}
+              <FileResourceSelect
+                fileUsecase={fileUsecase}
+                type={FileTypeEnum.Image}
+                status={StatusEnum.Enable}
+                value={form.thumbnailID || ''}
+                onChange={handleFileSelectChange}
+                disabled={isSubmitting}
+              />
             </Grid>
 
             {previewUrl ? (

@@ -95,7 +95,7 @@ export default function CategoryTable({
           <>
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
-            <TableCell>{t('type')}</TableCell>
+            {/* <TableCell>{t('type')}</TableCell> */}
             <TableCell>{t('createdByUser')}</TableCell>
             <TableCell>{t('updatedByUser')}</TableCell>
           </>
@@ -115,11 +115,11 @@ export default function CategoryTable({
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 300 }}>
               <Typography variant="body2">{row.description}</Typography>
             </TableCell>
-            <TableCell>
+            {/* <TableCell>
               {row.category
                 ? t(row.category.toString().charAt(0).toLowerCase() + t(row.category.toString()).slice(1))
                 : ''}
-            </TableCell>
+            </TableCell> */}
             <TableCell sx={{ width: '25%' }}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar src={row?.createdByUser?.employee?.avatar}>{row?.createdByUser?.employee?.name}</Avatar>
