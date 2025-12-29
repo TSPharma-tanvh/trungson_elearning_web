@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
+import { QuizCategoryConfigUpdate, UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
 import { DateTimeUtils } from '@/utils/date-time-utils';
@@ -40,6 +40,8 @@ import {
   QuestionCategorySelect,
 } from '@/presentation/components/shared/category/question-category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
+
+import { ExamCategoryConfigUpdateForm } from './exam-category-question-update-config-form';
 
 interface UpdateExamDialogProps {
   open: boolean;
@@ -150,13 +152,15 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
         type: quiz.type === 'ExamQuiz' ? QuizTypeEnum.ExamQuiz : QuizTypeEnum.LessonQuiz,
         status: quiz.status ? StatusEnum[quiz.status as keyof typeof StatusEnum] : StatusEnum.Enable,
 
-        questionCategoryIDs:
-          quiz.quizQuestions.length > 0
-            ? Array.from(
-                new Set(quiz.quizQuestions.map((q) => q.categoryID).filter((id): id is string => Boolean(id)))
-              ).join(',')
-            : undefined,
-
+        questionCategoryConfigs: quiz.quizCategoryConfigs?.map(
+          (c) =>
+            new QuizCategoryConfigUpdate({
+              id: c.id,
+              categoryID: c.categoryID,
+              displayedQuestionCount: c.displayedQuestionCountFromThisCategory ?? 0,
+              order: c.order,
+            })
+        ),
         categoryID: quiz.categoryID,
         thumbnailID: quiz.thumbnailID,
 
@@ -259,20 +263,10 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
             </Grid>
 
             <Grid item xs={12}>
-              <QuestionCategoryMultiSelect
+              <ExamCategoryConfigUpdateForm
+                value={form.questionCategoryConfigs ?? []}
+                onChange={(v) => handleChange('questionCategoryConfigs', v)}
                 categoryUsecase={categoryUsecase}
-                value={
-                  form.questionCategoryIDs
-                    ?.split(',')
-                    .map((id) => id.trim())
-                    .filter(Boolean) ?? []
-                }
-                label={t('questionBank')}
-                onChange={(value: string[]) => {
-                  handleChange('questionCategoryIDs', value.join(','));
-                }}
-                categoryEnum={CategoryEnum.Question}
-                required
               />
             </Grid>
 
@@ -312,7 +306,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
               />
             </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('displayedQuestionCount')}
                 value={form.displayedQuestionCount?.toString() ?? ''}
@@ -324,7 +318,7 @@ export function UpdateExamFormDialog({ open, quiz, onClose, onSubmit, loading = 
                 required
                 icon={<NumberCircleSix {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             {/* <Grid item xs={12} sm={6}>
               <CustomTextField

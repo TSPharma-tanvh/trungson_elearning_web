@@ -192,7 +192,7 @@ export function CategorySelectDialog({
                 <Checkbox checked={localValue === category.id} />
                 <ListItemText
                   primary={category.categoryName}
-                  secondary={`${t('totalScore')}: ${category.totalScore}`}
+                  secondary={`${t('totalQuestion')}: ${category.questions.length}. ${t('totalScore')}: ${category.totalScore}.`}
                 />
                 <IconButton
                   size="small"

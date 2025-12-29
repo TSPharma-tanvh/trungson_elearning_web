@@ -1,41 +1,25 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
+import { QuizCategoryConfigUpdate, UpdateQuizRequest } from '@/domain/models/quiz/request/update-quiz-request';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
-import { CategoryEnum, QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
+import { QuizTypeEnum, StatusEnum } from '@/utils/enum/core-enum';
 import { FileTypeEnum } from '@/utils/enum/file-resource-enum';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
-import { Clock, Image, NumberCircleNine, NumberCircleSix } from '@phosphor-icons/react';
+import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material';
+import { Clock } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton } from '@/presentation/components/core/button/custom-button';
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
-import { CategorySelect } from '@/presentation/components/shared/category/category-select';
-import {
-  QuestionCategoryMultiSelect,
-  QuestionCategorySelect,
-} from '@/presentation/components/shared/category/question-category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
+
+import { QuizCategoryConfigUpdateForm } from './quiz-category-question-update-config-form';
 
 interface UpdateQuizForLessonProps {
   quiz?: QuizResponse | null;
@@ -150,12 +134,15 @@ export function UpdateQuizForLessonDialog({
         // scoreToPass: quiz.scoreToPass,
         type: quiz.type ? (quiz.type === 'ExamQuiz' ? QuizTypeEnum.ExamQuiz : QuizTypeEnum.LessonQuiz) : undefined,
         categoryID: quiz.categoryID,
-        questionCategoryIDs:
-          quiz.quizQuestions.length > 0
-            ? Array.from(
-                new Set(quiz.quizQuestions.map((q) => q.categoryID).filter((id): id is string => Boolean(id)))
-              ).join(',')
-            : undefined,
+        questionCategoryConfigs: quiz.quizCategoryConfigs?.map(
+          (c) =>
+            new QuizCategoryConfigUpdate({
+              id: c.id,
+              categoryID: c.categoryID,
+              displayedQuestionCount: c.displayedQuestionCountFromThisCategory ?? 0,
+              order: c.order,
+            })
+        ),
         thumbnailID: quiz.thumbnailID,
         // thumbDocumentNo: quiz.thumbnail?.documentNo,
         // thumbPrefixName: quiz.thumbnail?.prefixName,
@@ -247,20 +234,10 @@ export function UpdateQuizForLessonDialog({
             </Grid>
 
             <Grid item xs={12}>
-              <QuestionCategoryMultiSelect
+              <QuizCategoryConfigUpdateForm
+                value={form.questionCategoryConfigs ?? []}
+                onChange={(v) => handleChange('questionCategoryConfigs', v)}
                 categoryUsecase={categoryUsecase}
-                value={
-                  form.questionCategoryIDs
-                    ?.split(',')
-                    .map((id) => id.trim())
-                    .filter(Boolean) ?? []
-                }
-                label={t('questionBank')}
-                onChange={(value: string[]) => {
-                  handleChange('questionCategoryIDs', value.join(','));
-                }}
-                categoryEnum={CategoryEnum.Question}
-                required
               />
             </Grid>
 
@@ -300,7 +277,7 @@ export function UpdateQuizForLessonDialog({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('displayedQuestionCount')}
                 value={form.displayedQuestionCount?.toString() ?? ''}
@@ -311,7 +288,7 @@ export function UpdateQuizForLessonDialog({
                 disabled={isSubmitting}
                 icon={<NumberCircleSix {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomTextField

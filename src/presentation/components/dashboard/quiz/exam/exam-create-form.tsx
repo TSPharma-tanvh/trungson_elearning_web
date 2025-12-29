@@ -40,6 +40,9 @@ import {
 } from '@/presentation/components/shared/category/question-category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
+import { QuizCategoryConfigCreateForm } from '../quiz/quiz-category-question-create-config-form';
+import { ExamCategoryConfigCreateForm } from './exam-category-question-create-config-form';
+
 interface CreateExamProps {
   disabled?: boolean;
   onSubmit: (data: CreateQuizRequest) => void;
@@ -351,20 +354,16 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
             </Grid> */}
 
             <Grid item xs={12}>
-              <QuestionCategoryMultiSelect
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                {t('quizSettings')}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <ExamCategoryConfigCreateForm
+                value={form.questionCategoryConfigs}
+                onChange={(val) => handleChange('questionCategoryConfigs', val)}
                 categoryUsecase={categoryUsecase}
-                value={
-                  form.questionCategoryIDs
-                    ?.split(',')
-                    .map((id) => id.trim())
-                    .filter(Boolean) ?? []
-                }
-                label={t('questionBank')}
-                onChange={(value: string[]) => {
-                  handleChange('questionCategoryIDs', value.join(','));
-                }}
-                categoryEnum={CategoryEnum.Question}
-                required
               />
             </Grid>
 
@@ -422,7 +421,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
               <div />
             )} */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('displayedQuestionCount')}
                 value={form.displayedQuestionCount?.toString() ?? ''}
@@ -434,7 +433,7 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
                 inputMode="numeric"
                 icon={<NumberCircleSix {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={6}>
               <CustomTextField
@@ -469,14 +468,14 @@ export function CreateExamDialog({ disabled = false, onSubmit, loading = false, 
 
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
-                label={t('isFixedExam')}
+                label={t('duration')}
                 value={form.isFixedQuiz}
                 onChange={(v) => {
                   handleChange('isFixedQuiz', v);
                 }}
                 options={[
-                  { value: true, label: 'yes' },
-                  { value: false, label: 'no' },
+                  { value: true, label: 'duration' },
+                  { value: false, label: 'time' },
                 ]}
               />
             </Grid>

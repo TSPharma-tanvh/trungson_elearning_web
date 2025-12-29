@@ -19,6 +19,8 @@ import { CustomTextField } from '@/presentation/components/core/text-field/custo
 import { QuestionCategoryMultiSelect } from '@/presentation/components/shared/category/question-category-select';
 import { FileResourceSelect } from '@/presentation/components/shared/file/file-resource-select';
 
+import { QuizCategoryConfigCreateForm } from './quiz-category-question-create-config-form';
+
 interface CreateQuizForLessonProps {
   disabled?: boolean;
   onSubmit: (data: CreateQuizRequest) => void;
@@ -333,22 +335,17 @@ export function CreateQuizForLessonDialog({
                 ]}
               />
             </Grid> */}
+            <Grid item xs={12}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                {t('quizSettings')}
+              </Typography>
+            </Grid>
 
             <Grid item xs={12}>
-              <QuestionCategoryMultiSelect
+              <QuizCategoryConfigCreateForm
+                value={form.questionCategoryConfigs}
+                onChange={(val) => handleChange('questionCategoryConfigs', val)}
                 categoryUsecase={categoryUsecase}
-                value={
-                  form.questionCategoryIDs
-                    ?.split(',')
-                    .map((id) => id.trim())
-                    .filter(Boolean) ?? []
-                }
-                label={t('questionBank')}
-                onChange={(value: string[]) => {
-                  handleChange('questionCategoryIDs', value.join(','));
-                }}
-                categoryEnum={CategoryEnum.Question}
-                required
               />
             </Grid>
 
@@ -432,7 +429,7 @@ export function CreateQuizForLessonDialog({
               <div></div>
             )} */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CustomTextField
                 label={t('displayedQuestionCount')}
                 value={form.displayedQuestionCount?.toString() ?? ''}
@@ -444,7 +441,7 @@ export function CreateQuizForLessonDialog({
                 inputMode="numeric"
                 icon={<NumberCircleSix {...iconStyle} />}
               />
-            </Grid>
+            </Grid> */}
 
             {/* <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
