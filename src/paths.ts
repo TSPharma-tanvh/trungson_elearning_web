@@ -13,7 +13,7 @@ export const paths = {
     devices: '/dashboard/management/devices',
     integrations: '/dashboard/system/integrations',
     settings: '/dashboard/system/settings',
-    class: '/dashboard/class/class',
+    class: '/dashboard/class/classes',
     teacher: '/dashboard/class/teacher',
     attendance: '/dashboard/class/attendance',
     quiz: '/dashboard/quiz/quiz',
