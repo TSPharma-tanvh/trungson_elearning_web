@@ -20,5 +20,5 @@ export const getBaseUrl = (): string => {
     throw new Error('Missing NEXT_PUBLIC_LOCAL_PRODUCTION_BASE_URL environment variable.');
   }
 
-  return local.replace(/\/+$/, '');
+  return production.replace(/\/+$/, '');
 };
