@@ -10,15 +10,13 @@ export class CreateQuizRequest {
   hasLesson = false;
   lessonID?: string;
 
-  displayedQuestionCount!: number;
+  // displayedQuestionCount!: number;
 
   type: QuizTypeEnum = QuizTypeEnum.LessonQuiz;
   time!: string; // HH:mm:ss
 
   isRestrictAttempts = false;
-
   maxAttempts?: number;
-  // scoreToPass!: number;
 
   title = '';
   description?: string;
@@ -26,7 +24,7 @@ export class CreateQuizRequest {
   positionStateCode?: string;
   departmentTypeCode?: string;
 
-  categoryID!: string;
+  categoryID?: string;
   status: StatusEnum = StatusEnum.Enable;
 
   thumbnailID?: string;
@@ -53,38 +51,46 @@ export class CreateQuizRequest {
   fixedQuizDayDuration?: number;
   positionCode?: string;
 
-  // new logic
-  // inputMethod?: string;
-  // excelFile?: File;
-
-  // questionCategoryEnum?: CategoryEnum;
-  // answerCategoryEnum?: CategoryEnum;
-
-  // NEW FIELDS ADDED
-  // questionCategoryID?: string;
-  // answerCategoryID?: string;
-  questionCategoryIDs?: string;
+  questionCategoryConfigs: QuizCategoryConfigCreate[] = [];
 
   constructor(init?: Partial<CreateQuizRequest>) {
     Object.assign(this, init);
+
+    if (init?.questionCategoryConfigs) {
+      this.questionCategoryConfigs = init.questionCategoryConfigs.map((x) => new QuizCategoryConfigCreate(x));
+    }
   }
 
   static fromJson(json: any): CreateQuizRequest {
-    return new CreateQuizRequest({ ...json });
+    return new CreateQuizRequest({
+      ...json,
+      questionCategoryConfigs: json.questionCategoryConfigs?.map((x: any) => QuizCategoryConfigCreate.fromJson(x)),
+    });
   }
 
   toJson(): any {
-    return { ...this };
+    return {
+      ...this,
+      questionCategoryConfigs: this.questionCategoryConfigs.map((x) => x.toJson()),
+      startDate: this.startDate ? DateTimeUtils.formatISODateToString(this.startDate) : undefined,
+      endDate: this.endDate ? DateTimeUtils.formatISODateToString(this.endDate) : undefined,
+    };
   }
 
   toFormData(): FormData {
     const formData = new FormData();
 
-    Object.entries(this).forEach(([key, value]: [string, any]) => {
+    Object.entries(this).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
-
-      // Skip enums when uploading
       if (key.endsWith('Enum')) return;
+
+      if (key === 'questionCategoryConfigs') {
+        formData.append(
+          'QuestionCategoryConfigs',
+          JSON.stringify(value.map((x: QuizCategoryConfigCreate) => x.toJson()))
+        );
+        return;
+      }
 
       if (value instanceof Date) {
         formData.append(key, DateTimeUtils.formatISODateToString(value)!);
@@ -96,11 +102,8 @@ export class CreateQuizRequest {
         return;
       }
 
-      // resources array
-      if (Array.isArray(value) && value.length > 0 && value[0] instanceof File) {
-        value.forEach((f) => {
-          formData.append('resources', f);
-        });
+      if (Array.isArray(value) && value[0] instanceof File) {
+        value.forEach((file) => formData.append('Resources', file));
         return;
       }
 
@@ -108,5 +111,31 @@ export class CreateQuizRequest {
     });
 
     return formData;
+  }
+}
+
+export class QuizCategoryConfigCreate {
+  categoryID!: string;
+  displayedQuestionCount!: number;
+  order = 0;
+
+  constructor(init?: Partial<QuizCategoryConfigCreate>) {
+    Object.assign(this, init);
+  }
+
+  static fromJson(json: any): QuizCategoryConfigCreate {
+    return new QuizCategoryConfigCreate({
+      categoryID: json.categoryID,
+      displayedQuestionCount: json.displayedQuestionCount,
+      order: json.order ?? 0,
+    });
+  }
+
+  toJson(): any {
+    return {
+      categoryID: this.categoryID,
+      displayedQuestionCount: this.displayedQuestionCount,
+      order: this.order,
+    };
   }
 }

@@ -7,6 +7,7 @@ import { FileResourcesResponse } from '../../file/response/file-resources-respon
 import { UserQuizQuestionResponse } from '../../question/response/user-quiz-question-response';
 import { UserAnswerResponse } from '../../user-answer/response/user-answer-response';
 import { UserQuizProgressionResponse } from '../../user-quiz/response/user-quiz-progress-response';
+import { QuizCategoryQuestionConfigResponse } from './quiz-category-question-config-response';
 import { QuizLessonResponse } from './quiz-lesson-response';
 
 export class QuizResponse {
@@ -25,6 +26,7 @@ export class QuizResponse {
   thumbnailID?: string;
 
   quizQuestions: UserQuizQuestionResponse[] = [];
+  quizCategoryConfigs: QuizCategoryQuestionConfigResponse[] = [];
 
   enrollmentCriteria?: EnrollmentCriteriaResponse[];
   quizEnrollments?: QuizEnrollmentCriteriaRelationResponse[];
@@ -95,6 +97,9 @@ export class QuizResponse {
     dto.quizQuestions = Array.isArray(json.quizQuestions)
       ? json.quizQuestions.map((q: any) => UserQuizQuestionResponse.fromJson(q))
       : [];
+    dto.quizCategoryConfigs = Array.isArray(json.quizCategoryConfigs)
+      ? json.quizCategoryConfigs.map((q: any) => QuizCategoryQuestionConfigResponse.fromJson(q))
+      : [];
 
     dto.enrollmentCriteria = Array.isArray(json.enrollmentCriteria)
       ? json.enrollmentCriteria.map((e: any) => EnrollmentCriteriaResponse.fromJson(e))
@@ -139,7 +144,6 @@ export class QuizResponse {
     dto.totalQuestion = json.totalQuestion;
     dto.maxAttempts = json.maxAttempts;
 
-    // --------- NEW MAPPINGS ----------
     dto.positionCode = json.positionCode;
     dto.positionName = json.positionName;
 
@@ -175,6 +179,8 @@ export class QuizResponse {
       thumbnailID: this.thumbnailID,
 
       quizQuestions: this.quizQuestions.map((q) => (q.toJson ? q.toJson() : q)),
+      quizCategoryConfigs: this.quizCategoryConfigs.map((q) => (q.toJson ? q.toJson() : q)),
+
       enrollmentCriteria: this.enrollmentCriteria?.map((e) => (e.toJson ? e.toJson() : e)),
       quizEnrollments: this.quizEnrollments?.map((qe) => (qe.toJson ? qe.toJson() : qe)),
 
@@ -202,7 +208,6 @@ export class QuizResponse {
       totalQuestion: this.totalQuestion,
       maxAttempts: this.maxAttempts,
 
-      // NEW FIELDS
       positionCode: this.positionCode,
       positionName: this.positionName,
 

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { CategoryDetailResponse } from '@/domain/models/category/response/category-detail-response';
 import { type UserQuestionResponse } from '@/domain/models/question/response/user-question-response';
 import { type QuizResponse } from '@/domain/models/quiz/response/quiz-response';
 import { useDI } from '@/presentation/hooks/use-dependency-container';
@@ -33,6 +34,7 @@ import { CustomVideoPlayer } from '@/presentation/components/shared/file/custom-
 import ImagePreviewDialog from '@/presentation/components/shared/file/image-preview-dialog';
 
 import QuestionInformationForm from '../../../shared/quiz/question/question-information-form';
+import CategoryDetailForm from '../category/question-category-detail-form';
 
 interface QuizDetailFormProps {
   open: boolean;
@@ -44,6 +46,8 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
   const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedQuestion, setSelectedQuestion] = React.useState<UserQuestionResponse | null>(null);
+  const [selectedQuestionCategory, setSelectedQuestionCategory] = React.useState<CategoryDetailResponse | null>(null);
+
   const [viewOpen, setViewOpen] = React.useState(false);
   const [expandedLessons, setExpandedLessons] = useState<Record<string, boolean>>({});
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
@@ -194,6 +198,82 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
     );
   };
 
+  const renderQuestionCategories = () => {
+    if (!quiz.quizCategoryConfigs || quiz.quizCategoryConfigs.length === 0) return null;
+
+    const toggleExpanded = (categoryId: string) => {
+      setExpandedLessons((prev) => ({
+        ...prev,
+        [categoryId]: !prev[categoryId],
+      }));
+    };
+
+    return (
+      <Box sx={{ mb: 2 }}>
+        <CardHeader title={t('questionBank')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        {quiz.quizCategoryConfigs.map((category, index) => {
+          const categoryId = category.category?.id ?? `${t('questionBank')}-${index}`;
+          const isExpanded = expandedLessons[categoryId] || false;
+
+          return (
+            <Card
+              key={categoryId}
+              sx={{
+                mb: 3,
+                mx: window.innerWidth < 600 ? 1 : 2,
+              }}
+            >
+              <CardHeader
+                title={category.category?.categoryName ?? `${t('questionBank')} ${index + 1}`}
+                action={
+                  <Box>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (category.category) {
+                          setSelectedQuestionCategory(category?.category ?? null);
+                        }
+                        setViewOpen(true);
+                      }}
+                      sx={{
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <InfoOutlined />
+                    </IconButton>
+
+                    <IconButton
+                      onClick={() => {
+                        toggleExpanded(categoryId);
+                      }}
+                      sx={{
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  </Box>
+                }
+                sx={{ py: 1 }}
+              />
+
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {renderField('id', category.category?.id)}
+                    {renderField('displayedQuestionCount', category.displayedQuestionCountFromThisCategory)}
+                    {renderField('order', category.order)}
+                  </Grid>
+                </CardContent>
+              </Collapse>
+            </Card>
+          );
+        })}
+      </Box>
+    );
+  };
+
   const renderFiles = () => {
     if (!quiz.fileQuizRelation?.length) return null;
 
@@ -333,18 +413,15 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
               'status',
               quiz.status ? t(quiz.status.toString().charAt(0).toLowerCase() + t(quiz.status.toString().slice(1))) : ''
             )}
-            {renderField(
-              'startTime',
-              quiz.startTime ? DateTimeUtils.formatDateTimeToDateString(quiz.startTime) : undefined
-            )}
-            {renderField('endTime', quiz.endTime ? DateTimeUtils.formatDateTimeToDateString(quiz.endTime) : undefined)}
+
+            {renderField('totalQuestion', quiz.totalQuestion)}
             {renderField('totalScore', quiz.totalScore)}
+            {renderField('scoreToPass', quiz.scoreToPass)}
             {renderField('time', quiz.time)}
             {renderField(
               'type',
               quiz.type ? t(quiz.type.toString().charAt(0).toLowerCase() + t(quiz.type.toString().slice(1))) : ''
             )}
-            {renderField('scoreToPass', quiz.scoreToPass)}
             {renderField('maxAttempts', quiz.maxAttempts)}
             {renderField('canStartOver', quiz.canStartOver ? t('yes') : t('no'))}
             {renderField('canShuffle', quiz.canShuffle ? t('yes') : t('no'))}
@@ -353,10 +430,9 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
           </Grid>
         </CardContent>
       </Card>
-      {renderQuestions()}
+      {quiz.quizCategoryConfigs.length > 0 ? renderQuestionCategories() : renderQuestions()}
       {renderFiles()}
       {renderEnrollmentCriteria()}
-
       {/* question details */}
       {selectedQuestion ? (
         <QuestionInformationForm
@@ -364,6 +440,16 @@ function QuizDetails({ quiz, fullScreen }: { quiz: QuizResponse; fullScreen: boo
           questionId={selectedQuestion?.id ?? null}
           onClose={() => {
             setViewOpen(false);
+          }}
+        />
+      ) : null}
+
+      {selectedQuestionCategory ? (
+        <CategoryDetailForm
+          open={viewOpen}
+          categoryId={selectedQuestionCategory?.id ?? null}
+          onClose={() => {
+            setSelectedQuestionCategory(null);
           }}
         />
       ) : null}
