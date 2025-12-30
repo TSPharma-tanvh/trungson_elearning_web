@@ -103,13 +103,12 @@ export function IndependentLessonSingleSelectDialog({
     [disableStatus, contentType, status, hasVideo, hasFileResource]
   );
 
-  const { lessons, loadingLessons, pageNumber, totalPages, listRef, setSearchText, loadLessons } =
-    useLessonSelectLoader({
-      lessonUsecase,
-      isOpen: dialogOpen,
-      searchText: debouncedSearchText,
-      filters,
-    });
+  const { lessons, loadingLessons, pageNumber, totalPages, listRef, loadLessons } = useLessonSelectLoader({
+    lessonUsecase,
+    isOpen: dialogOpen,
+    searchText: debouncedSearchText,
+    filters,
+  });
 
   const isFull = isSmallScreen || isFullscreen;
 
@@ -220,7 +219,6 @@ export function IndependentLessonSingleSelectDialog({
             value={localSearchText}
             onChange={(val) => {
               setLocalSearchText(val);
-              setSearchText(val);
             }}
             placeholder={t('searchLessons')}
           />
