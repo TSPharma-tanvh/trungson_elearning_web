@@ -78,6 +78,7 @@ interface LessonsEndpoints {
   getById: DynamicEndpoint;
   create: StaticEndpoint;
   update: StaticEndpoint;
+  delete: DynamicEndpoint;
   export: StaticEndpoint;
 }
 
@@ -304,6 +305,7 @@ const endpoints: EndpointDefinitions = {
     getById: (id: string) => `Lesson/GetLessonById/${id}`,
     create: 'Lesson/CreateLesson',
     update: 'Lesson/UpdateLesson',
+    delete: (id: string) => `Lesson/DeleteLesson/${id}`,
     export: 'Lesson/ExportLessonProgressReport',
   },
   class: {

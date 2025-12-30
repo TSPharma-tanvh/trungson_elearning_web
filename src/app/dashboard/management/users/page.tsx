@@ -124,7 +124,7 @@ export default function Page(): React.JSX.Element {
           <Typography variant="h4" sx={{ color: 'var(--mui-palette-secondary-main)' }}>
             {t('users')}
           </Typography>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Button
               color="inherit"
               startIcon={<Upload fontSize="var(--icon-fontSize-md)" />}
@@ -141,7 +141,7 @@ export default function Page(): React.JSX.Element {
             >
               {t('downloadExampleFile')}
             </Button>
-          </Stack>
+          </Stack> */}
         </Stack>
         <div>
           <Stack direction="row" spacing={2}>
@@ -172,7 +172,7 @@ export default function Page(): React.JSX.Element {
               {syncLoading ? t('syncing') : t('syncFromHRM')}
             </Button>
 
-            <Button
+            {/* <Button
               startIcon={<Plus fontSize="var(--icon-fontSize-md)" />}
               variant="contained"
               color="primary"
@@ -189,7 +189,7 @@ export default function Page(): React.JSX.Element {
               }}
             >
               {t('add')}
-            </Button>
+            </Button> */}
           </Stack>
         </div>
       </Stack>

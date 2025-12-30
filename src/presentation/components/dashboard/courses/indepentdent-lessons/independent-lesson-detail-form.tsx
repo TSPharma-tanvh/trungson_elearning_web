@@ -51,7 +51,7 @@ function IndependentLessonDetails({ lesson, fullScreen }: { lesson: LessonDetail
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
-    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+    <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
         {t(label)}
       </Typography>
@@ -290,7 +290,7 @@ function IndependentLessonDetails({ lesson, fullScreen }: { lesson: LessonDetail
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('attachedFiles')} />
+        <CardHeader title={t('fileResource')} />
         <CardContent>
           <Grid container spacing={2}>
             {lesson.fileLessonRelation.map((r) => {

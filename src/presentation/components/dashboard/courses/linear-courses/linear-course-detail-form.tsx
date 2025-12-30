@@ -54,7 +54,7 @@ function LinearCourseDetails({ course, fullScreen }: { course: CourseDetailRespo
   const [openQuizDetailId, setOpenQuizDetailId] = useState<string | null>(null);
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
-    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+    <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
         {t(label)}
       </Typography>
@@ -85,7 +85,7 @@ function LinearCourseDetails({ course, fullScreen }: { course: CourseDetailRespo
                 ? t(coursePath.displayType?.charAt(0).toLowerCase() + t(coursePath.displayType).slice(1))
                 : ''
             )}
-            {renderField('categoryId', coursePath.categoryID)}
+            {/* {renderField('categoryId', coursePath.categoryID)} */}
             {renderField('thumbnailId', coursePath.thumbnailID)}
           </Grid>
         </CardContent>
@@ -441,7 +441,7 @@ function LinearCourseDetails({ course, fullScreen }: { course: CourseDetailRespo
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('attachedFiles')} />
+        <CardHeader title={t('fileResource')} />
         <CardContent>
           <Grid container spacing={2}>
             {course.fileCourseRelation.map((r) => {
@@ -592,12 +592,12 @@ function LinearCourseDetails({ course, fullScreen }: { course: CourseDetailRespo
                 ? t(course.scheduleStatus.charAt(0).toLowerCase() + t(course.scheduleStatus).slice(1))
                 : ''
             )} */}
-            {renderField('teacherId', course.teacherId)}
-            {renderField('meetingLink', course.meetingLink)}
+            {/* {renderField('teacherId', course.teacherId)} */}
+            {/* {renderField('meetingLink', course.meetingLink)} */}
             {/* {renderField('enrollmentCriteriaId', course.enrollmentCriteria.id)} */}
-            {renderField('categoryId', course.categoryId)}
+            {/* {renderField('categoryId', course.categoryId)} */}
             {renderField('thumbnailId', course.thumbnailId)}
-            {renderField('isFixedCourse', course.isFixedCourse ? t('yes') : t('no'))}
+            {renderField('courseDurationType', course.isFixedCourse ? t('duration') : t('time'))}
             {renderField('isRequired', course.isRequired ? t('yes') : t('no'))}
             {renderField('positionName', course.positionName)}
             {renderField('positionStateName', course.positionStateName)}

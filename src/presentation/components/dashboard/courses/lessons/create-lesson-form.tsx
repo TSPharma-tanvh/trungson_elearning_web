@@ -215,6 +215,13 @@ export function CreateLessonDialog({
       // Select video
       const request = new CreateLessonRequest({
         ...thumbnailPayload,
+
+        enablePlay: form.enablePlay ?? true,
+        status: form.status ?? StatusEnum.Enable,
+        lessonType: form.lessonType ?? LessonTypeEnum.Course,
+        contentType: form.contentType ?? LessonContentEnum.PDF,
+        isRequired: form.isRequired ?? false,
+
         videoChunk: undefined,
       });
 
@@ -435,7 +442,13 @@ export function CreateLessonDialog({
               onChange={(res) => {
                 setSelectedResource(res);
 
-                handleChange(form.contentType === LessonContentEnum.Video ? 'videoID' : 'resourceIDs', res.id);
+                if (form.contentType === LessonContentEnum.Video) {
+                  handleChange('videoID', res.id);
+                  handleChange('resourceIDs', undefined);
+                } else {
+                  handleChange('resourceIDs', res.id);
+                  handleChange('videoID', undefined);
+                }
               }}
               onClose={() => setOpenResourcePicker(false)}
             />

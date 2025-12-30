@@ -138,7 +138,7 @@ export default function LinearCourseTable({
           <>
             <TableCell>{t('name')}</TableCell>
             <TableCell>{t('detail')}</TableCell>
-            <TableCell>{t('isFixedCourse')}</TableCell>
+            <TableCell>{t('courseDurationType')}</TableCell>
             <TableCell>{t('required')}</TableCell>
             <TableCell>{t('status')}</TableCell>
             {/* <TableCell>{t('courseType')}</TableCell> */}
@@ -167,7 +167,7 @@ export default function LinearCourseTable({
             <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 150 }}>
               <Typography variant="body2">{row.detail}</Typography>
             </TableCell>
-            <TableCell>{row.isFixedCourse ? t('yes') : t('no')}</TableCell>
+            <TableCell>{row.isFixedCourse ? t('duration') : t('time')}</TableCell>
             <TableCell>{row.isRequired ? t('yes') : t('no')}</TableCell>
 
             {/* <TableCell>

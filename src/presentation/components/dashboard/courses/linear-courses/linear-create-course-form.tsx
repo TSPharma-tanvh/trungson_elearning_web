@@ -140,7 +140,7 @@ export function LinearCreateCourseDialog({
                 rows={detailRows}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={form.categoryID}
@@ -154,7 +154,7 @@ export function LinearCreateCourseDialog({
                 value={form.teacherID ?? ''}
                 onChange={(val) => handleChange('teacherID', val)}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <CustomSelectDropDown<boolean>
                 label={t('isRequired')}

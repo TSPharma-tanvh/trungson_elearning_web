@@ -96,12 +96,12 @@ export default function FileResourcesTable({
             >
               {t('category')}
             </TableCell>
-            <TableCell>{t('fileClassQRRelation')}</TableCell>
+            {/* <TableCell>{t('fileClassQRRelation')}</TableCell> */}
             <TableCell>{t('fileClassRelation')}</TableCell>
             <TableCell>{t('fileCourseRelation')}</TableCell>
             <TableCell>{t('fileLessonRelation')}</TableCell>
             <TableCell>{t('fileQuestionRelation')}</TableCell>
-            <TableCell>{t('fileQuizRelation')}</TableCell>
+            {/* <TableCell>{t('fileQuizRelation')}</TableCell> */}
             <TableCell>{t('createdByUser')}</TableCell>
             <TableCell>{t('updatedByUser')}</TableCell>
           </>
@@ -120,12 +120,12 @@ export default function FileResourcesTable({
             <TableCell>{row.type}</TableCell>
             <TableCell>{row.size ? (row.size / (1024 * 1024)).toFixed(3) : 0}</TableCell>
             <TableCell sx={{ width: '25%' }}>{row.category?.categoryName}</TableCell>
-            <TableCell>{row.fileClassQRRelation?.length}</TableCell>
+            {/* <TableCell>{row.fileClassQRRelation?.length}</TableCell> */}
             <TableCell>{row.fileClassRelation?.length}</TableCell>
             <TableCell>{row.fileCourseRelation?.length}</TableCell>
             <TableCell>{row.fileLessonRelation?.length}</TableCell>
             <TableCell>{row.fileQuestionRelation?.length}</TableCell>
-            <TableCell>{row.fileQuizRelation?.length}</TableCell>
+            {/* <TableCell>{row.fileQuizRelation?.length}</TableCell> */}
             <TableCell sx={{ width: '25%' }}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar src={row?.createdByUser?.employee?.avatar}>{row?.createdByUser?.employee?.name}</Avatar>

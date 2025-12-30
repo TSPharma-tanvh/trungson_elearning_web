@@ -338,7 +338,7 @@ export function LinearUpdateCourseFormDialog({ open, data: course, onClose, onSu
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <CategorySelect
                 categoryUsecase={categoryUsecase}
                 value={formData.categoryId}
@@ -348,9 +348,9 @@ export function LinearUpdateCourseFormDialog({ open, data: course, onClose, onSu
                 categoryEnum={CategoryEnum.Course}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <ClassTeacherSelectDialog
                 classUsecase={classTeacherUsecase}
                 value={formData.teacherId ?? ''}
@@ -359,7 +359,7 @@ export function LinearUpdateCourseFormDialog({ open, data: course, onClose, onSu
                 }}
                 disabled={isSubmitting}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <Typography variant="subtitle1" sx={{ mb: 1 }}>

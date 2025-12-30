@@ -14,5 +14,7 @@ export interface LessonRepository {
 
   updateLesson: (request: UpdateLessonRequest) => Promise<ApiResponse>;
 
+  deleteLessonPermanent: (id: string) => Promise<ApiResponse>;
+
   exportLesson: (request: ExportLessonProgressReportRequest) => Promise<ApiResponse>;
 }

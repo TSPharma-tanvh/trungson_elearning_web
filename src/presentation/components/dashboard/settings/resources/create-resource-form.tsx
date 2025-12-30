@@ -451,7 +451,7 @@ export function CreateFileResourcesDialog({ disabled, onSubmit, onSuccess, open,
             />
           </Grid>
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <ClassSelectDialog
               classUsecase={classUsecase}
               value={form.classID ?? ''}
@@ -504,7 +504,7 @@ export function CreateFileResourcesDialog({ disabled, onSubmit, onSuccess, open,
               }}
               disabled={false}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </DialogContent>
 

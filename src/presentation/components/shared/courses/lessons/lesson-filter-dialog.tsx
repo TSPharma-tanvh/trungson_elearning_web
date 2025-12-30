@@ -107,7 +107,7 @@ export function LessonSelectFilterDialog({ open, onClose, onConfirm, initialFilt
           </FormControl>
 
           {/* Status */}
-          <FormControl size="small" fullWidth>
+          {/* <FormControl size="small" fullWidth>
             <InputLabel>{t('status')}</InputLabel>
             <Select
               value={filters.status !== undefined ? String(filters.status) : ''}
@@ -125,7 +125,7 @@ export function LessonSelectFilterDialog({ open, onClose, onConfirm, initialFilt
                   </MenuItem>
                 ))}
             </Select>
-          </FormControl>
+          </FormControl> */}
 
           {/* Lesson Type */}
           <FormControl size="small" fullWidth>

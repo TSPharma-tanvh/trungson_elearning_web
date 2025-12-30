@@ -98,7 +98,7 @@ export function LessonSingleSelectDialog({
       lessonType,
       disableStatus,
       contentType,
-      status,
+      status: StatusEnum.Enable,
       hasVideo,
       hasFileResource,
       hasCourse,
@@ -258,22 +258,6 @@ export function LessonSingleSelectDialog({
                 {filterOptions.contentType.map((opt) => (
                   <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
                     {t(opt !== undefined ? camelCase(LessonContentEnum[opt]) : 'all')}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>{t('status')}</InputLabel>
-              <Select
-                value={status ?? ''}
-                onChange={(e) => {
-                  setStatus(e.target.value ? (Number(e.target.value) as StatusEnum) : undefined);
-                }}
-                label={t('status')}
-              >
-                {filterOptions.status.map((opt) => (
-                  <MenuItem key={opt ?? 'none'} value={opt !== undefined ? String(opt) : ''}>
-                    {t(opt !== undefined ? StatusDisplayNames[opt] : 'all')}
                   </MenuItem>
                 ))}
               </Select>

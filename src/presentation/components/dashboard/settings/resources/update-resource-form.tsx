@@ -212,7 +212,7 @@ export function UpdateFileResourcesDialog({ disabled, data, onSubmit, open, onCl
             />
           </Grid>
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <ClassMultiSelectDialog
               classUsecase={classUsecase}
               value={form.classIDs ? form.classIDs.split(',').filter((id) => id) : []}
@@ -232,9 +232,9 @@ export function UpdateFileResourcesDialog({ disabled, data, onSubmit, open, onCl
               }}
               disabled={isSubmitting}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <LessonMultiSelectDialog
               lessonUsecase={lessonUsecase}
               value={form.lessonIDs ? form.lessonIDs.split(',').filter((id) => id) : []}
@@ -243,9 +243,9 @@ export function UpdateFileResourcesDialog({ disabled, data, onSubmit, open, onCl
               }}
               disabled={isSubmitting}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <QuizMultiSelect
               quizUsecase={quizUsecase}
               value={form.quizIDs ? form.quizIDs.split(',').filter((id) => id) : []}
@@ -254,9 +254,9 @@ export function UpdateFileResourcesDialog({ disabled, data, onSubmit, open, onCl
               }}
               disabled={isSubmitting}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <QuestionMultiSelect
               questionUsecase={questionUsecase}
               value={form.questionIDs ? form.questionIDs.split(',').filter((id) => id) : []}
@@ -266,7 +266,7 @@ export function UpdateFileResourcesDialog({ disabled, data, onSubmit, open, onCl
               disabled={isSubmitting}
               required
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </DialogContent>
 

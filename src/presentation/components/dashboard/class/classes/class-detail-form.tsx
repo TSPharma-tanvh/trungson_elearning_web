@@ -217,7 +217,7 @@ function ClassDetailsForm({ classes, fullScreen }: { classes: ClassResponse; ful
 
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader title={t('attachedFiles')} />
+        <CardHeader title={t('fileResource')} />
         <CardContent>
           <Grid container spacing={2}>
             {classes.fileClassRelation.map((r) => {

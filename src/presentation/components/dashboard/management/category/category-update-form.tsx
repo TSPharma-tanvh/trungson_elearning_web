@@ -178,7 +178,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          {t('updateCategory')}
+          {t('updateResourceCategory')}
         </Typography>
         <Box>
           <IconButton
@@ -246,6 +246,24 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
             </Grid> */}
 
             <Grid item xs={12}>
+              <Typography variant="body2" mb={2}>
+                {t('thumbnail')}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FileResourceSelect
+                fileUsecase={fileUsecase}
+                type={FileTypeEnum.Image}
+                status={StatusEnum.Enable}
+                value={formData.thumbnailID ?? ''}
+                onChange={handleFileSelectChange}
+                label={t('thumbnail')}
+                disabled={isSubmitting}
+              />
+            </Grid>
+
+            {/* <Grid item xs={12}>
               <ToggleButtonGroup
                 value={thumbnailSource}
                 exclusive
@@ -334,7 +352,7 @@ export function UpdateCategoryFormDialog({ open, data: category, onClose, onSubm
                   </Grid>
                 </Grid>
               )}
-            </Grid>
+            </Grid> */}
 
             {previewUrl ? (
               <Grid item xs={12}>

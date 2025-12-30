@@ -96,7 +96,7 @@ export function LessonSingleFilter({
       lessonType,
       disableStatus,
       contentType,
-      status,
+      status: StatusEnum.Enable,
       hasVideo,
       hasFileResource,
       hasCourse,
@@ -294,7 +294,7 @@ export function LessonSingleFilter({
                 ))}
               </Select>
             </FormControl>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('status')}</InputLabel>
               <Select
                 value={status ?? ''}
@@ -309,7 +309,7 @@ export function LessonSingleFilter({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>{t('hasCourse')}</InputLabel>

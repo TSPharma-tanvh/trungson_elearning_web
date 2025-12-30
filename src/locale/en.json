@@ -1020,5 +1020,7 @@
   "linear": "Short Lesson",
   "reportLesson": "Report Lesson",
   "pleaseSelectLesson": "Please Select Lesson",
-  "exportLessonProgress": "Export Lesson Progress"
+  "exportLessonProgress": "Export Lesson Progress",
+  "createResourceCategory": "Create Resource Category",
+  "updateResourceCategory": "Update Resource Category"
 }

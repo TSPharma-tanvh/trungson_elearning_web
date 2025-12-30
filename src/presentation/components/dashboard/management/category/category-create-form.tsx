@@ -75,7 +75,7 @@ export function CreateCategoryDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={fullScreen}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pr: 1 }}>
         <Typography variant="h6" component="div">
-          {t('createCategory')}
+          {t('createResourceCategory')}
         </Typography>
         <Box>
           <IconButton

@@ -7,7 +7,7 @@ import { type LessonDetailResponse } from '@/domain/models/lessons/response/less
 import { type LessonUsecase } from '@/domain/usecases/lessons/lesson-usecase';
 import { useLessonSelectDebounce } from '@/presentation/hooks/enrollment/use-lesson-select-debounce';
 import { useLessonSelectLoader } from '@/presentation/hooks/lesson/use-lesson-select-loader';
-import { type LessonContentEnum, type StatusEnum } from '@/utils/enum/core-enum';
+import { StatusEnum, type LessonContentEnum } from '@/utils/enum/core-enum';
 import { Add, Book, Close, FilterList, Fullscreen, FullscreenExit, MoreVert } from '@mui/icons-material';
 import {
   Box,
@@ -86,7 +86,7 @@ export function LessonSingleSelectAndCreateDialog({
   // Filters
   const [filters, setFilters] = useState({
     contentType: undefined as LessonContentEnum | undefined,
-    status: undefined as StatusEnum | undefined,
+    status: StatusEnum.Enable,
     hasVideo: undefined as boolean | undefined,
     hasFileResource: undefined as boolean | undefined,
     hasCourse: undefined as boolean | undefined,

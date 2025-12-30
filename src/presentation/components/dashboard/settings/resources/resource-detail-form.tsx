@@ -54,7 +54,7 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
   // };
 
   const renderField = (label: string, value?: string | number | boolean | null) => (
-    <Grid item xs={12} sm={fullScreen ? 4 : 6}>
+    <Grid item xs={12} sm={fullScreen ? 3 : 4}>
       <Typography variant="subtitle2" fontWeight={500}>
         {t(label)}
       </Typography>
@@ -429,7 +429,7 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title={t('Lessons')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('lessons')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {resource.fileLessonRelation.map((relation) => {
           const lesson = relation.lesson;
           if (!lesson) return null;
@@ -454,7 +454,7 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                         {lesson.name ?? t('unnamedLesson')}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {t('LessonId')}: {lesson.id}
+                        {t('lessonId')}: {lesson.id}
                       </Typography>
                     </Box>
                   </Box>
@@ -520,7 +520,7 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title={t('Quizzes')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('quizzes')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {resource.fileQuizRelation.map((relation) => {
           const quiz = relation.quiz;
           if (!quiz) return null;
@@ -542,10 +542,10 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                     <Avatar sx={{ width: 32, height: 32, fontSize: '1rem' }}>{quiz.title?.[0] ?? '?'}</Avatar>
                     <Box>
                       <Typography variant="subtitle1" fontWeight={600}>
-                        {quiz.title ?? t('unnamedCourse')}
+                        {quiz.title ?? t('unnamedQuiz')}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {t('courseId')}: {quiz.id}
+                        {t('quizId')}: {quiz.id}
                       </Typography>
                     </Box>
                   </Box>
@@ -611,7 +611,7 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
 
     return (
       <Box sx={{ mb: 2 }}>
-        <CardHeader title={t('Classes')} sx={{ pl: 2, pb: 1, mb: 2 }} />
+        <CardHeader title={t('class')} sx={{ pl: 2, pb: 1, mb: 2 }} />
         {resource.fileClassRelation.map((relation) => {
           const classes = relation.class;
           if (!classes) return null;
@@ -636,7 +636,7 @@ function ResourceDetails({ resource, fullScreen }: { resource: FileResourcesResp
                         {classes.className ?? t('unnamedClass')}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {t('ClassId')}: {classes.id}
+                        {t('classId')}: {classes.id}
                       </Typography>
                     </Box>
                   </Box>

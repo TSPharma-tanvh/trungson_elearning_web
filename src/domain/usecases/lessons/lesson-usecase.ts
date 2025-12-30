@@ -54,6 +54,12 @@ export class LessonUsecase {
     return result;
   }
 
+  async deletePermanent(id: string): Promise<ApiResponse> {
+    const result = await this.lessonRepo.deleteLessonPermanent(id);
+
+    return result;
+  }
+
   async deleteLesson(id: string): Promise<ApiResponse> {
     const newFormData = new UpdateLessonRequest({
       id: id ?? '',
