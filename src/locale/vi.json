@@ -1022,5 +1022,6 @@
   "pleaseSelectLesson": "Vui lòng chọn bài học",
   "exportLessonProgress": "Xuất tiến độ bài học",
   "createResourceCategory": "Tạo nhóm học liệu",
-  "updateResourceCategory": "Cập nhật nhóm học liệu"
+  "updateResourceCategory": "Cập nhật nhóm học liệu",
+  "deleteSuccess": "Xóa thành công"
 }

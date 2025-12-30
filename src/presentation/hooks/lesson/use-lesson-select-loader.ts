@@ -1,4 +1,3 @@
-import type * as React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GetLessonRequest } from '@/domain/models/lessons/request/get-lesson-request';
 import type { LessonDetailResponse } from '@/domain/models/lessons/response/lesson-detail-response';
@@ -28,38 +27,32 @@ interface UseLessonSelectLoaderProps {
 interface LessonSelectLoaderState {
   lessons: LessonDetailResponse[];
   loadingLessons: boolean;
-  hasMore: boolean;
-  isSelectOpen: boolean;
   pageNumber: number;
   totalPages: number;
   listRef: React.RefObject<HTMLUListElement>;
-  setIsSelectOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSearchText: React.Dispatch<React.SetStateAction<string>>;
-  searchText: string;
   loadLessons: (page: number, reset?: boolean) => Promise<void>;
 }
 
 export function useLessonSelectLoader({
   lessonUsecase,
   isOpen,
-  searchText: initialSearchText = '',
+  searchText = '',
   filters = {},
 }: UseLessonSelectLoaderProps): LessonSelectLoaderState {
   const [lessons, setLessons] = useState<LessonDetailResponse[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [loadingLessons, setLoadingLessons] = useState(false);
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
-  const [searchText, setSearchText] = useState(initialSearchText);
+
   const listRef = useRef<HTMLUListElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const loadLessons = useCallback(
-    async (page: number, reset = false): Promise<void> => {
-      if (!lessonUsecase || loadingLessons || !isOpen) return;
+    async (page: number, reset = false) => {
+      if (!lessonUsecase || !isOpen) return;
 
       setLoadingLessons(true);
+      abortControllerRef.current?.abort();
       abortControllerRef.current = new AbortController();
 
       try {
@@ -71,63 +64,43 @@ export function useLessonSelectLoader({
           hasVideo: filters.hasVideo,
           hasFileResource: filters.hasFileResource,
           hasCourse: filters.hasCourse,
-
           pageNumber: page,
           pageSize: 10,
         });
 
         const result: LessonDetailListResult = await lessonUsecase.getLessonListInfo(request);
-        if (isOpen) {
-          setLessons((prev: LessonDetailResponse[]) => {
-            const newLessons = reset || page === 1 ? result.lessons : [...prev, ...result.lessons];
-            setHasMore(result.lessons.length > 0 && result.totalRecords > newLessons.length);
-            return newLessons;
-          });
-          setTotalPages(Math.ceil(result.totalRecords / 10));
-          setPageNumber(page);
-        }
+
+        setLessons((prev) => (reset || page === 1 ? result.lessons : [...prev, ...result.lessons]));
+        setPageNumber(page);
+        setTotalPages(Math.ceil(result.totalRecords / 10));
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to load lessons.';
-        CustomSnackBar.showSnackbar(message, 'error');
+        CustomSnackBar.showSnackbar(error instanceof Error ? error.message : 'Failed to load lessons', 'error');
       } finally {
-        if (isOpen) setLoadingLessons(false);
+        setLoadingLessons(false);
       }
     },
     [lessonUsecase, isOpen, searchText, filters]
   );
 
   useEffect(() => {
-    if (isOpen) {
-      setLessons([]);
-      setPageNumber(1);
-      setTotalPages(1);
-      setHasMore(true);
-      void loadLessons(1, true);
-      setIsSelectOpen(false);
-    }
+    if (!isOpen) return;
+
+    setLessons([]);
+    setPageNumber(1);
+    setTotalPages(1);
+    void loadLessons(1, true);
 
     return () => {
       abortControllerRef.current?.abort();
-      abortControllerRef.current = null;
-      setLessons([]);
-      setPageNumber(1);
-      setTotalPages(1);
-      setHasMore(true);
-      setIsSelectOpen(false);
     };
-  }, [isOpen, filters, searchText, loadLessons]);
+  }, [isOpen, searchText, filters, loadLessons]);
 
   return {
     lessons,
     loadingLessons,
-    hasMore,
-    isSelectOpen,
     pageNumber,
     totalPages,
     listRef,
-    setIsSelectOpen,
-    setSearchText,
-    searchText,
     loadLessons,
   };
 }

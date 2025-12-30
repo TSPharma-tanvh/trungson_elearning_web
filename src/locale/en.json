@@ -1022,5 +1022,6 @@
   "pleaseSelectLesson": "Please Select Lesson",
   "exportLessonProgress": "Export Lesson Progress",
   "createResourceCategory": "Create Resource Category",
-  "updateResourceCategory": "Update Resource Category"
+  "updateResourceCategory": "Update Resource Category",
+  "deleteSuccess": "Delete Successfully"
 }

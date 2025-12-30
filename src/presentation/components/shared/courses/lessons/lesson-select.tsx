@@ -106,13 +106,12 @@ export function LessonSingleSelectDialog({
     [lessonType, disableStatus, contentType, status, hasVideo, hasFileResource, hasCourse]
   );
 
-  const { lessons, loadingLessons, pageNumber, totalPages, listRef, setSearchText, loadLessons } =
-    useLessonSelectLoader({
-      lessonUsecase,
-      isOpen: dialogOpen,
-      searchText: debouncedSearchText,
-      filters,
-    });
+  const { lessons, loadingLessons, pageNumber, totalPages, listRef, loadLessons } = useLessonSelectLoader({
+    lessonUsecase,
+    isOpen: dialogOpen,
+    searchText: debouncedSearchText,
+    filters,
+  });
 
   const isFull = isSmallScreen || isFullscreen;
 
@@ -224,7 +223,6 @@ export function LessonSingleSelectDialog({
             value={localSearchText}
             onChange={(val) => {
               setLocalSearchText(val);
-              setSearchText(val);
             }}
             placeholder={t('searchLessons')}
           />

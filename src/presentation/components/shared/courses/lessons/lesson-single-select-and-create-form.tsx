@@ -80,7 +80,7 @@ export function LessonSingleSelectAndCreateDialog({
   const [localSearchText, setLocalSearchText] = useState('');
   const debouncedSearchText = useLessonSelectDebounce(localSearchText, 300);
 
-  // Lưu lesson đã chọn để hiển thị tên
+  // Lưu lesson đã chọn
   const [selectedLessonDetail, setSelectedLessonDetail] = useState<LessonDetailResponse | null>(null);
 
   // Filters
@@ -101,7 +101,7 @@ export function LessonSingleSelectAndCreateDialog({
 
   const isFull = isSmallScreen || isFullscreen;
 
-  // Lấy chi tiết lesson đã chọn để hiển thị tên
+  // Lấy chi tiết lesson đã chọn
   const fetchSelectedLesson = useCallback(async () => {
     if (!value || selectedLessonDetail?.id === value) return;
     try {
