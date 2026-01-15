@@ -13,7 +13,6 @@ import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import CustomSnackBar from '@/presentation/components/core/snack-bar/custom-snack-bar';
 import { CreateLessonDialog } from '@/presentation/components/dashboard/courses/lessons/create-lesson-form';

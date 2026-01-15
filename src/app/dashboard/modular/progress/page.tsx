@@ -10,7 +10,6 @@ import { CourseTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import { UserCourseProgressFilters } from '@/presentation/components/dashboard/progress/course/user-course-progress-filter';
 import UserCourseProgressTable from '@/presentation/components/dashboard/progress/course/user-course-progress-table';

@@ -11,7 +11,6 @@ import { CourseTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import { CourseFilters } from '@/presentation/components/dashboard/courses/courses/course-filters';
 import CourseTable from '@/presentation/components/dashboard/courses/courses/course-table';
@@ -119,7 +118,8 @@ export default function Page(): React.JSX.Element {
   };
 
   //export table data to Excel
-  const handleExportToExcel = () => {
+  const handleExportToExcel = async () => {
+    const XLSX = await import('xlsx');
     const exportData = courses.map((row) => ({
       [t('id')]: row.id ?? '',
       [t('name')]: row.name ?? '',

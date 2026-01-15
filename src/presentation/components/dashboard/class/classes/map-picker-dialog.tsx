@@ -54,9 +54,7 @@ function SearchBox({ onSelect }: { onSelect: (data: { lat: number; lng: number; 
     if (!query.trim()) return;
 
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
-      );
+      const res = await fetch(`/api/geocoding/search?query=${encodeURIComponent(query)}`);
       const data = await res.json();
 
       if (data?.length > 0) {
@@ -107,9 +105,7 @@ function SearchBox({ onSelect }: { onSelect: (data: { lat: number; lng: number; 
 function LocationPicker({ onChange }: { onChange: (data: { lat: number; lng: number; address: string }) => void }) {
   const reverseGeocode = async (lat: number, lng: number) => {
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
-      );
+      const res = await fetch(`/api/geocoding/reverse?lat=${lat}&lon=${lng}`);
       const data = await res.json();
       return data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
     } catch (err) {

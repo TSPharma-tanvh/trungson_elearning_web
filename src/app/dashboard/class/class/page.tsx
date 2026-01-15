@@ -14,11 +14,12 @@ import { useMediaQuery, useTheme } from '@mui/system';
 import { FileXls } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import { ClassFilters } from '@/presentation/components/dashboard/class/classes/class-filter';
 import ClassTable from '@/presentation/components/dashboard/class/classes/class-table';
 import { CreateClassDialog } from '@/presentation/components/dashboard/class/classes/create-class-form';
+
+export const dynamic = 'force-dynamic';
 
 export default function Page(): React.JSX.Element {
   const theme = useTheme();
@@ -105,7 +106,8 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
+  const handleExportToExcel = async () => {
+    const XLSX = await import('xlsx');
     const exportData = classes.map((row) => ({
       [t('id')]: row.id ?? '',
       [t('name')]: row.className ?? '',

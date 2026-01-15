@@ -10,7 +10,6 @@ import { QuizTypeEnum } from '@/utils/enum/core-enum';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import { UserExamProgressFilters } from '@/presentation/components/dashboard/progress/exam/user-exam-progress-filter';
 import UserExamProgressTable from '@/presentation/components/dashboard/progress/exam/user-exam-progress-table';

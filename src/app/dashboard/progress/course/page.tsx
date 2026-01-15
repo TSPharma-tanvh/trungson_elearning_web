@@ -9,7 +9,6 @@ import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import { UserCourseProgressFilters } from '@/presentation/components/dashboard/progress/course/user-course-progress-filter';
 import UserCourseProgressTable from '@/presentation/components/dashboard/progress/course/user-course-progress-table';
@@ -104,7 +103,8 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
+  const handleExportToExcel = async () => {
+    const XLSX = await import('xlsx');
     const exportData = userCourseProgress.map((row) => ({
       [t('id')]: row.id ?? '',
       [t('courseName')]: row.courses?.name ?? '',

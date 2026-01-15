@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { CreateClassRequest } from '@/domain/models/class/request/create-class-request';
 import { LearningModeEnum } from '@/utils/enum/core-enum';
 import CloseIcon from '@mui/icons-material/Close';
@@ -23,7 +24,9 @@ import { CustomButton } from '@/presentation/components/core/button/custom-butto
 import { CustomSelectDropDown } from '@/presentation/components/core/drop-down/custom-select-drop-down';
 import { CustomTextField } from '@/presentation/components/core/text-field/custom-textfield';
 
-import { MapPickerDialog } from './map-picker-dialog';
+const MapPickerDialog = dynamic(() => import('./map-picker-dialog').then((mod) => mod.MapPickerDialog), {
+  ssr: false,
+});
 
 interface CreateClassProps {
   disabled?: boolean;
@@ -49,7 +52,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
       // minuteLate: 5,
       classType: 0,
       scheduleStatus: 0,
-      isCreateQrCode: true,
+      isCreateQrCode: false,
     })
   );
 
@@ -216,7 +219,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
             </Grid>
           )}
 
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -229,7 +232,7 @@ export function CreateClassDialog({ disabled = false, onSubmit, loading = false,
               }
               label={t('isCreateQrCode')}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12}>
             <CustomButton

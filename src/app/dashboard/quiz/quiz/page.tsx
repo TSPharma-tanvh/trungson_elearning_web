@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import { FileXls } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import { CreateQuizForLessonDialog } from '@/presentation/components/dashboard/quiz/quiz/quiz-create-for-lesson-form';
 import { QuizFilters } from '@/presentation/components/dashboard/quiz/quiz/quiz-filter';
@@ -151,7 +150,8 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
+  const handleExportToExcel = async () => {
+    const XLSX = await import('xlsx');
     const exportData = quizzes.map((row) => ({
       [t('title')]: row.title ?? '',
       [t('title')]: row.title ?? '',

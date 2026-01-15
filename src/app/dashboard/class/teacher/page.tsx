@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography';
 import { FileXls } from '@phosphor-icons/react';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import { ClassTeacherFilters } from '@/presentation/components/dashboard/class/teacher/class-teacher-filter';
 import TeacherTable from '@/presentation/components/dashboard/class/teacher/class-teacher-table';
@@ -105,7 +104,8 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
+  const handleExportToExcel = async () => {
+    const XLSX = await import('xlsx');
     const exportData = teachers.map((row) => ({
       [t('id')]: row.id ?? '',
       [t('name')]: row.user?.employee?.name ?? '',

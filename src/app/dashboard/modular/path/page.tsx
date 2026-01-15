@@ -10,7 +10,6 @@ import { DateTimeUtils } from '@/utils/date-time-utils';
 import { Button, Stack, Typography } from '@mui/material';
 import { FileXls, Plus } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
 
 import CoursePathDetailForm from '@/presentation/components/dashboard/courses/path/course-path-detail-form';
 import { CreateCoursePathDialog } from '@/presentation/components/dashboard/courses/path/create-path-form';
@@ -98,7 +97,8 @@ export default function Page(): React.JSX.Element {
     }
   };
 
-  const handleExportToExcel = () => {
+  const handleExportToExcel = async () => {
+    const XLSX = await import('xlsx');
     const exportData = paths.map((row) => ({
       [t('id')]: row.id ?? '',
       [t('name')]: row.name ?? '',
