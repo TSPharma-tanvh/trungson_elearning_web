@@ -1,229 +1,519 @@
-## Runbook — quick commands
+# TS_Elearning_Web
 
-Use these short commands when developing, building or troubleshooting the app.
+A comprehensive, production-ready e-learning platform built with modern web technologies for managing online education, courses, quizzes, and student progress tracking.
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Project Architecture](#project-architecture)
+- [Usage](#usage)
+- [Development](#development)
+- [Production Build](#production-build)
+- [Docker Deployment](#docker-deployment)
+- [API Integration](#api-integration)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+-  **Course Management** - Create and manage online courses with structured content
+-  **Quiz System** - Build and administer quizzes with automatic grading and progress tracking
+-  **Class Management** - Organize students into classes with role-based access control
+-  **Progress Tracking** - Monitor student learning paths, achievements, and performance metrics
+-  **Authentication** - Secure user authentication with JWT tokens and role-based authorization
+-  **Multi-language Support** - Full internationalization (English & Vietnamese)
+-  **Responsive UI** - Material-UI based responsive design for all devices
+-  **Lesson Management** - Structured lesson organization with categories and content
+-  **Analytics & Reports** - Detailed reports on student performance and course completion
+-  **Notifications System** - Real-time notifications for events and updates
+-  **File Management** - Upload and manage course materials (multipart/form-data support)
+
+## Tech Stack
+
+### Frontend
+- **Framework**: [Next.js 14+](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **UI Library**: [Material-UI (MUI) 5.15+](https://mui.com/)
+- **Styling**: [Emotion](https://emotion.sh/) + CSS-in-JS
+- **Icons**: Phosphor Icons, MUI Icons
+- **State Management**: React Context API
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/)
+- **Validation**: [Zod](https://zod.dev/)
+- **HTTP Client**: [Axios](https://axios-http.com/)
+- **Date Handling**: [DayJS](https://day.js.org/)
+- **i18n**: [i18next](https://www.i18next.com/) with React integration
+- **Data Visualization**: ApexCharts
+- **Maps**: Leaflet, React Leaflet
+- **Code Formatting**: Prettier with import sorting
 
 ### Development
+- **Package Manager**: pnpm or npm
+- **Runtime**: Node.js 18+ (LTS recommended)
+- **Containerization**: Docker & Docker Compose
+- **Version Control**: Git
 
-Start the dev server (hot reload):
+## Requirements
 
-```powershell
-# with pnpm
+- **Node.js**: 18+ (LTS recommended)
+- **Package Manager**: pnpm (recommended) or npm
+- **Docker** (optional): For containerized deployment
+- **Git**: For version control
+- **Environment Variables**: API base URLs configured
+
+## Installation
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://git.trungsoncare.com/trungsoncare/ts_elearning_web.git
+cd ts_elearning_web
+git branch -M main
+```
+
+### Step 2: Install Dependencies
+
+Using pnpm (recommended):
+```bash
 pnpm install
+```
+
+Or using npm:
+```bash
+npm install
+```
+
+### Step 3: Configure Environment
+
+Create `.env.local` file with the following variables:
+
+```env
+NEXT_PUBLIC_PRODUCTION_BASE_URL=https://api.example.com
+NEXT_PUBLIC_DEV_BASE_URL=https://dev-api.example.com
+NEXT_PUBLIC_LOCAL_DEV_BASE_URL=http://localhost:5000
+NEXT_PUBLIC_LOCAL_PRODUCTION_BASE_URL=http://localhost:5000
+```
+
+## Quick Start
+
+### Development Server
+
+Start the dev server with hot reload:
+
+```bash
+# with pnpm
 pnpm dev
 
 # or with npm
-# npm install
-# npm run dev
+npm run dev
 ```
 
-### Production build
+The application will be available at `http://localhost:3000`
 
-Create a production build and run the server:
+### Type Checking
 
-```powershell
-Remove-Item -Recurse -Force .next  # or rm -r .next (PowerShell friendly)
+```bash
+npm run typecheck
+```
+
+### Code Formatting
+
+```bash
+# Format all files
+npm run format:write
+
+# Check formatting
+npm run format:check
+```
+
+## Project Architecture
+
+### Clean Architecture Pattern
+
+The project follows **Clean Architecture** (also known as Onion Architecture) with clear separation of concerns:
+
+```
+src/
+├── app/                          # Next.js App Router & Pages
+│   ├── api/                     # API routes
+│   ├── auth/                    # Authentication pages
+│   │   ├── sign-in/
+│   │   ├── sign-up/
+│   │   └── reset-password/
+│   ├── dashboard/               # Main dashboard
+│   │   ├── class/              # Class management
+│   │   ├── exam/               # Exam management
+│   │   ├── quiz/               # Quiz system
+│   │   ├── progress/           # Progress tracking
+│   │   ├── questions/          # Question bank
+│   │   ├── report/             # Reports & analytics
+│   │   ├── linear/             # Linear learning paths
+│   │   ├── modular/            # Modular courses
+│   │   └── ...
+│   ├── layout.tsx              # Root layout
+│   └── page.tsx                # Home page
+│
+├── presentation/               # Presentation Layer (UI)
+│   ├── components/             # Reusable React components
+│   │   ├── auth/
+│   │   ├── core/               # Core components (snackbar, etc.)
+│   │   ├── dashboard/
+│   │   ├── layout/
+│   │   ├── shared/             # Shared components
+│   │   └── user/
+│   ├── contexts/               # React contexts
+│   │   └── user-context.tsx
+│   └── hooks/                  # Custom React hooks
+│       ├── use-dependency-container.tsx
+│       ├── use-user.ts
+│       ├── use-selection.ts
+│       └── ...
+│
+├── domain/                     # Domain Layer (Business Logic)
+│   ├── models/                 # Domain entities & types
+│   │   ├── answer/
+│   │   ├── auth/
+│   │   ├── category/
+│   │   ├── class/
+│   │   ├── courses/
+│   │   ├── user/
+│   │   └── ...
+│   ├── repositories/           # Repository interfaces
+│   │   ├── NotificationRepository.ts
+│   │   ├── answer/
+│   │   ├── auth/
+│   │   └── ...
+│   └── usecases/               # Business use cases
+│       ├── SendNotificationUseCase.ts
+│       ├── answer/
+│       ├── auth/
+│       └── ...
+│
+├── data/                       # Data Layer (Repositories & API)
+│   ├── api/
+│   │   ├── base-endpoints.ts   # Axios instance & interceptors
+│   │   ├── api-endpoints.ts    # Endpoint definitions
+│   │   ├── api-client.ts       # API client wrapper
+│   │   └── geocoding/
+│   └── repositories/           # Repository implementations
+│       ├── NotificationRepoImpl.ts
+│       ├── answer/
+│       ├── auth/
+│       └── ...
+│
+├── lib/                        # Utility Libraries
+│   ├── auth/                   # Auth utilities
+│   ├── logger.ts               # Logging
+│   ├── default-logger.ts
+│   └── ...
+│
+├── types/                      # TypeScript type definitions
+│   ├── nav.d.ts
+│   └── user.ts
+│
+├── utils/                      # Utility Functions
+│   ├── app-actions.ts
+│   ├── app-strings.ts          # Constants & storage keys
+│   ├── store-manager.ts        # Local storage management
+│   ├── date-time-utils.ts
+│   ├── string-utils.ts
+│   ├── enum/
+│   └── string/
+│
+├── styles/                     # Global Styles
+│   ├── global.css
+│   └── theme/                  # MUI theme configuration
+│
+├── locale/                     # i18n Translations
+│   ├── en.json
+│   └── vi.json
+│
+├── config.ts                   # App configuration
+├── dependency-container.ts     # IoC container setup
+└── i18n.ts                     # i18n initialization
+```
+
+### Dependency Rule
+
+**Inner layers (Domain) never depend on outer layers (Presentation/Data)**
+
+- Domain models are pure TypeScript with no framework dependencies
+- Data layer implements domain repository interfaces
+- Presentation layer consumes domain models and repositories
+- This ensures testability and framework independence
+
+### API Integration Flow
+
+1. **UI Component** calls repository method
+2. **Repository** (implements domain interface) calls API client
+3. **API Client** (`base-endpoints.ts`) handles auth, serialization, base URL
+4. **Interceptor** injects auth token, handles responses globally
+5. **Response Handler** shows snackbars, handles 401 redirects
+6. **Domain Model** returned to presentation layer
+
+## Usage
+
+### Development Server
+
+```bash
+pnpm dev
+```
+
+### Running Type Checks
+
+```bash
+npm run typecheck
+```
+
+### Building for Production
+
+```bash
+# Clean previous build
+rm -r .next
+
+# Install dependencies
 npm install
+
+# Build
 npm run build
-npm run start
+
+# Start production server
+npm start
+```
+
+### Docker Deployment
+
+#### Build and Run
+
+```bash
+docker-compose up --build -d
+```
+
+#### Stop Containers
+
+```bash
+docker-compose down
+```
+
+#### View Logs
+
+```bash
+docker-compose logs -f
 ```
 
 ### Troubleshooting
 
-If you encounter build or runtime errors, try a clean rebuild:
+If you encounter build or runtime errors:
 
-```powershell
+```bash
+# PowerShell
 Remove-Item -Recurse -Force .next, node_modules
+npm cache clean --force
+npm install
+npm run build
+
+# Unix/Linux/macOS
+rm -rf .next node_modules
 npm cache clean --force
 npm install
 npm run build
 ```
 
-### Run with Docker
+## API Integration
 
-Build and start the containerized app:
+### HTTP Headers
 
-```powershell
-docker-compose up --build -d
-```
-
----
-
-## HTTP request tips
-
-- For file uploads (multipart/form-data) add the header:
+#### File Upload (multipart/form-data)
 
 ```http
 Content-Type: multipart/form-data
 ```
 
-- To suppress automatic success snackbars for non-GET requests, add the header:
+#### Suppress Success Notifications
+
+To prevent automatic success snackbars on write operations:
 
 ```http
 x-suppress-success: true
 ```
 
-These headers are read by the API client / interceptors in `src/data/api/base-endpoints.ts`.
+These headers are processed in `src/data/api/base-endpoints.ts`.
 
-# Trungson E-Learning (Next.js)
+### Adding New API Endpoints
 
-This repository contains the frontend for the E-Learning platform built with Next.js and TypeScript.
+#### 1. Define Endpoint Path
 
-## Architecture
+Add to `src/data/api/api-endpoints.ts`:
 
-The codebase follows a Clean, layered architecture (inspired by Clean/Onion Architecture and the Ports & Adapters pattern). The goal is to separate concerns, keep business rules independent from delivery mechanisms, and make adapters (HTTP client, storage, UI) replaceable and easy to test.
-
-Key layers and responsibilities:
-
-- Presentation (UI)
-
-  - Location: `src/app`, `src/presentation` and UI components
-  - Responsibilities: pages, React components, hooks and contexts that interact with users and present data.
-
-- Application / Use Cases
-
-  - Location: `src/domain/usecases` and related orchestrators
-  - Responsibilities: application-specific business logic and workflows that orchestrate calls to repositories and return domain-friendly results to the presentation layer.
-
-- Domain / Entities
-
-  - Location: `src/domain/models`
-  - Responsibilities: pure TypeScript types, entities and domain rules. This layer has no external framework or network dependencies.
-
-- Data / Repositories (Ports & Adapters)
-
-  - Location: `src/data/repositories` and `src/data/api`
-  - Responsibilities: concrete implementations of repository interfaces. They map use-case requests to external API calls (via the centralized API client), convert API responses into domain models, and provide a clear separation between domain logic and transport details.
-
-Dependency rule: inner layers (Domain → Use Cases) do not depend on outer layers (Data → Presentation). Outer layers depend on interfaces defined by inner layers. This keeps core business rules testable and independent from frameworks or transport mechanisms.
-
-The project also centralizes HTTP behavior in a single API client (`src/data/api/base-endpoints.ts`) that handles base URL, auth header injection, global response handling and user notifications. Endpoint paths are defined in `src/data/api/api-endpoints.ts`.
-
-## Quick start
-
-Prerequisites: Node.js (recommended LTS) and pnpm or npm.
-
-Development (PowerShell):
-
-```powershell
-pnpm install
-pnpm dev
-# or with npm
-# npm install
-# npm run dev
+```typescript
+export const apiEndpoints = {
+  myResource: {
+    getAll: 'MyResource/GetAll',
+    getById: (id: string) => `MyResource/GetById/${id}`,
+    create: 'MyResource/Create',
+    update: (id: string) => `MyResource/Update/${id}`,
+    delete: (id: string) => `MyResource/Delete/${id}`,
+  },
+  // ... other endpoints
+};
 ```
 
-Build & production (example):
+#### 2. Create Domain Model
 
-```powershell
-rm -r .next
-pnpm install --frozen-lockfile
-pnpm build
-pnpm start
+Create `src/domain/models/myResource/MyResource.ts`:
+
+```typescript
+export interface MyResource {
+  id: string;
+  name: string;
+  description: string;
+}
 ```
 
-Run in Docker:
+#### 3. Create Repository Interface
 
-```powershell
-docker-compose up --build -d
+Create `src/domain/repositories/myResource/MyResourceRepository.ts`:
+
+```typescript
+export interface MyResourceRepository {
+  getAll(): Promise<MyResource[]>;
+  getById(id: string): Promise<MyResource>;
+  create(data: CreateMyResourceDto): Promise<MyResource>;
+  update(id: string, data: UpdateMyResourceDto): Promise<MyResource>;
+  delete(id: string): Promise<void>;
+}
 ```
 
-If you encounter build/runtime errors deleting `.next` and `node_modules` and then clearing the npm cache can help:
+#### 4. Implement Repository
 
-```powershell
-Remove-Item -Recurse -Force .next, node_modules
-npm cache clean --force
+Create `src/data/repositories/myResource/MyResourceRepoImpl.ts`:
+
+```typescript
+import { customApiClient } from '@/data/api/base-endpoints';
+import { apiEndpoints } from '@/data/api/api-endpoints';
+import { MyResourceRepository } from '@/domain/repositories/myResource/MyResourceRepository';
+
+export class MyResourceRepoImpl implements MyResourceRepository {
+  async getAll(): Promise<MyResource[]> {
+    const response = await customApiClient.get(apiEndpoints.myResource.getAll);
+    return response.data;
+  }
+
+  async getById(id: string): Promise<MyResource> {
+    const response = await customApiClient.get(apiEndpoints.myResource.getById(id));
+    return response.data;
+  }
+
+  // ... implement other methods
+}
 ```
 
-## Environment variables
+#### 5. Use in Components/Hooks
 
-This project expects a few environment variables for API base URLs (set in `.env.local` or your deployment environment):
+```typescript
+import { useCallback } from 'react';
+import { MyResourceRepoImpl } from '@/data/repositories/myResource/MyResourceRepoImpl';
 
-- NEXT_PUBLIC_PRODUCTION_BASE_URL
-- NEXT_PUBLIC_DEV_BASE_URL
-- NEXT_PUBLIC_LOCAL_DEV_BASE_URL
-- NEXT_PUBLIC_LOCAL_PRODUCTION_BASE_URL
+export function useMyResource() {
+  const repository = new MyResourceRepoImpl();
+  
+  const fetch = useCallback(async () => {
+    return await repository.getAll();
+  }, [repository]);
 
-The client currently uses the local dev base URL by default (see `src/data/api/base-endpoints.ts`).
-
-## How API calls work (request/response flow)
-
-This section explains the end-to-end flow when the app calls an API. File references use project paths so you can quickly inspect the code.
-
-1. Presentation layer (UI / pages / components)
-
-- Components or pages call into repository classes (under `src/data/repositories/*`) to perform operations (fetch, create, update, delete).
-
-2. Repository layer
-
-- Repositories map use-case or domain operations to API endpoints. They compose request payloads and call the API client functions (get/post/put/delete).
-- Look for implementations like `src/data/repositories/*/...RepoImpl.ts` which call `customApiClient`.
-
-3. API definitions
-
-- All endpoint paths are defined in `src/data/api/api-endpoints.ts` as `apiEndpoints`.
-- Each endpoint is either a static string (e.g. `Identity/Login`) or a function returning a string for dynamic paths (e.g. `User/GetUserInfoById/${id}`).
-
-4. HTTP client
-
-- The project uses axios wrapped by a singleton API client in `src/data/api/base-endpoints.ts` (exported as `customApiClient`).
-- The axios instance is configured with:
-  - baseURL from `getBaseUrl()` (see `base-endpoints.ts`)
-  - query param serialization using `qs` (arrayFormat: 'repeat')
-  - withCredentials = true and a timeout
-
-5. Request interceptor (auth header)
-
-- Before each request, `ApiClient` injects the Authorization header if a token exists.
-- Token storage is managed via `StoreLocalManager` and constants in `AppStrings` (see `src/utils/store-manager.ts` and `src/utils/app-strings.ts`).
-
-6. Response interceptor (global handling)
-
-- On success: the interceptor checks the API response shape. If the response includes `isSuccessStatusCode: boolean` the client:
-  - shows an error snackbar and throws when `isSuccessStatusCode === false`.
-  - shows a success snackbar for non-GET requests unless the request included header `x-suppress-success: 'true'`.
-- On HTTP errors (axios error):
-  - Status 400 with validation errors: shows each field error via the snackbar.
-  - Status 401 (unauthorized): clears tokens and redirects to the sign-in page (`paths.auth.signIn`).
-  - Other errors: shows a generic or returned message.
-
-7. Token refresh (commented)
-
-- There is a commented implementation scaffold for refreshing tokens in the client. Currently, the client clears tokens and redirects on 401; you can enable/extend refresh logic in `base-endpoints.ts`.
-
-## Useful headers / tips
-
-- For multipart (file) uploads add `Content-Type: multipart/form-data` to the request header.
-- To prevent success snackbars for a write operation, add the header `x-suppress-success: 'true'`.
-
-## Adding a new API call (example)
-
-1. Add/update the path in `src/data/api/api-endpoints.ts`:
-
-```ts
-// add inside the proper category
-myResource: {
-  getAll: 'MyResource/GetAll',
-  getById: (id: string) => `MyResource/GetById/${id}`,
-},
+  return { fetch };
+}
 ```
 
-2. Implement the repository method under `src/data/repositories/...` that calls `customApiClient.get/post` with the correct endpoint from `apiEndpoints`.
+### Request/Response Flow
 
-3. Use the repository from the UI or a use-case / hook.
+1. Components call repository methods
+2. Repositories map to API endpoints
+3. API client adds auth headers and base URL
+4. Response interceptor handles global error handling
+5. Success/error snackbars displayed automatically
+6. 401 responses trigger redirect to sign-in
 
-## Where to look next (key files)
+### Token Management
 
-- API client & interceptors: `src/data/api/base-endpoints.ts`
-- Endpoint definitions: `src/data/api/api-endpoints.ts`
-- Repositories: `src/data/repositories/*` (look for `*RepoImpl.ts` files)
-- Token & storage helpers: `src/utils/store-manager.ts`, `src/utils/app-strings.ts`
-- Snackbars: `src/presentation/components/core/snack-bar/custom-snack-bar` (used to show messages)
+Tokens are stored in localStorage via `StoreLocalManager`:
+- Location: `src/utils/store-manager.ts`
+- Auth token key: defined in `src/utils/app-strings.ts`
+- Auto-injected via request interceptor
+- Auto-cleared on 401 response
 
-## Contributing / Notes
+## Contributing
 
-- Follow existing TS/Next conventions in the codebase.
-- Add tests for new repository methods if you change API logic.
+### Getting Started
+
+1. Fork the repository
+2. Clone your fork
+3. Create a feature branch: `git checkout -b feature/amazing-feature`
+4. Make your changes
+5. Follow code standards (see below)
+6. Test locally: `npm run dev`
+7. Commit: `git commit -m "feat: add amazing feature"`
+8. Push: `git push origin feature/amazing-feature`
+9. Create a merge request
+
+### Code Standards
+
+- ✅ Use TypeScript (no `any` types without reason)
+- ✅ Follow existing project structure
+- ✅ Use meaningful variable/function names
+- ✅ Write clean, readable code
+- ✅ Format with Prettier: `npm run format:write`
+- ✅ Pass type checks: `npm run typecheck`
+- ✅ Follow Clean Architecture principles
+- ✅ Implement proper error handling
+- ✅ Add comments for complex logic
+
+### Commit Messages
+
+Use conventional commits:
+```
+feat: add new feature
+fix: fix a bug
+refactor: refactor code
+docs: update documentation
+test: add tests
+chore: update dependencies
+```
+
+### Push to Dev Branch
+
+```bash
+git add .
+git commit -m "your meaningful message"
+git push origin dev
+```
+
+## Key Files Reference
+
+| File | Purpose |
+|------|---------|
+| `src/data/api/base-endpoints.ts` | Axios instance, interceptors, auth header injection |
+| `src/data/api/api-endpoints.ts` | All API endpoint definitions |
+| `src/utils/store-manager.ts` | Local storage & token management |
+| `src/utils/app-strings.ts` | App constants, storage keys |
+| `src/presentation/contexts/user-context.tsx` | Global user state |
+| `src/lib/auth/client.ts` | Client-side auth utilities |
+| `src/config.ts` | App-wide configuration |
+| `dependency-container.ts` | Dependency injection setup |
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ---
 
-If you'd like, I can also open a PR with this README update and add a small section with a concrete example repository method calling a specific endpoint from `apiEndpoints`.
+## Project Status
+
+ **Active Development** - Actively maintained and developed. Contributions and feedback welcome!
+
+**Repository**: https://git.trungsoncare.com/trungsoncare/ts_elearning_web
+
+**Last Updated**: January 19, 2026
